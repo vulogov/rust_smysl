@@ -6,12 +6,14 @@ adopts these once 1.4.0 is released.
 
 | # | Request | Kind | Priority | Affects cargo-smysl |
 |---|---|---|---|---|
-| R10 | Merge re-appends label bindings and schema declarations | Bug (rule U) | High | yes: the corpus log grows on every merge |
-| R11 | `smysl import` ignores `--format surface` | Bug | Low | no (library route) |
-| R12 | `smysl import` summaries exceed the 30-token limit and fail `check` | Bug | Medium | yes: `from_csv` readings for test evidence |
-| R13 | A configuration error exits 1 where the changelog says 6 | Bug | Low | no |
-| R14 | An unknown provider kind still reports "malformed provider response" | Bug | Low | no |
-| R15 | json-ast `GIST_MAX_CHARS` (240) disagrees with `check`'s summary bound | Bug | Low | no (verify first whether it is already fixed on 1.4.0) |
+| R10 | Merge re-appends label bindings and schema declarations | Bug (rule U) | High | yes: the corpus log grows on every merge. **Fixed on dev/1.4.0 (5c64e02); acceptance passed** |
+| R11 | `smysl import` ignores `--format surface` | Bug | Low | no (library route). Still open at c7bf5a3 |
+| R12 | `smysl import` summaries exceed the 30-token limit and fail `check` | Bug | Medium | yes: `from_csv` readings for test evidence. Still open at c7bf5a3 |
+| R13 | A configuration error exits 1 where the changelog says 6 | Bug | Low | no. Still open at c7bf5a3 |
+| R14 | An unknown provider kind still reports "malformed provider response" | Bug | Low | no. Still open at c7bf5a3 |
+| R15 | json-ast `GIST_MAX_CHARS` (240) disagrees with `check`'s summary bound | Bug | Low | no. Fixed (120, test-held) |
+
+Acceptance against dev/1.4.0 at c7bf5a3: `docs/smysl-1.4.0-acceptance.md`.
 
 S2 (`eval/s2-protocol.md`) uses R11, R13, R14 and R15 as experiment tasks. If they are implemented
 outside S2 first, S2 needs replacement tasks.

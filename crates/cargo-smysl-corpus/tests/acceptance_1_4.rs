@@ -1,0 +1,124 @@
+//! smysl 1.4.0 acceptance for request R10 (docs/smysl-requests-1.4.md), on real staged batches.
+//! Passed against dev/1.4.0 at c7bf5a3 (docs/smysl-1.4.0-acceptance.md). Ignored while the pin is 1.3.
+
+use std::path::Path;
+
+use cargo_smysl_corpus::{build, stage, CommitText, Extraction};
+use smysl::{merge, to_cbor_seq, Label, LabelBinding, MergeOptions, Record, Store};
+
+fn staged_store(sha: &str) -> Store {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
+        "../../eval/extractions/research-pro-v2/smysl/{sha}.json"
+    ));
+    let ex: Extraction = serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
+    let batch = build(
+        &ex,
+        &CommitText {
+            sha,
+            message: "",
+            files: vec![],
+        },
+        0,
+    )
+    .unwrap();
+    let s = stage(&Store::from_records(Vec::new()), batch, 0);
+    assert!(!s.has_errors());
+    Store::from_records(s.records())
+}
+
+#[test]
+#[ignore = "needs smysl 1.4.0 (R10); un-ignore with the pin"]
+fn r10_repeated_self_merge_appends_nothing() {
+    let a = staged_store("90ec2f7");
+    let n = a.iter().count();
+    let kinds = |s: &Store| {
+        let mut k = std::collections::BTreeMap::<&'static str, usize>::new();
+        for r in s.iter() {
+            *k.entry(match r {
+                Record::Unit(_) => "unit",
+                Record::Relation(_) => "relation",
+                Record::Attestation(_) => "attestation",
+                Record::LabelBinding(_) => "label",
+                Record::SchemaDecl(_) => "schema",
+                _ => "other",
+            })
+            .or_default() += 1;
+        }
+        k
+    };
+    eprintln!("staged batch: {n} records {:?}", kinds(&a));
+    let mut aa = a.clone();
+    for _ in 0..4 {
+        let r = merge(&mut aa, &a, MergeOptions::default()).unwrap();
+        assert_eq!(r.added, 0);
+    }
+    assert_eq!(aa.iter().count(), n);
+}
+
+#[test]
+#[ignore = "needs smysl 1.4.0 (R10); un-ignore with the pin"]
+fn r10_two_commits_merged_both_ways_then_again_are_stable() {
+    let a = staged_store("90ec2f7");
+    let b = staged_store("532e4d2");
+    let mut ab = a.clone();
+    merge(&mut ab, &b, MergeOptions::default()).unwrap();
+    let mut ba = b.clone();
+    merge(&mut ba, &a, MergeOptions::default()).unwrap();
+    assert_eq!(ab.iter().count(), ba.iter().count());
+    let n = ab.iter().count();
+    assert_eq!(
+        merge(&mut ab, &ba, MergeOptions::default()).unwrap().added,
+        0
+    );
+    assert_eq!(ab.iter().count(), n);
+}
+
+#[test]
+#[ignore = "needs smysl 1.4.0 (R10); un-ignore with the pin"]
+fn r10_a_label_bound_to_a_different_uid_is_still_appended() {
+    let a = staged_store("90ec2f7");
+    let (label, other) = {
+        let mut units = a.units().map(|(u, _)| *u);
+        let first = units.next().unwrap();
+        let second = units.next().unwrap();
+        let label = a
+            .iter()
+            .find_map(|r| match r {
+                Record::LabelBinding(b) if b.uid == first => Some(b.label.clone()),
+                _ => None,
+            })
+            .unwrap_or_else(|| Label::new("d/acceptance").unwrap());
+        (label, second)
+    };
+    let rival = Store::from_records(vec![Record::LabelBinding(LabelBinding::new(
+        label.clone(),
+        other,
+    ))]);
+    let mut merged = a.clone();
+    let n = merged.iter().count();
+    let r = merge(&mut merged, &rival, MergeOptions::default()).unwrap();
+    assert_eq!(r.added, 1, "a rival binding is a distinct record");
+    assert_eq!(merged.iter().count(), n + 1);
+    assert!(
+        !r.new_contentions.is_empty(),
+        "the collision is detected from the store's own bindings"
+    );
+}
+
+#[test]
+#[ignore = "needs smysl 1.4.0 (R10); un-ignore with the pin"]
+fn r10_a_store_opened_from_a_file_merged_with_its_own_contents_appends_nothing() {
+    let a = staged_store("532e4d2");
+    let records: Vec<Record> = a.iter().cloned().collect();
+    let dir = std::env::temp_dir().join(format!("acc14-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("store.cbor");
+    std::fs::write(&path, to_cbor_seq(&records)).unwrap();
+    let mut opened = Store::open(&path).unwrap();
+    let n = opened.iter().count();
+    assert_eq!(n, records.len());
+    let r = merge(&mut opened, &a, MergeOptions::default()).unwrap();
+    std::fs::remove_dir_all(&dir).ok();
+    assert_eq!(r.added, 0);
+    assert_eq!(opened.iter().count(), n);
+}
