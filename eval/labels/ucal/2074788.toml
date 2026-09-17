@@ -1,0 +1,74 @@
+# S0 label — ucal 2074788
+# Why this commit is in the set: session clock: concurrency and monotonicity prerequisites
+# Label from the message AND the diff: git -C eval/.repos/ucal show 2074788f713ef4331ede63d3dc963f8e74e7565c
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   A session clock: one process, one reading order
+#   
+#   Every reading comes from it now, and it exists for monotonicity rather
+#   than precision — interpolating between wall ticks is worth 24/3125 of a
+#   rung, which is nothing.
+#   
+#   The system clock is disciplined by something outside this process and
+#   can step backwards: NTP correcting a large offset, a VM resuming, an
+#   operator setting the date. A one-shot command never notices. wallclock
+#   reads the clock twenty times a second for as long as it is left
+#   running, and a backward step there is a face that goes back in time.
+#   
+#       reading = max(wall_now, anchor + monotonic_elapsed)
+#   
+#   A backward step loses to the monotonic branch, which keeps advancing at
+#   the oscillator's rate rather than freezing until the wall clock catches
+#   up. A forward step wins, because a forward jump is a correction
+#   arriving and refusing it would prefer this process's opinion of the
+#   time to the system's.
+#   
+#   The rule is a pure function of its inputs, which is what lets a test
+#   drive a wall clock backwards repeatedly and assert the sequence is
+#   still monotone. Verified strict by disabling the monotonic branch and
+#   watching the reading stall. Another test asserts what it does not buy:
+#   a session reading lands on the same rung a raw one does.
+#   
+#   Two lints and one feature combination corrected the implementation on
+#   the way. no-panic-in-cli refused an .expect() used to fill the gap
+#   where OnceLock's initialiser cannot return a Result — the state is an
+#   Option now, anchored where a failure can be returned. And splitting
+#   wall_instant out of now_instant dropped its `civil` gate, which
+#   --no-default-features --features u512,std caught: converting a clock
+#   reading is a leap-table lookup, because Unix time is a UTC label.
+#
+# Files:
+#    Documentation/CLI.md                 |  34 ++++++-
+#    Documentation/Release_Notes/1.9.0.md |  32 ++++++-
+#    crates/ucal/src/clock.rs             | 265 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+#    crates/ucal/src/lib.rs               |  24 +++++
+#    4 files changed, 351 insertions(+), 4 deletions(-)
+
+schema = 1
+repo = "ucal"
+commit = "2074788f713ef4331ede63d3dc963f8e74e7565c"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

@@ -1,0 +1,66 @@
+# S0 label — ucal cc3aafe
+# Why this commit is in the set: flaky test replaced by a fixture; test-infrastructure prerequisites
+# Label from the message AND the diff: git -C eval/.repos/ucal show cc3aafefb1da326e130fd890c1d575969cee7a2a
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   The cut shipped a flaky test, and CI found it
+#   
+#   Two test binaries wrote the residuals fixture into std::env::temp_dir()
+#   under the same fixed name, and they run concurrently. One truncated the
+#   file while the other read it, so the read saw nothing and the command
+#   refused — correctly, because "no observations were read" is an error
+#   rather than a report of agreement having compared nothing.
+#   
+#   It passed locally on every run, including the three I did before
+#   pushing, and failed on the bigint backend in CI on the cut commit
+#   itself. A test that passes sometimes is worse than one that fails, and
+#   the reason this one passed locally is scheduling.
+#   
+#   The repair is that the observations are a committed file rather than one
+#   a test invents: four synthetic instants that are the predicted centres
+#   of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are
+#   known in advance and can be checked by eye. Three fall inside their own
+#   windows and the +41 does not, which is the property the width exists to
+#   carry. A fixture a reader can open is better than one a test writes, and
+#   it cannot race with anything.
+#   
+#   37 worked examples now, because the fixture is a demonstrable example
+#   and is generated into the manual alongside the rest.
+#
+# Files:
+#    Documentation/CLI-EXAMPLES.md           | 51 +++++++++++++++++++++++++++++++++++++++++++++++++++
+#    Documentation/Release_Notes/1.12.0.md   | 12 ++++++++++++
+#    Documentation/examples/observations.txt | 21 +++++++++++++++++++++
+#    crates/ucal/tests/json_surface.rs       | 19 ++++++++++++-------
+#    crates/ucal/tests/manual_fields.rs      | 19 ++++++++++++-------
+#    xtask/src/examples.rs                   |  5 +++++
+#    6 files changed, 113 insertions(+), 14 deletions(-)
+
+schema = 1
+repo = "ucal"
+commit = "cc3aafefb1da326e130fd890c1d575969cee7a2a"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

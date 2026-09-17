@@ -1,0 +1,56 @@
+# S0 label — ucal 8fdb9b3
+# Why this commit is in the set: failures only CI could see; environment prerequisites, small diff
+# Label from the message AND the diff: git -C eval/.repos/ucal show 8fdb9b3edb7cc175c1f940966840fdc24a6ad03c
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   Two failures CI found that local runs could not
+#   
+#   The features workflow caught a fifth feature-gating miss. G10's event
+#   message used body_file::leak, which is gated behind `body`, from an arm
+#   gated behind `events` — and `--no-default-features --features
+#   u512,std,events` is one of the twenty-two combinations that workflow
+#   builds. The message is a literal now; the id it would have interpolated
+#   is one the caller just typed.
+#   
+#   And a race in G7's own test. `between - -` is refused before a byte of
+#   stdin is read, so the child can exit while the harness is still
+#   writing and the write gets EPIPE. That is the program behaving exactly
+#   as intended and the harness assuming otherwise: the child has to win
+#   the race to produce it, which is why it passed here and failed on CI's
+#   bigint job. A broken pipe is now an accepted outcome, since the
+#   assertions are on the status and the output and both survive it.
+#
+# Files:
+#    crates/ucal/src/lib.rs            | 20 +++++++++++++-------
+#    crates/ucal/tests/events_cli.rs   |  2 +-
+#    crates/ucal/tests/stdin_stream.rs | 18 ++++++++++++------
+#    3 files changed, 26 insertions(+), 14 deletions(-)
+
+schema = 1
+repo = "ucal"
+commit = "8fdb9b3edb7cc175c1f940966840fdc24a6ad03c"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

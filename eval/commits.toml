@@ -1,0 +1,143 @@
+# S0 — the labelled evaluation set (docs/implementation-plan.md §4).
+#
+# 20 commits across three repositories with different commit-message styles. "studied" commits were
+# used in the research, so research extractions exist for them and can be scored as soon as they
+# are labelled. "new" commits have never been extracted.
+
+[repos.smysl]
+url   = "https://github.com/vulogov/smysl"
+style = "essay: long messages that state reasons, alternatives and checks"
+
+[repos.ucal]
+url   = "https://github.com/vulogov/ucal"
+style = "essay: same author as smysl"
+
+[repos.clap]
+url   = "https://github.com/clap-rs/clap"
+style = "ordinary: conventional-commit one-liners, reasons mostly implicit in the diff"
+
+# --- smysl -------------------------------------------------------------------------------------
+
+[[commit]]
+repo    = "smysl"
+sha     = "4968383"
+stratum = "studied"
+why     = "large multi-area commit (spec, nodejs, gates); several declines"
+
+[[commit]]
+repo    = "smysl"
+sha     = "90ec2f7"
+stratum = "studied"
+why     = "new test whose prerequisites are existing CLI behaviour"
+
+[[commit]]
+repo    = "smysl"
+sha     = "532e4d2"
+stratum = "studied"
+why     = "tests added to kill mutants; tool behaviour as prerequisite"
+
+[[commit]]
+repo    = "smysl"
+sha     = "a18e230"
+stratum = "new"
+why     = "a decision to remove code (local-improvement pass) on measured evidence"
+
+[[commit]]
+repo    = "smysl"
+sha     = "8734565"
+stratum = "new"
+why     = "repair of a broken build; prerequisites are about feature combinations"
+
+[[commit]]
+repo    = "smysl"
+sha     = "69ea5c0"
+stratum = "new"
+why     = "format migration: ordering constraints between readers and writers"
+
+[[commit]]
+repo    = "smysl"
+sha     = "0bc1aeb"
+stratum = "new"
+why     = "small gating change; tests whether small diffs still carry prerequisites"
+
+# --- ucal --------------------------------------------------------------------------------------
+
+[[commit]]
+repo    = "ucal"
+sha     = "2074788"
+stratum = "studied"
+why     = "session clock: concurrency and monotonicity prerequisites"
+
+[[commit]]
+repo    = "ucal"
+sha     = "5880e47"
+stratum = "studied"
+why     = "version derivation; a decline (numeric sort)"
+
+[[commit]]
+repo    = "ucal"
+sha     = "cc3aafe"
+stratum = "studied"
+why     = "flaky test replaced by a fixture; test-infrastructure prerequisites"
+
+[[commit]]
+repo    = "ucal"
+sha     = "31e52cc"
+stratum = "new"
+why     = "an overstated precision claim corrected; domain prerequisites"
+
+[[commit]]
+repo    = "ucal"
+sha     = "8fdb9b3"
+stratum = "new"
+why     = "failures only CI could see; environment prerequisites, small diff"
+
+[[commit]]
+repo    = "ucal"
+sha     = "21665b3"
+stratum = "new"
+why     = "warnings denied across every feature combination; build-matrix prerequisites"
+
+[[commit]]
+repo    = "ucal"
+sha     = "449b762"
+stratum = "new"
+why     = "a new command (cal from); feature decision with alternatives"
+
+# --- clap --------------------------------------------------------------------------------------
+
+[[commit]]
+repo    = "clap"
+sha     = "1823cef9"
+stratum = "new"
+why     = "panic fix with an 11-word message; prerequisites only in the diff"
+
+[[commit]]
+repo    = "clap"
+sha     = "578cd43a"
+stratum = "new"
+why     = "usage-output fix; behaviour of conflict tracking as prerequisite"
+
+[[commit]]
+repo    = "clap"
+sha     = "f1814170"
+stratum = "new"
+why     = "stricter derive attribute parsing; a compatibility decision in 5 words"
+
+[[commit]]
+repo    = "clap"
+sha     = "8a93d4be"
+stratum = "new"
+why     = "small user-visible feature across 4 files"
+
+[[commit]]
+repo    = "clap"
+sha     = "5967c173"
+stratum = "new"
+why     = "refactor; tests whether refactors yield decisions at all"
+
+[[commit]]
+repo    = "clap"
+sha     = "81dea3b6"
+stratum = "new"
+why     = "API lifetime change; semver and borrow prerequisites"

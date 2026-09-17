@@ -1,0 +1,502 @@
+{
+  "decisions": [
+    {
+      "decision": "Hand-roll the BLAKE3 implementation in Node.js.",
+      "kind": "act",
+      "rationale": "Using a binding to the same C library that Rust uses would only test two callers of the same implementation, rather than proving the specification is sufficient.",
+      "quote": "a binding to the same C library the Rust calls would test two callers of one implementation",
+      "hunks": [
+        "H2",
+        "H6",
+        "H26",
+        "H29"
+      ]
+    },
+    {
+      "decision": "Run the shape clause first in `uid()`.",
+      "kind": "act",
+      "rationale": "This ensures that a malformed unit cannot obtain an identity, making the class a claim about what the implementation emits rather than just validating on request.",
+      "quote": "so a malformed unit cannot obtain an identity from the package",
+      "hunks": [
+        "H2",
+        "H6",
+        "H26",
+        "H32",
+        "H34"
+      ]
+    },
+    {
+      "decision": "Parse the spec's tables rather than quoting them in tests.",
+      "kind": "act",
+      "rationale": "Previously, implementations only checked for a specific string while claiming to assert tables against the document. Parsing ties the copies directly to the page.",
+      "quote": "Until now every implementation read SMYSL_FORMAT_SPEC.md only to assert it contained the string \"Deterministic CBOR\", while READINESS described the §2.2 and §3.1 tables as \"asserted against the document\" — corrected here.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H16",
+        "H26",
+        "H36"
+      ]
+    },
+    {
+      "decision": "Replay chapters using a scratch copy of the fixtures.",
+      "kind": "act",
+      "rationale": "This allows commands like `fmt --write` to safely write without rewriting tracked files in the fixture folder on every run.",
+      "quote": "The scratch copy also removes a hazard that had never fired: commands used to run in the fixture folder itself.",
+      "hunks": [
+        "H2",
+        "H10",
+        "H18",
+        "H38"
+      ]
+    },
+    {
+      "decision": "Derive later states of a chapter rather than recording them.",
+      "kind": "act",
+      "rationale": "It is a stronger claim to run commands against a file that the book's own instructions produced, rather than a static fixture.",
+      "quote": "Later states are derived rather than recorded",
+      "hunks": [
+        "H2",
+        "H10",
+        "H18",
+        "H19",
+        "H21",
+        "H38"
+      ]
+    },
+    {
+      "decision": "Anchor reader edits in `edits.json` by prose, never by content.",
+      "kind": "act",
+      "rationale": "This ensures the edit body is read from the chapter at run time, preventing the edits from going stale if the page changes.",
+      "quote": "so the body is read out of the chapter at run time and nothing can go stale.",
+      "hunks": [
+        "H2",
+        "H10",
+        "H18",
+        "H19",
+        "H21",
+        "H38"
+      ]
+    },
+    {
+      "decision": "Hold back repairing `beta.smy` in chapter 29.",
+      "kind": "decline",
+      "rationale": "The missing stanza cannot be reconstructed from the page, and guessing it into a published chapter is not a valid repair.",
+      "quote": "the missing stanza cannot be reconstructed from the page",
+      "hunks": [
+        "H2",
+        "H3",
+        "H10",
+        "H18"
+      ]
+    },
+    {
+      "decision": "Add an explicit `--timeout` to `--test-workspace` for cargo-mutants.",
+      "kind": "act",
+      "rationale": "Without it, cargo-mutants auto-sets a short timeout based on package tests, causing workspace tests to timeout and look like artefacts.",
+      "quote": "cargo-mutants took its baseline at 1s of tests, auto-set a 20s timeout, then ran each mutant against the 109-second workspace suite. `4 missed, 6 caught, 15 timeouts` reads as nineteen of twenty-three being artefacts.",
+      "hunks": [
+        "H2",
+        "H3",
+        "H7"
+      ]
+    },
+    {
+      "decision": "Deliberately not implement Rule M in outside readers.",
+      "kind": "decline",
+      "rationale": "Rule M constrains a unit against the statuses of its grounds, which requires a store. Implementing it in a unit validator would be a check that cannot fail.",
+      "quote": "Rule M is implemented by none of the three outside readers, deliberately. It constrains a unit against the statuses of its grounds, and a unit core carries grounds as uids — so M is checkable against a store and not against a unit",
+      "hunks": [
+        "H3",
+        "H6",
+        "H26",
+        "H32"
+      ]
+    },
+    {
+      "decision": "NFC-normalise text at the CBOR encoder in Node.js.",
+      "kind": "act",
+      "rationale": "The spec requires normalisation at the encoder, which makes `unicode-decomposed` reproducible.",
+      "quote": "the CBOR encoder now NFC-normalises text, which §3 constraint 6 asks for by name (\"normalise *at the encoder*\").",
+      "hunks": [
+        "H2",
+        "H30",
+        "H34"
+      ]
+    },
+    {
+      "decision": "Specify that empty `deps` or `grounds` are omitted.",
+      "kind": "act",
+      "rationale": "A literal reading of \"required, MAY be empty\" would emit a five-key map where the reference emits three, resulting in a different uid.",
+      "quote": "A literal reading gives a five-key map where the reference emits three, which is a different uid for every unit with neither.",
+      "hunks": [
+        "H2",
+        "H6",
+        "H14",
+        "H26",
+        "H32",
+        "H34"
+      ]
+    },
+    {
+      "decision": "Make status integers normative in the spec.",
+      "kind": "act",
+      "rationale": "Rule M compares them as integers, so guessing a different order would derive wrong uids and enforce a different monotonicity rule.",
+      "quote": "Rule M compares them as integers, so a reader guessing a different order would derive wrong uids *and* enforce a different monotonicity rule while believing itself conformant.",
+      "hunks": [
+        "H2",
+        "H6",
+        "H14",
+        "H26",
+        "H32"
+      ]
+    },
+    {
+      "decision": "Document the `source` map key layout and `kind` enum.",
+      "kind": "act",
+      "rationale": "The layout was previously undocumented, forcing implementers to guess or recover it by decoding a fixture.",
+      "quote": "the `source` map had no key layout, and `kind` was a second enum",
+      "hunks": [
+        "H2",
+        "H6",
+        "H14",
+        "H23",
+        "H24",
+        "H26",
+        "H32",
+        "H35"
+      ]
+    },
+    {
+      "decision": "Name the base32 alphabet as RFC 4648, lowercased, unpadded.",
+      "kind": "act",
+      "rationale": "The alphabet was unnamed, and base32hex was an equally faithful reading that would produce mutually unreadable names.",
+      "quote": "the base32 alphabet was unnamed; base32hex was an equally faithful reading of the sentence",
+      "hunks": [
+        "H2",
+        "H6",
+        "H13",
+        "H26",
+        "H32"
+      ]
+    },
+    {
+      "decision": "Do not compare output for commands annotated with `(then …)`.",
+      "kind": "decline",
+      "rationale": "The block shows what comes after the command, not what it printed. Comparing its output to a diff would report drift on a block that never claimed to be its output.",
+      "quote": "comparing its output to a diff would report drift on a block that never claimed to be its output.",
+      "hunks": [
+        "H41"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Node.js does not have a BLAKE3 implementation in its standard library.",
+      "kind": "assumption",
+      "quote": "Node has no BLAKE3 in its standard library, so there is no third option here anyway"
+    },
+    {
+      "decision": 2,
+      "text": "The C-Produce class is a claim about what an implementation emits.",
+      "kind": "invariant",
+      "quote": "The class is about what an implementation *emits*, so validating on request while deriving anyway would not be it."
+    },
+    {
+      "decision": 3,
+      "text": "The specification's tables are normative.",
+      "kind": "invariant",
+      "quote": "The spec's table is normative; this implementation's table must be it, exactly."
+    },
+    {
+      "decision": 4,
+      "text": "Running `fmt --write` in the fixture folder would rewrite tracked files.",
+      "kind": "existing-behaviour",
+      "quote": "a single replayed `fmt --write` would have rewritten a tracked fixture on every run."
+    },
+    {
+      "decision": 5,
+      "text": "A chapter's state is keyed by position, not by filename.",
+      "kind": "invariant",
+      "quote": "a chapter's state is keyed by position"
+    },
+    {
+      "decision": 6,
+      "text": "An anchor must appear exactly once in its chapter.",
+      "kind": "invariant",
+      "quote": "An anchor must appear exactly once in its chapter."
+    },
+    {
+      "decision": 7,
+      "text": "The missing stanza cannot be reconstructed from the page.",
+      "kind": "assumption",
+      "quote": "the missing stanza cannot be reconstructed from the page"
+    },
+    {
+      "decision": 8,
+      "text": "cargo-mutants auto-sets a timeout based on the baseline test duration.",
+      "kind": "tool-setting",
+      "quote": "cargo-mutants took its baseline at 1s of tests, auto-set a 20s timeout, then ran each mutant against the 109-second workspace suite."
+    },
+    {
+      "decision": 9,
+      "text": "A unit core carries grounds as uids, making Rule M checkable against a store, not a unit.",
+      "kind": "existing-behaviour",
+      "quote": "a unit core carries grounds as uids — so M is checkable against a store and not against a unit"
+    },
+    {
+      "decision": 10,
+      "text": "The decoder rejects anything not already NFC.",
+      "kind": "existing-behaviour",
+      "quote": "the decoder rejects anything not already NFC"
+    },
+    {
+      "decision": 11,
+      "text": "The minimal case in the fixture is a three-key map over 0, 1, and 6.",
+      "kind": "existing-behaviour",
+      "quote": "The `minimal` case in `fixtures/wire/uid/cases.json` is a three-key map over 0, 1 and 6."
+    },
+    {
+      "decision": 12,
+      "text": "Rule M compares statuses as integers.",
+      "kind": "existing-behaviour",
+      "quote": "rule M compares them as integers"
+    },
+    {
+      "decision": 13,
+      "text": "The fixture JSON gives names, leaving hex as the only statement of the integers.",
+      "kind": "existing-behaviour",
+      "quote": "the fixture JSON gives names, so the only statement of the integers was the hex."
+    },
+    {
+      "decision": 14,
+      "text": "Section 2.1 obliges a parser to accept 26 to 52 characters.",
+      "kind": "invariant",
+      "quote": "§2.1 obliges a parser to accept 26 to 52 characters"
+    },
+    {
+      "decision": 15,
+      "text": "A caption annotated `(then …)` shows what comes after the command, not what it printed.",
+      "kind": "invariant",
+      "quote": "A caption annotated `(then …)` says the block shows what comes *after* the command, not what the command printed"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "a binding to the same C library the Rust calls",
+      "reason": "It would test two callers of one implementation rather than proving the specification is sufficient.",
+      "quote": "a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 2,
+      "alternative": "validating on request while deriving anyway",
+      "reason": "The class is about what an implementation emits, so a malformed unit cannot obtain an identity.",
+      "quote": "validating on request while deriving anyway would not be it."
+    },
+    {
+      "decision": 3,
+      "alternative": "quoting them",
+      "reason": "Editing the spec and editing the test are two separate acts, and neither could notice the other.",
+      "quote": "Parses the spec's tables rather than quoting them"
+    },
+    {
+      "decision": 4,
+      "alternative": "run in the fixture folder itself",
+      "reason": "A single replayed `fmt --write` would have rewritten a tracked file on every run.",
+      "quote": "commands used to run in the fixture folder itself, where a single replayed `fmt --write` would have rewritten a tracked file"
+    },
+    {
+      "decision": 5,
+      "alternative": "recorded",
+      "reason": "Deriving it by running the command is a stronger claim than recording it would have been.",
+      "quote": "Later states are derived rather than recorded, which is the stronger claim."
+    },
+    {
+      "decision": 6,
+      "alternative": "by content",
+      "reason": "The edit body is read out of the chapter at run time, so nothing can go stale.",
+      "quote": "anchored by prose and never by content, so the body is read out of the chapter at run time and nothing can go stale."
+    },
+    {
+      "decision": 7,
+      "alternative": "repaired",
+      "reason": "The missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair.",
+      "quote": "Held back rather than repaired — the missing stanza cannot be reconstructed from the page"
+    },
+    {
+      "decision": 8,
+      "alternative": "the default",
+      "reason": "cargo-mutants auto-sets a short timeout based on package tests, causing workspace tests to timeout and look like artefacts.",
+      "quote": "the default silently produces a run that is mostly timeouts."
+    },
+    {
+      "decision": 9,
+      "alternative": "a `validate` claiming to enforce it",
+      "reason": "It constrains a unit against the statuses of its grounds, which requires a store, so a validate claiming to enforce it would be a check that cannot fail.",
+      "quote": "a `validate` claiming to enforce it would be a check that cannot fail."
+    },
+    {
+      "decision": 10,
+      "alternative": "only in the constructors that happen to be remembered",
+      "reason": "The spec requires normalisation at the encoder, which makes `unicode-decomposed` reproducible.",
+      "quote": "Normalise *at the encoder*, not only in the constructors that happen to be remembered."
+    },
+    {
+      "decision": 11,
+      "alternative": "A literal reading",
+      "reason": "A literal reading gives a five-key map where the reference emits three, which is a different uid for every unit with neither.",
+      "quote": "A literal reading gives a five-key map where the reference emits three, which is a different uid for every unit with neither."
+    },
+    {
+      "decision": 12,
+      "alternative": "guessing a different order",
+      "reason": "Rule M compares them as integers, so guessing a different order would derive wrong uids and enforce a different monotonicity rule.",
+      "quote": "a reader guessing a different order would derive wrong uids *and* enforce a different monotonicity rule"
+    },
+    {
+      "decision": 13,
+      "alternative": "recoverable only by decoding `core_bytes_hex`",
+      "reason": "Implementers could recover them only by decoding `core_bytes_hex` in the uid fixtures.",
+      "quote": "recoverable only by decoding `core_bytes_hex` in the uid fixtures"
+    },
+    {
+      "decision": 14,
+      "alternative": "base32hex",
+      "reason": "base32hex was an equally faithful reading that would produce mutually unreadable names.",
+      "quote": "base32hex was an equally faithful reading that would produce mutually unreadable names"
+    },
+    {
+      "decision": 15,
+      "alternative": "comparing its output to a diff",
+      "reason": "The block shows what comes after the command, not what it printed, so comparing its output to a diff would report drift on a block that never claimed to be its output.",
+      "quote": "comparing its output to a diff would report drift on a block that never claimed to be its output."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Tests the specification's sufficiency rather than testing two callers of the same C library.",
+      "quote": "a binding to the same C library the Rust calls would test two callers of one implementation",
+      "verified": true,
+      "verification_quote": "passes the published vectors including the lengths straddling the chunk boundary"
+    },
+    {
+      "decision": 2,
+      "text": "Ensures a malformed unit cannot obtain an identity, making the class a claim about emitting.",
+      "quote": "a malformed unit cannot obtain an identity from the package",
+      "verified": true,
+      "verification_quote": "Eight breakages, eight distinct failures, each naming the clause it broke."
+    },
+    {
+      "decision": 3,
+      "text": "Ties the copies directly to the page, preventing them from going stale.",
+      "quote": "Parses the spec's tables rather than quoting them",
+      "verified": true,
+      "verification_quote": "Eight breakages verified, each failing the right check"
+    },
+    {
+      "decision": 4,
+      "text": "Allows commands to safely write without rewriting tracked files in the fixture folder.",
+      "quote": "The scratch copy is what makes writing safe.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Makes a stronger claim by running commands against a file the book's instructions produced.",
+      "quote": "derived rather than recorded, which is a stronger claim",
+      "verified": true,
+      "verification_quote": "78 → 85 replayed"
+    },
+    {
+      "decision": 6,
+      "text": "Ensures the edit body is read from the chapter at run time, preventing staleness.",
+      "quote": "the edit body is read out of the chapter at run time and nothing can go stale",
+      "verified": true,
+      "verification_quote": "Three breakages verified: an anchor that stops resolving, a stanza match that finds nothing, and a base fixture edited away from its chapter."
+    },
+    {
+      "decision": 7,
+      "text": "Avoids guessing a missing stanza into a published chapter, which is not a valid repair.",
+      "quote": "the missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Prevents cargo-mutants from auto-setting a short timeout that causes workspace tests to timeout.",
+      "quote": "--test-workspace needs an explicit --timeout",
+      "verified": true,
+      "verification_quote": "0 timeouts"
+    },
+    {
+      "decision": 9,
+      "text": "Avoids implementing a check that cannot fail, as Rule M requires a store.",
+      "quote": "a validate claiming to enforce it would be a check that cannot fail",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Makes `unicode-decomposed` reproducible by normalising text at the encoder.",
+      "quote": "is what makes `unicode-decomposed` reproducible",
+      "verified": true,
+      "verification_quote": "Eight breakages, eight distinct failures, each naming the clause it broke."
+    },
+    {
+      "decision": 11,
+      "text": "Prevents emitting a five-key map where the reference emits three, which changes the uid.",
+      "quote": "a different uid for every unit with neither",
+      "verified": true,
+      "verification_quote": "Eight breakages, eight distinct failures, each naming the clause it broke."
+    },
+    {
+      "decision": 12,
+      "text": "Prevents guessing a different order which would derive wrong uids and enforce a different monotonicity rule.",
+      "quote": "a reader guessing a different order would derive wrong uids and enforce a different monotonicity rule",
+      "verified": true,
+      "verification_quote": "Eight breakages, eight distinct failures, each naming the clause it broke."
+    },
+    {
+      "decision": 13,
+      "text": "Prevents implementers from having to guess or recover the layout by decoding a fixture.",
+      "quote": "recoverable only by decoding a fixture",
+      "verified": true,
+      "verification_quote": "Eight breakages, eight distinct failures, each naming the clause it broke."
+    },
+    {
+      "decision": 14,
+      "text": "Prevents base32hex from being used, which would produce mutually unreadable names.",
+      "quote": "base32hex was an equally faithful reading that would produce mutually unreadable names for the same unit.",
+      "verified": true,
+      "verification_quote": "Eight breakages, eight distinct failures, each naming the clause it broke."
+    },
+    {
+      "decision": 15,
+      "text": "Prevents reporting drift on a block that never claimed to be the command's output.",
+      "quote": "comparing its output to a diff would report drift on a block that never claimed to be its output",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      31036,
+      6656
+    ],
+    [
+      31764,
+      5088
+    ],
+    [
+      31718,
+      4489
+    ],
+    [
+      31715,
+      5165
+    ]
+  ]
+}

@@ -1,0 +1,80 @@
+# S0 label — smysl 532e4d2
+# Why this commit is in the set: tests added to kill mutants; tool behaviour as prerequisite
+# Label from the message AND the diff: git -C eval/.repos/smysl show 532e4d229a6c98c1cb4b98ba9709a1179deb897f
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   cmd_fmt: 12 survivors to 2, and a harness that was lying about it
+#   
+#   Six tests driving the binary, aimed at decisions rather than at mutants:
+#   --check and --write refused on a CBOR log, --strict turning a parse warning into
+#   a failing exit code, the comment warning, --output refusing several inputs,
+#   --check telling a formatted file from an unformatted one, and --write rewriting
+#   in place while leaving stdin alone.
+#   
+#     cmd_fmt   12 -> 2
+#     main.rs  109 -> 99
+#   
+#   The two that remain are the round-trip guard, which fires only when
+#   write_surface produces something the parser reads back differently. No input a
+#   user can supply reaches it, so no test can distinguish a guard that checks from
+#   one that does not. Recorded the way 0.13 recorded worse's >= and 1.1 recorded
+#   Lineage::is_empty -> false, with a pointer to the tests that cover the property
+#   it protects.
+#   
+#   **The first version of these tests inflated the score by 97 mutants**, and that
+#   is the part worth keeping.
+#   
+#   They depended on repository fixtures having properties — F1 not being canonical,
+#   F9 having comments. cargo-mutants reuses build directories, so a mutant that
+#   misroutes a write leaves a fixture rewritten, and every later mutant tested in
+#   that directory sees a canonical F1. The tests then failed spuriously, and
+#   cargo-mutants counts a spurious failure as a catch.
+#   
+#   It reported cmd_providers and cmd_merge as fully covered by tests that never
+#   invoke either command. Read at face value it was "109 -> 12".
+#   
+#   What caught it was the claim being too good: six tests cannot kill mutants in
+#   commands they do not run. A scoped re-measurement disagreed with the full one on
+#   the same mutant, both runs completed, and that disagreement was the thread.
+#   
+#   The rule is one level up from 0.13's TMPDIR lesson, which was that a test must
+#   not depend on the state of the machine: a test must not depend on the state of
+#   the tree either. Every test here now writes the document whose property it
+#   needs. cmd_providers and cmd_merge are untouched at 12 and 11, which is what a
+#   correct measurement of this change looks like.
+#   
+#   make ci green, sentinel verified.
+#
+# Files:
+#    Documentation/READINESS.md |  18 ++++
+#    tests/cmd_fmt.rs           | 380 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#    2 files changed, 398 insertions(+)
+
+schema = 1
+repo = "smysl"
+commit = "532e4d229a6c98c1cb4b98ba9709a1179deb897f"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

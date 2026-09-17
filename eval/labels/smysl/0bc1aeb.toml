@@ -1,0 +1,57 @@
+# S0 label — smysl 0bc1aeb
+# Why this commit is in the set: small gating change; tests whether small diffs still carry prerequisites
+# Label from the message AND the diff: git -C eval/.repos/smysl show 0bc1aeb96d6b6bd4140a24886064f1d60a42829e
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   Gate `report_against` on the mappers that call it
+#   
+#   It is only reached from `gemini` and `anthropic`, both feature-gated, so any
+#   build without them had an unused function — and CI sets `-D warnings`. The
+#   `ollama` and `doc-output` jobs both went red on it.
+#   
+#   The checks I ran before pushing were `make lint` and the workspace tests, both
+#   `--all-features`, and I skipped `make ci`, which contains `test-matrix`.
+#   Feature-gated dead code is invisible under `--all-features` by construction, so
+#   neither check could have caught this. Same shape as the rest of the cycle — a
+#   check that passes without covering what it claims — except the gap was in which
+#   check I chose rather than in the check itself.
+#   
+#   Verified against both failing CI commands and each provider feature on its own.
+#   
+#   Noted and deliberately not fixed here: `cargo check -p smysl-provider
+#   --no-default-features` fails on `jitter` being unused, and fails the same way on
+#   the previous commit. Pre-existing, outside CI's matrix, and not something to fold
+#   into a repair.
+#
+# Files:
+#    crates/smysl-provider/src/map/mod.rs | 7 ++++++-
+#    1 file changed, 6 insertions(+), 1 deletion(-)
+
+schema = 1
+repo = "smysl"
+commit = "0bc1aeb96d6b6bd4140a24886064f1d60a42829e"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

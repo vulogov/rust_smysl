@@ -1,0 +1,40 @@
+# S0 label — clap 81dea3b6
+# Why this commit is in the set: API lifetime change; semver and borrow prerequisites
+# Label from the message AND the diff: git -C eval/.repos/clap show 81dea3b679c6c7a19833424525940942155e3882
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   fix: Use longer lifetime in clap_lex ParsedArg
+#
+# Files:
+#    clap_lex/src/lib.rs               | 20 +++++++++---------
+#    clap_lex/tests/testsuite/lexer.rs | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#    2 files changed, 76 insertions(+), 10 deletions(-)
+
+schema = 1
+repo = "clap"
+commit = "81dea3b679c6c7a19833424525940942155e3882"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

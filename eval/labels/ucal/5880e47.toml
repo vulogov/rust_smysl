@@ -1,0 +1,69 @@
+# S0 label — ucal 5880e47
+# Why this commit is in the set: version derivation; a decline (numeric sort)
+# Label from the message AND the diff: git -C eval/.repos/ucal show 5880e472260eb32c58821c7fe4a7497154d590a8
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   Remove the guess rather than sort it correctly
+#   
+#   check_ci_covers_the_procedure read "the newest release-notes file",
+#   picked by sorting filenames. The first fix sorted numerically, which
+#   repairs the one bug 1.10.0 exposed and leaves the guess in place.
+#   
+#   It now reads the notes for the version being built, derived from
+#   [workspace.package]. There is no ordering left to get wrong, and it
+#   closes an adjacent failure the sort could not: a version bumped and its
+#   notes never written silently read the previous cycle's file and passed.
+#   That is an error naming the version now.
+#   
+#   Two other things came out of the sweep.
+#   
+#   Nothing else in the tree assumes version ordering — every other site
+#   treats a version as an opaque string, `format!("v{version}")` or an
+#   exact manifest match.
+#   
+#   And the fix had stolen a doc comment. The new function's documentation
+#   swallowed check_ci_covers_the_procedure's, leaving that function
+#   undocumented — the third time in this project that inserting an item
+#   above another has taken its doc comment, after data::all in F9 and
+#   cmd_cal_validate in F4.
+#   
+#   The second test was not strict on its first draft. It asserted that
+#   some error came back and that the message named the version, which
+#   passed with the check disabled: read_to_string fails too, and its
+#   message contains the path, and the path contains the version. A test
+#   that cannot tell the two branches apart is not testing the branch it
+#   claims to.
+#
+# Files:
+#    Documentation/Release_Notes/1.10.0.md |  25 +++++--
+#    xtask/src/citations.rs                | 196 ++++++++++++++++++++++++++++++++----------------------
+#    2 files changed, 136 insertions(+), 85 deletions(-)
+
+schema = 1
+repo = "ucal"
+commit = "5880e472260eb32c58821c7fe4a7497154d590a8"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

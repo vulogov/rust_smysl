@@ -1,0 +1,178 @@
+{
+  "decisions": [
+    {
+      "decision": "Derive the version being built from `[workspace.package]`.",
+      "kind": "act",
+      "rationale": "Deriving the version removes the guess entirely and avoids any ordering assumptions.",
+      "quote": "The check now reads the notes for **the version being built**, derived from `[workspace.package]`",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "decision": "Do not sort release notes filenames numerically.",
+      "kind": "decline",
+      "rationale": "Sorting numerically fixes the immediate bug but leaves the guess in place. It cannot catch a version bumped without its notes written.",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place.",
+      "hunks": []
+    },
+    {
+      "decision": "Treat a missing release notes file for the current version as an error.",
+      "kind": "act",
+      "rationale": "Under the old sorting method, a missing notes file would cause the check to silently read the previous cycle's file and pass.",
+      "quote": "A version bumped without its notes is an error, not a fallback.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "decision": "Restore the doc comment for `check_ci_covers_the_procedure`.",
+      "kind": "act",
+      "rationale": "The new function's documentation had swallowed the existing doc comment. This left the original function undocumented.",
+      "quote": "the new function's doc comment had swallowed `check_ci_covers_the_procedure`'s, leaving that function undocumented.",
+      "hunks": [
+        "H1",
+        "H3"
+      ]
+    },
+    {
+      "decision": "Make the missing-notes test strictly check the error message.",
+      "kind": "act",
+      "rationale": "Asserting only that some error came back passed even with the check disabled, because `read_to_string` also fails and includes the version in the path. The test must distinguish the branches.",
+      "quote": "A test that cannot tell the two branches apart is not testing the branch it claims to.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The version being built is specified in the workspace package manifest.",
+      "kind": "existing-behaviour",
+      "quote": "derived from [workspace.package]"
+    },
+    {
+      "decision": 1,
+      "text": "Other parts of the codebase treat versions as opaque strings.",
+      "kind": "existing-behaviour",
+      "quote": "every other site treats a version as an opaque string"
+    },
+    {
+      "decision": 2,
+      "text": "Sorting numerically fixes the immediate bug.",
+      "kind": "existing-behaviour",
+      "quote": "Sorting numerically repairs that one bug"
+    },
+    {
+      "decision": 3,
+      "text": "A cycle's release notes are created when the cycle opens.",
+      "kind": "invariant",
+      "quote": "a cycle's notes are created when it opens"
+    },
+    {
+      "decision": 4,
+      "text": "The new function's doc comment swallowed the existing one.",
+      "kind": "prior-change",
+      "quote": "the new function's doc comment had swallowed `check_ci_covers_the_procedure`'s"
+    },
+    {
+      "decision": 5,
+      "text": "read_to_string fails with a message containing the path and version.",
+      "kind": "existing-behaviour",
+      "quote": "read_to_string fails too, and its message contains the path, and the path contains the version."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "sort it correctly",
+      "reason": "It leaves the guess in place.",
+      "quote": "Remove the guess rather than sort it correctly"
+    },
+    {
+      "decision": 2,
+      "alternative": "Sorting numerically",
+      "reason": "It would have left the guess in place.",
+      "quote": "Sorting numerically would have fixed that one bug and left the guess in place."
+    },
+    {
+      "decision": 3,
+      "alternative": "silently read the previous cycle's file and passed",
+      "reason": "It is now an error naming the version.",
+      "quote": "Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version."
+    },
+    {
+      "decision": 4,
+      "alternative": "leaving that function undocumented",
+      "reason": "The new function's doc comment had swallowed it.",
+      "quote": "the new function's doc comment had swallowed `check_ci_covers_the_procedure`'s, leaving that function undocumented."
+    },
+    {
+      "decision": 5,
+      "alternative": "Asserting only that *some* error came back",
+      "reason": "It passed even with the check disabled because read_to_string fails too.",
+      "quote": "Asserting only that *some* error came back passed even with that check disabled"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Deriving the version removes the guess entirely and avoids any ordering assumptions.",
+      "quote": "There is no ordering left to get wrong",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Sorting numerically fixes the immediate bug but leaves the guess in place.",
+      "quote": "Sorting numerically repairs that one bug and leaves the guess in place.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "A missing notes file would cause the check to silently read the previous cycle's file and pass.",
+      "quote": "a version bumped and its notes never written silently read the previous cycle's file and passed.",
+      "verified": true,
+      "verification_quote": "let e = super::check_ci_covers_the_procedure(&dir)\n            .expect_err(\"a version with no notes must not fall back to another's\");"
+    },
+    {
+      "decision": 4,
+      "text": "The new function's documentation swallowed the existing doc comment, leaving the original function undocumented.",
+      "quote": "The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented",
+      "verified": true,
+      "verification_quote": "A sweep for the same class found no other version-ordering assumption in the tree: everything else treats a version as an opaque string. It did find one thing, in the fix itself — the new function's doc comment had swallowed `check_ci_covers_the_procedure`'s"
+    },
+    {
+      "decision": 5,
+      "text": "Asserting only that some error came back passed even with the check disabled, because read_to_string also fails.",
+      "quote": "Asserting only that *some* error came back passed even with that check disabled — `read_to_string` fails too",
+      "verified": true,
+      "verification_quote": "assert!(\n            e.iter().any(|m| m.contains(\"a cycle's notes\")),\n            \"expected the missing-notes diagnostic, got: {e:?}\"\n        );"
+    }
+  ],
+  "tokens": [
+    [
+      4491,
+      4315
+    ],
+    [
+      4732,
+      2224
+    ],
+    [
+      4686,
+      2533
+    ],
+    [
+      4683,
+      4146
+    ]
+  ]
+}

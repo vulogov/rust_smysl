@@ -1,0 +1,41 @@
+# S0 label — clap f1814170
+# Why this commit is in the set: stricter derive attribute parsing; a compatibility decision in 5 words
+# Label from the message AND the diff: git -C eval/.repos/clap show f181417013e35092a1f097ce44d9c6144acdc40a
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   fix: Require literal attribute values
+#
+# Files:
+#    clap_derive/src/attr.rs                            | 39 ++++++++++++++++++++++++---------------
+#    tests/derive/default_value.rs                      | 32 ++++++++++++++++++++++++++++++++
+#    tests/derive_ui/rename_all_non_literal_expr.stderr |  6 +++---
+#    3 files changed, 59 insertions(+), 18 deletions(-)
+
+schema = 1
+repo = "clap"
+commit = "f181417013e35092a1f097ce44d9c6144acdc40a"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

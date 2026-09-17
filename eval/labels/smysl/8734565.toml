@@ -1,0 +1,67 @@
+# S0 label — smysl 8734565
+# Why this commit is in the set: repair of a broken build; prerequisites are about feature combinations
+# Label from the message AND the diff: git -C eval/.repos/smysl show 87345653cdf330199730f4e8a0afe2275902ad11
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   Fix the fuzz build 1.1 broke, and make `make ci` able to see it
+#   
+#   CI went red on the fuzz job after 312e37d. fuzz/fuzz_targets/pack_exact.rs
+#   builds a `Constraints` literal, and §1.1 made that type `#[non_exhaustive]`.
+#   Built from its default and adjusted now, like the other four call sites.
+#   
+#   The interesting half is why nothing local caught it. `fuzz/` is its own
+#   workspace, so `cargo check --workspace` from the root never compiles it and
+#   `make ci` structurally could not have seen this. Every local check passed and
+#   the push was verified twice.
+#   
+#   That is the same defect shape as the rest of this cycle — a check that passes
+#   without covering what it claims — so the fix is a gate, not just a patch.
+#   `make fuzz-build` compiles the fuzz targets without running them and is now part
+#   of `make ci`. Compiling costs a second; *running* the fuzzers needs nightly and a
+#   minute per target, which is why that stays its own job.
+#   
+#   Verified by re-introducing the break and watching the gate fail, which caught a
+#   second defect in the gate itself: the recipe piped cargo through `tail -5`, and
+#   a pipeline's exit status is the last command's, so it printed the error and
+#   returned 0. A gate that reports a failure and passes anyway is precisely what
+#   this file keeps finding elsewhere. Unpiped, it exits 2 with the break present
+#   and 0 without.
+#   
+#   The Makefile's own header says a local check that differs from CI is a check
+#   that lets you push red. It did.
+#
+# Files:
+#    Makefile                        | 19 +++++++++++--
+#    fuzz/fuzz_targets/pack_exact.rs | 11 ++++----
+#    scripts/verify-doc-output.py    | 17 +++++++++--
+#    tests/doc_output.rs             | 94 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#    4 files changed, 131 insertions(+), 10 deletions(-)
+
+schema = 1
+repo = "smysl"
+commit = "87345653cdf330199730f4e8a0afe2275902ad11"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

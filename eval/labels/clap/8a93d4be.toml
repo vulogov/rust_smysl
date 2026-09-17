@@ -1,0 +1,46 @@
+# S0 label — clap 8a93d4be
+# Why this commit is in the set: small user-visible feature across 4 files
+# Label from the message AND the diff: git -C eval/.repos/clap show 8a93d4be29cae11594af8017e48e2a3e2761ee23
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   feat: Display word alias as singular when unique
+#
+# Files:
+#    clap_builder/src/output/help_template.rs    | 12 ++++++++++--
+#    tests/builder/arg_aliases.rs                |  2 +-
+#    tests/builder/arg_aliases_short.rs          |  2 +-
+#    tests/derive/issues.rs                      |  4 ++--
+#    tests/ui/arg_required_else_help_stderr.toml |  6 +++---
+#    tests/ui/h_flag_stdout.toml                 |  6 +++---
+#    tests/ui/help_cmd_stdout.toml               |  6 +++---
+#    tests/ui/help_flag_stdout.toml              |  6 +++---
+#    8 files changed, 26 insertions(+), 18 deletions(-)
+
+schema = 1
+repo = "clap"
+commit = "8a93d4be29cae11594af8017e48e2a3e2761ee23"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

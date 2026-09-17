@@ -1,0 +1,80 @@
+# S0 label — ucal 31e52cc
+# Why this commit is in the set: an overstated precision claim corrected; domain prerequisites
+# Label from the message AND the diff: git -C eval/.repos/ucal show 31e52cc10b1f6079a130e3bc27479739d7e393eb
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   now claimed ten rungs of precision it does not have
+#   
+#   It rendered to T-12 — one Planck tick, 5.4e-44 s — and labelled that
+#   field `precision`, from a clock this program reads to nanoseconds and
+#   which on this machine moves in microseconds.
+#   
+#   The same field name already meant something else. `explain` reports
+#   `precision  tick (exact)`, a real statement about digits the caller
+#   typed, and --precision is documented as "tier to render to". One word,
+#   an accuracy claim in one command and a formatting flag in the next, in
+#   a program that refused --locale for carrying two vocabularies and
+#   refused the word month for being an Earth predicate.
+#   
+#   The name and value stay, because it is a path in ucal-json/1 and
+#   repurposing one is breaking. What it invites is answered beside it.
+#   
+#   The evidence was already on screen: a now reading's human form ends in
+#   groups of 0000, which is the quantisation showing through in base five
+#   — a nanosecond is 18548584399861 x 10^21 ticks and 5^21 divides it. The
+#   proof of its own resolution limit, printed all along and unlabelled.
+#   
+#   So doctor and now grow a clock section, and doctor --clock samples what
+#   this machine actually does. Three numbers kept apart because
+#   conflating them is the defect: granularity is structural and fills T-2;
+#   resolution is measured and is behind a flag, since doctor's ordinary
+#   output is compared against a committed example; accuracy is not
+#   measured and will not be guessed, because §8.4 makes operation offline
+#   and a rate error from a short baseline reports quantisation as drift —
+#   which a throwaway probe duly did, at 1.2e-5.
+#   
+#   It reports which terms cancel, and it prices the interpolation idea:
+#   one wall reading plus monotonic elapsed is 24x on this machine against
+#   a rung of 3125, so 24/3125 of a rung, and the finest fillable tier does
+#   not move. As a fraction, not a decimal — Rule E forbids a float in a
+#   shipped crate and the lint caught the first draft using one.
+#
+# Files:
+#    Documentation/CLI-EXAMPLES.md        |  15 +++
+#    Documentation/CLI.md                 |  50 +++++++++
+#    Documentation/Release_Notes/1.9.0.md |  55 ++++++++++
+#    crates/ucal/src/clock.rs             | 330 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#    crates/ucal/src/lib.rs               |  40 +++++++
+#    crates/ucal/src/main.rs              |  22 +++-
+#    fixtures/json-surface.txt            |  14 +++
+#    fixtures/ucal-json-1.schema.json     |  26 ++++-
+#    8 files changed, 548 insertions(+), 4 deletions(-)
+
+schema = 1
+repo = "ucal"
+commit = "31e52cc10b1f6079a130e3bc27479739d7e393eb"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

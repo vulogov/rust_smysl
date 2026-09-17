@@ -1,0 +1,165 @@
+{
+  "decisions": [
+    {
+      "decision": "Use a committed file for observations instead of generating it in tests.",
+      "kind": "act",
+      "rationale": "Two test binaries were writing to the same temporary file concurrently, causing a race condition where one truncated the file while the other read it. A committed file cannot race.",
+      "quote": "The repair is that the observations are a committed file",
+      "hunks": [
+        "H2",
+        "H3",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Add the new observations fixture to the examples.",
+      "kind": "act",
+      "rationale": "The fixture is a demonstrable example and can be generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example",
+      "hunks": [
+        "H1",
+        "H6"
+      ]
+    },
+    {
+      "decision": "Do not fit the residuals in the example.",
+      "kind": "decline",
+      "rationale": "Extracting a quadratic trend is least squares, and a reader needs to know which code produced the number, so it is not produced here.",
+      "quote": "which code produced the number, so it is not produced here.",
+      "hunks": [
+        "H1"
+      ]
+    },
+    {
+      "decision": "Use synthetic observations moved by known amounts.",
+      "kind": "act",
+      "rationale": "The residuals are known in advance and the arithmetic can be checked by eye.",
+      "quote": "so the residuals are known in advance and the arithmetic can be checked by eye.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H6"
+      ]
+    },
+    {
+      "decision": "Include an observation outside its window.",
+      "kind": "act",
+      "rationale": "This demonstrates the property that the width exists to carry, which grows with the cycle.",
+      "quote": "which is the point of carrying a width that grows with the cycle.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H6"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Reading no observations is an error, not a report of agreement.",
+      "kind": "existing-behaviour",
+      "quote": "\"no observations were read\" is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 1,
+      "text": "A committed fixture cannot race with anything.",
+      "kind": "invariant",
+      "quote": "it cannot race with anything."
+    },
+    {
+      "decision": 2,
+      "text": "Examples are generated into the manual.",
+      "kind": "existing-behaviour",
+      "quote": "is generated into the manual alongside the rest."
+    },
+    {
+      "decision": 3,
+      "text": "Extracting a quadratic trend is least squares.",
+      "kind": "invariant",
+      "quote": "extracting it is least squares"
+    },
+    {
+      "decision": 4,
+      "text": "O minus C is exact integer subtraction.",
+      "kind": "invariant",
+      "quote": "`O − C` is exact integer subtraction"
+    },
+    {
+      "decision": 5,
+      "text": "The window for a cycle grows with distance from the epoch.",
+      "kind": "existing-behaviour",
+      "quote": "grows with distance from the epoch"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Writing the fixture into `std::env::temp_dir()` under a fixed name.",
+      "reason": "Two test binaries ran concurrently, causing one to truncate the file while the other read it.",
+      "quote": "The first version wrote one into `std::env::temp_dir()` under a fixed name, and this file and `manual_fields.rs` both did it — two test binaries, one path, run concurrently. One truncated the file while the other read it"
+    },
+    {
+      "decision": 3,
+      "alternative": "Extracting a quadratic trend using least squares.",
+      "reason": "A reader most needs to know which code produced the number.",
+      "quote": "**This reports and does not fit.** A quadratic trend in these residuals is `Ṗ`, and extracting it is least squares — which is where a reader most needs to know which code produced the number, so it is not produced here."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Fixes a race condition where concurrent tests truncated and read the same temporary file.",
+      "quote": "One truncated the file while the other read it, so the read saw nothing",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The fixture becomes a demonstrable example generated into the manual alongside the rest.",
+      "quote": "the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": true,
+      "verification_quote": "37 worked examples now"
+    },
+    {
+      "decision": 3,
+      "text": "Avoids producing a least squares fit where the reader wouldn't know which code produced it.",
+      "quote": "which is where a reader most needs to know which code produced the number, so it is not produced here.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The residuals are known in advance so the arithmetic can be checked by eye.",
+      "quote": "the residuals are known in advance and the arithmetic can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Demonstrates that the width exists to carry and grows with the cycle.",
+      "quote": "which is the point of carrying a width that grows with the cycle.",
+      "verified": true,
+      "verification_quote": "outside_the_window  1"
+    }
+  ],
+  "tokens": [
+    [
+      4234,
+      3554
+    ],
+    [
+      4444,
+      1836
+    ],
+    [
+      4398,
+      2963
+    ],
+    [
+      4395,
+      2270
+    ]
+  ]
+}

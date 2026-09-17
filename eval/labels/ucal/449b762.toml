@@ -1,0 +1,85 @@
+# S0 label — ucal 449b762
+# Why this commit is in the set: a new command (cal from); feature decision with alternatives
+# Label from the message AND the diff: git -C eval/.repos/ucal show 449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   cal from: a local date, back to absolute time
+#   
+#   The inverse of cal show, and the asymmetry it closes was real. to-civil
+#   has had from-civil beside it since 0.1.0; the fifteen derived calendars
+#   went one way only. You could ask what the Martian date was at an
+#   instant and not what instant a Martian date named — while §15.4 says
+#   Earth's entry has no special code path and no compile-time distinction
+#   from Mars's. That held inside ucal-body and not at the surface a reader
+#   touches, which dents Rule K.5's claim that Earth is an ordinary
+#   instance.
+#   
+#   It reads the form cal show prints, so the two commands read each
+#   other's output and the round trip is something a person runs.
+#   
+#   The answer is a Window and would be wrong not to be. A local day is a
+#   span, so year 82 day 83 names a day rather than a moment; and the
+#   anchor carries uncertainty, which propagates. Give a fraction and the
+#   window narrows to the anchor's own width and no further — an exact
+#   local moment is still an interval in absolute time, which is the same
+#   fact day_is_ambiguous reports going the other way.
+#   
+#   Endpoints are taken outward, never inward: a local day boundary almost
+#   never lands on a tick boundary, and narrowing to fit would be narrowing
+#   by assumption. A test asserts consecutive local days leave no gap.
+#   
+#   No search. D-A21 fixed the placement, so the inverse evaluates it
+#   rather than hunting for it — the forward split_year corrects an
+#   estimate in a loop and this needs no estimate.
+#   
+#   The property is the point: for every anchored calendar and a spread of
+#   offsets, the window for fields(t) contains t. Verified strict by
+#   shifting the inverse one day and watching it fail.
+#   
+#   One scar worth recording: a sed meant for the new field rewrote
+#   "anchor_revision".into() at six older sites. Caught by the compiler
+#   immediately, and the diff is additive again.
+#
+# Files:
+#    Documentation/CLI-EXAMPLES.md         |  25 +++++++++
+#    Documentation/CLI.md                  |  65 ++++++++++++++++++++++
+#    Documentation/Release_Notes/1.10.0.md |  40 ++++++++++++++
+#    crates/ucal-body/src/calendar.rs      | 136 ++++++++++++++++++++++++++++++++++++++++++++++
+#    crates/ucal/src/lib.rs                |  96 +++++++++++++++++++++++++++++++++
+#    crates/ucal/src/main.rs               |  16 ++++++
+#    crates/ucal/tests/cal_from.rs         | 158 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#    crates/ucal/tests/json_surface.rs     |   3 ++
+#    crates/ucal/tests/manual_fields.rs    |   1 +
+#    fixtures/json-surface.txt             |   9 ++++
+#    fixtures/ucal-json-1.schema.json      |  22 +++++++-
+#    xtask/src/examples.rs                 |   4 ++
+#    12 files changed, 574 insertions(+), 1 deletion(-)
+
+schema = 1
+repo = "ucal"
+commit = "449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

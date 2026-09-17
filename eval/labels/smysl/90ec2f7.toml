@@ -1,0 +1,99 @@
+# S0 label — smysl 90ec2f7
+# Why this commit is in the set: new test whose prerequisites are existing CLI behaviour
+# Label from the message AND the diff: git -C eval/.repos/smysl show 90ec2f781421002876548124e9fe02073503372c
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   dispatch: seven commands that could have stopped working, and a test that missed half of them
+#   
+#   Fourteen mutants survived across cli() and main at 1.1, seven commands with one
+#   arm in each: ingest, usage, reindex, import, relink, compact and ui. Stated
+#   plainly, that is seven of twenty-two commands that could have stopped working
+#   with the suite still green — none of them is invoked by any other test.
+#   
+#     cli + main  15 -> 1
+#     main.rs     73 -> 59   (of 207 viable, 35.3% -> 28.5%)
+#   
+#   tests/dispatch.rs runs every command and fails if any is unrouted, and compares
+#   all 380 arguments against tests/cli-surface.txt.
+#   
+#   **The two arms are not the same mutation, and the first version of this file
+#   assumed they were.**
+#   
+#   Deleting a command's arm in `main` removes its routing: the subcommand still
+#   parses and the router falls through to "not wired in this build". Deleting its
+#   arm in cli() removes its *arguments* and nothing else, because cli() registers
+#   all twenty-two subcommands from the COMMANDS table unconditionally. The command
+#   is still there, still routes, still runs, and has simply lost every flag of its
+#   own — which a no-argument invocation cannot see.
+#   
+#   That was found by deleting an arm and watching the test keep passing. It needs a
+#   golden file, compared inside cargo test rather than by a Makefile target: a
+#   Makefile gate is invisible to anything that counts coverage, which is why
+#   doc-output was wired into the suite in 0.13.
+#   
+#   **A second hole appeared the same way.** Seven commands take a required
+#   argument, so clap rejects the bare name before the router runs. Six were covered
+#   incidentally by other files; import was not, and its mutant survived a run of
+#   the test written to catch it. minimal_args supplies what each needs, and the
+#   clap refusal is now itself a failure, so adding a required argument tomorrow
+#   says so rather than quietly dropping coverage.
+#   
+#   The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated
+#   to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no
+#   input reaches. Documented at the site the way 0.13 recorded worse's >=.
+#   
+#   **Also: the --all-features anomaly is answered, and my framing of it was
+#   wrong.** READINESS said the CLI's coverage is "feature-dependent in a way
+#   nothing states". It states it. tests/doc_output.rs is gated to compile in
+#   exactly one of the ten matrix configurations and its header explains why at
+#   length: the manual documents a default build, and exact-pack makes a correct
+#   SMY-W202 claim read as drift. At --all-features the test does not exist rather
+#   than being skipped -- `cargo test --test doc_output` runs 1 test, with
+#   --all-features it runs 0. The question was already answered in the file that
+#   causes it.
+#   
+#   Probing this by hand also dirtied the checkout: running all twenty-two commands
+#   in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the
+#   usage invocation then read a ledger the ingest invocation had just written.
+#   Every command in the test now runs from a scratch directory of its own.
+#   
+#   make ci green, sentinel verified: ten feature combinations, zero failures.
+#
+# Files:
+#    CHANGELOG.md                 |  29 +++--
+#    Documentation/READINESS.md   |  75 ++++++++++--
+#    Documentation/ROAD_TO_1.0.md |  12 +-
+#    Makefile                     |  19 +++
+#    src/main.rs                  |  12 ++
+#    tests/cli-surface.txt        | 402 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#    tests/dispatch.rs            | 264 +++++++++++++++++++++++++++++++++++++++++
+#    7 files changed, 787 insertions(+), 26 deletions(-)
+
+schema = 1
+repo = "smysl"
+commit = "90ec2f781421002876548124e9fe02073503372c"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

@@ -1,0 +1,398 @@
+{
+  "decisions": [
+    {
+      "decision": "Introduce a session clock for monotonicity, not precision.",
+      "kind": "act",
+      "rationale": "Interpolating between wall ticks is worth a tiny fraction of a rung, which is nothing.",
+      "quote": "Every reading comes from it now, and it exists for monotonicity rather than precision — interpolating between wall ticks is worth 24/3125 of a rung, which is nothing.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H4",
+        "H6",
+        "H7"
+      ]
+    },
+    {
+      "decision": "Decline to freeze the reading when the wall clock steps backwards.",
+      "kind": "decline",
+      "rationale": "The monotonic branch keeps advancing at the oscillator's rate until the wall clock catches up.",
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Accept forward steps from the wall clock.",
+      "kind": "act",
+      "rationale": "A forward jump is a correction arriving, and refusing it would prefer this process's opinion of the time to the system's.",
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Make the session clock rule a pure function of its inputs.",
+      "kind": "act",
+      "rationale": "This allows a test to drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "hunks": [
+        "H2",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Decline to make a session reading finer than a raw one.",
+      "kind": "decline",
+      "rationale": "Interpolation is worth 24/3125 of a rung, so a type built for monotonicity must not be read as having bought precision.",
+      "quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Use an Option for the session state instead of .expect().",
+      "kind": "act",
+      "rationale": "OnceLock's initialiser cannot return a Result, and the no-panic-in-cli lint refused an .expect(). The state is anchored where a failure can be returned.",
+      "quote": "no-panic-in-cli refused an .expect() used to fill the gap where OnceLock's initialiser cannot return a Result — the state is an Option now, anchored where a failure can be returned.",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Gate `wall_instant` with the `civil` feature.",
+      "kind": "act",
+      "rationale": "Converting a clock reading is a leap-table lookup, because Unix time is a UTC label.",
+      "quote": "converting a clock reading is a leap-table lookup, because Unix time is a UTC label.",
+      "hunks": [
+        "H7"
+      ]
+    },
+    {
+      "decision": "Report divergence as a magnitude and a direction.",
+      "kind": "act",
+      "rationale": "A tick count is unsigned by Rule B, so the sign is a word beside the number.",
+      "quote": "Signed by a word rather than a number, because a tick count is unsigned (Rule B) — the same shape `SignedWindow` and the odometer take.",
+      "hunks": [
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Anchor the session clock on first use rather than at start-up.",
+      "kind": "act",
+      "rationale": "A command that never asks the time should not read a clock, and most of them do not.",
+      "quote": "Anchored on first use rather than at start-up: a command that never asks the time should not read a clock, and most of them do not.",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Use `last` as a belt-and-braces bound for the reading.",
+      "kind": "act",
+      "rationale": "A caller handing back a smaller elapsed would make the first two go backwards, and this type sells monotonicity.",
+      "quote": "`last` is belt and braces: the first two cannot go backwards on their own, and a caller handing back a smaller elapsed would make them, and this type sells monotonicity.",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Take the inner value of a poisoned lock.",
+      "kind": "act",
+      "rationale": "The state is a pair of tick counts and cannot be torn, so taking the inner value is correct rather than merely convenient.",
+      "quote": "The state is a pair of tick counts and cannot be torn, so taking the inner value is correct rather than merely convenient",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Read the system clock straight for `wall_instant`.",
+      "kind": "act",
+      "rationale": "A session clock that measured itself would be measuring its own output.",
+      "quote": "a session clock that measured itself would be measuring its own output.",
+      "hunks": [
+        "H7"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "A rung is 3125.",
+      "kind": "invariant",
+      "quote": "a rung is 3125"
+    },
+    {
+      "decision": 2,
+      "text": "The system clock is disciplined externally and can step backwards.",
+      "kind": "assumption",
+      "quote": "The system clock is disciplined by something outside this process and can step backwards"
+    },
+    {
+      "decision": 2,
+      "text": "The wallclock command reads the clock twenty times a second.",
+      "kind": "existing-behaviour",
+      "quote": "ucal wallclock reads the clock twenty times a second for as long as it is left running"
+    },
+    {
+      "decision": 3,
+      "text": "A forward jump is a correction arriving.",
+      "kind": "assumption",
+      "quote": "a forward jump is a correction arriving"
+    },
+    {
+      "decision": 4,
+      "text": "No clock is read in the pure function.",
+      "kind": "invariant",
+      "quote": "no clock is read here"
+    },
+    {
+      "decision": 5,
+      "text": "Anchoring and projecting changes nothing about what a quantum fills.",
+      "kind": "invariant",
+      "quote": "Anchoring and projecting changes nothing about what a quantum fills."
+    },
+    {
+      "decision": 6,
+      "text": "OnceLock's initialiser cannot return a Result.",
+      "kind": "existing-behaviour",
+      "quote": "OnceLock's initialiser cannot return a Result"
+    },
+    {
+      "decision": 6,
+      "text": "The no-panic-in-cli lint refused an .expect().",
+      "kind": "tool-setting",
+      "quote": "no-panic-in-cli refused an .expect()"
+    },
+    {
+      "decision": 7,
+      "text": "Unix time is a UTC label.",
+      "kind": "invariant",
+      "quote": "Unix time is a UTC label"
+    },
+    {
+      "decision": 7,
+      "text": "Converting a clock reading is a leap-table lookup.",
+      "kind": "existing-behaviour",
+      "quote": "converting a clock reading is a leap-table lookup"
+    },
+    {
+      "decision": 8,
+      "text": "A tick count is unsigned by Rule B.",
+      "kind": "invariant",
+      "quote": "a tick count is unsigned (Rule B)"
+    },
+    {
+      "decision": 9,
+      "text": "Most commands do not ask the time.",
+      "kind": "existing-behaviour",
+      "quote": "most of them do not"
+    },
+    {
+      "decision": 10,
+      "text": "The first two cannot go backwards on their own.",
+      "kind": "invariant",
+      "quote": "the first two cannot go backwards on their own"
+    },
+    {
+      "decision": 11,
+      "text": "The state is a pair of tick counts and cannot be torn.",
+      "kind": "invariant",
+      "quote": "The state is a pair of tick counts and cannot be torn"
+    },
+    {
+      "decision": 12,
+      "text": "A session clock that measured itself would be measuring its own output.",
+      "kind": "invariant",
+      "quote": "a session clock that measured itself would be measuring its own output."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "precision",
+      "reason": "Interpolating between wall ticks is worth 24/3125 of a rung, which is nothing.",
+      "quote": "it exists for monotonicity rather than precision — interpolating between wall ticks is worth 24/3125 of a rung, which is nothing."
+    },
+    {
+      "decision": 2,
+      "alternative": "freezing until the wall clock catches up",
+      "reason": "The monotonic branch keeps advancing at the oscillator's rate.",
+      "quote": "keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up."
+    },
+    {
+      "decision": 3,
+      "alternative": "refusing it",
+      "reason": "It would prefer this process's opinion of the time to the system's.",
+      "quote": "refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": 4,
+      "alternative": "reading a clock here",
+      "reason": "A pure function lets a test drive a wall clock backwards and check that the answer does not follow it.",
+      "quote": "no clock is read here, which is what lets a test drive a wall clock backwards and check that the answer does not follow it."
+    },
+    {
+      "decision": 5,
+      "alternative": "having bought precision",
+      "reason": "Interpolation is worth 24/3125 of a rung.",
+      "quote": "interpolation is worth 24/3125 of a rung, so a type built for monotonicity must not be read as having bought precision."
+    },
+    {
+      "decision": 6,
+      "alternative": "an .expect()",
+      "reason": "The no-panic-in-cli lint refused it.",
+      "quote": "The first draft filled the gap with an .expect() and the no-panic-in-cli lint refused it"
+    },
+    {
+      "decision": 7,
+      "alternative": "dropping its `civil` gate",
+      "reason": "Converting a clock reading is a leap-table lookup, because Unix time is a UTC label.",
+      "quote": "splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup, because Unix time is a UTC label."
+    },
+    {
+      "decision": 8,
+      "alternative": "a negative",
+      "reason": "A tick count is unsigned by Rule B.",
+      "quote": "Divergence is reported as a magnitude and a direction, never a negative."
+    },
+    {
+      "decision": 9,
+      "alternative": "at start-up",
+      "reason": "A command that never asks the time should not read a clock, and most of them do not.",
+      "quote": "Anchored on first use rather than at start-up: a command that never asks the time should not read a clock, and most of them do not."
+    },
+    {
+      "decision": 10,
+      "alternative": "the first two",
+      "reason": "A caller handing back a smaller elapsed would make them go backwards, and this type sells monotonicity.",
+      "quote": "the first two cannot go backwards on their own, and a caller handing back a smaller elapsed would make them, and this type sells monotonicity."
+    },
+    {
+      "decision": 11,
+      "alternative": "merely convenient",
+      "reason": "The state is a pair of tick counts and cannot be torn.",
+      "quote": "The state is a pair of tick counts and cannot be torn, so taking the inner value is correct rather than merely convenient"
+    },
+    {
+      "decision": 12,
+      "alternative": "a session clock that measured itself",
+      "reason": "It would be measuring its own output.",
+      "quote": "a session clock that measured itself would be measuring its own output."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Every reading comes from it now, and it exists for monotonicity rather than precision.",
+      "quote": "Every reading comes from it now, and it exists for monotonicity rather than precision",
+      "verified": true,
+      "verification_quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does."
+    },
+    {
+      "decision": 2,
+      "text": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate.",
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate",
+      "verified": true,
+      "verification_quote": "Verified strict by disabling the monotonic branch and watching the reading stall."
+    },
+    {
+      "decision": 3,
+      "text": "A forward step wins, because a forward jump is a correction arriving.",
+      "quote": "A forward step wins, because a forward jump is a correction arriving",
+      "verified": true,
+      "verification_quote": "assert_eq!(\n            jumped.ticks().to_dec_string(),\n            at(160).ticks().to_dec_string(),\n            \"a forward correction was refused\"\n        );"
+    },
+    {
+      "decision": 4,
+      "text": "Lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "quote": "lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "verified": true,
+      "verification_quote": "assert!(\n                r.ticks() >= &prev,\n                \"step {i} went backwards: {} then {}\",\n                prev.to_dec_string(),\n                r.ticks().to_dec_string()\n            );"
+    },
+    {
+      "decision": 5,
+      "text": "A session reading lands on exactly the same rung a raw one does.",
+      "quote": "a session reading lands on exactly the same rung a raw one does.",
+      "verified": true,
+      "verification_quote": "assert_eq!(finest_tier_for(&q).expect(\"a tier\").index(), raw.index());"
+    },
+    {
+      "decision": 6,
+      "text": "The state is an Option now, anchored where a failure can be returned.",
+      "quote": "the state is an Option now, anchored where a failure can be returned.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Caught by a feature combination build because converting a clock reading is a leap-table lookup.",
+      "quote": "--no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup",
+      "verified": true,
+      "verification_quote": "--no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup"
+    },
+    {
+      "decision": 8,
+      "text": "Divergence is reported as a magnitude and a direction, never a negative.",
+      "quote": "Divergence is reported as a magnitude and a direction, never a negative.",
+      "verified": true,
+      "verification_quote": "assert!(wall_ahead, \"the wall clock is ahead of the projection\");"
+    },
+    {
+      "decision": 9,
+      "text": "A command that never asks the time should not read a clock.",
+      "quote": "a command that never asks the time should not read a clock",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Prevents a caller handing back a smaller elapsed from making the reading go backwards.",
+      "quote": "a caller handing back a smaller elapsed would make them",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "Taking the inner value is correct rather than merely convenient.",
+      "quote": "taking the inner value is correct rather than merely convenient",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Prevents a session clock from measuring its own output.",
+      "quote": "a session clock that measured itself would be measuring its own output.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      6146,
+      7442
+    ],
+    [
+      6659,
+      3417
+    ],
+    [
+      6613,
+      3809
+    ],
+    [
+      6610,
+      4239
+    ]
+  ]
+}

@@ -1,0 +1,22 @@
+[package]
+name                   = "cargo-smysl-eval"
+description            = "S0 evaluation set tooling: label templates, adjudication, scoring"
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+authors.workspace      = true
+repository.workspace   = true
+# Development tooling for the evaluation set: never published, never part of `cargo install`.
+# It reads commits with the `git` binary; the self-contained rule applies to the shipped tool, not here.
+publish = false
+
+[[bin]]
+name = "smysl-eval"
+path = "src/main.rs"
+
+[dependencies]
+clap       = { workspace = true }
+serde      = { workspace = true }
+serde_json = { workspace = true }
+toml       = "1"

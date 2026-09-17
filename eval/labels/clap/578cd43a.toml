@@ -1,0 +1,43 @@
+# S0 label — clap 578cd43a
+# Why this commit is in the set: usage-output fix; behaviour of conflict tracking as prerequisite
+# Label from the message AND the diff: git -C eval/.repos/clap show 578cd43a88f0009a53ff729cb78163ed30156e93
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   fix(parser): Don't report conflicting arguments in usage
+#   
+#   Fixes #6236
+#
+# Files:
+#    clap_builder/src/parser/validator.rs | 17 +++++++++--------
+#    clap_builder/src/util/flat_set.rs    |  4 ++++
+#    tests/builder/groups.rs              |  2 +-
+#    3 files changed, 14 insertions(+), 9 deletions(-)
+
+schema = 1
+repo = "clap"
+commit = "578cd43a88f0009a53ff729cb78163ed30156e93"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

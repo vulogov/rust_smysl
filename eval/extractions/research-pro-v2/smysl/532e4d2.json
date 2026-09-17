@@ -1,0 +1,207 @@
+{
+  "decisions": [
+    {
+      "decision": "Add six tests driving the binary for cmd_fmt.",
+      "kind": "act",
+      "rationale": "To test decisions rather than mutants, covering behaviors like --check, --write, --strict, and --output.",
+      "quote": "Six tests driving the binary, aimed at decisions rather than at mutants",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Leave the round-trip guard untested.",
+      "kind": "decline",
+      "rationale": "No user input can reach it, making it impossible for a test to distinguish a guard that checks from one that does not.",
+      "quote": "No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not.",
+      "hunks": []
+    },
+    {
+      "decision": "Build the required document in each test instead of using repository fixtures.",
+      "kind": "act",
+      "rationale": "cargo-mutants reuses build directories, so a mutant that misroutes a write could permanently alter a fixture, leading to spurious test failures.",
+      "quote": "cargo-mutants reuses build directories, so a mutant that misroutes a write leaves a fixture rewritten",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Use raw stdout for the step whose output is binary.",
+      "kind": "act",
+      "rationale": "Decoding stdout with from_utf8_lossy destroys CBOR data, which causes the encoder to fail and be incorrectly blamed.",
+      "quote": "`run` decodes stdout with `from_utf8_lossy`, which is right for text and destroys CBOR",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Correct the CLI's readiness rate to 40.0% in the documentation.",
+      "kind": "act",
+      "rationale": "The previously recorded 64.2% was measured before recent work, while the survivor count was measured after, making the pairing misleading.",
+      "quote": "The recorded 64.2% was measured in 2.1, *before* 2.2 did the work; the survivor count of 110 was measured after.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Create a unique scratch directory for each test run.",
+      "kind": "act",
+      "rationale": "Writing into a fixed shared directory caused CI failures because tests depended on the state of the machine.",
+      "quote": "A shared path under `TMPDIR` failed in CI once already, in a test added in 0.13: it wrote into a fixed directory and depended on the state of the machine",
+      "hunks": [
+        "H3"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The command has no internal seams to call, requiring the binary to be run.",
+      "kind": "existing-behaviour",
+      "quote": "there is no seam to call, so the only way in is to run the binary"
+    },
+    {
+      "decision": 1,
+      "text": "The binary is only built when the cli feature is enabled.",
+      "kind": "tool-setting",
+      "quote": "The binary only exists with `cli`"
+    },
+    {
+      "decision": 2,
+      "text": "The guard only triggers when the parser reads back a different result from write_surface.",
+      "kind": "existing-behaviour",
+      "quote": "write_surface produces something the parser reads back differently"
+    },
+    {
+      "decision": 3,
+      "text": "The mutation testing tool reuses build directories across test runs.",
+      "kind": "tool-setting",
+      "quote": "cargo-mutants reuses build directories"
+    },
+    {
+      "decision": 3,
+      "text": "Tests must not rely on the state of the repository tree.",
+      "kind": "invariant",
+      "quote": "a test must not depend on the state of the tree"
+    },
+    {
+      "decision": 4,
+      "text": "Decoding with from_utf8_lossy destroys CBOR data.",
+      "kind": "existing-behaviour",
+      "quote": "decodes stdout with `from_utf8_lossy`, which is right for text and destroys CBOR"
+    },
+    {
+      "decision": 5,
+      "text": "The 64.2% rate was measured before the work in version 2.2.",
+      "kind": "prior-change",
+      "quote": "The recorded 64.2% was measured in 2.1, *before* 2.2 did the work"
+    },
+    {
+      "decision": 6,
+      "text": "Tests must not rely on the state of the machine.",
+      "kind": "invariant",
+      "quote": "a test must not depend on the state of the machine"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Naming the mutant in each test.",
+      "reason": "The decision is what a reader needs and the mutant is only how the gap was found.",
+      "quote": "Each test below names the decision it pins rather than the mutant, because the decision is what a reader needs and the mutant is only how the gap was found."
+    },
+    {
+      "decision": 2,
+      "alternative": "Testing the round-trip guard.",
+      "reason": "No user input can reach it, so no test can distinguish a guard that checks from one that does not.",
+      "quote": "No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not."
+    },
+    {
+      "decision": 3,
+      "alternative": "Relying on a repository fixture having that property.",
+      "reason": "cargo-mutants reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten.",
+      "quote": "relying on a repository fixture having that property. The first version of this file used `F1` for \"not canonically formatted\" and `F9` for \"has comments\", and that was wrong in a way worth recording: `cargo-mutants` reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten"
+    },
+    {
+      "decision": 4,
+      "alternative": "Decoding stdout with from_utf8_lossy.",
+      "reason": "It destroys CBOR data, causing the encoder to be blamed for the test harness.",
+      "quote": "`run` decodes stdout with `from_utf8_lossy`, which is right for text and destroys CBOR"
+    },
+    {
+      "decision": 5,
+      "alternative": "Quoting the 64.2% rate and 110 survivor count together.",
+      "reason": "It read as though both described the present, which was wrong by a whole phase.",
+      "quote": "The recorded 64.2% was measured in 2.1, *before* 2.2 did the work; the survivor count of 110 was measured after. Quoting them together read as though both described the present"
+    },
+    {
+      "decision": 6,
+      "alternative": "Writing into a fixed shared directory under TMPDIR.",
+      "reason": "It caused CI failures because tests depended on the state of the machine rather than on the code.",
+      "quote": "A shared path under `TMPDIR` failed in CI once already, in a test added in 0.13: it wrote into a fixed directory and depended on the state of the machine rather than on the code."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Tests decisions rather than mutants, covering behaviors like --check, --write, --strict, and --output.",
+      "quote": "Six tests driving the binary, aimed at decisions rather than at mutants",
+      "verified": true,
+      "verification_quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 2,
+      "text": "No user input reaches it, making it impossible to distinguish a checking guard from a non-checking one.",
+      "quote": "No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Prevents mutants from permanently altering fixtures in reused build directories, which caused spurious test failures.",
+      "quote": "cargo-mutants reuses build directories, so a mutant that misroutes a write leaves a fixture rewritten",
+      "verified": true,
+      "verification_quote": "The first version of these tests inflated the score by 97 mutants"
+    },
+    {
+      "decision": 4,
+      "text": "Prevents from_utf8_lossy from destroying CBOR data, which incorrectly blamed the encoder for failures.",
+      "quote": "`run` decodes stdout with `from_utf8_lossy`, which is right for text and destroys CBOR",
+      "verified": true,
+      "verification_quote": "The first version of the test below piped `bundle` through it and got `SMY-E004: malformed envelope at byte 0`"
+    },
+    {
+      "decision": 5,
+      "text": "Fixes misleading pairing of a 64.2% rate measured before recent work with a survivor count measured after.",
+      "quote": "The recorded 64.2% was measured in 2.1, *before* 2.2 did the work; the survivor count of 110 was measured after.",
+      "verified": true,
+      "verification_quote": "It is **40.0% of 275 viable**."
+    },
+    {
+      "decision": 6,
+      "text": "Prevents CI failures caused by tests writing into a fixed shared directory and depending on machine state.",
+      "quote": "it wrote into a fixed directory and depended on the state of the machine rather than on the code.",
+      "verified": true,
+      "verification_quote": "A shared path under `TMPDIR` failed in CI once already"
+    }
+  ],
+  "tokens": [
+    [
+      3403,
+      3430
+    ],
+    [
+      3685,
+      3405
+    ],
+    [
+      3639,
+      2518
+    ],
+    [
+      3636,
+      2529
+    ]
+  ]
+}

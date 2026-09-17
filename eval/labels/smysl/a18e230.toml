@@ -1,0 +1,67 @@
+# S0 label — smysl a18e230
+# Why this commit is in the set: a decision to remove code (local-improvement pass) on measured evidence
+# Label from the message AND the diff: git -C eval/.repos/smysl show a18e230ae34564f0a3d93538cf1a557b68a3f5aa
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   Remove the local-improvement pass: it was making packs worse
+#   
+#   Step 3 of §18.3 downgraded the least valuable depth and spent what that freed
+#   on breadth. Across 28 000 generated packs it changed 26, and 22 of those 26
+#   were *worse* by the value function it exists to maximise. Four were better.
+#   
+#   It fired on 0.09% of packs, which is why two earlier measurements read it as
+#   harmless rather than harmful. 0.3.0 found turning it off changed runtime by
+#   under 1% and concluded it was not the bottleneck. Mutation testing found
+#   `improve -> false` survives every test. Neither could see the packs getting
+#   better without it — one was measuring time and the other was measuring whether
+#   anything noticed, and nothing did.
+#   
+#   The golden file is byte-identical after the removal: nine fixtures at six
+#   budgets, not one selection moved. The corpus never reaches a case where the
+#   pass fired, which is exactly why it survived eight releases unexamined.
+#   
+#   `IMPROVEMENT_PASSES` and `PackRequest::improvement_passes` went with it. A knob
+#   for a pass that no longer exists is worse than no knob.
+#   
+#   The search that found this went too. With the pass gone it would compare two
+#   identical configurations, and a test that cannot fail is the shape this project
+#   keeps deleting. Its numbers are in the changelog, which is where a measurement
+#   belongs once the thing it measured is gone.
+#   
+#   123 lines. Constraint properties, the branch-and-bound gate, and both pack fuzz
+#   targets are clean.
+#
+# Files:
+#    CHANGELOG.md                   |  48 +++++++++++++++++++++-
+#    crates/smysl-pack/src/lib.rs   |   2 +-
+#    crates/smysl-pack/src/solve.rs | 133 +++++--------------------------------------------------------
+#    3 files changed, 59 insertions(+), 124 deletions(-)
+
+schema = 1
+repo = "smysl"
+commit = "a18e230ae34564f0a3d93538cf1a557b68a3f5aa"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""

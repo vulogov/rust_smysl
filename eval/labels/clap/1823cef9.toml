@@ -1,0 +1,42 @@
+# S0 label — clap 1823cef9
+# Why this commit is in the set: panic fix with an 11-word message; prerequisites only in the diff
+# Label from the message AND the diff: git -C eval/.repos/clap show 1823cef9d6ebf89c5076f23db63350fcc2f78473
+# Definitions and boundary cases: eval/README.md. Label blind: do not open extractions first.
+#
+# Message:
+#   fix(parser): Don't panic when subcommands conflict with groups
+#   
+#   Mentioned in #6182
+#
+# Files:
+#    clap_builder/src/parser/parser.rs | 3 ++-
+#    tests/builder/conflicts.rs        | 1 -
+#    2 files changed, 2 insertions(+), 2 deletions(-)
+
+schema = 1
+repo = "clap"
+commit = "1823cef9d6ebf89c5076f23db63350fcc2f78473"
+labeller = ""
+status = "todo"   # set to "done" when finished
+
+# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
+#
+# [[decision]]
+# id = "D1"
+# text = ""
+# kind = "act"          # act | decline
+# evidence = ""       # optional verbatim span
+#
+# [[prerequisite]]
+# id = "P1"
+# decision = "D1"
+# text = ""
+# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
+# normative = false
+# evidence = ""
+#
+# [[alternative]]
+# id = "A1"
+# decision = "D1"
+# text = ""
+# evidence = ""
