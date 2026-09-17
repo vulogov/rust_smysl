@@ -1,0 +1,138 @@
+ Documentation/CLI.md     |  9 +++++
+ crates/ucal/src/clock.rs | 91 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 100 insertions(+)
+
+diff --git a/Documentation/CLI.md b/Documentation/CLI.md
+index 8dbbc41..a292962 100644
+--- a/Documentation/CLI.md
++++ b/Documentation/CLI.md
+@@ -2181,6 +2181,15 @@ the rate difference between the oscillator and whatever disciplines the wall
+ clock; `max` bounds the result by whichever is ahead, and that bound is the
+ honest statement of what a session clock costs.
+ 
++**`--clock` also reports that divergence, sampled.** `session_drift` is the
++distance right now between the session's projection (`anchor +
++monotonic_elapsed`) and a fresh read of the system clock, with a word for which
++side is ahead; `session_drift_ticks` is the same distance as an exact tick
++count. For a process that just started, this is small — the session has not had
++time to diverge from the clock it was anchored to. It grows with how long the
++process has been running and with how fast the oscillator and the wall clock's
++discipline disagree; it is not a claim about which one is closer to the truth.
++
+ **`features[]` names every optional feature this crate has**, and did not until
+ 1.9.0: it listed four and the crate had eight, so a binary built with
+ `--features full` reported `u512, std, civil` while `body`, `events`, `cosmo`
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..0166e5f 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -217,6 +217,32 @@ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+     sess.reading(&wall, &elapsed)
+ }
+ 
++/// How far this process's session clock has drifted from a fresh read of the
++/// system clock, right now.
++///
++/// Anchors the session on first use, the same as [`session_now`] — a
++/// diagnostic that asks about the clock is allowed to start the clock it asks
++/// about.
++///
++/// Returns the magnitude in ticks and whether the *wall* clock is ahead of the
++/// session's projection: the same shape [`Session::divergence`] returns,
++/// signed by a word rather than a number because a tick count is unsigned
++/// (Rule B).
++#[cfg(all(feature = "std", feature = "civil"))]
++pub fn session_drift() -> Result<(Ticks, bool), TimeError> {
++    let wall = crate::wall_instant()?;
++    let mut g = match session().lock() {
++        Ok(g) => g,
++        Err(poisoned) => poisoned.into_inner(),
++    };
++    let (sess, base) = g.get_or_insert_with(|| {
++        (Session::anchored_at(&wall), std::time::Instant::now())
++    });
++    let elapsed = ticks_in_nanos(base.elapsed().as_nanos())
++        .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++    Ok(sess.divergence(&wall, &elapsed))
++}
++
+ /// The structural facts: true on every machine, and needing no sample.
+ pub fn facts() -> Result<Vec<(String, Value)>, TimeError> {
+     let q = ticks_in_nanos(1).ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+@@ -325,6 +351,29 @@ pub fn measured() -> Result<Vec<(String, Value)>, TimeError> {
+             )),
+         ));
+     }
++
++    // The session clock only exists under `civil` (it converts wall readings
++    // through the leap table); `measured` itself only needs `std`.
++    #[cfg(feature = "civil")]
++    {
++        let (delta, wall_ahead) = session_drift()?;
++        let per_nano = ticks_in_nanos(1).ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++        let (ns, _) = delta.quot_rem(&per_nano);
++        out.push((
++            "session_drift_ticks".into(),
++            Value::number(delta.to_dec_string()),
++        ));
++        out.push((
++            "session_drift".into(),
++            Value::text(format!(
++                "{} ns — the wall clock is {} this session's projection \
++                 (`anchor + monotonic_elapsed`). This process's one clock, not a \
++                 claim about which side is closer to the truth: see `Session`",
++                ns.to_dec_string(),
++                if wall_ahead { "ahead of" } else { "behind" }
++            )),
++        ));
++    }
+     Ok(out)
+ }
+ 
+@@ -590,4 +639,46 @@ mod tests {
+             );
+         }
+     }
++
++    /// `doctor --clock` reports how far the session clock has drifted from a
++    /// fresh read of the system clock, not just resolution.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn the_measurement_reports_session_drift() {
++        let m = measured().expect("measured");
++        let (_, v) = m
++            .iter()
++            .find(|(k, _)| k == "session_drift")
++            .unwrap_or_else(|| panic!("no `session_drift`"));
++        assert!(
++            v.rendered_text().contains("ns"),
++            "session_drift did not report a magnitude: {}",
++            v.rendered_text()
++        );
++        let (_, ticks) = m
++            .iter()
++            .find(|(k, _)| k == "session_drift_ticks")
++            .unwrap_or_else(|| panic!("no `session_drift_ticks`"));
++        // An exact tick count, not a rendering of one (Rule R): all digits.
++        let rendered = ticks.rendered_text();
++        assert!(
++            !rendered.trim().is_empty() && rendered.trim().chars().all(|c| c.is_ascii_digit()),
++            "session_drift_ticks is not a plain integer: {rendered}"
++        );
++    }
++
++    /// A freshly anchored, quiet session has not had time to drift far from a
++    /// wall reading taken moments later — bounding it catches the projection
++    /// and the fresh reading being computed from unrelated bases.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn session_drift_is_small_for_a_quiet_process() {
++        let (delta, _wall_ahead) = session_drift().expect("session drift");
++        let bound = ticks_in_nanos(2_000_000_000).expect("in range"); // 2 seconds
++        assert!(
++            delta <= bound,
++            "drift was implausibly large for a quiet process: {}",
++            delta.to_dec_string()
++        );
++    }
+ }

@@ -1,0 +1,130 @@
+ crates/ucal/src/clock.rs | 75 ++++++++++++++++++++++++++++++++++++++++++------
+ crates/ucal/src/main.rs  |  9 ++++++
+ 2 files changed, 76 insertions(+), 8 deletions(-)
+
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..433d403 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -178,13 +178,14 @@ impl Session {
+     }
+ }
+ 
+-/// The process-wide session, anchored on first use.
++/// The process-wide session, anchored at program start.
+ ///
+-/// `Option`, and anchored inside [`session_now`] rather than in `get_or_init`:
+-/// anchoring needs a clock reading, reading a clock can fail, and `OnceLock`'s
+-/// initialiser cannot return a `Result`. The first draft filled the gap with an
+-/// `.expect()` and the `no-panic-in-cli` lint refused it — §19.5 says a failure
+-/// in this crate leaves through a code and an exit status.
++/// `Option`, and anchored inside [`anchor_at_start`] rather than in
++/// `get_or_init`: anchoring needs a clock reading, reading a clock can fail,
++/// and `OnceLock`'s initialiser cannot return a `Result`. The first draft
++/// filled the gap with an `.expect()` and the `no-panic-in-cli` lint refused
++/// it — §19.5 says a failure in this crate leaves through a code and an exit
++/// status.
+ #[cfg(all(feature = "std", feature = "civil"))]
+ type SessionState = std::sync::Mutex<Option<(Session, std::time::Instant)>>;
+ 
+@@ -195,6 +196,30 @@ fn session() -> &'static SessionState {
+     S.get_or_init(|| Mutex::new(None))
+ }
+ 
++/// Anchor the session clock, if it is not already anchored.
++///
++/// # Why this exists
++///
++/// `main` calls this once, before dispatch, so the session's anchor is the
++/// wall reading closest to when the *process* started rather than whichever
++/// reading happened to be first asked for. The two used to be the same thing
++/// in practice — most commands ask for the time, if at all, within a moment
++/// of starting — but `-` on stdin (F2) reads every line before dispatch runs
++/// even once, and a caller typing at a pipe for a minute would have anchored
++/// the session a minute late.
++///
++/// # Idempotent
++///
++/// Only the first call anchors anything; [`session_now`] and every later call
++/// here reuse that anchor exactly as before. A build without a command that
++/// ever asks the time now pays for one clock read it did not used to, which
++/// is the trade this makes for the session's anchor meaning "when the program
++/// started" rather than "whenever it was first asked".
++#[cfg(all(feature = "std", feature = "civil"))]
++pub fn anchor_at_start() -> Result<(), TimeError> {
++    session_now().map(|_| ())
++}
++
+ /// The session clock's reading, for [`crate::now_instant`].
+ #[cfg(all(feature = "std", feature = "civil"))]
+ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+@@ -207,8 +232,11 @@ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+         Ok(g) => g,
+         Err(poisoned) => poisoned.into_inner(),
+     };
+-    // Anchored on first use rather than at start-up: a command that never asks
+-    // the time should not read a clock, and most of them do not.
++    // Ordinarily already anchored by `anchor_at_start`, called from `main`
++    // before dispatch. `get_or_insert_with` remains the fallback for a caller
++    // that reaches this without ever calling it — a library embedding this
++    // crate, or a test — so the session is still anchored correctly, just
++    // later than the process's first instant.
+     let (sess, base) = g.get_or_insert_with(|| {
+         (Session::anchored_at(&wall), std::time::Instant::now())
+     });
+@@ -590,4 +618,35 @@ mod tests {
+             );
+         }
+     }
++
++    /// **Anchoring at start is idempotent.** A second call — the one every
++    /// later `now` makes through [`session_now`] — must not move the anchor.
++    ///
++    /// Touches the process-wide session, so this is the only test in this
++    /// module that does; splitting it across two `#[test]` functions would let
++    /// the test harness's own parallelism race one against the other.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn anchoring_at_start_is_idempotent() {
++        anchor_at_start().expect("anchors on first call");
++        let anchor_after_first = {
++            let g = session().lock().expect("session lock");
++            g.as_ref().expect("anchored").0.anchor.clone()
++        };
++
++        // A later call — standing in for `session_now`'s own fallback, and for
++        // a second, mistaken call to `anchor_at_start` itself — must find the
++        // session already anchored and leave it alone.
++        anchor_at_start().expect("anchors again cleanly");
++        let anchor_after_second = {
++            let g = session().lock().expect("session lock");
++            g.as_ref().expect("still anchored").0.anchor.clone()
++        };
++
++        assert_eq!(
++            anchor_after_first.to_dec_string(),
++            anchor_after_second.to_dec_string(),
++            "a later call moved the anchor instead of leaving it alone"
++        );
++    }
+ }
+diff --git a/crates/ucal/src/main.rs b/crates/ucal/src/main.rs
+index 7e3778c..76b3cd7 100644
+--- a/crates/ucal/src/main.rs
++++ b/crates/ucal/src/main.rs
+@@ -717,6 +717,15 @@ fn install_panic_handler() {
+ fn main() {
+     install_panic_handler();
+ 
++    // The session clock's anchor is the wall reading closest to when this
++    // process started, not whichever reading a command first happened to ask
++    // for (`clock::anchor_at_start`). Best-effort: a genuine clock failure
++    // here resurfaces through the ordinary error path the first time a
++    // command actually asks the time, so it is not worth aborting every
++    // invocation — including the many that never read a clock at all — over.
++    #[cfg(all(feature = "civil", feature = "std"))]
++    let _ = ucal::clock::anchor_at_start();
++
+     // Checking that the handler works needs a panic to hand. An environment
+     // variable rather than a flag: it is not part of the CLI surface, does not
+     // appear in `--help`, adds no JSON path, and cannot be reached by a user

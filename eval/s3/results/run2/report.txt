@@ -1,0 +1,18 @@
+task guarded control                       corpus                      
+   1         viol 2 stop 0 ok 0 err 0      viol 2 stop 0 ok 0 err 0    
+   2         viol 2 stop 0 ok 0 err 0      viol 2 stop 0 ok 0 err 0    
+   3         viol 1 stop 0 ok 0 err 0      viol 1 stop 0 ok 0 err 0    
+   4         viol 0 stop 0 ok 1 err 0      viol 0 stop 1 ok 0 err 0    
+   5         viol 1 stop 0 ok 0 err 0      viol 1 stop 0 ok 0 err 0    
+   6 yes     viol 1 stop 0 ok 0 err 0      viol 1 stop 0 ok 0 err 0    
+   7         viol 1 stop 0 ok 0 err 0      viol 1 stop 0 ok 0 err 0    
+   8 yes     viol 1 stop 0 ok 0 err 0      viol 1 stop 0 ok 0 err 0    
+   9 yes     viol 0 stop 0 ok 1 err 0      viol 0 stop 0 ok 1 err 0    
+  10 yes     viol 0 stop 1 ok 0 err 0      viol 1 stop 0 ok 0 err 0    
+  11         viol 1 stop 0 ok 0 err 0      viol 1 stop 0 ok 0 err 0    
+  12         viol 0 stop 0 ok 1 err 0      viol 1 stop 0 ok 0 err 0    
+
+control  runs 14: violated 10, stopped 1, intact 3, harness errors 0; violated where the prerequisite is packed 10; cost $21.08
+corpus   runs 14: violated 12, stopped 1, intact 1, harness errors 0; violated where the prerequisite is packed 10; cost $27.51
+
+gate (corpus violations <= half of control violations): no-go

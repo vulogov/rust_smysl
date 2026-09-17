@@ -1,0 +1,123 @@
+ CHANGELOG.md                        |  9 ++++++++-
+ Documentation/manual/appendices.typ |  2 +-
+ src/main.rs                         | 22 ++++++++--------------
+ tests/cmd_fmt.rs                    | 26 +++++++++++---------------
+ 4 files changed, 28 insertions(+), 31 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..26fc59f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,14 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++### `fmt` no longer re-parses what it just wrote
++
++`cmd_fmt` re-parsed its own formatted output and refused to emit anything whose records or
++labels moved on the way back through. The guard never had a live input — it could only fire on
++a defect in `write_surface`, not on anything a user could type — so every `fmt` invocation paid
++for a second full parse of every file to check something no document could ever trip. Removed;
++the property is still pinned where it can actually break, in `crates/smysl-core/tests/surface.rs`,
++`roundtrip.rs` and `versioning.rs`. Halves the parsing work `fmt` does per file.
+ 
+ ---
+ 
+diff --git a/Documentation/manual/appendices.typ b/Documentation/manual/appendices.typ
+index 56c4fff..f0f677b 100644
+--- a/Documentation/manual/appendices.typ
++++ b/Documentation/manual/appendices.typ
+@@ -49,7 +49,7 @@ These apply to every subcommand, in any position on the command line.
+ 
+ #section("fmt")
+ 
+-*Canonicalise surface text and verify the round-trip.* Pure · SM-P2.
++*Canonicalise surface text.* Pure · SM-P2.
+ 
+ #dtable(
+   (auto, auto, 1fr),
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..6062466 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -55,7 +55,7 @@ struct Cmd {
+ /// The command table of §23, in table order.
+ #[rustfmt::skip]
+ const COMMANDS: &[Cmd] = &[
+-    Cmd { name: "fmt",       about: "Canonicalise surface text and verify the round-trip", purity: Purity::Pure,  phase: "SM-P2"  },
++    Cmd { name: "fmt",       about: "Canonicalise surface text",                           purity: Purity::Pure,  phase: "SM-P2"  },
+     Cmd { name: "check",     about: "Run the check pipeline over a store",                 purity: Purity::Pure,  phase: "SM-P4"  },
+     Cmd { name: "pack",      about: "Budget-bounded, closure-complete selection",          purity: Purity::Pure,  phase: "SM-P9"  },
+     Cmd { name: "merge",     about: "Join-semilattice union; materialise contentions",     purity: Purity::Pure,  phase: "SM-P6"  },
+@@ -830,9 +830,13 @@ fn cli() -> Command {
+ 
+ /// `smysl fmt` - canonicalise surface text (§23.1).
+ ///
+-/// Also verifies the `surface -> CBOR -> surface` round trip, because that is the property
+-/// that makes reformatting safe: hashes are computed over CBOR only, so canonicalising
+-/// must never move a uid. Identity drift exits 9, not 3 - it is a different kind of wrong.
++/// Does not re-parse what it writes. Earlier versions did, to verify that `write_surface`
++/// never moved a uid - the property that makes reformatting safe, since hashes are computed
++/// over CBOR only. That guard never had a live input: it can only fire on a defect in
++/// `write_surface` itself, which `crates/smysl-core/tests/{surface,versioning,roundtrip}.rs`
++/// already pin at the library level, so every `fmt` invocation was paying for a parse whose
++/// only possible outcome, for any input a user could supply, was success. Removed for speed;
++/// see `tests/cmd_fmt.rs` for the property this still relies on.
+ fn cmd_fmt(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+     let check = m.get_flag("check");
+     let write = m.get_flag("write");
+@@ -949,16 +953,6 @@ fn cmd_fmt(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             .with_format_version(out.format_version.clone());
+         let formatted = write_surface(out.view.as_ref(), &out.records, &ctx);
+ 
+-        // The round trip must not move a uid.
+-        match parse_surface(&formatted) {
+-            Ok(again) if again.labels == out.labels && again.records == out.records => {}
+-            _ => {
+-                eprintln!("{path}: canonical form does not reproduce the same records");
+-                worst = worse(worst, ExitCode::HashVerification);
+-                continue;
+-            }
+-        }
+-
+         if let Some(dest) = global.get_one::<String>("output") {
+             if n_inputs > 1 {
+                 eprintln!(
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..b464b8f 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -360,21 +360,17 @@ fn write_rewrites_a_file_and_leaves_stdin_alone() {
+ }
+ 
+ // ---------------------------------------------------------------------------------------
+-// The round-trip guard, and why two mutants on it stay alive
++// No second parse
+ // ---------------------------------------------------------------------------------------
+ 
+-// `cmd_fmt` re-parses what it formatted and refuses to emit anything whose records or labels
+-// moved. Two mutants sit on that guard — replacing it with `true`, and loosening its `&&` to
+-// `||` — and both survive this file.
++// `cmd_fmt` used to re-parse what it had just formatted and refuse to emit anything whose
++// records or labels moved. That guard never had a live input: it could only fire on a defect
++// in `write_surface` itself, not on anything a user could type, so `fmt` was paying for a full
++// parse of its own output on every file for a check that never had a way to fail. Removed for
++// speed, the way `worse`'s `>=` and `Style::detect`'s `||` were once recorded as survivors no
++// test could kill rather than kept as dead insurance.
+ //
+-// They are unreachable rather than untested. The guard fires only when the writer produces
+-// something the parser reads back differently, which is a defect in `write_surface`, not an
+-// input a user can supply. No document reaches it, so no test can distinguish a guard that
+-// checks from one that does not.
+-//
+-// Recorded here the way 0.13 recorded `worse`'s `>=`, 1.1 recorded `Lineage::is_empty -> false`
+-// and `Style::detect`'s `||`: a survivor no test can kill is a fact about the code. What *is*
+-// tested is the property the guard protects — `crates/smysl-core/tests/versioning.rs` asserts
+-// that a document round-trips declaring the version it declared, and `tests/surface.rs`
+-// asserts the records survive. If those ever fail, this guard is why `fmt` will refuse rather
+-// than write the damage to disk.
++// The property it protected is still tested where it can actually be broken: at the writer.
++// `crates/smysl-core/tests/versioning.rs` asserts a document round-trips declaring the version
++// it declared, and `crates/smysl-core/tests/surface.rs` and `roundtrip.rs` assert records and
++// labels survive `write_surface`. If those ever fail, that is where it will show up now.

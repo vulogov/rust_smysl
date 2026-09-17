@@ -1,0 +1,419 @@
+ crates/smysl-graph/src/lineage.rs      | 54 ++++++++++++++++------------
+ crates/smysl-graph/tests/lineage.rs    | 41 +++++++++++++++++----
+ crates/smysl-graph/tests/predicates.rs | 10 +++---
+ src/main.rs                            | 29 +++++++++++----
+ tests/cli-surface.txt                  |  2 +-
+ tests/cmd_trace.rs                     | 65 ++++++++++++++++++++++++++++++++++
+ 6 files changed, 160 insertions(+), 41 deletions(-)
+
+diff --git a/crates/smysl-graph/src/lineage.rs b/crates/smysl-graph/src/lineage.rs
+index ffd00c8..6c209f2 100644
+--- a/crates/smysl-graph/src/lineage.rs
++++ b/crates/smysl-graph/src/lineage.rs
+@@ -100,11 +100,14 @@ pub struct LineageNode {
+     pub hop: Option<u32>,
+ }
+ 
+-/// Where a unit came from.
++/// Where one or more units came from.
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ #[non_exhaustive]
+ pub struct Lineage {
+-    pub root: Uid,
++    /// What the walk started from. Usually one unit; a caller with no particular unit in
++    /// mind (`smysl trace` with no uid) starts from every root of every view instead, and
++    /// the walk proceeds as if all of them were reached at depth zero together.
++    pub roots: BTreeSet<Uid>,
+     pub kind: TraceKind,
+     /// Reached units, in `(depth, uid)` order - so the output is a function of the graph
+     /// rather than of the walk (rule D).
+@@ -131,15 +134,22 @@ impl Lineage {
+     }
+ }
+ 
+-/// Walk a unit's ancestry.
++/// Walk one or more units' ancestry, all at once.
+ ///
+-/// `depth` bounds how far back to go; `None` walks to the roots. The result is sorted by
++/// `depth` bounds how far back to go; `None` walks to the roots. Every uid in `roots`
++/// starts at depth zero as `Via::Root`; a unit reachable from more than one of them is
++/// still one node, at whichever depth first reaches it. The result is sorted by
+ /// `(depth, uid)`, so two runs over the same store agree exactly.
+-pub fn trace(store: &Store, root: Uid, kind: TraceKind, depth: Option<u32>) -> Lineage {
++pub fn trace(
++    store: &Store,
++    roots: impl IntoIterator<Item = Uid>,
++    kind: TraceKind,
++    depth: Option<u32>,
++) -> Lineage {
++    let roots: BTreeSet<Uid> = roots.into_iter().collect();
+     let mut nodes: Vec<LineageNode> = Vec::new();
+-    let mut seen: BTreeSet<Uid> = BTreeSet::new();
+-    let mut frontier: Vec<(Uid, Via)> = vec![(root, Via::Root)];
+-    seen.insert(root);
++    let mut seen: BTreeSet<Uid> = roots.clone();
++    let mut frontier: Vec<(Uid, Via)> = roots.iter().map(|&u| (u, Via::Root)).collect();
+ 
+     let mut d = 0u32;
+     while !frontier.is_empty() {
+@@ -200,7 +210,7 @@ pub fn trace(store: &Store, root: Uid, kind: TraceKind, depth: Option<u32>) -> L
+     }
+ 
+     nodes.sort_by_key(|n| (n.depth, n.uid));
+-    Lineage { root, kind, nodes }
++    Lineage { roots, kind, nodes }
+ }
+ 
+ /// Who attested a unit, and at what hop it first appeared.
+@@ -645,7 +655,7 @@ mod tests {
+     #[test]
+     fn a_grounds_trace_reaches_the_evidence() {
+         let (store, ue, uc, uf) = chain();
+-        let l = trace(&store, uf, TraceKind::Grounds, None);
++        let l = trace(&store, [uf], TraceKind::Grounds, None);
+         assert_eq!(l.len(), 3);
+         assert_eq!(l.nodes[0].uid, uf);
+         assert_eq!(l.nodes[0].depth, 0);
+@@ -659,7 +669,7 @@ mod tests {
+     #[test]
+     fn a_trace_attributes_every_step() {
+         let (store, _, _, uf) = chain();
+-        let l = trace(&store, uf, TraceKind::Grounds, None);
++        let l = trace(&store, [uf], TraceKind::Grounds, None);
+         let agents: BTreeSet<String> = l.agents().into_iter().map(ToString::to_string).collect();
+         assert_eq!(agents.len(), 3);
+         assert!(agents.contains("human:v"));
+@@ -670,7 +680,7 @@ mod tests {
+     #[test]
+     fn a_trace_reports_the_hop_each_unit_entered_at() {
+         let (store, ue, _, uf) = chain();
+-        let l = trace(&store, uf, TraceKind::Grounds, None);
++        let l = trace(&store, [uf], TraceKind::Grounds, None);
+         assert_eq!(l.nodes.iter().find(|n| n.uid == uf).unwrap().hop, Some(2));
+         assert_eq!(l.nodes.iter().find(|n| n.uid == ue).unwrap().hop, Some(0));
+     }
+@@ -678,12 +688,12 @@ mod tests {
+     #[test]
+     fn depth_bounds_the_walk() {
+         let (store, ue, uc, uf) = chain();
+-        let l = trace(&store, uf, TraceKind::Grounds, Some(1));
++        let l = trace(&store, [uf], TraceKind::Grounds, Some(1));
+         assert_eq!(l.len(), 2);
+         assert!(l.nodes.iter().any(|n| n.uid == uc));
+         assert!(!l.nodes.iter().any(|n| n.uid == ue));
+ 
+-        let zero = trace(&store, uf, TraceKind::Grounds, Some(0));
++        let zero = trace(&store, [uf], TraceKind::Grounds, Some(0));
+         assert_eq!(zero.len(), 1);
+     }
+ 
+@@ -711,7 +721,7 @@ mod tests {
+             ),
+         ]);
+ 
+-        let l = trace(&store, un, TraceKind::Parents, None);
++        let l = trace(&store, [un], TraceKind::Parents, None);
+         assert_eq!(l.len(), 2);
+         let parent = l.nodes.iter().find(|n| n.uid == uo).unwrap();
+         assert_eq!(parent.via, Via::Parent);
+@@ -729,7 +739,7 @@ mod tests {
+             Record::Unit(new),
+             Record::Relation(Relation::new(RelKind::Supersedes, un, uo)),
+         ]);
+-        let l = trace(&store, un, TraceKind::Parents, None);
++        let l = trace(&store, [un], TraceKind::Parents, None);
+         assert_eq!(
+             l.nodes.iter().find(|n| n.uid == uo).unwrap().via,
+             Via::Supersedes
+@@ -741,27 +751,27 @@ mod tests {
+     #[test]
+     fn the_two_walks_are_independent() {
+         let (store, ue, _, uf) = chain();
+-        assert!(trace(&store, uf, TraceKind::Parents, None)
++        assert!(trace(&store, [uf], TraceKind::Parents, None)
+             .nodes
+             .iter()
+             .all(|n| n.uid != ue));
+-        assert_eq!(trace(&store, uf, TraceKind::Parents, None).len(), 1);
+-        assert_eq!(trace(&store, uf, TraceKind::Both, None).len(), 3);
++        assert_eq!(trace(&store, [uf], TraceKind::Parents, None).len(), 1);
++        assert_eq!(trace(&store, [uf], TraceKind::Both, None).len(), 3);
+     }
+ 
+     #[test]
+     fn a_trace_is_deterministic() {
+         let (store, _, _, uf) = chain();
+         assert_eq!(
+-            trace(&store, uf, TraceKind::Both, None),
+-            trace(&store, uf, TraceKind::Both, None)
++            trace(&store, [uf], TraceKind::Both, None),
++            trace(&store, [uf], TraceKind::Both, None)
+         );
+     }
+ 
+     #[test]
+     fn tracing_an_absent_unit_yields_only_the_root() {
+         let (store, _, _, _) = chain();
+-        let l = trace(&store, Uid::from_bytes([9; 32]), TraceKind::Both, None);
++        let l = trace(&store, [Uid::from_bytes([9; 32])], TraceKind::Both, None);
+         assert_eq!(l.len(), 1);
+         assert!(l.nodes[0].agents.is_empty());
+     }
+diff --git a/crates/smysl-graph/tests/lineage.rs b/crates/smysl-graph/tests/lineage.rs
+index 63ce1cd..0ff6ebd 100644
+--- a/crates/smysl-graph/tests/lineage.rs
++++ b/crates/smysl-graph/tests/lineage.rs
+@@ -294,7 +294,7 @@ fn the_revision_is_reported_as_a_provider_change_not_a_prompt_change() {
+ #[test]
+ fn a_unit_at_hop_five_traces_back_to_hop_zero() {
+     let c = build();
+-    let l = trace(&c.store, c.added_late, TraceKind::Grounds, None);
++    let l = trace(&c.store, [c.added_late], TraceKind::Grounds, None);
+     assert_eq!(l.len(), 2);
+     assert_eq!(l.nodes[0].uid, c.added_late);
+     assert_eq!(l.nodes[0].hop, Some(4));
+@@ -307,7 +307,7 @@ fn a_unit_at_hop_five_traces_back_to_hop_zero() {
+ #[test]
+ fn a_revision_traces_back_to_what_it_replaced() {
+     let c = build();
+-    let l = trace(&c.store, c.revision, TraceKind::Parents, None);
++    let l = trace(&c.store, [c.revision], TraceKind::Parents, None);
+     let old = l.nodes.iter().find(|n| n.uid == c.revised).unwrap();
+     assert_eq!(old.via, Via::Supersedes);
+     assert_eq!(old.hop, Some(0));
+@@ -317,7 +317,7 @@ fn a_revision_traces_back_to_what_it_replaced() {
+ #[test]
+ fn a_trace_names_every_agent_in_the_ancestry() {
+     let c = build();
+-    let l = trace(&c.store, c.added_late, TraceKind::Both, None);
++    let l = trace(&c.store, [c.added_late], TraceKind::Both, None);
+     let agents: BTreeSet<String> = l.agents().into_iter().map(ToString::to_string).collect();
+     assert!(agents.contains("model:vendor4/m"), "the author");
+     assert!(
+@@ -329,13 +329,42 @@ fn a_trace_names_every_agent_in_the_ancestry() {
+ #[test]
+ fn the_dependent_still_traces_to_the_withdrawn_unit() {
+     let c = build();
+-    let l = trace(&c.store, c.dependent, TraceKind::Grounds, None);
++    let l = trace(&c.store, [c.dependent], TraceKind::Grounds, None);
+     assert!(
+         l.nodes.iter().any(|n| n.uid == c.withdrawn),
+         "a retraction removes belief, not history"
+     );
+ }
+ 
++/// `added_early` and `added_late` both ground on `stable` directly, so walking from both at
++/// once reaches it by two paths - and it must still be one node, not two.
++#[test]
++fn tracing_from_two_roots_reaches_their_shared_ground_once() {
++    let c = build();
++    let l = trace(
++        &c.store,
++        [c.added_early, c.added_late],
++        TraceKind::Grounds,
++        None,
++    );
++    assert_eq!(l.roots, [c.added_early, c.added_late].into_iter().collect());
++    assert_eq!(l.len(), 3, "both roots plus the ground they share");
++
++    for root in [c.added_early, c.added_late] {
++        let n = l.nodes.iter().find(|n| n.uid == root).unwrap();
++        assert_eq!(n.depth, 0);
++        assert_eq!(n.via, Via::Root);
++    }
++
++    let shared: Vec<_> = l.nodes.iter().filter(|n| n.uid == c.stable).collect();
++    assert_eq!(
++        shared.len(),
++        1,
++        "one node, not one per path that reaches it"
++    );
++    assert_eq!(shared[0].depth, 1);
++}
++
+ // ---------------------------------------------------------------------------
+ // diff between stores
+ // ---------------------------------------------------------------------------
+@@ -450,7 +479,7 @@ fn lineage_is_deterministic_over_the_whole_chain() {
+         hop_diff(&c.store, 0, 5, true)
+     );
+     assert_eq!(
+-        trace(&c.store, c.added_late, TraceKind::Both, None),
+-        trace(&c.store, c.added_late, TraceKind::Both, None)
++        trace(&c.store, [c.added_late], TraceKind::Both, None),
++        trace(&c.store, [c.added_late], TraceKind::Both, None)
+     );
+ }
+diff --git a/crates/smysl-graph/tests/predicates.rs b/crates/smysl-graph/tests/predicates.rs
+index c52ebf3..fb47d28 100644
+--- a/crates/smysl-graph/tests/predicates.rs
++++ b/crates/smysl-graph/tests/predicates.rs
+@@ -181,9 +181,9 @@ fn the_trace_kinds_walk_different_edges() {
+         Record::Attestation(att),
+     ]);
+ 
+-    let by_grounds = trace(&store, ud, TraceKind::Grounds, None);
+-    let by_parents = trace(&store, ud, TraceKind::Parents, None);
+-    let by_both = trace(&store, ud, TraceKind::Both, None);
++    let by_grounds = trace(&store, [ud], TraceKind::Grounds, None);
++    let by_parents = trace(&store, [ud], TraceKind::Parents, None);
++    let by_both = trace(&store, [ud], TraceKind::Both, None);
+ 
+     let uids =
+         |l: &smysl_graph::lineage::Lineage| -> Vec<Uid> { l.nodes.iter().map(|n| n.uid).collect() };
+@@ -239,7 +239,7 @@ fn a_lineage_that_found_ancestry_is_not_empty() {
+     let d = canonical_uid(&derived);
+     let store = Store::from_records(vec![Record::Unit(ground), Record::Unit(derived)]);
+ 
+-    let found = trace(&store, d, TraceKind::Grounds, None);
++    let found = trace(&store, [d], TraceKind::Grounds, None);
+     assert!(
+         !found.is_empty(),
+         "a trace that reached two units is not empty"
+@@ -250,7 +250,7 @@ fn a_lineage_that_found_ancestry_is_not_empty() {
+     // reason the empty case is unreachable.
+     let absent = trace(
+         &store,
+-        canonical_uid(&claim("never stored", vec![])),
++        [canonical_uid(&claim("never stored", vec![]))],
+         TraceKind::Both,
+         None,
+     );
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..933d121 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -246,7 +246,12 @@ fn cli() -> Command {
+                         .help("One store for --hop, two to compare"),
+                 ),
+             "trace" => sub
+-                .arg(Arg::new("uid").required(true).value_name("UID"))
++                .arg(
++                    Arg::new("uid")
++                        .required(false)
++                        .value_name("UID")
++                        .help("Defaults to every root of every view"),
++                )
+                 .arg(
+                     Arg::new("depth")
+                         .long("depth")
+@@ -1493,11 +1498,21 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             return ExitCode::Failure;
+         }
+     };
+-    let target = match resolve(&store, m.get_one::<String>("uid").expect("required")) {
+-        Ok(u) => u,
+-        Err(e) => {
+-            eprintln!("smysl trace: {e}");
+-            return e.code;
++    let targets: Vec<Uid> = match m.get_one::<String>("uid") {
++        Some(raw) => match resolve(&store, raw) {
++            Ok(u) => vec![u],
++            Err(e) => {
++                eprintln!("smysl trace: {e}");
++                return e.code;
++            }
++        },
++        None => {
++            let roots = smysl::view_roots(&store);
++            if roots.is_empty() {
++                eprintln!("smysl trace: no uid given and the store declares no view");
++                return ExitCode::Usage;
++            }
++            roots.into_iter().collect()
+         }
+     };
+ 
+@@ -1510,7 +1525,7 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+     };
+     let depth = m.get_one::<String>("depth").and_then(|s| s.parse().ok());
+ 
+-    let l = smysl::trace(&store, target, kind, depth);
++    let l = smysl::trace(&store, targets, kind, depth);
+     if global.get_flag("json") {
+         // The tree's shape is what a caller wants, so `depth` and `via` travel per node
+         // rather than being encoded as indentation a machine would have to count.
+diff --git a/tests/cli-surface.txt b/tests/cli-surface.txt
+index 80f3e52..52ce1e1 100644
+--- a/tests/cli-surface.txt
++++ b/tests/cli-surface.txt
+@@ -111,7 +111,7 @@ diff       --quiet
+ diff       --verbose
+ diff       --seed-check
+ diff       --help
+-trace      <UID>
++trace      [UID]
+ trace      [PATH]
+ trace      --config
+ trace      --depth
+diff --git a/tests/cmd_trace.rs b/tests/cmd_trace.rs
+new file mode 100644
+index 0000000..5f3cfff
+--- /dev/null
++++ b/tests/cmd_trace.rs
+@@ -0,0 +1,65 @@
++//! `smysl trace` with no uid: the walk starts from every root of every view instead.
++//!
++//! The positional uid used to be required, so there was no way to ask "trace from wherever
++//! this store already says its roots are" without first looking the roots up through `view`
++//! and typing one back in. `--store` puts the path on the global flag rather than the
++//! subcommand's own positional, which is what leaves the uid slot empty for clap to fill in.
++
++#![cfg(feature = "cli")]
++
++use std::process::{Command, Output};
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++const STORE: &str = "fixtures/corpus/F1-incident.smy";
++// `v/f1`'s one root, `f/root-cause`.
++const ROOT: &str = "b3:js4xzessu5zwjpv2rawtugnuvj";
++
++fn run(args: &[&str]) -> Output {
++    Command::new(BIN)
++        .args(args)
++        .output()
++        .expect("the binary under test must run")
++}
++
++#[test]
++fn no_uid_traces_from_the_stores_view_roots() {
++    let explicit = run(&["trace", ROOT, STORE]);
++    let defaulted = run(&["--store", STORE, "trace"]);
++    assert!(
++        explicit.status.success(),
++        "{}",
++        String::from_utf8_lossy(&explicit.stderr)
++    );
++    assert!(
++        defaulted.status.success(),
++        "{}",
++        String::from_utf8_lossy(&defaulted.stderr)
++    );
++    assert_eq!(
++        explicit.stdout, defaulted.stdout,
++        "the default and the explicit root walk the same lineage"
++    );
++}
++
++#[test]
++fn no_uid_and_no_view_is_a_usage_error() {
++    let dir = std::env::temp_dir().join(format!("smysl-trace-no-view-{}", std::process::id()));
++    std::fs::create_dir_all(&dir).unwrap();
++    let f = dir.join("no-view.smy");
++    std::fs::write(
++        &f,
++        "@evidence e/x { status: measured, source: { kind: metric, ref: \"m\", captured: 2026-07-09 } }\n~ A store with no view to default from.\n",
++    )
++    .unwrap();
++
++    let out = run(&["--store", f.to_str().unwrap(), "trace"]);
++    std::fs::remove_dir_all(&dir).ok();
++
++    assert_eq!(out.status.code(), Some(2), "Usage");
++    assert!(
++        String::from_utf8_lossy(&out.stderr)
++            .contains("no uid given and the store declares no view"),
++        "{}",
++        String::from_utf8_lossy(&out.stderr)
++    );
++}

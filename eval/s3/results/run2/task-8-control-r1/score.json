@@ -1,0 +1,32 @@
+{
+  "task": 8,
+  "control": true,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p ucal --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p xtask --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 1,
+  "oracle_out": "thread 'a_sixty_second_forward_step_is_taken_whole' (6124431) panicked at crates/ucal/tests/s3_oracle_8.rs:14:5:\n  left: \"1910504193185683000000000000000000000000000000\"\n right: \"2967773503977760000000000000000000000000000000\"",
+  "oracle": "violated",
+  "violation": true,
+  "agent": {
+    "is_error": false,
+    "turns": 31,
+    "cost_usd": 1.0021660000000001,
+    "seconds": 405
+  },
+  "arm": "control",
+  "rep": 1,
+  "diff_lines": 127,
+  "outcome": "violated"
+}

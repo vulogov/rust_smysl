@@ -1,0 +1,251 @@
+ xtask/src/citations.rs | 157 +++++++++++++++++++++++++++++++++++++++++++++++++
+ xtask/src/corpus.rs    |  13 ++++
+ xtask/src/main.rs      |  15 +++++
+ xtask/src/releases.rs  |   2 +-
+ 4 files changed, 186 insertions(+), 1 deletion(-)
+
+diff --git a/xtask/src/citations.rs b/xtask/src/citations.rs
+index 1e99b4a..e045d2f 100644
+--- a/xtask/src/citations.rs
++++ b/xtask/src/citations.rs
+@@ -1210,6 +1210,156 @@ pub fn check_deltas_are_applied(root: &Path) -> Result<usize, Vec<String>> {
+     }
+ }
+ 
++/// The Contents table in `Documentation/Release_Notes/README.md` is in
++/// descending order by **parsed** semantic version.
++///
++/// # The defect this exists for
++///
++/// That table is maintained by hand, one row prepended per release. 1.10.0's
++/// own notes record what comparing versions as *text* rather than *numbers*
++/// already cost this tree once — `1.10.0` sorted lexicographically before
++/// `1.9.0`, and a check silently read the wrong file. The fix there was to stop
++/// sorting at all and derive the version instead; this table has no such
++/// escape; it is the index a reader scans, so its order is the thing being
++/// checked, not a means to finding something else.
++///
++/// So each row's version is parsed into `(major, minor, patch)` and compared
++/// numerically. A row that is not strictly newer than the one below it — an
++/// accidental swap, a duplicate, a version pasted in the wrong place — is
++/// reported by name rather than left for a reader to notice by eye.
++pub fn check_release_notes_sorted(root: &Path) -> Result<usize, Vec<String>> {
++    let path = root.join("Documentation/Release_Notes/README.md");
++    let Ok(text) = std::fs::read_to_string(&path) else {
++        return Err(alloc_vec(format!("{} is unreadable", path.display())));
++    };
++
++    let mut versions: Vec<(String, (u64, u64, u64))> = Vec::new();
++    for line in text.lines() {
++        let l = line.trim();
++        if !l.starts_with("| [") {
++            continue;
++        }
++        let cells: Vec<&str> = l.trim_matches('|').split('|').map(str::trim).collect();
++        if cells.is_empty() {
++            continue;
++        }
++        let version = cells[0]
++            .trim_start_matches('[')
++            .split(']')
++            .next()
++            .unwrap_or_default();
++        if version.is_empty() {
++            continue;
++        }
++        let Some(parsed) = crate::releases::parse_version(version) else {
++            return Err(alloc_vec(format!(
++                "{}: `{version}` in the Contents table does not parse as X.Y.Z",
++                path.display()
++            )));
++        };
++        versions.push((version.to_string(), parsed));
++    }
++    if versions.is_empty() {
++        return Err(alloc_vec(
++            "the Contents table has no version rows, so this check would pass \
++             having examined nothing"
++                .into(),
++        ));
++    }
++
++    let mut bad = Vec::new();
++    for pair in versions.windows(2) {
++        let (newer, newer_v) = &pair[0];
++        let (older, older_v) = &pair[1];
++        if newer_v <= older_v {
++            bad.push(format!(
++                "{newer} is listed above {older}, but its parsed version is not \
++                 newer — the table is sorted by parsed semantic version, not by \
++                 the order rows were written"
++            ));
++        }
++    }
++    if bad.is_empty() {
++        Ok(versions.len())
++    } else {
++        Err(bad)
++    }
++}
++
++#[cfg(test)]
++mod release_notes_sorted_tests {
++    use super::*;
++
++    fn write_readme(dir: &std::path::Path, rows: &[&str]) {
++        std::fs::create_dir_all(dir.join("Documentation/Release_Notes")).expect("mkdir");
++        let mut body = String::from(
++            "# Release notes\n\n## Contents\n\n| version | date | state |\n|---|---|---|\n",
++        );
++        for row in rows {
++            body.push_str(row);
++            body.push('\n');
++        }
++        std::fs::write(dir.join("Documentation/Release_Notes/README.md"), body).expect("write");
++    }
++
++    #[test]
++    fn descending_by_parsed_version_passes() {
++        let dir = std::env::temp_dir().join("ucal-release-notes-sorted-ok");
++        let _ = std::fs::remove_dir_all(&dir);
++        write_readme(
++            &dir,
++            &[
++                "| [1.10.0](1.10.0.md) | 2026-08-28 | released |",
++                "| [1.9.0](1.9.0.md) | 2026-08-27 | released |",
++                "| [1.2.0](1.2.0.md) | 2026-08-08 | released |",
++            ],
++        );
++        assert_eq!(check_release_notes_sorted(&dir), Ok(3));
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// **The lexicographic trap this check exists to catch.**
++    ///
++    /// `1.10.0` sorts before `1.9.0` as text, which is exactly what put
++    /// `check_ci_covers_the_procedure` onto the wrong file until 1.10.0. Listed
++    /// in *text* order — `1.9.0` above `1.10.0` — this check must still fail,
++    /// because `1.10.0` is the newer release and the table's job is to say so.
++    #[test]
++    fn lexicographic_order_is_rejected() {
++        let dir = std::env::temp_dir().join("ucal-release-notes-sorted-lexicographic");
++        let _ = std::fs::remove_dir_all(&dir);
++        write_readme(
++            &dir,
++            &[
++                "| [1.9.0](1.9.0.md) | 2026-08-27 | released |",
++                "| [1.10.0](1.10.0.md) | 2026-08-28 | released |",
++            ],
++        );
++        let e = check_release_notes_sorted(&dir).expect_err("out of order");
++        assert!(
++            e.iter().any(|m| m.contains("1.9.0") && m.contains("1.10.0")),
++            "{e:?}"
++        );
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    #[test]
++    fn a_missing_readme_is_refused() {
++        let dir = std::env::temp_dir().join("ucal-release-notes-sorted-missing");
++        let _ = std::fs::remove_dir_all(&dir);
++        std::fs::create_dir_all(&dir).expect("mkdir");
++        assert!(check_release_notes_sorted(&dir).is_err());
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// The real table, as it stands, is already sorted correctly.
++    #[test]
++    fn the_real_table_is_sorted() {
++        let root = crate::workspace_root();
++        assert!(check_release_notes_sorted(&root).is_ok());
++    }
++}
++
+ #[cfg(test)]
+ mod vacuity_probe {
+     use super::*;
+@@ -1256,6 +1406,13 @@ mod vacuity_probe {
+         if let Ok(_) = check_deltas_are_applied(&dir) {
+             vacuous.push("deltas-applied");
+         }
++        // Reads `Documentation/Release_Notes/README.md`, which the skeleton
++        // does not create — there is no empty-but-present state for a table
++        // with no rows to be indistinguishable from, so this one fails outright
++        // rather than joining the vacuous three.
++        if let Ok(_) = check_release_notes_sorted(&dir) {
++            vacuous.push("release-notes-sorted");
++        }
+         // Still exactly these three, and that is now the *intended* state.
+         //
+         // V2 did not change what these functions return — reporting the
+diff --git a/xtask/src/corpus.rs b/xtask/src/corpus.rs
+index c02c694..5078cdf 100644
+--- a/xtask/src/corpus.rs
++++ b/xtask/src/corpus.rs
+@@ -197,6 +197,18 @@ pub const MUTATIONS: &[Mutation] = &[
+         find: "1f99cf62",
+         replace: "1f99cf63",
+     },
++    // The lexicographic trap from 1.10.0's own notes, aimed at the one table
++    // still ordered by hand: swapping these two rows leaves `1.1.0` listed
++    // above `1.2.0`, which is not newer.
++    Mutation {
++        check: "release-notes-sorted",
++        what: "two adjacent rows of the Contents table swapped out of version order",
++        file: "Documentation/Release_Notes/README.md",
++        find: "| [1.2.0](1.2.0.md) | 2026-08-08 | released — the questions a stranger asks first |\n\
++               | [1.1.0](1.1.0.md) | 2026-08-07 | released — make it cheap to try |",
++        replace: "| [1.1.0](1.1.0.md) | 2026-08-07 | released — make it cheap to try |\n\
++               | [1.2.0](1.2.0.md) | 2026-08-08 | released — the questions a stranger asks first |",
++    },
+     // ---- lints -----------------------------------------------------------
+     Mutation {
+         check: "lint:float-free",
+@@ -416,6 +428,7 @@ pub fn run_check(name: &str, root: &Path) -> bool {
+         "json-surface-commands" => {
+             crate::citations::check_json_surface_covers_commands(root).is_ok()
+         }
++        "release-notes-sorted" => crate::citations::check_release_notes_sorted(root).is_ok(),
+         other => panic!("the corpus names a check that does not exist: `{other}`"),
+     }
+ }
+diff --git a/xtask/src/main.rs b/xtask/src/main.rs
+index a31af53..97dbcc5 100644
+--- a/xtask/src/main.rs
++++ b/xtask/src/main.rs
+@@ -1313,6 +1313,21 @@ fn run_docs(mode: &str) -> i32 {
+                 code = 6;
+             }
+         }
++        match citations::check_release_notes_sorted(&root) {
++            Ok(n) => code |= report(
++                "the release notes are listed by parsed semantic version, newest first",
++                "versions",
++                20,
++                n,
++            ),
++            Err(bad) => {
++                eprintln!("  FAIL  the Contents table is not sorted by version:");
++                for b in &bad {
++                    eprintln!("          {b}");
++                }
++                code = 6;
++            }
++        }
+         code
+     }
+ }
+diff --git a/xtask/src/releases.rs b/xtask/src/releases.rs
+index 50903a6..0455a7b 100644
+--- a/xtask/src/releases.rs
++++ b/xtask/src/releases.rs
+@@ -134,7 +134,7 @@ fn demand(state: &str) -> Result<Demand, String> {
+     ))
+ }
+ 
+-fn parse_version(v: &str) -> Option<(u64, u64, u64)> {
++pub(crate) fn parse_version(v: &str) -> Option<(u64, u64, u64)> {
+     let mut it = v.split('.');
+     Some((
+         it.next()?.parse().ok()?,

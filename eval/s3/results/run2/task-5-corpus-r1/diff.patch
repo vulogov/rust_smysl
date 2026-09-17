@@ -1,0 +1,372 @@
+ src/main.rs                  | 153 +++++++++++++++++++++++++++---------------
+ tests/cli-surface.txt        |   2 +-
+ tests/trace_default_roots.rs | 154 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 255 insertions(+), 54 deletions(-)
+
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..9d3bc80 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -246,7 +246,11 @@ fn cli() -> Command {
+                         .help("One store for --hop, two to compare"),
+                 ),
+             "trace" => sub
+-                .arg(Arg::new("uid").required(true).value_name("UID"))
++                .arg(
++                    Arg::new("uid")
++                        .value_name("UID")
++                        .help("Unit to trace; defaults to every root of every view"),
++                )
+                 .arg(
+                     Arg::new("depth")
+                         .long("depth")
+@@ -1364,6 +1368,19 @@ fn store_arg(m: &ArgMatches, global: &ArgMatches) -> Option<String> {
+         .cloned()
+ }
+ 
++/// Whether `raw` is shaped like something [`resolve`] could take — a uid or a label —
++/// without needing the store to say so.
++///
++/// `trace`'s uid positional became optional; its store positional did not move. A single
++/// bare argument still fills the first positional, so `smysl trace some-store.smy` would
++/// otherwise be read as a (doomed) attempt to trace the label `some-store.smy`. The same
++/// syntax [`resolve`] uses to tell a uid from a label — `b3:…` versus never containing `:`
++/// — also tells either of them from a path, so a lone argument that is neither is read as
++/// the store instead.
++fn looks_like_unit_ref(raw: &str) -> bool {
++    smysl::Label::new(raw).is_ok() || UidPrefix::parse(raw).is_ok()
++}
++
+ /// `smysl diff` - what changed, and who changed it (§23.1).
+ fn cmd_diff(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+     let inputs: Vec<String> = m
+@@ -1481,8 +1498,24 @@ fn uid_array<'a>(uids: impl IntoIterator<Item = &'a Uid>) -> String {
+ }
+ 
+ /// `smysl trace` - walk a unit's ancestry (§23.1). The direct answer to F3.
++///
++/// The uid is optional. Omitted, the walk starts from every root of every view (§16.4) —
++/// the same seed set `salience` and `thread --derive` default to when nothing else names a
++/// starting point — one trace per root, printed in turn.
+ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+-    let Some(path) = store_arg(m, global) else {
++    // A single bare argument still fills the `uid` positional first (see
++    // `looks_like_unit_ref`), so a lone argument that cannot be a uid or a label is read as
++    // the store instead.
++    let (uid_raw, store_positional): (Option<&String>, Option<&String>) =
++        match (m.get_one::<String>("uid"), m.get_one::<String>("store")) {
++            (Some(u), None) if !looks_like_unit_ref(u) => (None, Some(u)),
++            (u, s) => (u, s),
++        };
++
++    let Some(path) = store_positional
++        .cloned()
++        .or_else(|| global.get_one::<String>("store").cloned())
++    else {
+         eprintln!("smysl trace: no store given");
+         return ExitCode::Usage;
+     };
+@@ -1493,11 +1526,21 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             return ExitCode::Failure;
+         }
+     };
+-    let target = match resolve(&store, m.get_one::<String>("uid").expect("required")) {
+-        Ok(u) => u,
+-        Err(e) => {
+-            eprintln!("smysl trace: {e}");
+-            return e.code;
++    let targets: Vec<Uid> = match uid_raw {
++        Some(raw) => match resolve(&store, raw) {
++            Ok(u) => vec![u],
++            Err(e) => {
++                eprintln!("smysl trace: {e}");
++                return e.code;
++            }
++        },
++        None => {
++            let roots = smysl::view_roots(&store);
++            if roots.is_empty() {
++                eprintln!("smysl trace: no uid given and the store declares no view roots");
++                return ExitCode::Usage;
++            }
++            roots.into_iter().collect()
+         }
+     };
+ 
+@@ -1510,53 +1553,57 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+     };
+     let depth = m.get_one::<String>("depth").and_then(|s| s.parse().ok());
+ 
+-    let l = smysl::trace(&store, target, kind, depth);
+-    if global.get_flag("json") {
+-        // The tree's shape is what a caller wants, so `depth` and `via` travel per node
+-        // rather than being encoded as indentation a machine would have to count.
+-        let nodes: Vec<String> = l
+-            .nodes
+-            .iter()
+-            .map(|n| {
+-                let hop = n
+-                    .hop
+-                    .map(|h| h.to_string())
+-                    .unwrap_or_else(|| "null".into());
+-                let agents: Vec<String> = n
+-                    .agents
+-                    .iter()
+-                    .map(|a| smysl::json_escape(&a.to_string()))
+-                    .collect();
+-                format!(
+-                    "{{\"uid\":{},\"depth\":{},\"via\":{},\"hop\":{},\"agents\":[{}]}}",
+-                    smysl::json_escape(&n.uid.canonical()),
+-                    n.depth,
+-                    smysl::json_escape(n.via.as_str()),
+-                    hop,
+-                    agents.join(",")
+-                )
+-            })
+-            .collect();
+-        println!(
+-            "{{\"units\":{},\"steps\":{},\"nodes\":[{}]}}",
+-            l.len(),
+-            l.max_depth(),
+-            nodes.join(",")
+-        );
+-        return ExitCode::Success;
+-    }
+-    for n in &l.nodes {
+-        let indent = "  ".repeat(n.depth as usize);
+-        let hop = n.hop.map(|h| format!(" @hop{h}")).unwrap_or_default();
+-        let agents = if m.get_flag("agents") && !n.agents.is_empty() {
+-            let names: Vec<String> = n.agents.iter().map(ToString::to_string).collect();
+-            format!("  [{}]", names.join(", "))
+-        } else {
+-            String::new()
+-        };
+-        println!("{indent}{} ({}){hop}{agents}", n.uid, n.via.as_str());
++    for target in targets {
++        let l = smysl::trace(&store, target, kind, depth);
++        if global.get_flag("json") {
++            // The tree's shape is what a caller wants, so `depth` and `via` travel per node
++            // rather than being encoded as indentation a machine would have to count. One
++            // object per line, as `check` does per diagnostic, so a multi-root walk stays
++            // parseable line by line rather than needing to be wrapped in an array.
++            let nodes: Vec<String> = l
++                .nodes
++                .iter()
++                .map(|n| {
++                    let hop = n
++                        .hop
++                        .map(|h| h.to_string())
++                        .unwrap_or_else(|| "null".into());
++                    let agents: Vec<String> = n
++                        .agents
++                        .iter()
++                        .map(|a| smysl::json_escape(&a.to_string()))
++                        .collect();
++                    format!(
++                        "{{\"uid\":{},\"depth\":{},\"via\":{},\"hop\":{},\"agents\":[{}]}}",
++                        smysl::json_escape(&n.uid.canonical()),
++                        n.depth,
++                        smysl::json_escape(n.via.as_str()),
++                        hop,
++                        agents.join(",")
++                    )
++                })
++                .collect();
++            println!(
++                "{{\"units\":{},\"steps\":{},\"nodes\":[{}]}}",
++                l.len(),
++                l.max_depth(),
++                nodes.join(",")
++            );
++            continue;
++        }
++        for n in &l.nodes {
++            let indent = "  ".repeat(n.depth as usize);
++            let hop = n.hop.map(|h| format!(" @hop{h}")).unwrap_or_default();
++            let agents = if m.get_flag("agents") && !n.agents.is_empty() {
++                let names: Vec<String> = n.agents.iter().map(ToString::to_string).collect();
++                format!("  [{}]", names.join(", "))
++            } else {
++                String::new()
++            };
++            println!("{indent}{} ({}){hop}{agents}", n.uid, n.via.as_str());
++        }
++        println!("{path}: {} unit(s) over {} step(s)", l.len(), l.max_depth());
+     }
+-    println!("{path}: {} unit(s) over {} step(s)", l.len(), l.max_depth());
+     ExitCode::Success
+ }
+ 
+diff --git a/tests/cli-surface.txt b/tests/cli-surface.txt
+index 80f3e52..52ce1e1 100644
+--- a/tests/cli-surface.txt
++++ b/tests/cli-surface.txt
+@@ -111,7 +111,7 @@ diff       --quiet
+ diff       --verbose
+ diff       --seed-check
+ diff       --help
+-trace      <UID>
++trace      [UID]
+ trace      [PATH]
+ trace      --config
+ trace      --depth
+diff --git a/tests/trace_default_roots.rs b/tests/trace_default_roots.rs
+new file mode 100644
+index 0000000..919789d
+--- /dev/null
++++ b/tests/trace_default_roots.rs
+@@ -0,0 +1,154 @@
++//! `trace`'s uid is optional. Omitted, it walks from every root of every view (§16.4) — the
++//! same seed set `salience` and `thread --derive` already default to when nothing else names
++//! a starting point.
++//!
++//! The uid positional stayed first and the store positional second, so a single bare argument
++//! still fills `uid` before `store`. `smysl trace some-store.smy` would otherwise be read as an
++//! attempt to trace the label `some-store.smy` rather than as "trace this store, uid omitted" —
++//! the property pinned here is that it is not.
++
++#![cfg(feature = "cli")]
++
++use std::path::PathBuf;
++use std::process::{Command, Output};
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++const STORE: &str = "fixtures/corpus/F1-incident.smy";
++const ROOT: &str = "b3:js4xzessu5zwjpv2rawtugnuvj";
++
++fn run(args: &[&str]) -> Output {
++    Command::new(BIN)
++        .args(args)
++        .output()
++        .expect("the binary under test must run")
++}
++
++fn scratch(name: &str) -> PathBuf {
++    let dir = std::env::temp_dir().join(format!(
++        "smysl-trace-default-roots-{name}-{}",
++        std::process::id()
++    ));
++    std::fs::create_dir_all(&dir).expect("scratch dir");
++    dir
++}
++
++#[test]
++fn omitting_the_uid_traces_the_stores_declared_root() {
++    let explicit = run(&["trace", ROOT, STORE]);
++    let defaulted = run(&["trace", STORE]);
++    assert!(
++        explicit.status.success(),
++        "{}",
++        String::from_utf8_lossy(&explicit.stderr)
++    );
++    assert_eq!(explicit.status.code(), defaulted.status.code());
++    assert_eq!(
++        String::from_utf8_lossy(&explicit.stdout),
++        String::from_utf8_lossy(&defaulted.stdout),
++        "defaulting to the root must print exactly what naming it explicitly does"
++    );
++}
++
++#[test]
++fn omitting_the_uid_still_works_under_json() {
++    let explicit = run(&["trace", "--json", ROOT, STORE]);
++    let defaulted = run(&["trace", "--json", STORE]);
++    assert!(defaulted.status.success());
++    assert_eq!(
++        String::from_utf8_lossy(&explicit.stdout),
++        String::from_utf8_lossy(&defaulted.stdout)
++    );
++}
++
++/// Nothing is given at all — not even a store. Distinct from the "uid given, store missing"
++/// case below: this is the one clap itself now lets through, since neither positional is
++/// required any more.
++#[test]
++fn no_uid_and_no_store_is_refused() {
++    let out = run(&["trace"]);
++    assert!(!out.status.success());
++    assert!(String::from_utf8_lossy(&out.stderr).contains("no store given"));
++}
++
++/// A lone argument shaped like a label is still read as the uid, not as a store path —
++/// the ambiguity is broken by shape, not by position.
++#[test]
++fn a_label_shaped_lone_argument_is_read_as_a_uid_not_a_store() {
++    let out = run(&["trace", "c/pool-saturation"]);
++    assert!(!out.status.success());
++    assert!(
++        String::from_utf8_lossy(&out.stderr).contains("no store given"),
++        "`c/pool-saturation` looks like a label, so the missing argument is the store, not the uid"
++    );
++}
++
++/// A store with two roots is walked from both, one trace block per root, in the same order
++/// `view`'s own `BTreeSet<Uid>` would give them.
++#[test]
++fn omitting_the_uid_walks_every_view_root_when_there_are_several() {
++    let dir = scratch("multi");
++    let f = dir.join("two-roots.smy");
++    std::fs::write(
++        &f,
++        "\
++@doc smysl/1.0 { id: v/two-roots, intent: rationale, lang: en, roots: [c/one, c/two] }
++
++@claim c/one { status: speculative }
++~ First independent claim.
++
++@claim c/two { status: speculative }
++~ Second independent claim.
++",
++    )
++    .unwrap();
++    let path = f.to_str().unwrap();
++
++    let defaulted = run(&["trace", path]);
++    assert!(
++        defaulted.status.success(),
++        "{}",
++        String::from_utf8_lossy(&defaulted.stderr)
++    );
++    let by_one = run(&["trace", "c/one", path]);
++    let by_two = run(&["trace", "c/two", path]);
++    assert!(by_one.status.success() && by_two.status.success());
++
++    let stdout = String::from_utf8_lossy(&defaulted.stdout).into_owned();
++    let expected = format!(
++        "{}{}",
++        String::from_utf8_lossy(&by_one.stdout),
++        String::from_utf8_lossy(&by_two.stdout)
++    );
++    assert_eq!(
++        stdout, expected,
++        "the two single-root traces, concatenated in root order, are exactly the default output"
++    );
++
++    std::fs::remove_dir_all(&dir).ok();
++}
++
++/// A store that declares no view has no roots to default to, and `trace` refuses rather than
++/// silently walking nothing.
++#[test]
++fn omitting_the_uid_with_no_view_roots_is_refused() {
++    let dir = scratch("no-view");
++    let f = dir.join("no-view.smy");
++    std::fs::write(
++        &f,
++        "\
++@claim c/only { status: speculative }
++~ A store with no view at all.
++",
++    )
++    .unwrap();
++    let out = run(&["trace", f.to_str().unwrap()]);
++    std::fs::remove_dir_all(&dir).ok();
++
++    assert!(!out.status.success());
++    assert!(
++        String::from_utf8_lossy(&out.stderr)
++            .contains("no uid given and the store declares no view roots"),
++        "{}",
++        String::from_utf8_lossy(&out.stderr)
++    );
++}

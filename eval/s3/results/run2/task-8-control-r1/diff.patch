@@ -1,0 +1,192 @@
+ crates/ucal/src/clock.rs | 126 ++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 118 insertions(+), 8 deletions(-)
+
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..098bd62 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -96,18 +96,32 @@ pub fn finest_tier_for(q: &Ticks) -> Option<Tier> {
+ /// # The rule
+ ///
+ /// ```text
+-/// reading = max(wall_now, anchor + monotonic_elapsed)
++/// reading = max(wall_now capped, anchor + monotonic_elapsed)
+ /// ```
+ ///
+ /// - **Ordinarily** the two agree to within the clock's quantum and either wins.
+ /// - **A backward step** loses to the monotonic branch, which keeps advancing at
+ ///   the oscillator's rate rather than freezing until the wall clock catches up.
+ /// - **A forward step** wins, because a forward jump is a correction arriving and
+-///   refusing it would be preferring this process's opinion to the system's.
++///   refusing it would be preferring this process's opinion to the system's —
++///   but only [`MAX_ADVANCE_NANOS`] of it per reading. The rest is not refused,
++///   only deferred: the monotonic branch keeps closing the gap on its own as
++///   real time passes, so a jump larger than the cap is fully reflected once
++///   that much time has elapsed, capped reading or not.
+ ///
+ /// So a reading never goes backwards, and the clock still tracks the system
+ /// forwards. Those are the two properties; neither is a claim about accuracy.
+ ///
++/// # Why cap the forward branch at all
++///
++/// `ucal wallclock` reads the clock twenty times a second for as long as it is
++/// left running. Without a cap, a wall clock that steps forward by hours — NTP
++/// correcting a stopped machine, a VM resuming from an hours-old snapshot —
++/// hands the very next reading the whole jump, and the face goes from one time
++/// to one hours later between two adjacent frames. That jump is real and this
++/// does not hide it, but a person watching a clock is better served by it
++/// climbing through the gap than by a silent teleport with nothing in between.
++///
+ /// # What it does not do
+ ///
+ /// It does not make a reading finer, more accurate, or traceable to anything.
+@@ -123,6 +137,14 @@ pub struct Session {
+     last: Ticks,
+ }
+ 
++/// The most a single reading may advance ahead of the monotonic projection.
++///
++/// One second: far above the gap between two ordinary readings (`ucal
++/// wallclock` polls at 20 Hz, so about 50 ms apart), so a quiet session never
++/// notices it, and small enough that even an hours-long jump climbs visibly
++/// rather than vanishing into one frame.
++pub const MAX_ADVANCE_NANOS: u128 = 1_000_000_000;
++
+ impl Session {
+     /// Anchor a session at a wall reading.
+     pub fn anchored_at(wall: &Instant<UC1>) -> Session {
+@@ -146,10 +168,24 @@ impl Session {
+             .anchor
+             .try_add(monotonic_elapsed)
+             .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++        // How far ahead of the monotonic projection the wall clock is trying
++        // to place this reading. `None` means the wall clock is at or behind
++        // the projection, which is the ordinary case and the backward-step
++        // case, and carries no cap.
++        let mut wall = wall_now.ticks().clone();
++        if let Some(excess) = wall.try_sub(&projected) {
++            let cap = ticks_in_nanos(MAX_ADVANCE_NANOS)
++                .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++            if excess > cap {
++                wall = projected
++                    .try_add(&cap)
++                    .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++            }
++        }
+         // The largest of the three. `last` is belt and braces: the first two
+         // cannot go backwards on their own, and a caller handing back a smaller
+         // elapsed would make them, and this type sells monotonicity.
+-        let mut best = wall_now.ticks().clone();
++        let mut best = wall;
+         if projected > best {
+             best = projected;
+         }
+@@ -459,6 +495,11 @@ mod tests {
+         ticks_in_nanos(n).expect("in range")
+     }
+ 
++    /// An instant at `n` nanoseconds, for jumps finer than a whole second.
++    fn at_ns(n: u128) -> Instant<UC1> {
++        Instant::from_ticks(ns(n)).expect("in the domain")
++    }
++
+     /// Ordinarily the two branches agree and the reading tracks the wall clock.
+     #[test]
+     fn a_quiet_session_follows_the_wall_clock() {
+@@ -499,22 +540,91 @@ mod tests {
+         );
+     }
+ 
+-    /// A forward step is a correction arriving, and is accepted.
++    /// A forward step under the cap is a correction arriving, and is accepted
++    /// in full.
+     ///
+     /// Refusing it would be preferring this process's opinion of the time to the
+     /// system's, which is not a trade a clock gets to make on its reader's
+     /// behalf.
+     #[test]
+-    fn a_forward_step_is_accepted() {
++    fn a_forward_step_within_the_cap_is_accepted_in_full() {
+         let mut s = Session::anchored_at(&at(100));
+         s.reading(&at(101), &ns(1_000_000_000)).expect("a reading");
++        // Half a second ahead of the monotonic projection (102s) — under the
++        // one-second cap.
+         let jumped = s
+-            .reading(&at(160), &ns(2_000_000_000))
++            .reading(&at_ns(102_500_000_000), &ns(2_000_000_000))
+             .expect("a reading");
+         assert_eq!(
+             jumped.ticks().to_dec_string(),
+-            at(160).ticks().to_dec_string(),
+-            "a forward correction was refused"
++            at_ns(102_500_000_000).ticks().to_dec_string(),
++            "a forward correction under the cap was not accepted in full"
++        );
++    }
++
++    /// **The reason the cap exists.** A forward step larger than the cap is
++    /// not reflected all at once: the excess is deferred rather than refused,
++    /// and closes on its own as real time passes.
++    ///
++    /// `ucal wallclock` reads the clock twenty times a second, and a jump this
++    /// size handed to a single reading would take the face from one time to a
++    /// minute later between two adjacent frames.
++    #[test]
++    fn a_large_forward_step_is_capped_then_caught_up_by_elapsed_time() {
++        let mut s = Session::anchored_at(&at(100));
++        s.reading(&at(101), &ns(1_000_000_000)).expect("a reading");
++
++        // The wall clock jumps sixty seconds ahead of the monotonic
++        // projection (102s): capped to one second above it.
++        let capped = s
++            .reading(&at(162), &ns(2_000_000_000))
++            .expect("a reading");
++        assert_eq!(
++            capped.ticks().to_dec_string(),
++            at(103).ticks().to_dec_string(),
++            "a forward step above the cap was not capped"
++        );
++
++        // Thirty real seconds later, without the wall clock moving again,
++        // the projection has closed thirty seconds of the gap on its own.
++        let still_catching_up = s
++            .reading(&at(162), &ns(32_000_000_000))
++            .expect("a reading");
++        assert_eq!(
++            still_catching_up.ticks().to_dec_string(),
++            at(133).ticks().to_dec_string(),
++            "the reading did not keep closing the gap as real time passed"
++        );
++
++        // Once sixty real seconds have passed since the jump was first read,
++        // the monotonic projection alone has reached the wall clock, and the
++        // cap no longer has anything to bite on.
++        let caught_up = s
++            .reading(&at(162), &ns(62_000_000_000))
++            .expect("a reading");
++        assert_eq!(
++            caught_up.ticks().to_dec_string(),
++            at(162).ticks().to_dec_string(),
++            "the reading never fully caught up to the wall clock"
++        );
++    }
++
++    /// Elapsed real time is not a jump, however large, and is never capped.
++    ///
++    /// The cap bounds how far the wall clock may run *ahead of* the monotonic
++    /// projection in one reading, not how far a reading may be from the
++    /// previous one — a session left unread for an hour and then asked for a
++    /// reading should get the honest hour, not one capped second of it.
++    #[test]
++    fn elapsed_time_is_not_a_jump_and_is_never_capped() {
++        let mut s = Session::anchored_at(&at(0));
++        let r = s
++            .reading(&at(3_600), &ns(3_600 * 1_000_000_000))
++            .expect("a reading");
++        assert_eq!(
++            r.ticks().to_dec_string(),
++            at(3_600).ticks().to_dec_string(),
++            "an hour of honest elapsed time was capped like a jump"
+         );
+     }
+ 

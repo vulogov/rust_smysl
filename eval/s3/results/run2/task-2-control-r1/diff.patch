@@ -1,0 +1,189 @@
+ CHANGELOG.md       |   8 ++++-
+ src/main.rs        |  12 +++++--
+ tests/cmd_check.rs | 104 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/dispatch.rs  |   6 ++--
+ 4 files changed, 125 insertions(+), 5 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..a334907 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,13 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++### `check` with no path reads `.smysl/store`
++
++Every bare command reads stdin by rule P, and `check` did too - so a scheduled or pre-commit
++`smysl check` with nothing piped into it either hung on a terminal or silently checked nothing.
++Stdin has no meaning for that use, so `check` alone now falls back to `.smysl/store`, the
++project's default store on disk, resolved against the current directory the same way `ingest`
++resolves `.smysl/staged.smy`. `-` and an explicit `--store` are unchanged.
+ 
+ ---
+ 
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..1880e66 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -217,7 +217,7 @@ fn cli() -> Command {
+                     Arg::new("files")
+                         .num_args(0..)
+                         .value_name("FILE")
+-                        .help("Stores to check; `-` or none reads stdin (rule P)"),
++                        .help("Stores to check; `-` reads stdin, none reads `.smysl/store`"),
+                 ),
+             "diff" => sub
+                 .arg(
+@@ -1006,6 +1006,14 @@ fn finish_over(bar: Bar, n: usize, verb: &str) {
+     }
+ }
+ 
++/// Where `check` looks when given neither a `FILE` nor `--store`.
++///
++/// Every other bare command reads stdin by rule P, but stdin has no meaning for a
++/// scheduled or pre-commit `check` run with nothing piped into it - so `check` alone
++/// falls back to the project's default store on disk instead of blocking on a read
++/// that will never come.
++const DEFAULT_STORE: &str = ".smysl/store";
++
+ /// `smysl check` - run the check pipeline (§23.1).
+ ///
+ /// Exits 3 on any error-severity diagnostic, and `--strict` promotes warnings to that
+@@ -1026,7 +1034,7 @@ fn cmd_check(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             global
+                 .get_one::<String>("store")
+                 .map(|s| vec![s.clone()])
+-                .unwrap_or_else(|| vec!["-".to_string()])
++                .unwrap_or_else(|| vec![DEFAULT_STORE.to_string()])
+         });
+ 
+     // `--as` names the schemas a consumer implements; the kernel is always implied.
+diff --git a/tests/cmd_check.rs b/tests/cmd_check.rs
+new file mode 100644
+index 0000000..93da5e1
+--- /dev/null
++++ b/tests/cmd_check.rs
+@@ -0,0 +1,104 @@
++//! `smysl check` with no `FILE` and no `--store`.
++//!
++//! Every other bare command falls back to stdin (rule P), and `check` used to as well - which
++//! meant a scheduled or pre-commit `smysl check` with nothing piped into it either hung reading
++//! a terminal or silently checked an empty document. `check` alone now defaults to the store a
++//! project keeps at `.smysl/store`, resolved against the current directory the way every other
++//! project sidecar is (`ingest`'s `.smysl/staged.smy`, `usage`'s `.smysl/usage.log`).
++
++#![cfg(feature = "cli")]
++
++use std::process::Command;
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++const F1: &str = "fixtures/corpus/F1-incident.smy";
++
++struct Out {
++    stdout: String,
++    stderr: String,
++    code: i32,
++}
++
++fn run_in(dir: &std::path::Path, args: &[&str]) -> Out {
++    let o = Command::new(BIN)
++        .args(args)
++        .current_dir(dir)
++        .output()
++        .expect("the binary under test must run");
++    Out {
++        stdout: String::from_utf8_lossy(&o.stdout).into_owned(),
++        stderr: String::from_utf8_lossy(&o.stderr).into_owned(),
++        code: o.status.code().unwrap_or(-1),
++    }
++}
++
++/// A directory of this test's own, so two runs cannot collide and no test depends on -
++/// or dirties - the state of the checkout.
++fn scratch(name: &str) -> std::path::PathBuf {
++    let dir = std::env::temp_dir().join(format!("smysl-cmd-check-{name}-{}", std::process::id()));
++    let _ = std::fs::remove_dir_all(&dir);
++    std::fs::create_dir_all(dir.join(".smysl")).expect("scratch dir");
++    dir
++}
++
++const SUCCESS: i32 = 0;
++const FAILURE: i32 = 1;
++
++/// No `FILE`, no `--store`, and `.smysl/store` present: `check` reads it, the same as if it
++/// had been named explicitly.
++#[test]
++fn no_path_reads_dot_smysl_store() {
++    let dir = scratch("present");
++    let src = std::fs::read_to_string(F1).expect("read fixture");
++    std::fs::write(dir.join(".smysl").join("store"), &src).expect("write default store");
++
++    let bare = run_in(&dir, &["check"]);
++    let explicit = run_in(&dir, &["check", ".smysl/store"]);
++
++    assert_eq!(
++        bare.code, SUCCESS,
++        "a clean store at the default path should check clean: {} {}",
++        bare.stdout, bare.stderr
++    );
++    // Both runs name the same path (`.smysl/store`, once implied and once spelled out), so
++    // they report identically.
++    assert_eq!(bare.stdout, explicit.stdout);
++}
++
++/// No `FILE`, no `--store`, and no `.smysl/store` on disk: `check` reports the missing file
++/// rather than blocking on stdin - a run under a test harness or a cron job has nothing to
++/// pipe in, and hanging is worse than failing.
++#[test]
++fn no_path_and_no_default_store_fails_without_blocking_on_stdin() {
++    let dir = scratch("absent");
++
++    let out = run_in(&dir, &["check"]);
++
++    assert_eq!(
++        out.code, FAILURE,
++        "a missing default store must fail, not hang or succeed: {} {}",
++        out.stdout, out.stderr
++    );
++    assert!(
++        out.stderr.contains(".smysl/store"),
++        "the error should name the path it looked for: {}",
++        out.stderr
++    );
++}
++
++/// `--store` still overrides the default, exactly as it does for every other command.
++#[test]
++fn explicit_store_flag_overrides_the_default() {
++    let dir = scratch("flag");
++    let src = std::fs::read_to_string(F1).expect("read fixture");
++    let named = dir.join("named.smy");
++    std::fs::write(&named, &src).expect("write named store");
++
++    let out = run_in(&dir, &["check", "--store", "named.smy"]);
++
++    assert_eq!(
++        out.code, SUCCESS,
++        "an explicit --store must be read instead of the default: {} {}",
++        out.stdout, out.stderr
++    );
++}
+diff --git a/tests/dispatch.rs b/tests/dispatch.rs
+index 5904afd..476105b 100644
+--- a/tests/dispatch.rs
++++ b/tests/dispatch.rs
+@@ -111,8 +111,10 @@ fn scratch(name: &str) -> PathBuf {
+ 
+ /// Run one command with the least it needs, from a directory of its own, and return its output.
+ ///
+-/// Stdin is `/dev/null` rather than inherited: `fmt` and `check` read stdin when given no path,
+-/// and a test harness that hands them a terminal would hang instead of failing.
++/// Stdin is `/dev/null` rather than inherited: `fmt` reads stdin when given no path, and a test
++/// harness that hands it a terminal would hang instead of failing. `check` given no path reads
++/// `.smysl/store` instead, which is absent from the scratch directory and so fails the same
++/// harmless way, but the null stdin is cheap insurance against that default changing back.
+ fn dispatch(command: &str) -> String {
+     let out = Command::new(BIN)
+         .arg(command)

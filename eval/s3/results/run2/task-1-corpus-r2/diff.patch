@@ -1,0 +1,215 @@
+ CHANGELOG.md                                       | 12 +++++-
+ Documentation/manual/appendices.typ                |  2 +-
+ Documentation/manual/ch01-03-foundations.typ       | 21 ++++++----
+ .../manual/ch04-05-creating-formatting.typ         | 47 ++++++++++------------
+ src/main.rs                                        | 10 -----
+ tests/cmd_fmt.rs                                   | 26 +++++-------
+ 6 files changed, 58 insertions(+), 60 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..36c14ff 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,17 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++### `fmt` no longer re-parses its own output
++
++`cmd_fmt` dropped the runtime round-trip guard that re-parsed the canonical text it had
++just written and compared the result back against the input, on every file, on every run.
++The guard could only ever catch a defect in `write_surface` itself — no document a user
++could supply reached it — so it bought no protection a test suite could not already give,
++at the cost of a full second parse per file. The property is now asserted once, at the
++library level: `every_accepted_mutation_round_trips` and `versioning.rs` in
++`crates/smysl-core/tests` fuzz `write_surface`'s output and assert it re-parses to the same
++records and declared version. `fmt` no longer exits `9`; that code is now `reindex
++--verify`'s alone.
+ 
+ ---
+ 
+diff --git a/Documentation/manual/appendices.typ b/Documentation/manual/appendices.typ
+index 56c4fff..68b05b0 100644
+--- a/Documentation/manual/appendices.typ
++++ b/Documentation/manual/appendices.typ
+@@ -595,7 +595,7 @@ gap or a duplicate.
+     ([`6`], [`Provider`], [A model provider failed.], [`providers --probe`, `ingest`, `attest` against an unreachable or erroring provider.]),
+     ([`7`], [`Offline`], [`--offline` blocked a call that would have left the machine.], [Any model-dependent command run with `--offline` against a hosted provider.]),
+     ([`8`], [`UnsupportedVersion`], [The document's format or kernel major isn't supported by this build.], [Parsing a store from a future or otherwise incompatible format/kernel major.]),
+-    ([`9`], [`HashVerification`], [A recomputed hash didn't match a stored uid.], [`fmt`'s round-trip check, `reindex --verify`, integrity failures.]),
++    ([`9`], [`HashVerification`], [A recomputed hash didn't match a stored uid.], [`reindex --verify`, integrity failures.]),
+     ([`10`], [`Staged`], [Output is staged, awaiting `merge --staged` to confirm it.], [`ingest`, unless `--yes` is given.]),
+     ([`11`], [`StagedWithCorrections`], [The same, and rule M lowered at least one unit — the model claimed more than its grounds support and was corrected. Not a failure. New in 0.2; a script testing `= 10` should test `>= 10`.], [`ingest`, including under `--yes`.]),
+   ),
+diff --git a/Documentation/manual/ch01-03-foundations.typ b/Documentation/manual/ch01-03-foundations.typ
+index 0cb0861..71c532d 100644
+--- a/Documentation/manual/ch01-03-foundations.typ
++++ b/Documentation/manual/ch01-03-foundations.typ
+@@ -420,7 +420,7 @@ you can read in this book.
+     ([6], [Provider], [A model backend failed — unreachable, unauthorized, rate-limited, or returned something malformed — for any reason other than the offline policy below.]),
+     ([7], [Offline], [The specific case of 6 where the failure was `--offline` refusing to let a call leave the machine at all — a policy outcome, not an accident.]),
+     ([8], [UnsupportedVersion], [The store declares a format or kernel major version this build doesn't understand.]),
+-    ([9], [HashVerification], [A stored hash doesn't match its recomputed value — includes a truncated or corrupted uid, and `fmt`'s own round-trip check if canonicalising ever moved an identity.]),
++    ([9], [HashVerification], [A stored hash doesn't match its recomputed value — a truncated or corrupted uid, or `reindex --verify` finding a sidecar that disagrees with a rebuild.]),
+     ([10], [Staged], [Model output (from `ingest`) was written to a staging area rather than merged, and is waiting for `--yes` or `merge --staged` to confirm it.]),
+     ([11], [StagedWithCorrections], [The same, *and* rule M lowered at least one unit: the model claimed more than its grounds support and was corrected. Not a failure — the batch is intact and every corrected unit is in it — but a pipeline may want to route it differently. New in 0.2; a script testing `= 10` for "staged" should test `>= 10`.]),
+   ),
+@@ -593,9 +593,10 @@ and the relation — reducing to two units, with nothing `check` objects to.
+   A file you typed by hand almost never matches `smysl`'s canonical
+   spelling — field order, quoting, and implicit defaults are all fixed by
+   the writer, not by how you happened to type them. `fmt` is the one command
+-  whose entire job is closing that gap, safely: it re-parses its own output
+-  and refuses to write anything that wouldn't decode back to the identical
+-  records.
++  whose entire job is closing that gap, safely: what it writes is
++  guaranteed to decode back to the identical records, a property checked by
++  the format's own test suite rather than by `fmt` re-parsing its own
++  output on every run (Chapter 4 covers that trade).
+ ]
+ 
+ `fmt --check` tells you, without touching the file, whether it's already
+@@ -726,8 +727,9 @@ a shorter form instead of disappearing outright.
+    you meant it. A clean run says the document is coherent, never that it is
+    true.],
+   [Because canonicalisation is a *round-trip assertion*, not a beautification
+-   pass. When `fmt` succeeds it is claiming that re-parsing its own output
+-   yields byte-identical records to what went in — and if that claim were
++   pass. When `fmt` succeeds it is relying on the guarantee, proven by the
++   format's own test suite, that re-parsing `write_surface`'s output yields
++   byte-identical records to what went in — and if that guarantee were
+    false, two files with identical content could carry different identities,
+    which would break merge, diff and every uid reference in the store. A file
+    that is not canonical is a file whose identity has not been confirmed, and
+@@ -735,8 +737,11 @@ a shorter form instead of disappearing outright.
+   [A uid is a hash of the *canonical binary encoding*, never of the surface
+    text — so any change confined to how the text is spelled cannot reach the
+    hash. If a uid had moved, `fmt` would have altered content while claiming
+-   to alter only spelling; that is exit code `9`, `HashVerification`, and
+-   `fmt` checks for it rather than trusting itself.],
++   to alter only spelling; that is exit code `9`, `HashVerification`, the
++   code `reindex --verify` uses for the same kind of mismatch. Earlier
++   releases had `fmt` re-check this on every run instead of trusting the
++   writer; the check now lives in the test suite that proves the writer
++   correct, once, rather than paying for it on every file formatted.],
+ ))
+ 
+ #recap((
+diff --git a/Documentation/manual/ch04-05-creating-formatting.typ b/Documentation/manual/ch04-05-creating-formatting.typ
+index 2996cbf..6117155 100644
+--- a/Documentation/manual/ch04-05-creating-formatting.typ
++++ b/Documentation/manual/ch04-05-creating-formatting.typ
+@@ -864,33 +864,30 @@ mean something again.
+ 
+ #section("The round-trip guarantee")
+ 
+-`fmt` does not trust its own output blindly. Reading `cmd_fmt` in
+-`src/main.rs`: after writing the canonical text, it re-parses that exact
+-text and compares the result against what it started from —
+-
+-```
+-match parse_surface(&formatted) {
+-    Ok(again) if again.labels == out.labels && again.records == out.records => {}
+-    _ => {
+-        eprintln!("{path}: canonical form does not reproduce the same records");
+-        worst = worse(worst, ExitCode::HashVerification);
+-        continue;
+-    }
+-}
+-```
+-
+-— and only proceeds to `--check`'s comparison or `--write`'s rewrite if
+-that reparse matches exactly. A mismatch here refuses to write anything and
+-exits `9`, before either `--check` or `--write` ever runs.
++`fmt` does not trust its own output blindly — but it no longer checks that
++on every run, either. Through 1.3 `cmd_fmt` re-parsed the canonical text it
++had just written and refused to emit anything whose records or labels moved
++in the trip, at the cost of a full second parse on every invocation. That
++guard could only ever catch a defect in `write_surface` itself — never
++something a user's input could trigger — so no document a person could
++actually format would reach it, and no test could distinguish a guard that
++checked from one that did not.
++
++The property it protected is asserted where it can actually be exercised:
++`every_accepted_mutation_round_trips` in
++`crates/smysl-core/tests/surface.rs` fuzzes thousands of mutated documents
++and asserts that `write_surface`'s output re-parses to the same records,
++and `crates/smysl-core/tests/versioning.rs` asserts a document round-trips
++declaring the version it declared. Those run once per test suite instead of
++once per file `fmt` ever touches.
+ 
+ #callout(label: "Why")[
+-  This assertion is not about your document — it is `fmt` checking
+-  *itself*, on every single run, rather than trusting once during
+-  development that the writer and the parser agree. If a future change to
+-  the writer ever produced text the parser would read back differently,
+-  this is the guard that would catch it immediately, on the very first
+-  file anyone ran it against, rather than as a silent corruption discovered
+-  much later.
++  A per-run assertion earns its keep by catching something a test suite
++  cannot. This one could not: the only way to make it fire was to break
++  `write_surface` in a way that would also fail the property tests above,
++  so paying for it on every invocation bought no defense a `cargo test` run
++  did not already provide. Moving the check to test time keeps the
++  guarantee and drops the cost.
+ ]
+ 
+ Constructing a real failure meant finding a string the writer would emit
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..e14284b 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -949,16 +949,6 @@ fn cmd_fmt(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             .with_format_version(out.format_version.clone());
+         let formatted = write_surface(out.view.as_ref(), &out.records, &ctx);
+ 
+-        // The round trip must not move a uid.
+-        match parse_surface(&formatted) {
+-            Ok(again) if again.labels == out.labels && again.records == out.records => {}
+-            _ => {
+-                eprintln!("{path}: canonical form does not reproduce the same records");
+-                worst = worse(worst, ExitCode::HashVerification);
+-                continue;
+-            }
+-        }
+-
+         if let Some(dest) = global.get_one::<String>("output") {
+             if n_inputs > 1 {
+                 eprintln!(
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..bd6b9dc 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -360,21 +360,17 @@ fn write_rewrites_a_file_and_leaves_stdin_alone() {
+ }
+ 
+ // ---------------------------------------------------------------------------------------
+-// The round-trip guard, and why two mutants on it stay alive
++// No runtime round-trip guard
+ // ---------------------------------------------------------------------------------------
+ 
+-// `cmd_fmt` re-parses what it formatted and refuses to emit anything whose records or labels
+-// moved. Two mutants sit on that guard — replacing it with `true`, and loosening its `&&` to
+-// `||` — and both survive this file.
++// `cmd_fmt` used to re-parse what it had just formatted and refuse to emit anything whose
++// records or labels moved in the trip. That guard never fired in practice — it could only
++// catch a defect in `write_surface` itself, never something a user's input could trigger —
++// and no test could distinguish a guard that checks from one that does not, so it cost every
++// invocation a full second parse to protect against a case the property tests already cover.
+ //
+-// They are unreachable rather than untested. The guard fires only when the writer produces
+-// something the parser reads back differently, which is a defect in `write_surface`, not an
+-// input a user can supply. No document reaches it, so no test can distinguish a guard that
+-// checks from one that does not.
+-//
+-// Recorded here the way 0.13 recorded `worse`'s `>=`, 1.1 recorded `Lineage::is_empty -> false`
+-// and `Style::detect`'s `||`: a survivor no test can kill is a fact about the code. What *is*
+-// tested is the property the guard protects — `crates/smysl-core/tests/versioning.rs` asserts
+-// that a document round-trips declaring the version it declared, and `tests/surface.rs`
+-// asserts the records survive. If those ever fail, this guard is why `fmt` will refuse rather
+-// than write the damage to disk.
++// The property it protected is asserted at the library level instead, once per test run
++// rather than once per `fmt`: `crates/smysl-core/tests/surface.rs`'s
++// `every_accepted_mutation_round_trips` asserts that `write_surface`'s output re-parses to the
++// same records, and `crates/smysl-core/tests/versioning.rs` asserts a document round-trips
++// declaring the version it declared.

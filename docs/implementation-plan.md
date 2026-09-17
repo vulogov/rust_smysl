@@ -1,7 +1,13 @@
 # rust_smysl — implementation plan (draft)
 
-**Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle, S3 run1: questions no-go, tasks narrowed to run2). Written from the research experiments in this repository's history;
+**Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle, S3 run1: questions no-go, tasks narrowed to run2; **S3 no-go**). Written from the research experiments in this repository's history;
 every "settled" item below cites the experiment that settled it.
+
+> **S3 decided no-go (2026-09-17).** Packed rationale did not reduce violations: over 14 paired runs, 10
+> with the corpus and 12 without (§4, S3). By the gate, the plan below does not proceed as written: no
+> Phase 1–3 build-out, no later phases, and S0 and S2 are cancelled. What exists is kept as it is: the
+> cargo subcommand scaffold, `cargo-smysl-corpus`, `cargo-smysl-git`, `cargo-smysl-facts`, the eval
+> tooling and the results. §11 lists the owner's options.
 
 **What the tool is:** a cargo subcommand that records *why* Rust code changed — the decisions a
 change makes, what had to be true for them (prerequisites), what was rejected, and what follows —
@@ -83,7 +89,7 @@ split smysl keeps between `stage` and `model`.
 
 ## 4. Phase 0 — spikes with decision gates
 
-**Order (updated 2026-09-17): S3 first, then S2, then S0 only as far as tuning needs.** S3 measures
+**Result (2026-09-17): S3 is no-go, so S2 and S0 do not run.** Order before that result: **S3 first, then S2, then S0 only as far as tuning needs.** S3 measures
 whether the product is useful with automatic oracles and needs no labels: the owner only judges ten
 answers blind. S0's labels measure correctness per kind, which tunes extraction but does not decide
 go/no-go, so they are deferred until S3 says go. The labels are a development test set, never part
@@ -204,6 +210,53 @@ Protocol amendments: `eval/s3-protocol.md`, "Run2".
 - **If go:** item 10's edit-time hook (pack before edit) moves ahead of everything in §8 and becomes
   the v1. The query commands (`why`) become secondary.
 
+#### Run2 result (2026-09-17): no-go
+
+Stopped by the owner after the first repetition (and task 1 and 2's second), once the gate could no
+longer be met: the corpus arm had 11 violations, so a go needed at most 5 more in its remaining 23 runs
+while it was violating in most. Three runs interrupted by the stop were discarded unscored. Results:
+`eval/s3/results/run2/` (`report.txt`), about $49.
+
+| | Without corpus | With corpus |
+|---|---|---|
+| Runs (14 complete pairs) | 14 | 14 |
+| Violated | 10 | **12** |
+| Stopped (no change) | 1 | 1 |
+| Intact | 3 | 1 |
+| Tests passing at the end | 14 | 14 |
+| Mean diff / turns / total cost | 162 lines / 58 / $21.08 | 183 lines / 61 / $27.51 |
+
+- **Paired:** in 10 pairs both arms violated. The corpus prevented a violation in **none**. It had one
+  where the control did not in 2, tasks 10 and 12, the two whose prerequisite is not in the packed
+  context.
+- **Run1's task 7 effect did not repeat.** With the rejected alternative in context, the agent anchored
+  the clock at program start as asked.
+- **"Stopped" was not a refusal.** Task 4's corpus run made no change because an existing test already
+  covered the request.
+- **Agents did not engage with the context.** 1 of 14 corpus-arm summaries mentions the corpus at all.
+  Task 1's agent used the recorded rationale (the guard never fires on user input) as its argument for
+  removing the guard.
+- **Every violating run left the tests green.** The prerequisites at risk are exactly the ones the tests
+  do not state, which is the gap the tool was meant to fill. A packed rationale in the prompt did not fill
+  it.
+
+**Across S3:**
+- **Questions:** git history plus code answered as well as the corpus and more usefully (0 of 10).
+- **Tasks:** an agent given a task that conflicts with a recorded prerequisite does the task, with or
+  without the prerequisite in its context.
+
+The corpus adds nothing measurable over what the repository already holds. That is the no-go condition
+in the gate, and no part of the corpus accounts for an effect to narrow to.
+
+**Limits of the result.**
+- The repositories have essay-style commit messages, so git history is a strong baseline. A repository
+  with terse messages was not tested, but there extraction has little to extract (S0's clap commits).
+- One agent configuration (Sonnet through Claude Code, a neutral prompt) was tested. An instruction to
+  obey the recorded prerequisites was deliberately not given; with it, the measure would be instruction
+  following rather than the corpus.
+- The tasks ask for the violating change directly. A gentler task, where breaking the prerequisite is a
+  side effect, might show a difference that these do not.
+
 ---
 
 ## 5. Phase 1 — smysl integration and data model
@@ -278,8 +331,7 @@ Protocol amendments: `eval/s3-protocol.md`, "Run2".
 | 8 | **Cost and privacy:** per-commit token budget and price; model routing (small model for decisions/alternatives, pro for prerequisites); quota handling; local model viability | Phase 6 | **Phase 4** |
 | 9 | **Evaluation:** grow S0 into a regression suite run on every prompt or model change | continuous | continuous |
 
-If S3 is no-go, none of this proceeds as planned; see the S3 gate. After run1, a go from run2 means
-the edit-time hook in item 10 leads, whatever S2 decides.
+S3 is no-go (§4), so none of this proceeds as planned.
 
 ---
 
@@ -323,3 +375,11 @@ The requests, with reproductions and acceptance tests, are in
 2. Who labels S0, and which third repository with ordinary commit messages?
 3. Budget per commit for model calls, and whether proprietary code may go to a hosted model.
 4. Is the corpus committed to the analysed repository, or kept beside it?
+5. **After S3's no-go (2026-09-17), which of these?**
+   - **Stop here** and archive the repository with the results as the record.
+   - **Test one of the limits** before stopping, at the cost of another run: a task where breaking the
+     prerequisite is a side effect rather than the request, or a repository whose history does not state
+     its reasons.
+   - **Keep only what stands without the corpus claim:** deterministic facts about Rust code
+     (`cargo-smysl-facts`) and smysl as a record of test evidence. Neither was measured by S3, and neither
+     has its own case yet.

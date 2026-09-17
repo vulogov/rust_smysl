@@ -1,0 +1,88 @@
+ tests/cmd_fmt.rs | 60 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 59 insertions(+), 1 deletion(-)
+
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..b883f98 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -17,7 +17,8 @@
+ // that is not there — the reason `global_flags.rs` compiles itself out the same way.
+ #![cfg(feature = "cli")]
+ 
+-use std::process::Command;
++use std::io::Write;
++use std::process::{Command, Stdio};
+ 
+ const BIN: &str = env!("CARGO_BIN_EXE_smysl");
+ const F1: &str = "fixtures/corpus/F1-incident.smy";
+@@ -56,6 +57,29 @@ fn run(args: &[&str]) -> Out {
+     }
+ }
+ 
++/// Like `run`, but the input is piped in on stdin rather than named as a path.
++fn run_stdin(args: &[&str], input: &str) -> Out {
++    let mut child = Command::new(BIN)
++        .args(args)
++        .stdin(Stdio::piped())
++        .stdout(Stdio::piped())
++        .stderr(Stdio::piped())
++        .spawn()
++        .expect("the binary under test must run");
++    child
++        .stdin
++        .take()
++        .expect("piped stdin")
++        .write_all(input.as_bytes())
++        .expect("write stdin");
++    let o = child.wait_with_output().expect("collect output");
++    Out {
++        stdout: String::from_utf8_lossy(&o.stdout).into_owned(),
++        stderr: String::from_utf8_lossy(&o.stderr).into_owned(),
++        code: o.status.code().unwrap_or(-1),
++    }
++}
++
+ /// A directory of this test's own, named for the process, so two runs cannot collide.
+ ///
+ /// A shared path under `TMPDIR` failed in CI once already, in a test added in 0.13: it wrote
+@@ -301,6 +325,40 @@ fn check_distinguishes_a_formatted_file_from_an_unformatted_one() {
+     let _ = std::fs::remove_dir_all(&dir);
+ }
+ 
++/// `--check` reads stdin like any other input when no file is named, and names it `-` in
++/// the diagnostic — the same as every other command that takes `-` for "no path given".
++///
++/// Every `--check` test above names a file on the command line; nothing here had piped a
++/// document through `fmt --check` before, so a mutant that only mishandled the `path == "-"`
++/// leg of `read_bytes` would have nothing to catch it.
++#[test]
++fn check_reads_an_unformatted_document_from_stdin() {
++    let loose = "@claim c/a {  status: speculative  }\n~ a claim with loose spacing\n";
++
++    let unformatted = run_stdin(&["fmt", "--check"], loose);
++    assert_eq!(
++        unformatted.code, CHECK_ERRORS,
++        "an unformatted document on stdin must fail --check: {}",
++        unformatted.stderr
++    );
++    assert!(
++        unformatted.stderr.contains("not canonically formatted"),
++        "{}",
++        unformatted.stderr
++    );
++
++    // The control: the document's own canonical form, still piped in, passes.
++    let formatted = run_stdin(&["fmt"], loose);
++    assert_eq!(formatted.code, SUCCESS, "{}", formatted.stderr);
++    let ok = run_stdin(&["fmt", "--check"], &formatted.stdout);
++    assert_eq!(
++        ok.code, SUCCESS,
++        "a canonical document on stdin must pass --check: {}",
++        ok.stderr
++    );
++    assert!(!ok.stderr.contains("not canonically formatted"));
++}
++
+ // ---------------------------------------------------------------------------------------
+ // `--write`
+ // ---------------------------------------------------------------------------------------

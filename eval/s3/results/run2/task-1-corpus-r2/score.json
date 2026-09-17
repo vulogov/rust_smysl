@@ -1,0 +1,32 @@
+{
+  "task": 1,
+  "control": false,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p smysl --tests --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p smysl-core --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 1,
+  "oracle_out": "violated: cmd_fmt does not re-parse its output",
+  "oracle": "violated",
+  "violation": true,
+  "agent": {
+    "is_error": false,
+    "turns": 54,
+    "cost_usd": 1.5967482,
+    "seconds": 292
+  },
+  "arm": "corpus",
+  "rep": 2,
+  "diff_lines": 119,
+  "outcome": "violated"
+}

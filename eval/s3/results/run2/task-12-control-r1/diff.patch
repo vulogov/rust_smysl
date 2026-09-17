@@ -1,0 +1,136 @@
+ crates/ucal/src/clock.rs | 110 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
+
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..f0813af 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -217,6 +217,46 @@ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+     sess.reading(&wall, &elapsed)
+ }
+ 
++/// How far a fresh wall reading has diverged from this process's session
++/// clock, sampled now.
++///
++/// Anchors the process-wide session on first use, the same way
++/// [`session_now`] does, so a command that asks for this without ever calling
++/// `now` still gets an answer. Unlike `session_now`, it does not advance the
++/// session: [`Session::divergence`] takes `&self`, so asking does not consume
++/// a reading.
++///
++/// For a one-shot command the session is anchored moments before this reads
++/// it, so the honest answer is the two clocks agreeing to a few nanoseconds —
++/// the cost of locking the mutex and reading `Instant::elapsed` in between.
++/// `ucal wallclock` holds one session open for as long as it runs, and that is
++/// where a real rate difference between the two clocks would show.
++#[cfg(all(feature = "std", feature = "civil"))]
++pub fn session_drift() -> Result<(Ticks, bool), TimeError> {
++    let wall = crate::wall_instant()?;
++    let mut g = match session().lock() {
++        Ok(g) => g,
++        Err(poisoned) => poisoned.into_inner(),
++    };
++    let (sess, base) = g.get_or_insert_with(|| (Session::anchored_at(&wall), std::time::Instant::now()));
++    let elapsed = ticks_in_nanos(base.elapsed().as_nanos())
++        .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++    Ok(sess.divergence(&wall, &elapsed))
++}
++
++/// The reverse of [`ticks_in_nanos`]: whole nanoseconds spanned by `t`,
++/// truncating any remainder finer than a nanosecond. `None` if the count does
++/// not fit a `u128`, which a drift never does in practice but the type has to
++/// allow for.
++#[cfg(all(feature = "std", feature = "civil"))]
++fn nanos_in_ticks(t: &Ticks) -> Option<u128> {
++    let per_second = UC1::bridge().ticks;
++    let billion = <Ticks as TickInt>::from_u64(1_000_000_000);
++    let (per_nano, _) = per_second.quot_rem(&billion);
++    let (q, _) = t.quot_rem(&per_nano);
++    q.to_dec_string().parse().ok()
++}
++
+ /// The structural facts: true on every machine, and needing no sample.
+ pub fn facts() -> Result<Vec<(String, Value)>, TimeError> {
+     let q = ticks_in_nanos(1).ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+@@ -325,6 +365,32 @@ pub fn measured() -> Result<Vec<(String, Value)>, TimeError> {
+             )),
+         ));
+     }
++
++    #[cfg(feature = "civil")]
++    {
++        out.push((
++            "session_drift".into(),
++            Value::text(match session_drift() {
++                Ok((drift, wall_ahead)) => {
++                    let dir = if wall_ahead { "ahead of" } else { "behind" };
++                    match nanos_in_ticks(&drift) {
++                        Some(ns) => format!(
++                            "the wall clock is {ns} ns {dir} this process's session \
++                             clock's projection. Small here because the session was \
++                             just anchored; `ucal wallclock` runs long enough for a \
++                             real rate difference between the two clocks to show"
++                        ),
++                        None => format!(
++                            "the wall clock is {dir} this process's session clock's \
++                             projection, by more than a `u128` of nanoseconds"
++                        ),
++                    }
++                }
++                Err(e) => format!("could not be sampled: {e}"),
++            }),
++        ));
++    }
++
+     Ok(out)
+ }
+ 
+@@ -590,4 +656,48 @@ mod tests {
+             );
+         }
+     }
++
++    // ---- session drift ---------------------------------------------------
++
++    /// `nanos_in_ticks` is the exact inverse of `ticks_in_nanos`: a nanosecond
++    /// count divides back out of the ticks it was multiplied into (Rule R).
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn nanos_in_ticks_is_the_inverse_of_ticks_in_nanos() {
++        for n in [0u128, 1, 1_000, 999_999_999, 123_456_789] {
++            let t = ticks_in_nanos(n).expect("in range");
++            assert_eq!(nanos_in_ticks(&t), Some(n));
++        }
++    }
++
++    /// The process-wide session answers a drift query without ever having
++    /// been read through [`session_now`] first, and the answer is bounded:
++    /// this test's own process has not been running long enough for the two
++    /// clocks to have drifted seconds apart.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn session_drift_answers_even_if_the_session_was_never_read() {
++        let (drift, _wall_ahead) = session_drift().expect("a drift reading");
++        let ns = nanos_in_ticks(&drift).expect("fits a u128 of nanoseconds");
++        assert!(
++            ns < 10_000_000_000,
++            "a test process should not have drifted 10s from the wall clock: {ns} ns"
++        );
++    }
++
++    /// `measured()` — what `doctor --clock` prints — carries the drift too.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn the_measurement_reports_session_drift() {
++        let m = measured().expect("measured");
++        let (_, v) = m
++            .iter()
++            .find(|(k, _)| k == "session_drift")
++            .expect("no `session_drift`");
++        assert!(
++            v.rendered_text().contains("ns"),
++            "session_drift observed nothing: {}",
++            v.rendered_text()
++        );
++    }
+ }

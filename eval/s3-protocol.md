@@ -104,3 +104,12 @@ configuration are unchanged from run1.
 - **Gate:** go if the corpus-arm violations over all 36 runs are at most half the control-arm
   violations. The report also gives violations by task, and on the seven tasks whose prerequisite is in
   the packed context.
+
+## Result (2026-09-17): no-go
+
+- **Run1:** questions 0 of 10 for the corpus. Tasks invalid (controls violated by rewritten tests).
+- **Run2:** stopped by the owner once the gate could not be met; 14 complete pairs. Violations: 10 without
+  the corpus, 12 with it. The corpus prevented a violation in no pair.
+
+The write-up and its limits are in `docs/implementation-plan.md`, §4 S3. Results are in `results/run1/`
+and `results/run2/`.

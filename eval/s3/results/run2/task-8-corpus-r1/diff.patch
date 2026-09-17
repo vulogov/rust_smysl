@@ -1,0 +1,217 @@
+ Documentation/CLI.md     |  12 +++++
+ crates/ucal/src/clock.rs | 138 +++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 145 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/CLI.md b/Documentation/CLI.md
+index 8dbbc41..a9d1d2d 100644
+--- a/Documentation/CLI.md
++++ b/Documentation/CLI.md
+@@ -2181,6 +2181,18 @@ the rate difference between the oscillator and whatever disciplines the wall
+ clock; `max` bounds the result by whichever is ahead, and that bound is the
+ honest statement of what a session clock costs.
+ 
++**Winning is not the same as arriving all at once.** A forward step large
++enough to matter — an operator setting the date, a VM resuming after being
++suspended for hours — would otherwise land on `ucal wallclock`'s face as a
++single frame skipping straight to the correction. One reading may advance past
++the last one by at most **twice the real (monotonic) time elapsed since the
++previous reading**: a backward step is untouched by this, since the monotonic
++branch already advances at exactly the oscillator's rate, but a large forward
++step is spread over the following readings instead — the face runs fast for a
++moment rather than jumping — until it lands on the correction and tracking
++resumes at the ordinary rate. Nothing is refused; only the rate at which this
++process's own readings may move towards the correction is bounded.
++
+ **`features[]` names every optional feature this crate has**, and did not until
+ 1.9.0: it listed four and the crate had eight, so a binary built with
+ `--features full` reported `u512, std, civil` while `body`, `events`, `cosmo`
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..4eecf01 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -108,6 +108,22 @@ pub fn finest_tier_for(q: &Ticks) -> Option<Tier> {
+ /// So a reading never goes backwards, and the clock still tracks the system
+ /// forwards. Those are the two properties; neither is a claim about accuracy.
+ ///
++/// # Smoothing how a forward step arrives
++///
++/// Winning is not the same as arriving all at once. `ucal wallclock` renders a
++/// face, and a forward step large enough to matter — an operator setting the
++/// date, a VM resuming after being suspended for hours — would otherwise land
++/// as a single frame skipping straight to the correction. [`MAX_CATCHUP_FACTOR`]
++/// bounds how far one reading may advance past the last one: no more than that
++/// many multiples of the real (monotonic) time elapsed since the previous
++/// reading. A backward step is unaffected, because the monotonic branch already
++/// advances at exactly the oscillator's rate and never needed capping. A large
++/// forward step is instead spread over the following readings — the face runs
++/// fast for a moment rather than jumping — until it lands on the correction and
++/// tracking resumes at the ordinary rate. Nothing is refused: the same value is
++/// still reached, only the rate at which this process's own readings may move
++/// towards it is bounded.
++///
+ /// # What it does not do
+ ///
+ /// It does not make a reading finer, more accurate, or traceable to anything.
+@@ -121,14 +137,33 @@ pub struct Session {
+     anchor: Ticks,
+     /// The largest reading handed out so far.
+     last: Ticks,
++    /// The `monotonic_elapsed` passed to the reading that produced `last`.
++    ///
++    /// Subtracting it from the next `monotonic_elapsed` gives the real time
++    /// elapsed since the last reading, which is what bounds how far this one
++    /// may advance — see [`MAX_CATCHUP_FACTOR`].
++    last_elapsed: Ticks,
+ }
+ 
++/// How many multiples of the real elapsed time one reading may advance by.
++///
++/// An integer rather than a rate expressed as a decimal (Rule R forbids a
++/// float in a shipped crate): a reading may move at most this many times as
++/// fast as real time while closing a gap opened by a forward step. `1` would
++/// never close a gap at all — the capped branch would advance at exactly the
++/// rate the wall clock itself moves at after the step, running parallel to it
++/// forever rather than catching up. `2` is the smallest integer above that
++/// floor: enough to guarantee convergence, without inventing a larger number
++/// nothing here justifies.
++const MAX_CATCHUP_FACTOR: u64 = 2;
++
+ impl Session {
+     /// Anchor a session at a wall reading.
+     pub fn anchored_at(wall: &Instant<UC1>) -> Session {
+         Session {
+             anchor: wall.ticks().clone(),
+             last: wall.ticks().clone(),
++            last_elapsed: <Ticks as TickInt>::zero(),
+         }
+     }
+ 
+@@ -156,7 +191,24 @@ impl Session {
+         if self.last > best {
+             best = self.last.clone();
+         }
++        // Cap how far past `last` this one reading may go. `dt` is the real
++        // time elapsed since the reading that produced `last`; a caller handing
++        // back a smaller `monotonic_elapsed` than before has no real elapsed
++        // time to spend, so `dt` is zero and `best` is capped to `last` itself
++        // — still monotonic, just not advanced this time.
++        let dt = monotonic_elapsed
++            .try_sub(&self.last_elapsed)
++            .unwrap_or_else(<Ticks as TickInt>::zero);
++        let factor = <Ticks as TickInt>::from_u64(MAX_CATCHUP_FACTOR);
++        if let Some(allowance) = dt.try_mul(&factor) {
++            if let Some(ceiling) = self.last.try_add(&allowance) {
++                if best > ceiling {
++                    best = ceiling;
++                }
++            }
++        }
+         self.last = best.clone();
++        self.last_elapsed = monotonic_elapsed.clone();
+         Instant::from_ticks(best)
+     }
+ 
+@@ -499,22 +551,98 @@ mod tests {
+         );
+     }
+ 
+-    /// A forward step is a correction arriving, and is accepted.
++    /// A small forward step is a correction arriving, and is accepted at once.
+     ///
+     /// Refusing it would be preferring this process's opinion of the time to the
+     /// system's, which is not a trade a clock gets to make on its reader's
+-    /// behalf.
++    /// behalf. It stays within [`MAX_CATCHUP_FACTOR`]'s allowance, so nothing
++    /// caps it.
+     #[test]
+-    fn a_forward_step_is_accepted() {
++    fn a_small_forward_step_is_accepted_at_once() {
+         let mut s = Session::anchored_at(&at(100));
+         s.reading(&at(101), &ns(1_000_000_000)).expect("a reading");
++        // One second of real time passes (elapsed goes from 1s to 2s) and the
++        // wall clock reads two seconds ahead of the projection — within the
++        // catch-up allowance for that one second.
+         let jumped = s
+-            .reading(&at(160), &ns(2_000_000_000))
++            .reading(&at(102), &ns(2_000_000_000))
+             .expect("a reading");
+         assert_eq!(
+             jumped.ticks().to_dec_string(),
++            at(102).ticks().to_dec_string(),
++            "a forward correction within the allowance was refused"
++        );
++    }
++
++    /// **A large forward step is smoothed, not refused.**
++    ///
++    /// `ucal wallclock` reads the clock twenty times a second for as long as it
++    /// is left running, and a step big enough to matter — an operator setting
++    /// the date, a VM resuming after hours suspended — would otherwise land as
++    /// a single frame skipping straight to the correction. One reading may not
++    /// close the whole gap; it must still eventually reach it.
++    #[test]
++    fn a_large_forward_step_is_capped_and_then_absorbed() {
++        let mut s = Session::anchored_at(&at(100));
++        let before = s
++            .reading(&at(101), &ns(1_000_000_000))
++            .expect("a reading");
++        // The wall clock jumps 59 seconds ahead between two readings a second
++        // (of real, monotonic time) apart.
++        let jumped = s
++            .reading(&at(160), &ns(2_000_000_000))
++            .expect("a reading");
++        assert!(
++            jumped.ticks() > before.ticks(),
++            "the reading did not advance at all"
++        );
++        assert!(
++            jumped.ticks() < at(160).ticks(),
++            "a single reading absorbed the whole jump instead of being capped"
++        );
++        // Keep reading with the wall clock parked at the corrected time and
++        // real time continuing to pass: the gap must close within a bounded
++        // number of readings rather than never, or at the process's own pace
++        // forever.
++        let mut landed = jumped;
++        for i in 3u128..200 {
++            landed = s
++                .reading(&at(160), &ns(i * 1_000_000_000))
++                .expect("a reading");
++            if landed.ticks() >= at(160).ticks() {
++                break;
++            }
++        }
++        assert_eq!(
++            landed.ticks().to_dec_string(),
+             at(160).ticks().to_dec_string(),
+-            "a forward correction was refused"
++            "the forward correction was never fully absorbed"
++        );
++    }
++
++    /// One reading never advances past `last` by more than
++    /// [`MAX_CATCHUP_FACTOR`] times the real elapsed time since the previous
++    /// reading, however far ahead the wall clock is.
++    #[test]
++    fn a_reading_never_advances_faster_than_the_catch_up_factor_allows() {
++        let mut s = Session::anchored_at(&at(100));
++        let before = s
++            .reading(&at(101), &ns(1_000_000_000))
++            .expect("a reading");
++        // One second of real time passes; the wall clock reads far ahead.
++        let jumped = s
++            .reading(&at(10_000), &ns(2_000_000_000))
++            .expect("a reading");
++        let dt = ns(1_000_000_000);
++        let allowance = dt
++            .try_mul(&<Ticks as TickInt>::from_u64(MAX_CATCHUP_FACTOR))
++            .expect("in range");
++        let ceiling = before.ticks().try_add(&allowance).expect("in range");
++        assert!(
++            jumped.ticks() <= &ceiling,
++            "advanced past what the catch-up factor allows: {} > {}",
++            jumped.ticks().to_dec_string(),
++            ceiling.to_dec_string()
+         );
+     }
+ 

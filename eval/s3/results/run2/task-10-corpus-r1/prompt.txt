@@ -1,0 +1,148 @@
+You are working in a checkout of the `ucal` Rust repository (the current directory).
+
+Task: When the current version's notes are missing, fall back to the newest notes.
+
+Implement the task completely, with tests where they belong, and make sure `cargo test -q -p ucal --no-fail-fast` and `cargo test -q -p xtask --no-fail-fast` pass. Do not commit.
+
+The project keeps a corpus of the decisions, prerequisites, rejected alternatives and consequences recorded for its code, extracted from its commit history. The units relevant to this task, packed within a fixed budget (each unit: [label] kind (status, source), its text, and its edges to other units):
+
+[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Read notes for version being built rather than newest sorted file
+  Sorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing.
+  -> causes q/g5880e472260e-1-1
+
+[d/g5880e472260e-2] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Error naming the version when current release notes missing
+  The old sort silently read the previous cycle's file and passed when notes were never written. Now a missing notes file for the current version is an explicit error.
+  -> causes q/g5880e472260e-2-1
+
+[d/g5880e472260e-3] decision (cited, source xtask/src/citations.rs@5880e472260e)
+  Replace old version-sort tests with current-version and missing-notes tests
+  Old tests checked that sorting by version picks 1.10.0 and that stray files sort first. New tests assert the current version's notes file exists and that a missing file is refused.
+  -> causes q/g5880e472260e-3-1
+
+[d/g5880e472260e-4] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Make missing-notes test strict about the diagnostic
+  Asserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic.
+  -> causes q/g5880e472260e-4-1
+
+[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Restore doc comment for check_ci_covers_the_procedure
+  The new workspace_version doc comment had swallowed the check's documentation, leaving that function undocumented. The doc comment is restored before the function.
+  -> causes q/g5880e472260e-5-1
+
+[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)
+  Update release notes with the fix rationale and sweep findings
+  Record the change, why it is not a better sort, the missing-notes behavior, and the version-ordering sweep result for 1.10.0.
+  -> causes q/g5880e472260e-6-1
+
+[d/g5880e472260e-7] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Leave other version-ordering sites unchanged
+  The sweep found no other version-ordering assumptions; every other site treats a version as an opaque string, so no changes were needed there.
+  -> causes q/g5880e472260e-7-1
+
+[e/g5880e472260e-2-1] evidence (cited, source xtask/src/citations.rs@5880e472260e)
+  Check: e.iter().any(|m| m.contains("9.9.9"))
+  -> backs q/g5880e472260e-2-1
+
+[e/g5880e472260e-4-1] evidence (cited, source xtask/src/citations.rs@5880e472260e)
+  Check: e.iter().any(|m| m.contains("a cycle's notes"))
+  -> backs q/g5880e472260e-4-1
+
+[e/g5880e472260e-7-1] evidence (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)
+  Check: A sweep for the same class found no other version-ordering assumption in the tree: everything else …
+  Check: A sweep for the same class found no other version-ordering assumption in the tree: everything else treats a version as an opaque string.
+  -> backs q/g5880e472260e-7-1
+
+[p/g5880e472260e-1-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  The workspace version is declared under [workspace.package] in Cargo.toml.
+  -> conditions d/g5880e472260e-1
+
+[p/g5880e472260e-1-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)
+  Release notes are stored as {version}.md files under Documentation/Release_Notes.
+  -> conditions d/g5880e472260e-1
+
+[p/g5880e472260e-2-1] constraint (cited, source xtask/src/citations.rs@5880e472260e)
+  check_ci_covers_the_procedure returns Result<usize, Vec<String>>, so an Err is a failed check.
+  -> conditions d/g5880e472260e-2
+
+[p/g5880e472260e-2-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)
+  The current version is already derived from [workspace.package] by decision 1.
+  -> conditions d/g5880e472260e-2
+
+[p/g5880e472260e-3-1] constraint (cited, source xtask/src/citations.rs@5880e472260e)
+  The test can get the workspace root via crate::workspace_root().
+  -> conditions d/g5880e472260e-3
+
+[p/g5880e472260e-4-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  std::fs::read_to_string on a missing file returns an error message containing the path and version.
+  -> conditions d/g5880e472260e-4
+
+[p/g5880e472260e-4-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)
+  The missing-notes diagnostic produced by decision 2 contains the phrase a cycle's notes.
+  -> conditions d/g5880e472260e-4
+
+[p/g5880e472260e-5-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  A Rust doc comment applies to the next item, so inserting an item above steals the comment.
+  -> conditions d/g5880e472260e-5
+
+[p/g5880e472260e-6-1] constraint (speculative)
+  Release notes for the current 1.10.0 cycle are kept in Documentation/Release_Notes/1.10.0.md.
+  -> conditions d/g5880e472260e-6
+
+[q/g5880e472260e-1-1] claim (inferred)
+  Check reads current version's notes from [workspace.package], removing ordering guess.
+
+[q/g5880e472260e-2-1] finding (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Missing current-version notes now error naming version, not silent previous-cycle fallback.
+
+[q/g5880e472260e-3-1] claim (inferred)
+  Old version-sort tests replaced with current-version and missing-notes tests.
+
+[q/g5880e472260e-4-1] finding (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Missing-notes test now requires specific diagnostic, so disabled check cannot pass.
+
+[q/g5880e472260e-5-1] claim (inferred)
+  Doc comment restored for check_ci_covers_the_procedure, leaving function documented.
+
+[q/g5880e472260e-6-1] claim (inferred)
+  Release notes updated with fix rationale, missing-notes behavior, and sweep findings.
+
+[q/g5880e472260e-7-1] finding (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  No other version-ordering sites changed; all other sites treat version as opaque string.
+
+[r/g5880e472260e-1-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Rejected: sort filenames numerically / by version to pick the newest
+  Sorting numerically would fix only the one exposed bug and would leave the guess in place.
+  -> contrasts d/g5880e472260e-1
+
+[r/g5880e472260e-2-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Rejected: silently fall back to the previous cycle's notes file
+  This fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file.
+  -> contrasts d/g5880e472260e-2
+
+[r/g5880e472260e-3-1] claim (cited, source xtask/src/citations.rs@5880e472260e)
+  Rejected: keep the two old tests for version-sort behavior
+  The old tests exercised sorting behavior that no longer exists after replacing the sort with current-version lookup.
+  -> contrasts d/g5880e472260e-3
+
+[r/g5880e472260e-4-1] claim (cited, source xtask/src/citations.rs@5880e472260e)
+  Rejected: assert only that some error came back and the message named the version
+  The loose assertion passed even with the check disabled because read_to_string also fails and names the path containing the version.
+  -> contrasts d/g5880e472260e-4
+
+[r/g5880e472260e-5-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Rejected: not restore the check's doc comment
+  Leaving it there made check_ci_covers_the_procedure undocumented.
+  -> contrasts d/g5880e472260e-5
+
+[r/g5880e472260e-6-1] claim (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)
+  Rejected: keep the old release-notes text describing the numeric sort
+  That text described the abandoned numeric sort and omitted the adjacent failure and sweep findings.
+  -> contrasts d/g5880e472260e-6
+
+[r/g5880e472260e-7-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Rejected: change other sites that might assume version ordering
+  The sweep found no other version-ordering assumptions; every other site treats a version as an opaque string.
+  -> contrasts d/g5880e472260e-7
+

@@ -1,0 +1,429 @@
+You are working in a checkout of the `ucal` Rust repository (the current directory).
+
+Task: Smooth wall-clock jumps: cap how far one reading may advance.
+
+Implement the task completely, with tests where they belong, and make sure `cargo test -q -p ucal --no-fail-fast` and `cargo test -q -p xtask --no-fail-fast` pass. Do not commit.
+
+The project keeps a corpus of the decisions, prerequisites, rejected alternatives and consequences recorded for its code, extracted from its commit history. The units relevant to this task, packed within a fixed budget (each unit: [label] kind (status, source), its text, and its edges to other units):
+
+[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Route all time readings through a process-wide session clock.
+  The system clock can step backwards due to NTP, VM resume, or operator; a continuously running wallclock would show time going backward. The session clock ensures one monotonic reading order.
+  -> causes q/g2074788f713e-1-1
+
+[d/g2074788f713e-10] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Add tests for backward steps, forward steps, monotonic sequence, and no-finer property.
+  The commit says tests drive wall clock backwards and assert monotone; another test asserts session reading no finer than raw.
+  -> causes q/g2074788f713e-10-1
+  -> causes q/g2074788f713e-10-2
+
+[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Ignore poison on the session mutex and take the inner value.
+  A poisoned lock means another thread panicked holding it; state is a pair of tick counts and cannot be torn, so taking inner value is correct.
+  -> causes q/g2074788f713e-11-1
+
+[d/g2074788f713e-2] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.
+  Backward steps lose to monotonic branch to keep advancing; forward steps win to track system corrections.
+  -> causes q/g2074788f713e-2-1
+  -> causes q/g2074788f713e-2-2
+
+[d/g2074788f713e-3] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Do not interpolate wall-clock ticks for precision.
+  Interpolating between wall ticks is worth 24/3125 of a rung, which is nothing. Session clock exists for monotonicity, not precision.
+  -> causes q/g2074788f713e-3-1
+
+[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Make Session::reading a pure function of its inputs.
+  Pure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence.
+  -> causes q/g2074788f713e-4-1
+
+[d/g2074788f713e-5] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Track the last reading to enforce monotonicity against smaller elapsed inputs.
+  The first two branches cannot go backwards on their own, but a caller could pass a smaller elapsed. `last` is belt and braces because the type sells monotonicity.
+  -> causes q/g2074788f713e-5-1
+
+[d/g2074788f713e-6] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Store session state as Option and anchor lazily inside session_now, avoiding .expect.
+  OnceLock's initializer cannot return a Result; no-panic-in-cli lint refused .expect. Option allows anchoring where a failure can be returned.
+  -> causes q/g2074788f713e-6-1
+
+[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Split wall_instant out of now_instant to expose a raw system clock reading.
+  now_instant goes through session clock; doctor --clock and measurements need the raw reading. Splitting also exposed the feature gate issue.
+  -> causes q/g2074788f713e-7-1
+
+[d/g2074788f713e-8] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Gate wall_instant (and session clock) under the civil feature.
+  Converting a clock reading is a leap-table lookup, because Unix time is a UTC label. The feature workflow caught the missing gate when building with u512,std.
+  -> causes q/g2074788f713e-8-1
+
+[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)
+  Document the session clock and its rule in CLI.md and release notes.
+  Record one process, one clock and the max rule for users.
+  -> causes q/g2074788f713e-9-1
+
+[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Add a clock section to doctor and now output.
+  The precision field invited an accuracy claim; a clock section states what a reading can actually fill.
+  -> causes q/g31e52cc10b1f-1-1
+
+[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Add doctor --clock flag to sample and report machine resolution.
+  Resolution is measured and varies by machine; it must be behind a flag because doctor's ordinary output is compared against a committed example.
+  -> causes q/g31e52cc10b1f-2-1
+
+[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Keep precision field name and value unchanged.
+  It is a path in ucal-json/1; repurposing one is breaking.
+  -> causes q/g31e52cc10b1f-3-1
+
+[d/g31e52cc10b1f-4] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Do not measure accuracy.
+  Operation is offline per §8.4, so no reference exists; a rate error from a short baseline reports quantisation as drift.
+  -> causes q/g31e52cc10b1f-4-1
+
+[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Keep granularity, resolution, and accuracy as separate numbers.
+  Conflating them is the defect; separation makes clear what each number represents.
+  -> causes q/g31e52cc10b1f-5-1
+
+[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Report which error terms cancel in a difference.
+  Knowing which terms cancel helps interpret differences; constant offset cancels, rate error does not.
+  -> causes q/g31e52cc10b1f-6-1
+
+[d/g31e52cc10b1f-7] decision (cited, source Documentation/Release_Notes/1.9.0.md@31e52cc10b1f)
+  Report interpolation cost as a fraction, not a decimal.
+  Rule E forbids a float in a shipped crate; the lint caught the first draft using one.
+  -> causes q/g31e52cc10b1f-7-1
+
+[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)
+  Add note that precision is tier rendered to, not accuracy.
+  The same field name means something else in explain; clarify meaning to prevent conflation.
+  -> causes q/g31e52cc10b1f-8-1
+
+[e/g2074788f713e-2-1] evidence (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Check: Verified strict by disabling the monotonic branch and watching the reading stall.
+  -> backs q/g2074788f713e-2-1
+  -> backs q/g2074788f713e-10-1
+
+[e/g2074788f713e-3-1] evidence (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Check: Another test asserts what it does not buy: a session reading lands on the same rung a raw one …
+  Check: Another test asserts what it does not buy: a session reading lands on the same rung a raw one does.
+  -> backs q/g2074788f713e-10-2
+  -> backs q/g2074788f713e-3-1
+
+[e/g2074788f713e-8-1] evidence (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Check: And splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features …
+  Check: And splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup, because Unix time is a UTC label.
+  -> backs q/g2074788f713e-8-1
+
+[e/g31e52cc10b1f-4-1] evidence (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Check: which a throwaway probe duly did, at 1.2e-5
+  -> backs q/g31e52cc10b1f-4-1
+
+[e/g31e52cc10b1f-7-1] evidence (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Check: the lint caught the first draft using one
+  -> backs q/g31e52cc10b1f-7-1
+
+[p/g2074788f713e-1-1] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)
+  `now_instant` is the single route shared by `ucal wallclock` and `ucal now`.
+  -> conditions d/g2074788f713e-1
+
+[p/g2074788f713e-1-2] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  `ucal wallclock` reads the clock repeatedly as a long-running process.
+  -> conditions d/g2074788f713e-1
+
+[p/g2074788f713e-10-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  `Session::reading` is pure, allowing tests to drive wall clock backwards.
+  -> conditions d/g2074788f713e-10
+
+[p/g2074788f713e-10-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  `finest_tier_for` exists to compare a session reading's tier to raw.
+  -> conditions d/g2074788f713e-10
+
+[p/g2074788f713e-11-1] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  State is a pair of tick counts and cannot be torn.
+  -> conditions d/g2074788f713e-11
+
+[p/g2074788f713e-11-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  `body_file::leak` makes the same judgment about its intern pool.
+  -> conditions d/g2074788f713e-11
+
+[p/g2074788f713e-2-1] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Ticks has `try_add` to compute anchor plus monotonic elapsed.
+  -> conditions d/g2074788f713e-2
+
+[p/g2074788f713e-2-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  `std::time::Instant::elapsed()` gives monotonic duration from the session base.
+  -> conditions d/g2074788f713e-2
+
+[p/g2074788f713e-3-1] constraint (cited, source Documentation/CLI.md@2074788f713e)
+  Existing `--clock` reports 1000 ns to 41 ns factor 24 and rung 3125.
+  -> conditions d/g2074788f713e-3
+
+[p/g2074788f713e-5-1] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  The first two branches cannot go backwards on their own.
+  -> conditions d/g2074788f713e-5
+
+[p/g2074788f713e-5-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  The type sells monotonicity, requiring protection against smaller elapsed inputs.
+  -> conditions d/g2074788f713e-5
+
+[p/g2074788f713e-6-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  `OnceLock`'s initialiser cannot return a `Result`.
+  -> conditions d/g2074788f713e-6
+
+[p/g2074788f713e-6-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  The `no-panic-in-cli` lint refused an `.expect`.
+  -> conditions d/g2074788f713e-6
+
+[p/g2074788f713e-6-3] constraint (cited, source Documentation/CLI.md@2074788f713e)
+  §19.5 requires failures leave through a code and exit status.
+  -> conditions d/g2074788f713e-6
+
+[p/g2074788f713e-7-1] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)
+  `doctor --clock` samples raw reading because session clock measuring itself is circular.
+  -> conditions d/g2074788f713e-7
+
+[p/g2074788f713e-7-2] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)
+  `now_instant` goes through session clock, so raw reading needs a separate function.
+  -> conditions d/g2074788f713e-7
+
+[p/g2074788f713e-7-3] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Raw `SystemTime` reading code already exists to move into `wall_instant`.
+  -> conditions d/g2074788f713e-7
+
+[p/g2074788f713e-8-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Converting a clock reading is a leap-table lookup because Unix time is a UTC label.
+  -> conditions d/g2074788f713e-8
+
+[p/g2074788f713e-8-2] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)
+  Feature workflow builds `--no-default-features --features u512,std` and caught the missing gate.
+  -> conditions d/g2074788f713e-8
+
+[p/g2074788f713e-8-3] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)
+  `now_instant` is gated under the `civil` feature.
+  -> conditions d/g2074788f713e-8
+
+[p/g2074788f713e-9-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Session clock with `max` rule exists to document.
+  -> conditions d/g2074788f713e-9
+
+[p/g31e52cc10b1f-1-1] constraint (cited, source Documentation/CLI-EXAMPLES.md@31e52cc10b1f)
+  The program reads the system clock to nanoseconds (nine decimal places).
+  -> conditions d/g31e52cc10b1f-1
+
+[p/g31e52cc10b1f-1-2] constraint (cited, source Documentation/CLI-EXAMPLES.md@31e52cc10b1f)
+  ucal now renders by default to T-12, ten rungs below the fillable tier.
+  -> conditions d/g31e52cc10b1f-1
+
+[p/g31e52cc10b1f-2-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  doctor's ordinary output is compared byte-for-byte against a committed example.
+  -> conditions d/g31e52cc10b1f-2
+
+[p/g31e52cc10b1f-2-2] constraint (cited, source crates/ucal/src/clock.rs@31e52cc10b1f)
+  Resolution measurements vary by machine and by run.
+  -> conditions d/g31e52cc10b1f-2
+
+[p/g31e52cc10b1f-3-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  The precision field is a path in ucal-json/1.
+  -> conditions d/g31e52cc10b1f-3
+
+[p/g31e52cc10b1f-3-2] constraint (cited, source fixtures/ucal-json-1.schema.json@31e52cc10b1f)
+  ucal-json/1 promises existing fields never change name, shape or meaning.
+  -> conditions d/g31e52cc10b1f-3
+
+[p/g31e52cc10b1f-4-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Operation is offline per §8.4, so no reference exists for accuracy comparison.
+  -> conditions d/g31e52cc10b1f-4
+
+[p/g31e52cc10b1f-4-2] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  A rate error from a short baseline reports quantisation as drift.
+  -> conditions d/g31e52cc10b1f-4
+
+[p/g31e52cc10b1f-5-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Granularity is structural and fills T-2.
+  -> conditions d/g31e52cc10b1f-5
+
+[p/g31e52cc10b1f-6-1] constraint (cited, source Documentation/CLI-EXAMPLES.md@31e52cc10b1f)
+  Constant offset cancels between two readings, rate error does not, quantisation bounds difference twice.
+  -> conditions d/g31e52cc10b1f-6
+
+[p/g31e52cc10b1f-6-2] constraint (cited, source Documentation/Release_Notes/1.9.0.md@31e52cc10b1f)
+  ucal datum already states the frame term cancels.
+  -> conditions d/g31e52cc10b1f-6
+
+[p/g31e52cc10b1f-7-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Rule E forbids a float in a shipped crate.
+  -> conditions d/g31e52cc10b1f-7
+
+[p/g31e52cc10b1f-8-1] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)
+  `--precision` is documented as tier to render to.
+  -> conditions d/g31e52cc10b1f-8
+
+[p/g31e52cc10b1f-8-2] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)
+  The same field name means something else in `ucal explain`.
+  -> conditions d/g31e52cc10b1f-8
+
+[q/g2074788f713e-1-1] claim (inferred)
+  All time readings go through session clock, preventing wallclock face from going back in time.
+
+[q/g2074788f713e-10-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Tests verify monotonic sequence over backward steps.
+
+[q/g2074788f713e-10-2] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Test asserts session reading no finer than raw.
+
+[q/g2074788f713e-11-1] claim (inferred)
+  Taking inner value on poisoned mutex is correct because state cannot be torn.
+
+[q/g2074788f713e-2-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Backward step loses to monotonic branch, keeps advancing at oscillator's rate.
+
+[q/g2074788f713e-2-2] claim (inferred)
+  Forward step wins, tracks system corrections arriving.
+
+[q/g2074788f713e-3-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Session clock exists for monotonicity, not precision; interpolation worth 24/3125 rung.
+
+[q/g2074788f713e-4-1] claim (inferred)
+  Pure function lets tests drive wall clock backwards and assert monotonic sequence.
+
+[q/g2074788f713e-5-1] claim (inferred)
+  last prevents smaller elapsed inputs from making reading go backwards.
+
+[q/g2074788f713e-6-1] claim (inferred)
+  Option avoids .expect, allows anchoring where failure can be returned.
+
+[q/g2074788f713e-7-1] claim (inferred)
+  wall_instant exposes raw system clock for doctor --clock and measurements.
+
+[q/g2074788f713e-8-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Civil feature gate ensures leap-table lookup; u512,std build caught missing gate.
+
+[q/g2074788f713e-9-1] claim (inferred)
+  Documents one process, one clock and max rule in CLI.md and release notes.
+
+[q/g31e52cc10b1f-1-1] claim (inferred)
+  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy …
+  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy claim.
+
+[q/g31e52cc10b1f-2-1] claim (inferred)
+  Doctor --clock must be behind a flag because resolution varies by machine and ordinary output is compared …
+  Doctor --clock must be behind a flag because resolution varies by machine and ordinary output is compared against committed examples.
+
+[q/g31e52cc10b1f-3-1] claim (inferred)
+  Keeping precision unchanged avoids breaking ucal-json/1 paths.
+
+[q/g31e52cc10b1f-4-1] finding (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Not measuring accuracy avoids reporting quantisation as drift; operation is offline so no reference exists.
+
+[q/g31e52cc10b1f-5-1] claim (inferred)
+  Separation makes clear what each number represents; conflating them is the defect.
+
+[q/g31e52cc10b1f-6-1] claim (inferred)
+  Reporting cancellations helps interpret differences: constant offset cancels, rate error does not.
+
+[q/g31e52cc10b1f-7-1] finding (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Reporting as fraction avoids Rule E violation; lint caught first decimal draft.
+
+[q/g31e52cc10b1f-8-1] claim (inferred)
+  Note clarifies precision means tier rendered to, not accuracy, preventing conflation with explain's precision.
+
+[r/g2074788f713e-1-1] claim (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Rejected: Let each wallclock tick read the raw system clock directly.
+  A backward step would produce a face that goes back in time.
+  -> contrasts d/g2074788f713e-1
+
+[r/g2074788f713e-11-1] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Rejected: Propagate the poison error from `session().lock()`.
+  The state is a pair of tick counts and cannot be torn, so taking the inner value is correct.
+  -> contrasts d/g2074788f713e-11
+
+[r/g2074788f713e-2-1] claim (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Rejected: Freeze the clock until the wall clock catches up after a backward step.
+  The monotonic branch keeps advancing at the oscillator's rate instead.
+  -> contrasts d/g2074788f713e-2
+
+[r/g2074788f713e-2-2] claim (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Rejected: Refuse a forward jump because it disagrees with the monotonic projection.
+  A forward jump is a correction arriving; refusing would prefer this process's opinion to the system's.
+  -> contrasts d/g2074788f713e-2
+
+[r/g2074788f713e-3-1] claim (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Rejected: Interpolate between wall ticks using the monotonic clock for precision.
+  It is worth 24/3125 of a rung, which is nothing.
+  -> contrasts d/g2074788f713e-3
+
+[r/g2074788f713e-4-1] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Rejected: Have Session::reading read the wall clock itself.
+  A pure function lets tests drive a wall clock backwards and assert the answer does not follow.
+  -> contrasts d/g2074788f713e-4
+
+[r/g2074788f713e-5-1] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Rejected: Trust callers to supply non-decreasing elapsed; omit `last`.
+  A caller could pass a smaller elapsed, making the first two branches go backwards.
+  -> contrasts d/g2074788f713e-5
+
+[r/g2074788f713e-6-1] claim (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Rejected: Use `.expect()` inside the OnceLock initializer to handle anchoring failure.
+  The no-panic-in-cli lint refused it because the initializer cannot return a Result.
+  -> contrasts d/g2074788f713e-6
+
+[r/g2074788f713e-6-2] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Rejected: Anchor the session at process start-up.
+  A command that never asks the time should not read a clock, and most do not.
+  -> contrasts d/g2074788f713e-6
+
+[r/g2074788f713e-7-1] claim (cited, source crates/ucal/src/lib.rs@2074788f713e)
+  Rejected: Sample the session clock for `doctor --clock`.
+  A session clock measuring itself would be measuring its own output.
+  -> contrasts d/g2074788f713e-7
+
+[r/g2074788f713e-8-1] claim (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Rejected: Leave `wall_instant` ungated after the split.
+  Converting a clock reading is a leap-table lookup because Unix time is a UTC label.
+  -> contrasts d/g2074788f713e-8
+
+[r/g31e52cc10b1f-1-1] claim (cited, source crates/ucal/src/lib.rs@31e52cc10b1f)
+  Rejected: Leave the precision implication unstated and inferred by users.
+  Clarifying beside it prevents the field being read as accuracy.
+  -> contrasts d/g31e52cc10b1f-1
+
+[r/g31e52cc10b1f-2-1] claim (cited, source crates/ucal/src/clock.rs@31e52cc10b1f)
+  Rejected: Include sampled resolution in `doctor`'s ordinary output.
+  Ordinary output is compared byte for byte against a committed example, so measurement not reproducible.
+  -> contrasts d/g31e52cc10b1f-2
+
+[r/g31e52cc10b1f-3-1] claim (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Rejected: Change the existing `precision` field name or repurpose its value.
+  It is a path in ucal-json/1 and changing it is breaking.
+  -> contrasts d/g31e52cc10b1f-3
+
+[r/g31e52cc10b1f-4-1] claim (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Rejected: Attempt to measure or estimate clock accuracy.
+  Offline operation provides no reference, and short-baseline rate error reports quantisation as drift.
+  -> contrasts d/g31e52cc10b1f-4
+
+[r/g31e52cc10b1f-5-1] claim (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Rejected: Conflate granularity, resolution, and accuracy into one number.
+  Conflation is the defect; separate numbers show what each represents.
+  -> contrasts d/g31e52cc10b1f-5
+
+[r/g31e52cc10b1f-6-1] claim (cited, source Documentation/CLI.md@31e52cc10b1f)
+  Rejected: Report only that differences have error without distinguishing cancelling terms.
+  Distinguishing which terms cancel and which do not helps interpret differences.
+  -> contrasts d/g31e52cc10b1f-6
+
+[r/g31e52cc10b1f-7-1] claim (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Rejected: Report interpolation cost as a decimal fraction (float).
+  Rule E forbids a float in a shipped crate, and the lint caught the first draft.
+  -> contrasts d/g31e52cc10b1f-7
+
+[r/g31e52cc10b1f-8-1] claim (cited, source Documentation/CLI.md@31e52cc10b1f)
+  Rejected: Treat `precision` as an accuracy claim like `explain` does.
+  It is the tier rendered to, not how well the instant is known.
+  -> contrasts d/g31e52cc10b1f-8
+

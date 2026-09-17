@@ -1,0 +1,305 @@
+ .gitignore                              |  6 +++
+ Documentation/examples/observations.txt | 21 ----------
+ crates/ucal/tests/json_surface.rs       | 71 +++++++++++++++++++++++++++------
+ crates/ucal/tests/manual_fields.rs      | 71 +++++++++++++++++++++++++++------
+ xtask/src/examples.rs                   | 54 ++++++++++++++++++++++++-
+ 5 files changed, 177 insertions(+), 46 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index fcc987f..576fc6a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -32,3 +32,9 @@ Documentation/LIFE_UNIVERSE_AND_GOD/assets/images/*-photo.png
+ minisign.key
+ *.key
+ !fixtures/*.pub
++
++# O1 — synthetic, derivable from `ephemeris.hjson` plus a stated offset, and
++# written here only for the duration of `cargo run -p xtask -- gen-examples` /
++# `check-docs`. Should not normally appear, and must not be committed if it
++# does (a stale copy would hide a broken generator).
++Documentation/examples/observations.txt
+diff --git a/Documentation/examples/observations.txt b/Documentation/examples/observations.txt
+deleted file mode 100644
+index ccc12a8..0000000
+--- a/Documentation/examples/observations.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-# Observed instants, one decimal tick count per line, for
+-# `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed <this>`.
+-#
+-# Blank lines and lines starting with `#` are skipped. Reading none at all is an
+-# error rather than a report of agreement having compared nothing.
+-#
+-# THESE ARE SYNTHETIC, like the ephemeris they go with: each is the predicted
+-# centre of a cycle, moved by a stated number of seconds, so the residuals are
+-# known in advance and the arithmetic can be checked by eye.
+-
+-# cycle 0, +0 s
+-8070205175623907873429294080830071880530466139316558837890624
+-
+-# cycle 100, +3 s
+-8070205176188783324648635603786425480530466139316558837890624
+-
+-# cycle 250, -7 s
+-8070205177036096232523174090236455880530466139316558837890624
+-
+-# cycle 500, +41 s
+-8070205178448285611789196091997839880530466139316558837890624
+diff --git a/crates/ucal/tests/json_surface.rs b/crates/ucal/tests/json_surface.rs
+index 9726231..de01297 100644
+--- a/crates/ucal/tests/json_surface.rs
++++ b/crates/ucal/tests/json_surface.rs
+@@ -39,6 +39,61 @@ use ucal::emit::{Doc, Value};
+ const T: &str = "8070205189123984864657505252035637180530466139316558837890625";
+ const T2: &str = "8070205189999984864657505252035637180530466139316558837890625";
+ 
++/// The observations `ephem residuals` reads below: predicted centres of four
++/// cycles from `ephemeris.hjson`, each moved by a stated number of seconds, so
++/// the residuals are known in advance and the arithmetic can be checked by
++/// eye. Written to a file at test time rather than committed — see [`ObsFile`]
++/// for why that file is not simply a fixed temp name.
++#[cfg(all(feature = "events", feature = "civil"))]
++const SYNTHETIC_OBSERVATIONS: &str = "\
++# cycle 0, +0 s
++8070205175623907873429294080830071880530466139316558837890624
++
++# cycle 100, +3 s
++8070205176188783324648635603786425480530466139316558837890624
++
++# cycle 250, -7 s
++8070205177036096232523174090236455880530466139316558837890624
++
++# cycle 500, +41 s
++8070205178448285611789196091997839880530466139316558837890624
++";
++
++/// A freshly written observations file, removed when dropped.
++///
++/// O1 — residuals used to read from a fixture **committed** at
++/// `Documentation/examples/observations.txt`. Before that, the first version
++/// wrote one into `std::env::temp_dir()` under a fixed name, and this file and
++/// `manual_fields.rs` both did it — two test binaries, one path, run
++/// concurrently. One truncated the file while the other read it, which
++/// produced a residuals run that had read nothing. It passed locally every
++/// time and failed in CI on the cut commit.
++///
++/// This writes one again, keyed on the process id *and* the thread id: `id`
++/// alone repeats the original bug, because `commands()` is called from several
++/// tests below and they run on separate threads of the same process.
++#[cfg(all(feature = "events", feature = "civil"))]
++struct ObsFile(std::path::PathBuf);
++#[cfg(all(feature = "events", feature = "civil"))]
++impl ObsFile {
++    fn write() -> ObsFile {
++        let mut p = std::env::temp_dir();
++        p.push(format!(
++            "ucal-json-surface-observations-{}-{:?}.txt",
++            std::process::id(),
++            std::thread::current().id()
++        ));
++        std::fs::write(&p, SYNTHETIC_OBSERVATIONS).expect("write synthetic observations");
++        ObsFile(p)
++    }
++}
++#[cfg(all(feature = "events", feature = "civil"))]
++impl Drop for ObsFile {
++    fn drop(&mut self) {
++        let _ = std::fs::remove_file(&self.0);
++    }
++}
++
+ fn baseline_path() -> std::path::PathBuf {
+     std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+         .parent()
+@@ -174,20 +229,12 @@ fn commands() -> Vec<(&'static str, Doc)> {
+         v.push(("ephem-show", ucal::cmd_ephem_show(EPH).unwrap()));
+         v.push(("ephem-at", ucal::cmd_ephem_at(EPH, 5000, 3).unwrap()));
+         v.push(("ephem-next", ucal::cmd_ephem_next(EPH, T, 3, 2).unwrap()));
+-        // O1 — residuals read observations from a **committed** fixture.
+-        //
+-        // The first version wrote one into `std::env::temp_dir()` under a fixed
+-        // name, and this file and `manual_fields.rs` both did it — two test
+-        // binaries, one path, run concurrently. One truncated the file while the
+-        // other read it, which produced a residuals run that had read nothing.
+-        // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        // O1 — residuals read observations this test writes itself; see
++        // `ObsFile` for why.
++        let obs = ObsFile::write();
+         v.push((
+             "ephem-residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, obs.0.to_str().expect("utf-8"), 1).unwrap(),
+         ));
+     }
+     #[cfg(feature = "cosmo")]
+diff --git a/crates/ucal/tests/manual_fields.rs b/crates/ucal/tests/manual_fields.rs
+index 994355e..2846e2e 100644
+--- a/crates/ucal/tests/manual_fields.rs
++++ b/crates/ucal/tests/manual_fields.rs
+@@ -34,6 +34,61 @@ use ucal::emit::{Doc, Value};
+ const T: &str = "8070205189123984864657505252035637180530466139316558837890625";
+ const T2: &str = "8070205189999984864657505252035637180530466139316558837890625";
+ 
++/// The observations `ephem residuals` reads below: predicted centres of four
++/// cycles from `ephemeris.hjson`, each moved by a stated number of seconds, so
++/// the residuals are known in advance and the arithmetic can be checked by
++/// eye. Written to a file at test time rather than committed — see [`ObsFile`]
++/// for why that file is not simply a fixed temp name.
++#[cfg(all(feature = "events", feature = "civil"))]
++const SYNTHETIC_OBSERVATIONS: &str = "\
++# cycle 0, +0 s
++8070205175623907873429294080830071880530466139316558837890624
++
++# cycle 100, +3 s
++8070205176188783324648635603786425480530466139316558837890624
++
++# cycle 250, -7 s
++8070205177036096232523174090236455880530466139316558837890624
++
++# cycle 500, +41 s
++8070205178448285611789196091997839880530466139316558837890624
++";
++
++/// A freshly written observations file, removed when dropped.
++///
++/// O1 — residuals used to read from a fixture **committed** at
++/// `Documentation/examples/observations.txt`. Before that, the first version
++/// wrote one into `std::env::temp_dir()` under a fixed name, and this file and
++/// `json_surface.rs` both did it — two test binaries, one path, run
++/// concurrently. One truncated the file while the other read it, which
++/// produced a residuals run that had read nothing. It passed locally every
++/// time and failed in CI on the cut commit.
++///
++/// This writes one again, keyed on the process id *and* the thread id: `id`
++/// alone repeats the original bug, because `all_commands()` is called from
++/// several tests below and they run on separate threads of the same process.
++#[cfg(all(feature = "events", feature = "civil"))]
++struct ObsFile(std::path::PathBuf);
++#[cfg(all(feature = "events", feature = "civil"))]
++impl ObsFile {
++    fn write() -> ObsFile {
++        let mut p = std::env::temp_dir();
++        p.push(format!(
++            "ucal-manual-fields-observations-{}-{:?}.txt",
++            std::process::id(),
++            std::thread::current().id()
++        ));
++        std::fs::write(&p, SYNTHETIC_OBSERVATIONS).expect("write synthetic observations");
++        ObsFile(p)
++    }
++}
++#[cfg(all(feature = "events", feature = "civil"))]
++impl Drop for ObsFile {
++    fn drop(&mut self) {
++        let _ = std::fs::remove_file(&self.0);
++    }
++}
++
+ /// Every command, so that every emitted field is reachable.
+ fn all_commands() -> Vec<(&'static str, Doc)> {
+     let mut v: Vec<(&'static str, Doc)> = vec![
+@@ -178,20 +233,12 @@ fn all_commands() -> Vec<(&'static str, Doc)> {
+         v.push(("ephem show", ucal::cmd_ephem_show(EPH).unwrap()));
+         v.push(("ephem at", ucal::cmd_ephem_at(EPH, 5000, 3).unwrap()));
+         v.push(("ephem next", ucal::cmd_ephem_next(EPH, T, 3, 2).unwrap()));
+-        // O1 — residuals read observations from a **committed** fixture.
+-        //
+-        // The first version wrote one into `std::env::temp_dir()` under a fixed
+-        // name, and this file and `manual_fields.rs` both did it — two test
+-        // binaries, one path, run concurrently. One truncated the file while the
+-        // other read it, which produced a residuals run that had read nothing.
+-        // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        // O1 — residuals read observations this test writes itself; see
++        // `ObsFile` for why.
++        let obs = ObsFile::write();
+         v.push((
+             "ephem residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, obs.0.to_str().expect("utf-8"), 1).unwrap(),
+         ));
+     }
+     #[cfg(feature = "cosmo")]
+diff --git a/xtask/src/examples.rs b/xtask/src/examples.rs
+index f27ef6f..98c8c21 100644
+--- a/xtask/src/examples.rs
++++ b/xtask/src/examples.rs
+@@ -235,6 +235,14 @@ fn capture(bin: &Path, args: &[&str]) -> Result<String, String> {
+ 
+ /// Build the examples document.
+ pub fn generate(root: &Path, bin: &Path) -> Result<String, String> {
++    // O1 — the `ephem residuals` example needs a real observed-instants file at
++    // this path, because that path is what the example's own command line
++    // shows. The numbers are synthetic and derivable from `ephemeris.hjson`
++    // plus a stated offset (see `SYNTHETIC_OBSERVATIONS`), so this writes one
++    // for the run rather than keeping it committed; `_obs` removes it again
++    // when `generate` returns, including on an early `?`.
++    let _obs = ObservationsFixture::write(root)?;
++
+     let mut out = String::new();
+     out.push_str("# Worked examples\n\n");
+     out.push_str("**Generated — do not edit.** Every block below is the real output of the command above it, captured by running it. Regenerate with:\n\n");
+@@ -247,10 +255,54 @@ pub fn generate(root: &Path, bin: &Path) -> Result<String, String> {
+         let text = capture(bin, ex.args)?;
+         out.push_str(&format!("\n## `ucal {}`\n\n{}\n\n```\n{}```\n", ex.args.join(" "), ex.why, text));
+     }
+-    let _ = root;
+     Ok(out)
+ }
+ 
++/// The observations the `ephem residuals` example reads: predicted centres of
++/// four cycles from `ephemeris.hjson`, each moved by a stated number of
++/// seconds, so the residuals are known in advance and the arithmetic can be
++/// checked by eye — matching the description in the example's own `why`.
++const SYNTHETIC_OBSERVATIONS: &str = "\
++# Observed instants, one decimal tick count per line, for
++# `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed <this>`.
++#
++# Blank lines and lines starting with `#` are skipped. Reading none at all is an
++# error rather than a report of agreement having compared nothing.
++#
++# THESE ARE SYNTHETIC, like the ephemeris they go with: each is the predicted
++# centre of a cycle, moved by a stated number of seconds, so the residuals are
++# known in advance and the arithmetic can be checked by eye.
++
++# cycle 0, +0 s
++8070205175623907873429294080830071880530466139316558837890624
++
++# cycle 100, +3 s
++8070205176188783324648635603786425480530466139316558837890624
++
++# cycle 250, -7 s
++8070205177036096232523174090236455880530466139316558837890624
++
++# cycle 500, +41 s
++8070205178448285611789196091997839880530466139316558837890624
++";
++
++/// `Documentation/examples/observations.txt`, written for the duration of one
++/// [`generate`] call and removed on drop rather than committed.
++struct ObservationsFixture(std::path::PathBuf);
++impl ObservationsFixture {
++    fn write(root: &Path) -> Result<ObservationsFixture, String> {
++        let path = root.join("Documentation/examples/observations.txt");
++        std::fs::write(&path, SYNTHETIC_OBSERVATIONS)
++            .map_err(|e| format!("{}: {e}", path.display()))?;
++        Ok(ObservationsFixture(path))
++    }
++}
++impl Drop for ObservationsFixture {
++    fn drop(&mut self) {
++        let _ = std::fs::remove_file(&self.0);
++    }
++}
++
+ fn path_of(root: &Path) -> std::path::PathBuf {
+     root.join("Documentation/CLI-EXAMPLES.md")
+ }

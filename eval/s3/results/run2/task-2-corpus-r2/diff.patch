@@ -1,0 +1,168 @@
+ CHANGELOG.md                        |  4 +-
+ Documentation/manual/appendices.typ |  2 +-
+ src/main.rs                         |  9 +++-
+ tests/cmd_check.rs                  | 94 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 105 insertions(+), 4 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..6e0381c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,9 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++`smysl check` with no path and no `--store` now checks `.smysl/store` instead of reading
++stdin. `-` still reads stdin explicitly; `fmt` is unchanged, since a bare `fmt` is typically
++one stage of a pipeline rather than a habitual, repeated command.
+ 
+ ---
+ 
+diff --git a/Documentation/manual/appendices.typ b/Documentation/manual/appendices.typ
+index 56c4fff..cddab27 100644
+--- a/Documentation/manual/appendices.typ
++++ b/Documentation/manual/appendices.typ
+@@ -73,7 +73,7 @@ These apply to every subcommand, in any position on the command line.
+     ([`--as`], [`SCHEMA` (repeatable)], [Report fidelity for a consumer implementing these schemas.]),
+     ([`--granularity`], [—], [Report the granularity distribution of the store.]),
+     ([`--pass`], [`NAME` (repeatable)], [Run only these passes.]),
+-    ([`FILE …`], [positional, 0 or more], [Stores to check; `-` or none reads stdin (rule P).]),
++    ([`FILE …`], [positional, 0 or more], [Stores to check; `-` reads stdin (rule P), none checks `.smysl/store`.]),
+   ),
+ )
+ 
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..37b0b76 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -217,7 +217,7 @@ fn cli() -> Command {
+                     Arg::new("files")
+                         .num_args(0..)
+                         .value_name("FILE")
+-                        .help("Stores to check; `-` or none reads stdin (rule P)"),
++                        .help("Stores to check; `-` reads stdin, none checks `.smysl/store`"),
+                 ),
+             "diff" => sub
+                 .arg(
+@@ -1006,6 +1006,9 @@ fn finish_over(bar: Bar, n: usize, verb: &str) {
+     }
+ }
+ 
++/// Where `check` looks when given no path and no `--store`.
++const DEFAULT_STORE: &str = ".smysl/store";
++
+ /// `smysl check` - run the check pipeline (§23.1).
+ ///
+ /// Exits 3 on any error-severity diagnostic, and `--strict` promotes warnings to that
+@@ -1026,7 +1029,9 @@ fn cmd_check(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             global
+                 .get_one::<String>("store")
+                 .map(|s| vec![s.clone()])
+-                .unwrap_or_else(|| vec!["-".to_string()])
++                // Unlike `fmt`, a bare `check` is a repeated habit rather than a pipeline
++                // stage, so no path defaults to the project's own store instead of stdin.
++                .unwrap_or_else(|| vec![DEFAULT_STORE.to_string()])
+         });
+ 
+     // `--as` names the schemas a consumer implements; the kernel is always implied.
+diff --git a/tests/cmd_check.rs b/tests/cmd_check.rs
+new file mode 100644
+index 0000000..b6a0456
+--- /dev/null
++++ b/tests/cmd_check.rs
+@@ -0,0 +1,94 @@
++//! `smysl check` with no path, driven as a user drives it.
++//!
++//! Every other command that takes a store falls back to stdin when given neither a positional
++//! path nor `--store` (rule P). `check` is the exception: a bare `check` is a habit run
++//! repeatedly inside a project checkout, not a pipeline stage, so it looks at `.smysl/store`
++//! instead of blocking on a terminal that never sends EOF.
++
++#![cfg(feature = "cli")]
++
++use std::process::{Command, Stdio};
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++
++struct Out {
++    stdout: String,
++    stderr: String,
++    code: i32,
++}
++
++fn run_in(dir: &std::path::Path, args: &[&str]) -> Out {
++    let o = Command::new(BIN)
++        .args(args)
++        .current_dir(dir)
++        .stdin(Stdio::null())
++        .output()
++        .expect("the binary under test must run");
++    Out {
++        stdout: String::from_utf8_lossy(&o.stdout).into_owned(),
++        stderr: String::from_utf8_lossy(&o.stderr).into_owned(),
++        code: o.status.code().unwrap_or(-1),
++    }
++}
++
++fn scratch(name: &str) -> std::path::PathBuf {
++    let dir = std::env::temp_dir().join(format!("smysl-check-{name}-{}", std::process::id()));
++    std::fs::create_dir_all(&dir).expect("scratch dir");
++    dir
++}
++
++const SUCCESS: i32 = 0;
++const FAILURE: i32 = 1;
++const A_CLAIM: &str = "@claim c/a { status: speculative }\n~ a claim that stands alone\n";
++
++/// A bare `check`, with neither a path nor `--store`, reads `.smysl/store` in the current
++/// directory rather than blocking on stdin.
++#[test]
++fn no_path_checks_dot_smysl_store() {
++    let dir = scratch("present");
++    std::fs::create_dir_all(dir.join(".smysl")).expect("mkdir .smysl");
++    std::fs::write(dir.join(".smysl").join("store"), A_CLAIM).expect("write store");
++
++    let out = run_in(&dir, &["check"]);
++    assert_eq!(out.code, SUCCESS, "{}", out.stderr);
++    assert!(
++        out.stdout.contains(".smysl/store"),
++        "the summary line must name the store it checked: {}",
++        out.stdout
++    );
++    let _ = std::fs::remove_dir_all(&dir);
++}
++
++/// With no `.smysl/store` to find, `check` reports that plainly instead of hanging on stdin —
++/// stdin is `/dev/null` here, so a wrongly-defaulted `check` would fail differently (an empty,
++/// unparseable document) rather than pass.
++#[test]
++fn no_path_and_no_store_fails_naming_the_default_path() {
++    let dir = scratch("absent");
++
++    let out = run_in(&dir, &["check"]);
++    assert_eq!(out.code, FAILURE, "{}", out.stderr);
++    assert!(
++        out.stderr.contains(".smysl/store"),
++        "the failure must name the path it looked for: {}",
++        out.stderr
++    );
++    let _ = std::fs::remove_dir_all(&dir);
++}
++
++/// `--store` still overrides the default, exactly as it does for every other command.
++#[test]
++fn explicit_store_flag_overrides_the_default() {
++    let dir = scratch("flag");
++    let named = dir.join("named.smy");
++    std::fs::write(&named, A_CLAIM).expect("write store");
++
++    let out = run_in(&dir, &["--store", named.to_str().unwrap(), "check"]);
++    assert_eq!(out.code, SUCCESS, "{}", out.stderr);
++    assert!(
++        out.stdout.contains("named.smy"),
++        "the summary line must name the store from --store: {}",
++        out.stdout
++    );
++    let _ = std::fs::remove_dir_all(&dir);
++}

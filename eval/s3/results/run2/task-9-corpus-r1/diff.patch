@@ -1,0 +1,107 @@
+ xtask/src/releases.rs | 82 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+
+diff --git a/xtask/src/releases.rs b/xtask/src/releases.rs
+index 50903a6..26069f1 100644
+--- a/xtask/src/releases.rs
++++ b/xtask/src/releases.rs
+@@ -110,6 +110,33 @@ fn rows(root: &Path) -> Result<Vec<Row>, String> {
+     Ok(out)
+ }
+ 
++/// The Contents table must list rows newest-first, by parsed semantic version.
++///
++/// The table is hand-edited, and a version is three numbers compared
++/// pairwise, not a string: `1.9.0` sorts *after* `1.10.0` lexicographically
++/// but is older. Checking the parsed order rather than trusting the table's
++/// position catches a row inserted in the wrong place — the same class of
++/// mistake `check_ci_covers_the_procedure` stopped guessing at, here applied
++/// to the table a person, not a sort, maintains.
++fn check_sorted(rows: &[Row]) -> Result<(), String> {
++    let mut prev: Option<(&str, (u64, u64, u64))> = None;
++    for row in rows {
++        let v = parse_version(&row.version)
++            .ok_or_else(|| format!("{} is not a parseable `major.minor.patch` version", row.version))?;
++        if let Some((prev_version, prev_v)) = prev {
++            if v >= prev_v {
++                return Err(format!(
++                    "{} is listed below {prev_version} but is not older; the Contents \
++                     table must be sorted newest-first by version",
++                    row.version
++                ));
++            }
++        }
++        prev = Some((&row.version, v));
++    }
++    Ok(())
++}
++
+ /// What a row's state demands, or an error naming the states that exist.
+ fn demand(state: &str) -> Result<Demand, String> {
+     // The state cell carries prose after the state — `released — the artefact,
+@@ -264,6 +291,10 @@ pub fn run(root: &Path) -> i32 {
+             return 6;
+         }
+     };
++    if let Err(e) = check_sorted(&rows) {
++        eprintln!("  FAIL  {e}");
++        return 6;
++    }
+     let tags = match remote_tags(root) {
+         Ok(t) => t,
+         Err(e) => {
+@@ -359,3 +390,54 @@ pub fn run(root: &Path) -> i32 {
+         7
+     }
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn row(version: &str) -> Row {
++        Row {
++            version: version.to_string(),
++            state: "released".to_string(),
++        }
++    }
++
++    #[test]
++    fn newest_first_is_accepted() {
++        let rows = [row("1.10.0"), row("1.9.0"), row("1.2.0"), row("1.1.0")];
++        assert!(check_sorted(&rows).is_ok());
++    }
++
++    /// `1.9.0` sorts after `1.10.0` as text; a check comparing strings rather
++    /// than the parsed number would accept this backwards table.
++    #[test]
++    fn lexicographic_order_is_rejected() {
++        let rows = [row("1.9.0"), row("1.10.0")];
++        let e = check_sorted(&rows).expect_err("1.10.0 is newer than 1.9.0");
++        assert!(
++            e.contains("1.10.0"),
++            "message should name the misplaced row: {e}"
++        );
++    }
++
++    #[test]
++    fn a_duplicated_version_is_rejected() {
++        let rows = [row("1.2.0"), row("1.2.0")];
++        assert!(check_sorted(&rows).is_err());
++    }
++
++    #[test]
++    fn an_unparseable_version_is_rejected() {
++        let rows = [row("1.2")];
++        let e = check_sorted(&rows).expect_err("not major.minor.patch");
++        assert!(e.contains("1.2"));
++    }
++
++    /// The real Contents table, maintained by hand, must already satisfy the
++    /// property this check exists to hold it to.
++    #[test]
++    fn the_real_release_notes_table_is_sorted() {
++        let rows = rows(&crate::workspace_root()).expect("README.md parses");
++        assert!(check_sorted(&rows).is_ok());
++    }
++}

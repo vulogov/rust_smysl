@@ -1,0 +1,32 @@
+{
+  "task": 2,
+  "control": false,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p smysl --tests --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p smysl-core --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 1,
+  "oracle_out": "violated: check with no path did not check stdin: smysl check: .smysl/store: No such file or directory (os error 2)",
+  "oracle": "violated",
+  "violation": true,
+  "agent": {
+    "is_error": false,
+    "turns": 43,
+    "cost_usd": 0.9086122000000002,
+    "seconds": 188
+  },
+  "arm": "corpus",
+  "rep": 2,
+  "diff_lines": 110,
+  "outcome": "violated"
+}
