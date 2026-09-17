@@ -1,18 +1,30 @@
 # rust_smysl — implementation plan (draft)
 
-**Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle, S3 run1: questions no-go, tasks narrowed to run2; **S3 no-go**). Written from the research experiments in this repository's history;
-every "settled" item below cites the experiment that settled it.
+**Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle
+and acceptance, S3 result, acceptance reframed, S4). Written from the research experiments in this
+repository's history; every "settled" item below cites the experiment that settled it.
 
-> **S3 decided no-go (2026-09-17).** Packed rationale did not reduce violations: over 14 paired runs, 10
-> with the corpus and 12 without (§4, S3). By the gate, the plan below does not proceed as written: no
-> Phase 1–3 build-out, no later phases, and S0 and S2 are cancelled. What exists is kept as it is: the
-> cargo subcommand scaffold, `cargo-smysl-corpus`, `cargo-smysl-git`, `cargo-smysl-facts`, the eval
-> tooling and the results. §11 lists the owner's options.
+> **Where the project stands (2026-09-17).**
+> - **The tool's promise is that it operates as designed.** It makes no promise about how an agent or a
+>   person acts on what it reports. Gates are functional acceptance, and a negative result is an outcome
+>   that sets scope or documentation, not a verdict on the project (§4).
+> - **Feasibility: met.** smysl works as a self-contained library under an installable cargo subcommand,
+>   on real Rust history (§4, Feasibility).
+> - **S3, done:** rationale packed into an agent's prompt did not change what the agent did (10
+>   violations without, 12 with, over 14 pairs), and git history answered "why" questions as well as the
+>   corpus in essay-style repositories. Kept as information about that usage pattern. It moves findings
+>   out of the prompt and onto the change (§4, S3).
+> - **Next: S4,** functional acceptance of `cargo smysl check`, which reports what a change contradicts
+>   (`eval/s4-protocol.md`). Phase 1 continues alongside it.
 
 **What the tool is:** a cargo subcommand that records *why* Rust code changed — the decisions a
 change makes, what had to be true for them (prerequisites), what was rejected, and what follows —
 as a smysl corpus, and keeps that record honest over time: deterministic facts about the code and
 test results as evidence, stale reasoning flagged when the code it rests on moves.
+
+**What it promises:** that each command does what its design says, with measured figures where a model
+is involved (recall, precision, cost). Acting on its reports belongs to whoever reads them: a person, a CI
+step, a hook, an agent.
 
 **What it is not:** a transcript store (Entire, Agent Note, git-ai cover capture), a static
 analyzer (it reuses `syn`, cargo, rust-analyzer, cargo-mutants), or an oracle that marks a
@@ -32,10 +44,15 @@ prerequisite true on a model's say-so.
 git dependency would block `cargo publish` and `cargo install cargo-smysl`. Verified at `013cc20`
 (pre-release): no `smysl-provider`, `ureq`, `tokio` or `rustls` in the `stage` tree.
 
-**Next pin: smysl 1.4.0,** published once its tests are green. rust_smysl's whole workspace already
-passes against dev/1.4.0 (`09271ab`). 1.4.0 brings the edge lifecycle this plan uses from Phase 3 on
-(D15): relation identity, withdrawal (record 11), attestations on edges, live rebuttals, and resolution
-(record 12). Until 1.4.0 adds surface syntax for records 11 and 12, stores holding them are CBOR.
+**Next pin: smysl 1.4.0,** published once its tests are green. Acceptance from rust_smysl passed twice
+before publish (`docs/smysl-1.4.0-acceptance.md`):
+- R10 (merge idempotence) and R12 (imported readings check clean) pass their acceptance tests, which fail
+  on 1.3;
+- staging and S3 packs are identical to 1.3.
+
+1.4.0 brings the edge lifecycle this plan uses from Phase 3 on (D15): relation identity, withdrawal
+(record 11, `@withdraw`), attestations on edges, live rebuttals, and resolution (record 12, `@resolve`).
+When it is on crates.io: move the pin, un-ignore `tests/acceptance_1_4.rs` and the R10 guarantee test.
 
 **Distribution:** `cargo-smysl` is an external cargo subcommand. It installs with
 `cargo install cargo-smysl`, runs as `cargo smysl …`, and is self-contained: smysl and syn are linked
@@ -87,18 +104,39 @@ split smysl keeps between `stage` and `model`.
 
 ---
 
-## 4. Phase 0 — spikes with decision gates
+## 4. Phase 0 — spikes and acceptance gates
 
-**Result (2026-09-17): S3 is no-go, so S2 and S0 do not run.** Order before that result: **S3 first, then S2, then S0 only as far as tuning needs.** S3 measures
-whether the product is useful with automatic oracles and needs no labels: the owner only judges ten
-answers blind. S0's labels measure correctness per kind, which tunes extraction but does not decide
-go/no-go, so they are deferred until S3 says go. The labels are a development test set, never part
-of the product.
+**What a gate measures.** The tool promises to operate as designed, so a gate is functional acceptance:
+does a command do what its design says, measured where a model is involved. A negative result is an
+outcome: it sets how a feature ships (gate or advisory), what its documentation states, or which step is
+reworked. Whether people or agents act on a report is not the tool's promise. Measuring it (S3, S4 §5) is
+information for design.
 
-The spikes decide scope and order. None of Phases 1–3 is wasted by any outcome, but the order of
-the later phases, and whether there is a v1 at all, depends on these gates.
+**Order (updated 2026-09-17):**
+1. Feasibility: met.
+2. S3: done, as information.
+3. **S4: functional acceptance of `check`.**
+4. S2 and S0: after S4, as tuning instruments.
 
-### S0 — labelled evaluation set (deferred: tuning after S3 says go)
+### Feasibility — can smysl track a Rust codebase? (met)
+
+| Needed | Evidence |
+|---|---|
+| smysl as a self-contained library | `stage` feature only; no smysl CLI, provider layer or network stack in the tree; git read in-process with gix; CI checks it |
+| An installable cargo subcommand | `cargo install` then `cargo smysl doctor` on Linux, macOS and Windows; MSRV 1.86 |
+| Real history into a corpus | 726 units from 20 commits in 3 repositories, 0 staging errors. Each quote is checked against the real commit text; 2 absent quotes were capped at speculative |
+| Identity and merge guarantees | surface and CBOR round trips exact; merge order-independent; record-level idempotence with 1.4.0 (R10) |
+| Deterministic retrieval and packing | S3 contexts byte-identical across two builds and two smysl versions |
+| Rust-aware facts | `syn` function facts; test linking and mutation gating measured (S1) |
+| Upstream fit | R1–R10, R12 and R15 closed; R11, R13 and R14 kept open by smysl as S2 tasks |
+
+Known weak spots, all in extraction rather than smysl:
+- prerequisite recall depends on the model (DeepSeek missed two that the pro model found);
+- runs are unstable;
+- fact matching plateaued at 13–16 of 67;
+- terse commit messages give little to extract.
+
+### S0 — labelled evaluation set (deferred: tuning after S4)
 
 - **Do:** label 20 commits across at least 3 repositories (smysl, ucal, and at least one with
   ordinary commit messages): decisions, genuine prerequisites, rejected alternatives. Labelled by
@@ -108,7 +146,7 @@ the later phases, and whether there is a v1 at all, depends on these gates.
 - **Gate:** none; it is the instrument for tuning (model choice, prompt changes, Phase 2's "done").
 - **State:** kit built (`eval/`, `cargo-smysl-eval`); extractions of all 20 commits by
   `research-deepseek-v2` and `research-flash-v2`, 6 by `research-pro-v2`, all staging with 0 errors
-  against real commit text. Labelling starts only if S3 says go, and then with the 6 studied commits.
+  against real commit text. Labelling starts after S4, with the 6 studied commits.
 
 ### S1 — mutation gating of test evidence (done)
 
@@ -140,7 +178,7 @@ the later phases, and whether there is a v1 at all, depends on these gates.
   - either way, add the cheap static vacuity check (an `assert_eq!` whose two sides are the same
     tokens).
 
-### S2 — recorder-first or extractor-first
+### S2 — recorder-first or extractor-first (after S4)
 
 - **Question:** do prerequisites recorded **while the change is made** (by the coding agent or the
   author) beat prerequisites extracted afterwards from message and diff?
@@ -153,11 +191,14 @@ the later phases, and whether there is a v1 at all, depends on these gates.
     clearly higher. The capture path (hooks, agent integration) moves into Phase 4, and extraction
     becomes backfill.
   - **Extractor-first** otherwise. Input sources for ordinary repositories move into Phase 4.
-- **Measure (updated):** by downstream effect rather than S0 labels. Each arm's rationale is packed
-  into S3-style tasks on the changed code, and the arm whose context prevents more violations wins.
-  Label scoring is added only if S0 is labelled by then.
+- **Measure (updated after S3):** by `check` (S4). A later change that contradicts each arm's recorded
+  prerequisites is checked against each arm's corpus, and the arm whose corpus lets `check` find more
+  contradictions, at equal precision, wins. Label scoring is added only if S0 is labelled by then.
 
-### S3 — go / no-go: does the corpus change outcomes?
+### S3 — does packed rationale change what an agent does? (done: information)
+
+Originally the project's go/no-go gate. After the result, and with the tool's promise stated as operating
+as designed (above), it is recorded as information about one usage pattern: rationale in the prompt.
 
 - **Question:** does packed rationale stop an agent from breaking a recorded prerequisite?
 - **Protocol:** `eval/s3-protocol.md`. 12 tasks validated: 8 non-control, 4 controls. The corpus is
@@ -170,15 +211,15 @@ the later phases, and whether there is a v1 at all, depends on these gates.
   without the relevant units packed (`smysl::pack` within a fixed budget) into the agent's context;
   count violations that reach a passing commit. Also score 10 "why is this like this?" questions
   answered from the corpus vs from `git log` / `blame`.
-- **Gate:**
+- **Gate as set then:**
   - **Go** if violations drop by at least half and corpus answers win the majority of questions.
-  - **No-go** otherwise: stop, or narrow to the one thing that did help.
+  - **No-go** otherwise.
 
-#### Run1 result (2026-09-17): questions no-go; tasks invalid, narrowed to run2
+#### Run1 result (2026-09-17): questions lost (0 of 10); tasks invalid, narrowed to run2
 
 Results: `eval/s3/results/run1/` (`report.txt`, `judging.md`).
 
-- **Questions: no-go.** Corpus answers won 0 of 10. Both sources were correct on all 10, and git
+- **Questions: lost, against the gate as set then.** Corpus answers won 0 of 10. Both sources were correct on all 10, and git
   history plus code was more useful on all 10. In essay-style repositories the commit messages already
   hold the reasons, so the corpus is a shorter summary of the same text. It keeps the reason and drops
   the detail (files, tests, the case ruled out) that made the git answers more useful. Caveats: a Claude
@@ -206,11 +247,11 @@ Protocol amendments: `eval/s3-protocol.md`, "Run2".
 - **Stopped:** the agent made no change and asked. Counted separately, and not as a violation.
 - **Repetitions:** 3 per task and arm (72 runs), same agent configuration as run1.
 - **Gate:** go for the narrowed product if corpus-arm violations are at most half of control-arm
-  violations over all 36 pairs. Otherwise no-go: stop.
+  violations over all 36 pairs (as set then).
 - **If go:** item 10's edit-time hook (pack before edit) moves ahead of everything in §8 and becomes
   the v1. The query commands (`why`) become secondary.
 
-#### Run2 result (2026-09-17): no-go
+#### Run2 result (2026-09-17): no effect
 
 Stopped by the owner after the first repetition (and task 1 and 2's second), once the gate could no
 longer be met: the corpus arm had 11 violations, so a go needed at most 5 more in its remaining 23 runs
@@ -245,8 +286,8 @@ while it was violating in most. Three runs interrupted by the stop were discarde
 - **Tasks:** an agent given a task that conflicts with a recorded prerequisite does the task, with or
   without the prerequisite in its context.
 
-The corpus adds nothing measurable over what the repository already holds. That is the no-go condition
-in the gate, and no part of the corpus accounts for an effect to narrow to.
+In these repositories and with this usage, the corpus added nothing measurable over what the repository
+already holds.
 
 **Limits of the result.**
 - The repositories have essay-style commit messages, so git history is a strong baseline. A repository
@@ -257,9 +298,45 @@ in the gate, and no part of the corpus accounts for an effect to narrow to.
 - The tasks ask for the violating change directly. A gentler task, where breaking the prerequisite is a
   side effect, might show a difference that these do not.
 
+**What it changed in the design:**
+- **Findings come from the change, not the prompt.** `check` reads the diff after it is made and reports
+  what it contradicts, as a signal with an exit code (S4).
+- **"Why" answers are not a claim over git history** in repositories whose messages already give reasons.
+  `why` stays a store query, not a replacement for `git log`.
+- **Guard tests do not protect a prerequisite from an agent,** which rewrote them twice (run1, tasks 8 and
+  10). `check` must read test edits in the diff like any other change.
+
+### S4 — does `cargo smysl check` operate as designed?
+
+- **Protocol:** `eval/s4-protocol.md`.
+- **Design under test:** given a diff and the corpus of the diff's ancestors, report the decisions,
+  prerequisites and rejected alternatives the change contradicts, and nothing else.
+  1. Candidates are deterministic: units anchored to the touched files, plus BM25 over the diff's
+     identifiers.
+  2. Candidates are packed with their closure.
+  3. One model judgement per diff.
+  4. Each verdict's label and diff quote are validated.
+  5. Exit 5 when there are findings.
+- **Data:**
+  - **Development set (tuning allowed):** the S3 naive patches, the 52 S3 agent diffs with oracle labels,
+    and half of about 118 real commits.
+  - **Held-out set (detector frozen first):** 24 new agent diffs, the other half of the real commits, and
+    10 commits after the S3 bases.
+- **Gate (held-out):** recall ≥ 0.70 over tasks whose prerequisite is in the corpus; precision ≥ 0.80 of
+  owner-adjudicated flags; ≤ 10% of clean real commits wrongly flagged; deterministic candidates and pack.
+- **Outcome either way:**
+  - all bounds met: `check` ships as a gate;
+  - any bound missed: it ships advisory (`--strict` to block), with the measured figures documented and at
+    most one step reworked against a fresh held-out set.
+- **Information, not gated:** a third S3 arm with `check` as a Stop hook (silent vs disclosed violations).
+
 ---
 
 ## 5. Phase 1 — smysl integration and data model
+
+**State:** the corpus crate builds and stages units (D2, D5), declares `x.code/v1`, and holds its
+round-trip, merge and label guarantees on real extractions. Remaining: store I/O (per-commit surface and
+merged CBOR), and the "what depends on X" query.
 
 - `corpus` crate:
   - build units per D2 with tool-assigned sources and labels (D5);
@@ -312,7 +389,10 @@ in the gate, and no part of the corpus accounts for an effect to narrow to.
   - edges per D13, each attested by who asserted it (the linking model's agent id and recipe);
   - the mutation gate as S1 decided;
   - the static vacuity check.
+- `check` (after S4): the S4 detector ported to the `cargo smysl check` command under the self-contained
+  rule, shipped as a gate or advisory as S4 decided, with its measured figures in its help.
 - **Done when:**
+  - `check` reproduces its S4 held-out figures from the shipped binary;
   - on the S0 set, no single-run status raise;
   - wrong `backs` edges are withdrawn (by review or the mutation gate) or pending in the queue, never
     followed by packing or `why`;
@@ -321,6 +401,10 @@ in the gate, and no part of the corpus accounts for an effect to narrow to.
 ---
 
 ## 8. Later phases — order set by the spikes
+
+`check` is not in this table: S4 decides how it ships, and it is built in Phase 3. The staleness report
+(item 5) and the PR and hook integration of `check` (item 10) come first after Phase 3, whichever way S2
+goes.
 
 | Item | Work | If recorder-first (S2) | If extractor-first (S2) |
 |---|---|---|---|
@@ -331,7 +415,7 @@ in the gate, and no part of the corpus accounts for an effect to narrow to.
 | 8 | **Cost and privacy:** per-commit token budget and price; model routing (small model for decisions/alternatives, pro for prerequisites); quota handling; local model viability | Phase 6 | **Phase 4** |
 | 9 | **Evaluation:** grow S0 into a regression suite run on every prompt or model change | continuous | continuous |
 
-S3 is no-go (§4), so none of this proceeds as planned.
+
 
 ---
 
@@ -351,6 +435,11 @@ S3 is no-go (§4), so none of this proceeds as planned.
   must batch and cache.
 - **The research repositories share one author** and an essay style of commit message; results on
   ordinary repositories are unmeasured until S0/S2.
+- **Agents do not act on context they are given** (S3: 1 of 14 corpus-arm summaries mentioned it) and
+  rewrite tests that stand in their way (S3 run1). A report is only acted on where something reads its
+  exit code.
+- **A model-judged check has a false-flag rate.** S4 measures it. Advisory shipping is the fallback, not a
+  failure.
 
 ## 10. smysl requests for 1.4.0 (not blocking)
 
@@ -366,6 +455,8 @@ The requests, with reproductions and acceptance tests, are in
   on 1.3.0 and dev/1.4.0.
 - **R11–R15:** `import` ignores `--format`; `import` summaries fail `check`; configuration error exit
   code; unknown provider kind message; summary bound mismatch.
+- **Status (dev/1.4.0, 2026-09-17):** R10 and R12 fixed and accepted; R15 fixed; R11, R13 and R14 kept
+  open by smysl as S2 tasks.
 - **Not filed:** `--granularity` does not choose the profile units are checked under; smysl deferred
   it to 1.4 itself.
 
@@ -375,11 +466,7 @@ The requests, with reproductions and acceptance tests, are in
 2. Who labels S0, and which third repository with ordinary commit messages?
 3. Budget per commit for model calls, and whether proprietary code may go to a hosted model.
 4. Is the corpus committed to the analysed repository, or kept beside it?
-5. **After S3's no-go (2026-09-17), which of these?**
-   - **Stop here** and archive the repository with the results as the record.
-   - **Test one of the limits** before stopping, at the cost of another run: a task where breaking the
-     prerequisite is a side effect rather than the request, or a repository whose history does not state
-     its reasons.
-   - **Keep only what stands without the corpus claim:** deterministic facts about Rust code
-     (`cargo-smysl-facts`) and smysl as a record of test evidence. Neither was measured by S3, and neither
-     has its own case yet.
+5. **S4 adjudication:** the owner judges every flag blind (correct, wrong, arguable). Confirm the
+   hit patterns in `eval/s4-protocol.md` §3 before the detector is frozen.
+6. **Model for `check`:** DeepSeek (the extraction model) for S4; the shipped choice follows item 7 and
+   item 8.
