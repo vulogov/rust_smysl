@@ -1,0 +1,22 @@
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..f9ff3e4 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -2963,6 +2963,17 @@ fn root_beside(store: Option<&str>) -> std::path::PathBuf {
+         .map(std::path::PathBuf::from)
+         .and_then(|p| p.parent().map(std::path::Path::to_path_buf))
+         .filter(|p| !p.as_os_str().is_empty())
++        .unwrap_or_else(repository_root)
++}
++
++/// The enclosing git repository's root, so `.smysl/` is the same wherever in the tree a command
++/// runs; the current directory when there is no repository.
++#[cfg(feature = "providers")]
++fn repository_root() -> std::path::PathBuf {
++    let cwd = std::env::current_dir().unwrap_or_else(|_| std::path::PathBuf::from("."));
++    cwd.ancestors()
++        .find(|d| d.join(".git").exists())
++        .map(std::path::Path::to_path_buf)
+         .unwrap_or_else(|| std::path::PathBuf::from("."))
+ }
+ 

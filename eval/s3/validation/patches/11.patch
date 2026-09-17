@@ -1,0 +1,81 @@
+diff --git a/.gitignore b/.gitignore
+index fcc987f..0bc0566 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -32,3 +32,6 @@ Documentation/LIFE_UNIVERSE_AND_GOD/assets/images/*-photo.png
+ minisign.key
+ *.key
+ !fixtures/*.pub
++
++# generated at build time
++Documentation/examples/observations.txt
+diff --git a/Documentation/examples/observations.txt b/crates/ucal/build.rs
+similarity index 64%
+rename from Documentation/examples/observations.txt
+rename to crates/ucal/build.rs
+index ccc12a8..7356b78 100644
+--- a/Documentation/examples/observations.txt
++++ b/crates/ucal/build.rs
+@@ -1,4 +1,11 @@
+-# Observed instants, one decimal tick count per line, for
++//! Generates the synthetic observations example at build time instead of committing it.
++fn main() {
++    let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").expect("OUT_DIR"));
++    std::fs::write(out.join("observations.txt"), OBSERVATIONS).expect("write observations");
++    println!("cargo:rerun-if-changed=build.rs");
++}
++
++const OBSERVATIONS: &str = r#"# Observed instants, one decimal tick count per line, for
+ # `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed <this>`.
+ #
+ # Blank lines and lines starting with `#` are skipped. Reading none at all is an
+@@ -19,3 +26,4 @@
+ 
+ # cycle 500, +41 s
+ 8070205178448285611789196091997839880530466139316558837890624
++"#;
+diff --git a/crates/ucal/tests/json_surface.rs b/crates/ucal/tests/json_surface.rs
+index 9726231..0066c21 100644
+--- a/crates/ucal/tests/json_surface.rs
++++ b/crates/ucal/tests/json_surface.rs
+@@ -181,10 +181,7 @@ fn commands() -> Vec<(&'static str, Doc)> {
+         // binaries, one path, run concurrently. One truncated the file while the
+         // other read it, which produced a residuals run that had read nothing.
+         // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        const OBS: &str = concat!(env!("OUT_DIR"), "/observations.txt");
+         v.push((
+             "ephem-residuals",
+             ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
+diff --git a/crates/ucal/tests/manual_fields.rs b/crates/ucal/tests/manual_fields.rs
+index 994355e..33b4da9 100644
+--- a/crates/ucal/tests/manual_fields.rs
++++ b/crates/ucal/tests/manual_fields.rs
+@@ -185,10 +185,7 @@ fn all_commands() -> Vec<(&'static str, Doc)> {
+         // binaries, one path, run concurrently. One truncated the file while the
+         // other read it, which produced a residuals run that had read nothing.
+         // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        const OBS: &str = concat!(env!("OUT_DIR"), "/observations.txt");
+         v.push((
+             "ephem residuals",
+             ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
+diff --git a/xtask/src/examples.rs b/xtask/src/examples.rs
+index f27ef6f..0d4dd6f 100644
+--- a/xtask/src/examples.rs
++++ b/xtask/src/examples.rs
+@@ -235,6 +235,8 @@ fn capture(bin: &Path, args: &[&str]) -> Result<String, String> {
+ 
+ /// Build the examples document.
+ pub fn generate(root: &Path, bin: &Path) -> Result<String, String> {
++    // The observations example is generated, not committed.
++    std::fs::write(root.join("Documentation/examples/observations.txt"), include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../crates/ucal/build.rs")).split("r#\"").nth(1).and_then(|x| x.split("\"#").next()).unwrap_or_default()).map_err(|e| e.to_string())?;
+     let mut out = String::new();
+     out.push_str("# Worked examples\n\n");
+     out.push_str("**Generated — do not edit.** Every block below is the real output of the command above it, captured by running it. Regenerate with:\n\n");

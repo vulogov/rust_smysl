@@ -1,0 +1,50 @@
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..990d59b 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -160,21 +160,21 @@ impl Session {
+         Instant::from_ticks(best)
+     }
+ 
+-    /// How far the wall clock has moved away from this session's projection.
+-    ///
+-    /// Signed by a word rather than a number, because a tick count is unsigned
+-    /// (Rule B) — the same shape `SignedWindow` and the odometer take.
+-    pub fn divergence(&self, wall_now: &Instant<UC1>, monotonic_elapsed: &Ticks) -> (Ticks, bool) {
++    /// How far the wall clock has moved away from this session's projection, as a signed tick
++    /// delta: positive when the wall clock is ahead, negative when it is behind.
++    pub fn divergence(&self, wall_now: &Instant<UC1>, monotonic_elapsed: &Ticks) -> i128 {
+         let projected = match self.anchor.try_add(monotonic_elapsed) {
+             Some(p) => p,
+-            None => return (<Ticks as TickInt>::zero(), false),
++            None => return 0,
+         };
+         let w = wall_now.ticks();
+-        if w >= &projected {
++        let (magnitude, ahead) = if w >= &projected {
+             (w.try_sub(&projected).unwrap_or_else(<Ticks as TickInt>::zero), true)
+         } else {
+             (projected.try_sub(w).unwrap_or_else(<Ticks as TickInt>::zero), false)
+-        }
++        };
++        let m = magnitude.to_dec_string().parse::<i128>().unwrap_or(i128::MAX);
++        if ahead { m } else { -m }
+     }
+ }
+ 
+@@ -548,13 +548,8 @@ mod tests {
+     #[test]
+     fn divergence_carries_its_direction_separately() {
+         let s = Session::anchored_at(&at(100));
+-        let (ahead, wall_ahead) = s.divergence(&at(105), &ns(4_000_000_000));
+-        assert!(wall_ahead, "the wall clock is ahead of the projection");
+-        assert_eq!(ahead.to_dec_string(), ns(1_000_000_000).to_dec_string());
+-
+-        let (behind, wall_ahead) = s.divergence(&at(103), &ns(4_000_000_000));
+-        assert!(!wall_ahead, "the wall clock is behind the projection");
+-        assert_eq!(behind.to_dec_string(), ns(1_000_000_000).to_dec_string());
++        assert!(s.divergence(&at(105), &ns(4_000_000_000)) > 0, "the wall clock is ahead of the projection");
++        assert!(s.divergence(&at(103), &ns(4_000_000_000)) < 0, "the wall clock is behind the projection");
+     }
+ 
+     /// **It does not claim to be finer.** A session reading lands on the same

@@ -1,0 +1,54 @@
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..55d8a43 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -246,7 +246,7 @@ fn cli() -> Command {
+                         .help("One store for --hop, two to compare"),
+                 ),
+             "trace" => sub
+-                .arg(Arg::new("uid").required(true).value_name("UID"))
++                .arg(Arg::new("uid").value_name("UID").help("Unit to trace; defaults to the store's view roots"))
+                 .arg(
+                     Arg::new("depth")
+                         .long("depth")
+@@ -1493,12 +1493,21 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             return ExitCode::Failure;
+         }
+     };
+-    let target = match resolve(&store, m.get_one::<String>("uid").expect("required")) {
+-        Ok(u) => u,
+-        Err(e) => {
+-            eprintln!("smysl trace: {e}");
+-            return e.code;
+-        }
++    let target = match m.get_one::<String>("uid") {
++        Some(raw) => match resolve(&store, raw) {
++            Ok(u) => u,
++            Err(e) => {
++                eprintln!("smysl trace: {e}");
++                return e.code;
++            }
++        },
++        None => match smysl::view_roots(&store).into_iter().next() {
++            Some(root) => root,
++            None => {
++                eprintln!("smysl trace: no UID given and the store declares no view roots");
++                return ExitCode::Usage;
++            }
++        },
+     };
+ 
+     let kind = if m.get_flag("both") {
+diff --git a/tests/cli-surface.txt b/tests/cli-surface.txt
+index 80f3e52..52ce1e1 100644
+--- a/tests/cli-surface.txt
++++ b/tests/cli-surface.txt
+@@ -111,7 +111,7 @@ diff       --quiet
+ diff       --verbose
+ diff       --seed-check
+ diff       --help
+-trace      <UID>
++trace      [UID]
+ trace      [PATH]
+ trace      --config
+ trace      --depth

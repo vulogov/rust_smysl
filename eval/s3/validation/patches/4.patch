@@ -1,0 +1,15 @@
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..126d589 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -378,3 +378,10 @@ fn write_rewrites_a_file_and_leaves_stdin_alone() {
+ // that a document round-trips declaring the version it declared, and `tests/surface.rs`
+ // asserts the records survive. If those ever fail, this guard is why `fmt` will refuse rather
+ // than write the damage to disk.
++
++#[test]
++fn check_reports_the_unformatted_incident_fixture() {
++    let out = run(&["fmt", "--check", F1]);
++    assert_eq!(out.code, CHECK_ERRORS, "{}", out.stderr);
++    assert!(out.stderr.contains("not canonically formatted"), "{}", out.stderr);
++}

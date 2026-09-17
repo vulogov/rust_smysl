@@ -1,0 +1,19 @@
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..a6938f0 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -156,6 +156,14 @@ impl Session {
+         if self.last > best {
+             best = self.last.clone();
+         }
++        // Smooth wall-clock jumps: never advance more than one second in a single reading.
++        if let Some(step) = ticks_in_nanos(1_000_000_000) {
++            if let Some(limit) = self.last.try_add(&step) {
++                if best > limit {
++                    best = limit;
++                }
++            }
++        }
+         self.last = best.clone();
+         Instant::from_ticks(best)
+     }

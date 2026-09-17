@@ -1,0 +1,39 @@
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..d06a5aa 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -2966,6 +2966,16 @@ fn root_beside(store: Option<&str>) -> std::path::PathBuf {
+         .unwrap_or_else(|| std::path::PathBuf::from("."))
+ }
+ 
++/// The usage ledger lives in the user's home, so `smysl usage` totals spending across every
++/// project rather than per directory.
++#[cfg(feature = "providers")]
++fn user_ledger() -> std::path::PathBuf {
++    std::env::var_os("HOME")
++        .map(std::path::PathBuf::from)
++        .unwrap_or_else(|| std::path::PathBuf::from("."))
++        .join(smysl::Ledger::PATH)
++}
++
+ /// The project configuration, or the all-local default when there is none.
+ #[cfg(feature = "providers")]
+ fn load_config(global: &ArgMatches) -> Result<smysl::ProviderConfigFile, String> {
+@@ -3220,7 +3230,7 @@ fn cmd_ingest(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+ 
+     // The ledger records counts, models, task and recipe - never content (§29).
+     if let Some(provider) = &report.provider {
+-        let mut ledger = smysl::Ledger::open(project_file(global, smysl::Ledger::PATH));
++        let mut ledger = smysl::Ledger::open(user_ledger());
+         let entry = smysl::LedgerEntry::new(
+             now_millis(),
+             provider.clone(),
+@@ -3494,7 +3504,7 @@ fn cmd_providers(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+ /// `smysl usage` - the token ledger (§23.1). Informational; caps never block.
+ #[cfg(feature = "providers")]
+ fn cmd_usage(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+-    let path = project_file(global, smysl::Ledger::PATH);
++    let path = user_ledger();
+     let mut ledger = smysl::Ledger::open(&path);
+ 
+     if m.get_flag("reset") {

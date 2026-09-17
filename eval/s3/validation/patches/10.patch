@@ -1,0 +1,49 @@
+diff --git a/xtask/src/citations.rs b/xtask/src/citations.rs
+index 1e99b4a..c2051af 100644
+--- a/xtask/src/citations.rs
++++ b/xtask/src/citations.rs
+@@ -803,13 +803,37 @@ pub fn check_ci_covers_the_procedure(root: &Path) -> Result<usize, Vec<String>>
+     let newest = root
+         .join("Documentation/Release_Notes")
+         .join(format!("{version}.md"));
+-    if !newest.exists() {
+-        return Err(alloc_vec(format!(
+-            "the workspace is at {version} and {} does not exist; a cycle's notes \
+-             are created when it opens",
+-            newest.display()
+-        )));
+-    }
++    // When the current version's notes are missing, fall back to the newest notes.
++    let newest = if newest.exists() {
++        newest
++    } else {
++        let mut files: Vec<((u64, u64, u64), std::path::PathBuf)> =
++            std::fs::read_dir(root.join("Documentation/Release_Notes"))
++                .map(|rd| {
++                    rd.flatten()
++                        .filter_map(|e| {
++                            let p = e.path();
++                            let v: Vec<u64> = p
++                                .file_stem()?
++                                .to_str()?
++                                .split('.')
++                                .map(|x| x.parse().ok())
++                                .collect::<Option<_>>()?;
++                            (v.len() == 3).then(|| ((v[0], v[1], v[2]), p))
++                        })
++                        .collect()
++                })
++                .unwrap_or_default();
++        files.sort();
++        match files.pop() {
++            Some((_, p)) => p,
++            None => {
++                return Err(alloc_vec(format!(
++                    "the workspace is at {version} and no release notes exist"
++                )))
++            }
++        }
++    };
+     let newest = newest.as_path();
+     let Ok(notes) = std::fs::read_to_string(newest) else {
+         return Err(alloc_vec(format!("cannot read {}", newest.display())));

@@ -1,0 +1,104 @@
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..c895937 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -121,6 +121,9 @@ pub struct Session {
+     anchor: Ticks,
+     /// The largest reading handed out so far.
+     last: Ticks,
++    /// When this session was anchored, for the monotonic elapsed time.
++    #[cfg(feature = "std")]
++    started: std::time::Instant,
+ }
+ 
+ impl Session {
+@@ -129,15 +132,23 @@ impl Session {
+         Session {
+             anchor: wall.ticks().clone(),
+             last: wall.ticks().clone(),
++            #[cfg(feature = "std")]
++            started: std::time::Instant::now(),
+         }
+     }
+ 
++    /// The next reading, read from the system clocks so callers need not pass them.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    pub fn reading(&mut self) -> Result<Instant<UC1>, TimeError> {
++        let wall = crate::wall_instant()?;
++        let elapsed = ticks_in_nanos(self.started.elapsed().as_nanos())
++            .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++        self.reading_at(&wall, &elapsed)
++    }
++
+     /// The next reading, given the wall clock now and monotonic elapsed since
+     /// the anchor.
+-    ///
+-    /// Pure: no clock is read here, which is what lets a test drive a wall clock
+-    /// backwards and check that the answer does not follow it.
+-    pub fn reading(
++    pub fn reading_at(
+         &mut self,
+         wall_now: &Instant<UC1>,
+         monotonic_elapsed: &Ticks,
+@@ -214,7 +225,7 @@ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+     });
+     let elapsed = ticks_in_nanos(base.elapsed().as_nanos())
+         .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+-    sess.reading(&wall, &elapsed)
++    sess.reading_at(&wall, &elapsed)
+ }
+ 
+ /// The structural facts: true on every machine, and needing no sample.
+@@ -464,7 +475,7 @@ mod tests {
+     fn a_quiet_session_follows_the_wall_clock() {
+         let mut s = Session::anchored_at(&at(100));
+         let r = s
+-            .reading(&at(105), &ns(5_000_000_000))
++            .reading_at(&at(105), &ns(5_000_000_000))
+             .expect("a reading");
+         assert_eq!(r.ticks().to_dec_string(), at(105).ticks().to_dec_string());
+     }
+@@ -480,11 +491,11 @@ mod tests {
+     fn a_backward_step_does_not_move_the_reading_back() {
+         let mut s = Session::anchored_at(&at(100));
+         let before = s
+-            .reading(&at(110), &ns(10_000_000_000))
++            .reading_at(&at(110), &ns(10_000_000_000))
+             .expect("a reading");
+         // The wall clock jumps back five seconds; monotonic keeps counting.
+         let after = s
+-            .reading(&at(105), &ns(11_000_000_000))
++            .reading_at(&at(105), &ns(11_000_000_000))
+             .expect("a reading");
+         assert!(
+             after.ticks() >= before.ticks(),
+@@ -507,9 +518,9 @@ mod tests {
+     #[test]
+     fn a_forward_step_is_accepted() {
+         let mut s = Session::anchored_at(&at(100));
+-        s.reading(&at(101), &ns(1_000_000_000)).expect("a reading");
++        s.reading_at(&at(101), &ns(1_000_000_000)).expect("a reading");
+         let jumped = s
+-            .reading(&at(160), &ns(2_000_000_000))
++            .reading_at(&at(160), &ns(2_000_000_000))
+             .expect("a reading");
+         assert_eq!(
+             jumped.ticks().to_dec_string(),
+@@ -530,7 +541,7 @@ mod tests {
+         let walk = [1_001u64, 1_002, 999, 1_000, 990, 1_010, 1_005];
+         for (i, w) in walk.iter().enumerate() {
+             let elapsed = ns((i as u128 + 1) * 1_000_000_000);
+-            let r = s.reading(&at(*w), &elapsed).expect("a reading");
++            let r = s.reading_at(&at(*w), &elapsed).expect("a reading");
+             assert!(
+                 r.ticks() >= &prev,
+                 "step {i} went backwards: {} then {}",
+@@ -569,7 +580,7 @@ mod tests {
+         let raw = finest_tier_for(&q).expect("a tier");
+         // Anchoring and projecting changes nothing about what a quantum fills.
+         let mut s = Session::anchored_at(&at(100));
+-        let _ = s.reading(&at(100), &ns(0)).expect("a reading");
++        let _ = s.reading_at(&at(100), &ns(0)).expect("a reading");
+         assert_eq!(finest_tier_for(&q).expect("a tier").index(), raw.index());
+     }
+ 
