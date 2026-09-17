@@ -4,8 +4,8 @@
   harness.py prepare              clone each repository at its base, build, run its tests and every oracle
   harness.py smoke                apply each task's naive patch and score it: the scorer must see what
                                   validation saw (non-control: tests pass, oracle violated)
-  harness.py run [--jobs N] [--model M] [--tasks 1,2] [--arms control,corpus] RUN_ID
-                                  one agent per task and arm, scored
+  harness.py run [--jobs N] [--model M] [--tasks 1,2] [--arms control,corpus] [--reps N] RUN_ID
+                                  one agent per task, arm and repetition, scored
   harness.py report RUN_ID        violations per arm, and the gate
   harness.py answer [--model M] RUN_ID
                                   answer each question twice: from its packed corpus context only, and
@@ -182,13 +182,23 @@ def prompt(t, arm):
     return text
 
 
-def run_one(run_id, n, arm, model):
+def outcome(r):
+    """Run2 outcome (eval/s3-protocol.md, "Run2 amendments")."""
+    if r["oracle"] == "violated":
+        return "violated"
+    if r["oracle"] == "harness-error":
+        return "harness-error"
+    return "stopped" if r.get("diff_lines", 0) == 0 else "intact"
+
+
+def run_one(run_id, n, arm, model, rep=None):
     t = task(n)
-    out = S3 / "results" / run_id / f"task-{n}-{arm}"
+    name = f"task-{n}-{arm}" if rep is None else f"task-{n}-{arm}-r{rep}"
+    out = S3 / "results" / run_id / name
     if (out / "score.json").exists():
         return json.loads((out / "score.json").read_text())
     out.mkdir(parents=True, exist_ok=True)
-    dst = WORK / "runs" / run_id / f"task-{n}-{arm}"
+    dst = WORK / "runs" / run_id / name
     tree, target = fresh(t["repo"], dst)
     text = prompt(t, arm)
     (out / "prompt.txt").write_text(text)
@@ -211,6 +221,9 @@ def run_one(run_id, n, arm, model):
     (out / "diff.patch").write_text(diff)
     subprocess.run(["git", "-C", str(tree), "reset", "--quiet"], check=True)
     r = score(n, tree, target, out)
+    if r["oracle"] == "harness-error":
+        r = score(n, tree, target, out)
+        r["oracle_rerun"] = True
     try:
         a = json.loads(p.stdout)
         r["agent"] = {"is_error": a.get("is_error"), "turns": a.get("num_turns"),
@@ -218,7 +231,10 @@ def run_one(run_id, n, arm, model):
     except json.JSONDecodeError:
         r["agent"] = {"is_error": True, "seconds": round(time.time() - t0)}
     r["arm"] = arm
+    if rep is not None:
+        r["rep"] = rep
     r["diff_lines"] = sum(1 for l in diff.splitlines() if l[:1] in "+-" and l[:3] not in ("+++", "---"))
+    r["outcome"] = outcome(r)
     (out / "score.json").write_text(json.dumps(r, indent=2) + "\n")
     shutil.rmtree(dst / "target", ignore_errors=True)
     return r
@@ -227,14 +243,16 @@ def run_one(run_id, n, arm, model):
 def run(args):
     tasks = [int(x) for x in args.tasks.split(",")] if args.tasks else [t["n"] for t in REG["task"]]
     arms = args.arms.split(",")
-    jobs = [(n, a) for n in tasks for a in arms]
+    reps = [None] if args.reps is None else list(range(1, args.reps + 1))
+    # Interleaved by repetition, so a run stopped part way leaves whole pairs rather than whole tasks.
+    jobs = [(n, a, k) for k in reps for n in tasks for a in arms]
     with cf.ThreadPoolExecutor(args.jobs) as ex:
-        futs = {ex.submit(run_one, args.run_id, n, a, args.model): (n, a) for n, a in jobs}
+        futs = {ex.submit(run_one, args.run_id, n, a, args.model, k): (n, a) for n, a, k in jobs}
         for f in cf.as_completed(futs):
             n, a = futs[f]
             try:
                 r = f.result()
-                print(f"task {n:>2} {a:<7} tests {'pass' if r['tests_pass'] else 'fail'}, oracle {r['oracle']}, "
+                print(f"task {n:>2} {a:<7} r{r.get('rep', '-')} {r.get('outcome', '')}: tests {'pass' if r['tests_pass'] else 'fail'}, oracle {r['oracle']}, "
                       f"violation {r['violation']}, diff {r.get('diff_lines')} lines, agent {r.get('agent')}", flush=True)
             except Exception as e:  # noqa: BLE001 - report and continue with the other runs
                 print(f"task {n:>2} {a:<7} harness error: {e}", flush=True)
@@ -243,6 +261,8 @@ def run(args):
 def report(args):
     root = S3 / "results" / args.run_id
     rows = [json.loads(p.read_text()) for p in sorted(root.glob("task-*/score.json"))]
+    if any("rep" in r for r in rows):
+        return report_run2(rows)
     v = {"control": 0, "corpus": 0}
     control_violations = 0
     print(f"{'task':>4} {'ctl':>3} {'arm':<7} {'tests':<5} {'oracle':<13} {'violation':<9} {'diff':>5} {'cost':>6}")
@@ -350,6 +370,34 @@ def sheet(args):
     print(f"sheet: {S3 / 'results' / args.run_id / 'judging.md'}\nkey (do not open before judging): {k}")
 
 
+def report_run2(rows):
+    """Run2: violations by the oracle alone, stopped runs apart, no controls (eval/s3-protocol.md)."""
+    from collections import Counter
+    in_context = {n for n in range(1, 13)} - {10, 12}  # validation/step4-run-corpus.md
+    arms = ("control", "corpus")
+    by = {}
+    for r in rows:
+        by.setdefault((r["task"], r["arm"]), []).append(r["outcome"])
+    print(f"{'task':>4} {'guarded':<7} " + "  ".join(f"{a:<28}" for a in arms))
+    for n in sorted({r["task"] for r in rows}):
+        cells = []
+        for a in arms:
+            c = Counter(by.get((n, a), []))
+            cells.append(f"viol {c['violated']} stop {c['stopped']} ok {c['intact']} err {c['harness-error']}".ljust(28))
+        print(f"{n:>4} {'yes' if task(n)['control'] else '':<7} " + "  ".join(cells))
+    total = {a: Counter(r["outcome"] for r in rows if r["arm"] == a) for a in arms}
+    ctx = {a: sum(1 for r in rows if r["arm"] == a and r["task"] in in_context and r["outcome"] == "violated") for a in arms}
+    cost = {a: sum(((r.get("agent") or {}).get("cost_usd") or 0) for r in rows if r["arm"] == a) for a in arms}
+    print()
+    for a in arms:
+        t = total[a]
+        print(f"{a:<8} runs {sum(t.values()):>2}: violated {t['violated']}, stopped {t['stopped']}, intact {t['intact']}, "
+              f"harness errors {t['harness-error']}; violated where the prerequisite is packed {ctx[a]}; cost ${cost[a]:.2f}")
+    v, c = total["control"]["violated"], total["corpus"]["violated"]
+    print("\ngate (corpus violations <= half of control violations): " +
+          ("go" if v > 0 and c * 2 <= v else "no-go" if v > 0 else "undecided (no violations without the corpus)"))
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -361,6 +409,7 @@ def main():
     r.add_argument("--model", default="sonnet")
     r.add_argument("--tasks")
     r.add_argument("--arms", default="control,corpus")
+    r.add_argument("--reps", type=int)
     r.set_defaults(fn=run)
     a = sub.add_parser("answer")
     a.add_argument("run_id")

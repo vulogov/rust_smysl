@@ -1,6 +1,6 @@
 # rust_smysl — implementation plan (draft)
 
-**Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle). Written from the research experiments in this repository's history;
+**Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle, S3 run1: questions no-go, tasks narrowed to run2). Written from the research experiments in this repository's history;
 every "settled" item below cites the experiment that settled it.
 
 **What the tool is:** a cargo subcommand that records *why* Rust code changed — the decisions a
@@ -168,6 +168,42 @@ the later phases, and whether there is a v1 at all, depends on these gates.
   - **Go** if violations drop by at least half and corpus answers win the majority of questions.
   - **No-go** otherwise: stop, or narrow to the one thing that did help.
 
+#### Run1 result (2026-09-17): questions no-go; tasks invalid, narrowed to run2
+
+Results: `eval/s3/results/run1/` (`report.txt`, `judging.md`).
+
+- **Questions: no-go.** Corpus answers won 0 of 10. Both sources were correct on all 10, and git
+  history plus code was more useful on all 10. In essay-style repositories the commit messages already
+  hold the reasons, so the corpus is a shorter summary of the same text. It keeps the reason and drops
+  the detail (files, tests, the case ruled out) that made the git answers more useful. Caveats: a Claude
+  session judged, having read the commits first, and the git answers were longer. Neither is likely to
+  move 0 toward 6. **Consequence: answering "why is this like this?" is dropped as a product claim.**
+- **Tasks: invalid.** Non-control violations were 6 without the corpus and 4 with it, one run per task
+  and arm. Two controls were violated because agents rewrote the guarding test (task 8: renamed and
+  re-asserted `a_forward_step_is_accepted`; task 10: replaced the refusal test). "Test-guarded" does not
+  protect a prerequisite from an agent.
+- **The one clear effect was push, not pull.** On task 7 the corpus agent quoted the recorded rejected
+  alternative and stopped to ask. The agent without the corpus had the same git history and never looked.
+  A prerequisite in context did not by itself stop a violation (task 2).
+- **Narrowed hypothesis:** at edit time, declines and prerequisites that apply to the code being changed,
+  pushed into the agent's context, reduce violations. That is item 10's "pack before edit" hook, not a
+  query tool.
+
+#### Run2 (narrowed task measure)
+
+Protocol amendments: `eval/s3-protocol.md`, "Run2".
+
+- **Violation:** the oracle detects the prerequisite broken in the final state, whether or not the
+  agent edited tests to make them pass. Rewriting a guard test is the failure being measured, so there
+  are no control tasks. The harness check is the base (every oracle intact) and the naive patches (every
+  oracle violated).
+- **Stopped:** the agent made no change and asked. Counted separately, and not as a violation.
+- **Repetitions:** 3 per task and arm (72 runs), same agent configuration as run1.
+- **Gate:** go for the narrowed product if corpus-arm violations are at most half of control-arm
+  violations over all 36 pairs. Otherwise no-go: stop.
+- **If go:** item 10's edit-time hook (pack before edit) moves ahead of everything in §8 and becomes
+  the v1. The query commands (`why`) become secondary.
+
 ---
 
 ## 5. Phase 1 — smysl integration and data model
@@ -242,7 +278,8 @@ the later phases, and whether there is a v1 at all, depends on these gates.
 | 8 | **Cost and privacy:** per-commit token budget and price; model routing (small model for decisions/alternatives, pro for prerequisites); quota handling; local model viability | Phase 6 | **Phase 4** |
 | 9 | **Evaluation:** grow S0 into a regression suite run on every prompt or model change | continuous | continuous |
 
-If S3 is no-go, none of this proceeds as planned; see the S3 gate.
+If S3 is no-go, none of this proceeds as planned; see the S3 gate. After run1, a go from run2 means
+the edit-time hook in item 10 leads, whatever S2 decides.
 
 ---
 
