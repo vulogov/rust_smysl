@@ -242,13 +242,15 @@ New smysl features land on the 1.4.0 development branch. cargo-smysl stays pinne
 published release, so a feature it needs becomes a 1.4.0 request and is adopted once 1.4.0 is on
 crates.io. It never uses a git dependency.
 
-1. `smysl import` ignores `--format surface`.
-2. `smysl import` puts every column in the summary; wide rows fail `check` (`E022`).
-3. A config error exits 1 where the changelog says 6; an unknown provider kind still reports
-   "malformed provider response".
-4. json-ast `GIST_MAX_CHARS` (240) disagrees with `check`'s 120 bytes (possibly addressed in `f740474`,
-   "gist bound"; to verify).
-5. `--granularity` does not choose the profile units are checked under (deferred to 1.4 by smysl).
+The requests, with reproductions and acceptance tests, are in
+[`docs/smysl-requests-1.4.md`](smysl-requests-1.4.md):
+
+- **R10 (high):** merge re-appends attestations and schema declarations, so the log grows on every
+  merge (found by the Phase 1 merge guarantees).
+- **R11–R15:** `import` ignores `--format`; `import` summaries fail `check`; configuration error exit
+  code; unknown provider kind message; summary bound mismatch.
+- **Not filed:** `--granularity` does not choose the profile units are checked under; smysl deferred
+  it to 1.4 itself.
 
 ## 11. Open questions for the owner
 
