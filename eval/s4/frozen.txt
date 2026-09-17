@@ -1,0 +1,29 @@
+# S4 frozen configuration (eval/s4-protocol.md, "Freezing"), 2026-09-17.
+# Frozen at the owner's instruction after the development runs. A change to anything below
+# invalidates a held-out measurement made with it.
+
+detector commit   5c342d9 (crates/cargo-smysl-eval/src/s4.rs; steps 1, 2 and 4 deterministic)
+smysl             1.4.0 (crates.io pin). The 1.5.0 variant (Query::within, Tokenizer::folding,
+                  units_with_source_prefix, PackRequest::resting_on) is measured separately against the
+                  working tree and needs its own freeze once 1.5.0 publishes.
+
+provider          ollama (local, no API spend)
+model             Qwen2.5-Coder:14b
+num_ctx           16384
+context_limit     16384, reserve_output 2048
+jobs              1 (a second 16k context does not fit beside the model on 24 GB)
+
+candidates        12
+budget            3000 tokens
+diff_lines        400, file_lines 150
+query_terms       80
+judge_limit       24 units per diff, chunk 6 per call
+system prompt     the built-in default (s4::DEFAULT_SYSTEM)
+
+passes            two: order_seed 0 and order_seed 5
+finding           a flag counts only if both passes report it (agreement), which on the development
+                  sample removed 44% of flags and every false flag on a real commit
+
+# Development results with this configuration: eval/s4/results/local14-a, local14-b.
+# Recall by pattern 13/20 agreed (14/20 and 13/20 per pass); 76 agreed flags over 35 diffs;
+# 0 of 11 real commits flagged.

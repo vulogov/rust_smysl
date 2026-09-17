@@ -1,0 +1,198 @@
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..3f9552d 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -217,6 +217,70 @@ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+     sess.reading(&wall, &elapsed)
+ }
+ 
++/// How far this process's session clock has drifted from the system clock,
++/// for `ucal doctor --clock`.
++///
++/// Reads the same session [`session_now`] does — anchoring it on first use if
++/// nothing has asked the time yet this run — and calls [`Session::divergence`]
++/// between its projection and a fresh read of the system clock.
++///
++/// # Why this is usually near zero
++///
++/// `doctor` is a one-shot command: it anchors the session and reads it back
++/// within the same invocation, so the gap is dominated by however long this
++/// process happened to take between the two reads, not by any real rate
++/// error. The mechanism exists for a process that keeps a session open for
++/// longer — `ucal wallclock`, running for as long as it is left up — where
++/// the anchor and this read can be far apart and the wall clock underneath
++/// may have stepped. `doctor --clock` reports what the mechanism sees in
++/// *this* process, honestly, rather than fabricating a longer baseline.
++#[cfg(all(feature = "std", feature = "civil"))]
++pub fn session_drift() -> Result<Vec<(String, Value)>, TimeError> {
++    let wall = crate::wall_instant()?;
++    let mut g = match session().lock() {
++        Ok(g) => g,
++        Err(poisoned) => poisoned.into_inner(),
++    };
++    let (sess, base) = g.get_or_insert_with(|| {
++        (Session::anchored_at(&wall), std::time::Instant::now())
++    });
++    let elapsed = ticks_in_nanos(base.elapsed().as_nanos())
++        .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++    let (magnitude, wall_ahead) = sess.divergence(&wall, &elapsed);
++
++    // Both operands of `divergence` are exact multiples of one nanosecond in
++    // ticks — one from `wall_instant`'s `SubSecond::new(nanos, 9)`, the other
++    // built by `ticks_in_nanos` — so the magnitude is too, and this division
++    // loses nothing.
++    let per_second = UC1::bridge().ticks;
++    let billion = <Ticks as TickInt>::from_u64(1_000_000_000);
++    let (per_nano, _) = per_second.quot_rem(&billion);
++    let (drift_ns, _) = magnitude.quot_rem(&per_nano);
++
++    let system_clock = if magnitude.is_zero_ticks() {
++        "in step with the session's projection".to_string()
++    } else if wall_ahead {
++        format!("{} ns ahead of the session's projection", drift_ns.to_dec_string())
++    } else {
++        format!("{} ns behind the session's projection", drift_ns.to_dec_string())
++    };
++
++    Ok(vec![
++        ("drift_ns".into(), Value::number(drift_ns.to_dec_string())),
++        ("system_clock".into(), Value::text(system_clock)),
++        (
++            "note".into(),
++            Value::text(
++                "the session clock (Session) never moves backwards; this is the gap \
++                 between its current projection and a fresh read of the system clock, \
++                 sampled now. Near zero here because `doctor` reads both within one \
++                 invocation — a longer-lived session, such as `ucal wallclock`, is where \
++                 this number becomes worth watching",
++            ),
++        ),
++    ])
++}
++
+ /// The structural facts: true on every machine, and needing no sample.
+ pub fn facts() -> Result<Vec<(String, Value)>, TimeError> {
+     let q = ticks_in_nanos(1).ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+@@ -590,4 +654,53 @@ mod tests {
+             );
+         }
+     }
++
++    /// `session_drift` reports a magnitude and a direction, and the magnitude
++    /// is small: this process anchored moments ago, so there has been no time
++    /// for real drift, only however long the test itself has taken.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn session_drift_is_small_for_a_fresh_process() {
++        let d = session_drift().expect("session drift");
++        let get = |key: &str| {
++            d.iter()
++                .find(|(k, _)| k == key)
++                .unwrap_or_else(|| panic!("no `{key}`"))
++                .1
++                .clone()
++        };
++
++        // `Value::Number` holds an ungrouped decimal string; grouping is a
++        // rendering concern applied later, on the way to text (Rule R).
++        let drift_ns: u128 = match get("drift_ns") {
++            Value::Number(s) => s.parse().expect("drift_ns is a number"),
++            other => panic!("expected a number, got {other:?}"),
++        };
++        assert!(
++            drift_ns < 60_000_000_000,
++            "a fresh session should not have drifted a minute: {drift_ns} ns"
++        );
++        assert!(get("system_clock").rendered_text().contains("projection"));
++        assert!(get("note").rendered_text().contains("Session"));
++    }
++
++    /// However far apart the two clocks are, `divergence` never claims the
++    /// magnitude is negative — Rule B makes a tick count unsigned, so a
++    /// second read of `session_drift` right after the first must still parse
++    /// and still carry a direction, not a sign.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn session_drift_is_stable_across_repeated_reads() {
++        for _ in 0..3 {
++            let d = session_drift().expect("session drift");
++            let (_, v) = d
++                .iter()
++                .find(|(k, _)| k == "drift_ns")
++                .expect("no `drift_ns`");
++            let Value::Number(s) = v else {
++                panic!("expected a number, got {v:?}");
++            };
++            let _: u128 = s.parse().expect("drift_ns is a number");
++        }
++    }
+ }
+diff --git a/crates/ucal/src/lib.rs b/crates/ucal/src/lib.rs
+index bef39bc..3696273 100644
+--- a/crates/ucal/src/lib.rs
++++ b/crates/ucal/src/lib.rs
+@@ -411,7 +411,15 @@ pub fn cmd_doctor() -> CmdResult {
+ /// `check-docs` on every machine but the one that generated it.
+ #[cfg(feature = "std")]
+ pub fn cmd_doctor_measuring() -> CmdResult {
+-    cmd_doctor_inner(Some(clock::measured()?))
++    #[cfg_attr(not(feature = "civil"), allow(unused_mut))]
++    let mut measured = clock::measured()?;
++    // Needs `civil`: converting a system-clock reading into a `UC1` instant is
++    // a leap-table lookup (§8.4), same reason `now_instant` and `wall_instant`
++    // are gated on it. Without the feature this section simply has one fewer
++    // field, the way `doctor`'s plain output drops `leap_seconds`.
++    #[cfg(feature = "civil")]
++    measured.push(("session_drift".into(), Value::Section(clock::session_drift()?)));
++    cmd_doctor_inner(Some(measured))
+ }
+ 
+ fn cmd_doctor_inner(measured: Option<Vec<(String, Value)>>) -> CmdResult {
+diff --git a/crates/ucal/tests/golden.rs b/crates/ucal/tests/golden.rs
+index ae8ee70..42b5ccd 100644
+--- a/crates/ucal/tests/golden.rs
++++ b/crates/ucal/tests/golden.rs
+@@ -7,6 +7,8 @@
+ 
+ use ucal::emit::Value;
+ use ucal::{cmd_datum, cmd_doctor, cmd_explain, cmd_from_civil, cmd_to_civil, exit_code};
++#[cfg(feature = "std")]
++use ucal::cmd_doctor_measuring;
+ use ucal_civil::calendar::CivilCalendar;
+ use ucal_civil::si::Scale;
+ use ucal_core::{Code, Rounding};
+@@ -204,6 +206,34 @@ fn doctor_reports_everything_19_3_names() {
+     assert!(text.to_lowercase().contains("no network"));
+ }
+ 
++/// `ucal doctor --clock` adds a `session_drift` section: how far the session
++/// clock has drifted from the system clock, on top of the sampled resolutions
++/// `--clock` already reported. Not part of the byte-for-byte golden example —
++/// same reason `clock_measured` itself is not — because it is sampled.
++#[cfg(all(feature = "std", feature = "civil"))]
++#[test]
++fn doctor_clock_reports_session_drift() {
++    let doc = cmd_doctor_measuring().unwrap();
++    let measured = match doc.get("clock_measured") {
++        Some(Value::Section(fields)) => fields,
++        other => panic!("expected `clock_measured` to be a section, got {other:?}"),
++    };
++    let drift = measured
++        .iter()
++        .find(|(k, _)| k == "session_drift")
++        .map(|(_, v)| v)
++        .unwrap_or_else(|| panic!("`clock_measured` is missing `session_drift`"));
++    let Value::Section(fields) = drift else {
++        panic!("expected `session_drift` to be a section, got {drift:?}");
++    };
++    for required in ["drift_ns", "system_clock", "note"] {
++        assert!(
++            fields.iter().any(|(k, _)| k == required),
++            "`session_drift` is missing `{required}`"
++        );
++    }
++}
++
+ // ---------------------------------------------------------------------------
+ // golden conversions
+ // ---------------------------------------------------------------------------

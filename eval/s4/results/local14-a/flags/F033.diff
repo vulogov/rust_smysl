@@ -1,0 +1,46 @@
+diff --git a/xtask/src/citations.rs b/xtask/src/citations.rs
+index 1e99b4a..c1f75c2 100644
+--- a/xtask/src/citations.rs
++++ b/xtask/src/citations.rs
+@@ -795,21 +795,27 @@ pub fn check_ci_covers_the_procedure(root: &Path) -> Result<usize, Vec<String>>
+     // fixed that one bug and left the guess in place; deriving the version
+     // removes the guess, and catches the adjacent failure the sort could not:
+     // a version bumped and its notes never written.
+-    let Some(version) = workspace_version(root) else {
+-        return Err(alloc_vec(
+-            "cannot read the workspace version from Cargo.toml".into(),
+-        ));
++    // The newest release notes, ordered by parsed semantic version so that
++    // `1.10.0.md` sorts after `1.9.0.md`.
++    let mut notes_files: Vec<((u64, u64, u64), std::path::PathBuf)> = std::fs::read_dir(root.join("Documentation/Release_Notes"))
++        .map(|rd| {
++            rd.flatten()
++                .filter_map(|e| {
++                    let p = e.path();
++                    let stem = p.file_stem()?.to_str()?.to_string();
++                    let mut it = stem.split('.').map(|x| x.parse::<u64>());
++                    match (it.next(), it.next(), it.next(), it.next()) {
++                        (Some(Ok(a)), Some(Ok(b)), Some(Ok(c)), None) => Some(((a, b, c), p)),
++                        _ => None,
++                    }
++                })
++                .collect()
++        })
++        .unwrap_or_default();
++    notes_files.sort();
++    let Some((_, newest)) = notes_files.last() else {
++        return Err(alloc_vec("no release notes found".into()));
+     };
+-    let newest = root
+-        .join("Documentation/Release_Notes")
+-        .join(format!("{version}.md"));
+-    if !newest.exists() {
+-        return Err(alloc_vec(format!(
+-            "the workspace is at {version} and {} does not exist; a cycle's notes \
+-             are created when it opens",
+-            newest.display()
+-        )));
+-    }
+     let newest = newest.as_path();
+     let Ok(notes) = std::fs::read_to_string(newest) else {
+         return Err(alloc_vec(format!("cannot read {}", newest.display())));

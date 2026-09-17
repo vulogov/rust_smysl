@@ -1,0 +1,17 @@
+diff --git a/crates/ucal/src/main.rs b/crates/ucal/src/main.rs
+index 7e3778c..56123e4 100644
+--- a/crates/ucal/src/main.rs
++++ b/crates/ucal/src/main.rs
+@@ -734,6 +734,12 @@ fn main() {
+ 
+     let cli = Cli::parse();
+ 
++    // Anchor the session clock at program start, so every reading in this run is
++    // measured from the moment the process began rather than from the first
++    // command that happens to ask the time.
++    #[cfg(feature = "civil")]
++    let _ = ucal::now_instant();
++
+     if cli.profile != "UC-1" && cli.profile != "UC1" {
+         eprintln!(
+             "UCAL-E0002: unknown profile tag `{}`. Only UC-1 exists (Rule P); try `--profile UC-1`, which is the default.",

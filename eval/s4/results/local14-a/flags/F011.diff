@@ -1,0 +1,268 @@
+diff --git a/.gitignore b/.gitignore
+index fcc987f..14df5b3 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -26,6 +26,11 @@ target
+ Documentation/LIFE_UNIVERSE_AND_GOD/assets/images/[0-9].png
+ Documentation/LIFE_UNIVERSE_AND_GOD/assets/images/*-photo.png
+ 
++# The `ephem residuals` worked example's fixture — written by
++# `cargo run -p xtask -- gen-examples`/`check-docs`, not committed. See
++# `xtask/src/examples.rs`.
++Documentation/examples/observations.txt
++
+ # A minisign secret key must never enter the repository. `minisign -G` writes it
+ # to ~/.minisign/minisign.key by default, but an explicit `-s` can put it here,
+ # and a signing key committed once is a signing key rotated forever.
+diff --git a/Documentation/examples/observations.txt b/Documentation/examples/observations.txt
+deleted file mode 100644
+index ccc12a8..0000000
+--- a/Documentation/examples/observations.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-# Observed instants, one decimal tick count per line, for
+-# `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed <this>`.
+-#
+-# Blank lines and lines starting with `#` are skipped. Reading none at all is an
+-# error rather than a report of agreement having compared nothing.
+-#
+-# THESE ARE SYNTHETIC, like the ephemeris they go with: each is the predicted
+-# centre of a cycle, moved by a stated number of seconds, so the residuals are
+-# known in advance and the arithmetic can be checked by eye.
+-
+-# cycle 0, +0 s
+-8070205175623907873429294080830071880530466139316558837890624
+-
+-# cycle 100, +3 s
+-8070205176188783324648635603786425480530466139316558837890624
+-
+-# cycle 250, -7 s
+-8070205177036096232523174090236455880530466139316558837890624
+-
+-# cycle 500, +41 s
+-8070205178448285611789196091997839880530466139316558837890624
+diff --git a/crates/ucal/tests/json_surface.rs b/crates/ucal/tests/json_surface.rs
+index 9726231..1486f70 100644
+--- a/crates/ucal/tests/json_surface.rs
++++ b/crates/ucal/tests/json_surface.rs
+@@ -174,20 +174,18 @@ fn commands() -> Vec<(&'static str, Doc)> {
+         v.push(("ephem-show", ucal::cmd_ephem_show(EPH).unwrap()));
+         v.push(("ephem-at", ucal::cmd_ephem_at(EPH, 5000, 3).unwrap()));
+         v.push(("ephem-next", ucal::cmd_ephem_next(EPH, T, 3, 2).unwrap()));
+-        // O1 — residuals read observations from a **committed** fixture.
+-        //
+-        // The first version wrote one into `std::env::temp_dir()` under a fixed
+-        // name, and this file and `manual_fields.rs` both did it — two test
+-        // binaries, one path, run concurrently. One truncated the file while the
+-        // other read it, which produced a residuals run that had read nothing.
+-        // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        // O1 — residuals read observations from a file this call writes for
++        // itself. An earlier version wrote one into `std::env::temp_dir()`
++        // under a name fixed across calls, and `commands()` is invoked from
++        // more than one `#[test]` in this binary, which run concurrently by
++        // default — one call truncated the file while another read it, which
++        // produced a residuals run that had read nothing. It passed locally
++        // every time and failed in CI on the cut commit. `observations::write`
++        // gives every call its own name, so no two calls can share a file.
++        let obs = observations::write();
+         v.push((
+             "ephem-residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, obs.path().to_str().unwrap(), 1).unwrap(),
+         ));
+     }
+     #[cfg(feature = "cosmo")]
+@@ -219,6 +217,54 @@ fn commands() -> Vec<(&'static str, Doc)> {
+     v
+ }
+ 
++/// A private copy of the `ephem residuals` fixture, unique per call.
++///
++/// Four synthetic observations: the predicted centres of cycles 0, 100, 250
++/// and 500 in `Documentation/examples/ephemeris.hjson`, moved by 0, +3, -7 and
++/// +41 seconds, so the residuals are known in advance and the arithmetic can
++/// be checked by eye.
++#[cfg(all(feature = "events", feature = "civil"))]
++mod observations {
++    const FIXTURE: &str = "\
++8070205175623907873429294080830071880530466139316558837890624
++8070205176188783324648635603786425480530466139316558837890624
++8070205177036096232523174090236455880530466139316558837890624
++8070205178448285611789196091997839880530466139316558837890624
++";
++
++    /// A file holding [`FIXTURE`], removed when this handle is dropped.
++    pub struct File(std::path::PathBuf);
++
++    impl File {
++        pub fn path(&self) -> &std::path::Path {
++            &self.0
++        }
++    }
++
++    impl Drop for File {
++        fn drop(&mut self) {
++            let _ = std::fs::remove_file(&self.0);
++        }
++    }
++
++    /// Write the fixture under a name unique to this call.
++    ///
++    /// A process id alone is not enough: `commands()` is called from more than
++    /// one `#[test]` in this binary and those run concurrently, so calls
++    /// sharing a process id must still not share a file.
++    pub fn write() -> File {
++        use std::sync::atomic::{AtomicU64, Ordering};
++        static CALLS: AtomicU64 = AtomicU64::new(0);
++        let n = CALLS.fetch_add(1, Ordering::Relaxed);
++        let path = std::env::temp_dir().join(format!(
++            "ucal-json-surface-observations-{}-{n}.txt",
++            std::process::id()
++        ));
++        std::fs::write(&path, FIXTURE).expect("write observations fixture");
++        File(path)
++    }
++}
++
+ /// What a value serialises to in JSON.
+ ///
+ /// The promise is about the *JSON* shape, so `Text`, `Form`, `Quantity` and
+diff --git a/crates/ucal/tests/manual_fields.rs b/crates/ucal/tests/manual_fields.rs
+index 994355e..5198a83 100644
+--- a/crates/ucal/tests/manual_fields.rs
++++ b/crates/ucal/tests/manual_fields.rs
+@@ -178,20 +178,19 @@ fn all_commands() -> Vec<(&'static str, Doc)> {
+         v.push(("ephem show", ucal::cmd_ephem_show(EPH).unwrap()));
+         v.push(("ephem at", ucal::cmd_ephem_at(EPH, 5000, 3).unwrap()));
+         v.push(("ephem next", ucal::cmd_ephem_next(EPH, T, 3, 2).unwrap()));
+-        // O1 — residuals read observations from a **committed** fixture.
+-        //
+-        // The first version wrote one into `std::env::temp_dir()` under a fixed
+-        // name, and this file and `manual_fields.rs` both did it — two test
+-        // binaries, one path, run concurrently. One truncated the file while the
+-        // other read it, which produced a residuals run that had read nothing.
+-        // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        // O1 — residuals read observations from a file this call writes for
++        // itself. An earlier version wrote one into `std::env::temp_dir()`
++        // under a name fixed across calls, and `all_commands()` is invoked
++        // from more than one `#[test]` in this binary, which run concurrently
++        // by default — one call truncated the file while another read it,
++        // which produced a residuals run that had read nothing. It passed
++        // locally every time and failed in CI on the cut commit.
++        // `observations::write` gives every call its own name, so no two
++        // calls can share a file.
++        let obs = observations::write();
+         v.push((
+             "ephem residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, obs.path().to_str().unwrap(), 1).unwrap(),
+         ));
+     }
+     #[cfg(feature = "cosmo")]
+@@ -212,6 +211,54 @@ fn all_commands() -> Vec<(&'static str, Doc)> {
+     v
+ }
+ 
++/// A private copy of the `ephem residuals` fixture, unique per call.
++///
++/// Four synthetic observations: the predicted centres of cycles 0, 100, 250
++/// and 500 in `Documentation/examples/ephemeris.hjson`, moved by 0, +3, -7 and
++/// +41 seconds, so the residuals are known in advance and the arithmetic can
++/// be checked by eye.
++#[cfg(all(feature = "events", feature = "civil"))]
++mod observations {
++    const FIXTURE: &str = "\
++8070205175623907873429294080830071880530466139316558837890624
++8070205176188783324648635603786425480530466139316558837890624
++8070205177036096232523174090236455880530466139316558837890624
++8070205178448285611789196091997839880530466139316558837890624
++";
++
++    /// A file holding [`FIXTURE`], removed when this handle is dropped.
++    pub struct File(std::path::PathBuf);
++
++    impl File {
++        pub fn path(&self) -> &std::path::Path {
++            &self.0
++        }
++    }
++
++    impl Drop for File {
++        fn drop(&mut self) {
++            let _ = std::fs::remove_file(&self.0);
++        }
++    }
++
++    /// Write the fixture under a name unique to this call.
++    ///
++    /// A process id alone is not enough: `all_commands()` is called from more
++    /// than one `#[test]` in this binary and those run concurrently, so calls
++    /// sharing a process id must still not share a file.
++    pub fn write() -> File {
++        use std::sync::atomic::{AtomicU64, Ordering};
++        static CALLS: AtomicU64 = AtomicU64::new(0);
++        let n = CALLS.fetch_add(1, Ordering::Relaxed);
++        let path = std::env::temp_dir().join(format!(
++            "ucal-manual-fields-observations-{}-{n}.txt",
++            std::process::id()
++        ));
++        std::fs::write(&path, FIXTURE).expect("write observations fixture");
++        File(path)
++    }
++}
++
+ /// Every field name a command emits, with `--bridge` on so the foreign-unit
+ /// fields are reachable too.
+ fn emitted() -> BTreeSet<String> {
+diff --git a/xtask/src/examples.rs b/xtask/src/examples.rs
+index f27ef6f..21e0373 100644
+--- a/xtask/src/examples.rs
++++ b/xtask/src/examples.rs
+@@ -43,6 +43,25 @@ struct Example {
+     why: &'static str,
+ }
+ 
++/// The fixture `ucal ephem residuals` reads for its worked example.
++///
++/// Four synthetic observations: the predicted centres of cycles 0, 100, 250
++/// and 500 in `ephemeris.hjson`, moved by 0, +3, -7 and +41 seconds, so the
++/// residuals are known in advance and the arithmetic can be checked by eye.
++///
++/// Written to `Documentation/examples/observations.txt` by [`generate`] rather
++/// than committed there: `crates/ucal/tests/json_surface.rs` and
++/// `manual_fields.rs` used to read that same committed copy, and a file
++/// nothing writes but a human is one edit away from drifting from the value
++/// this constant, the tests, and the doc all have to agree on. A generator
++/// that writes it fresh every run cannot drift and cannot go stale.
++const OBSERVATIONS: &str = "\
++8070205175623907873429294080830071880530466139316558837890624
++8070205176188783324648635603786425480530466139316558837890624
++8070205177036096232523174090236455880530466139316558837890624
++8070205178448285611789196091997839880530466139316558837890624
++";
++
+ const T: &str = "8070205189123984864657505252035637180530466139316558837890625";
+ 
+ fn examples() -> Vec<Example> {
+@@ -235,6 +254,13 @@ fn capture(bin: &Path, args: &[&str]) -> Result<String, String> {
+ 
+ /// Build the examples document.
+ pub fn generate(root: &Path, bin: &Path) -> Result<String, String> {
++    // The `ephem residuals` example reads this by its relative path, the way
++    // `ephemeris.hjson` does; written here so it exists without being
++    // committed.
++    let obs_path = root.join("Documentation/examples/observations.txt");
++    std::fs::write(&obs_path, OBSERVATIONS)
++        .map_err(|e| format!("{}: {e}", obs_path.display()))?;
++
+     let mut out = String::new();
+     out.push_str("# Worked examples\n\n");
+     out.push_str("**Generated — do not edit.** Every block below is the real output of the command above it, captured by running it. Regenerate with:\n\n");

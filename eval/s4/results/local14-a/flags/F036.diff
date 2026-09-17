@@ -1,0 +1,15 @@
+diff --git a/crates/smysl-core/src/types/epistemics.rs b/crates/smysl-core/src/types/epistemics.rs
+index 3d49aa3..ae44ce8 100644
+--- a/crates/smysl-core/src/types/epistemics.rs
++++ b/crates/smysl-core/src/types/epistemics.rs
+@@ -20,8 +20,8 @@ pub enum Status {
+     Unfounded = 0,
+     Speculative = 1,
+     Inferred = 2,
+-    Derived = 3,
+-    Cited = 4,
++    Cited = 3,
++    Derived = 4,
+     Measured = 5,
+ }
+ 

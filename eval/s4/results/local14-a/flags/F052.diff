@@ -1,0 +1,81 @@
+diff --git a/Documentation/examples/observations.txt b/Documentation/examples/observations.txt
+deleted file mode 100644
+index ccc12a8..0000000
+--- a/Documentation/examples/observations.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-# Observed instants, one decimal tick count per line, for
+-# `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed <this>`.
+-#
+-# Blank lines and lines starting with `#` are skipped. Reading none at all is an
+-# error rather than a report of agreement having compared nothing.
+-#
+-# THESE ARE SYNTHETIC, like the ephemeris they go with: each is the predicted
+-# centre of a cycle, moved by a stated number of seconds, so the residuals are
+-# known in advance and the arithmetic can be checked by eye.
+-
+-# cycle 0, +0 s
+-8070205175623907873429294080830071880530466139316558837890624
+-
+-# cycle 100, +3 s
+-8070205176188783324648635603786425480530466139316558837890624
+-
+-# cycle 250, -7 s
+-8070205177036096232523174090236455880530466139316558837890624
+-
+-# cycle 500, +41 s
+-8070205178448285611789196091997839880530466139316558837890624
+diff --git a/crates/ucal/tests/json_surface.rs b/crates/ucal/tests/json_surface.rs
+index 9726231..eeca171 100644
+--- a/crates/ucal/tests/json_surface.rs
++++ b/crates/ucal/tests/json_surface.rs
+@@ -181,13 +181,17 @@ fn commands() -> Vec<(&'static str, Doc)> {
+         // binaries, one path, run concurrently. One truncated the file while the
+         // other read it, which produced a residuals run that had read nothing.
+         // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        let obs_path = std::env::temp_dir().join("ucal-residuals-observations.txt");
++        std::fs::write(&obs_path, "8070205175623907873429294080830071880530466139316558837890624
++8070205176188783324648635603786425480530466139316558837890624
++8070205177036096232523174090236455880530466139316558837890624
++8070205178448285611789196091997839880530466139316558837890624
++").unwrap();
++        let obs_str = obs_path.to_str().unwrap().to_string();
++        const _: () = ();
+         v.push((
+             "ephem-residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, &obs_str, 1).unwrap(),
+         ));
+     }
+     #[cfg(feature = "cosmo")]
+diff --git a/crates/ucal/tests/manual_fields.rs b/crates/ucal/tests/manual_fields.rs
+index 994355e..aff7c17 100644
+--- a/crates/ucal/tests/manual_fields.rs
++++ b/crates/ucal/tests/manual_fields.rs
+@@ -185,13 +185,17 @@ fn all_commands() -> Vec<(&'static str, Doc)> {
+         // binaries, one path, run concurrently. One truncated the file while the
+         // other read it, which produced a residuals run that had read nothing.
+         // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        let obs_path = std::env::temp_dir().join("ucal-residuals-observations.txt");
++        std::fs::write(&obs_path, "8070205175623907873429294080830071880530466139316558837890624
++8070205176188783324648635603786425480530466139316558837890624
++8070205177036096232523174090236455880530466139316558837890624
++8070205178448285611789196091997839880530466139316558837890624
++").unwrap();
++        let obs_str = obs_path.to_str().unwrap().to_string();
++        const _: () = ();
+         v.push((
+             "ephem residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, &obs_str, 1).unwrap(),
+         ));
+     }
+     #[cfg(feature = "cosmo")]

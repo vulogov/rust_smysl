@@ -1,0 +1,263 @@
+diff --git a/Documentation/manual/appendices.typ b/Documentation/manual/appendices.typ
+index 56c4fff..7a014fd 100644
+--- a/Documentation/manual/appendices.typ
++++ b/Documentation/manual/appendices.typ
+@@ -73,7 +73,7 @@ These apply to every subcommand, in any position on the command line.
+     ([`--as`], [`SCHEMA` (repeatable)], [Report fidelity for a consumer implementing these schemas.]),
+     ([`--granularity`], [—], [Report the granularity distribution of the store.]),
+     ([`--pass`], [`NAME` (repeatable)], [Run only these passes.]),
+-    ([`FILE …`], [positional, 0 or more], [Stores to check; `-` or none reads stdin (rule P).]),
++    ([`FILE …`], [positional, 0 or more], [Stores to check; `-` reads stdin, none checks `.smysl/store`.]),
+   ),
+ )
+ 
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..fca15bb 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -217,7 +217,7 @@ fn cli() -> Command {
+                     Arg::new("files")
+                         .num_args(0..)
+                         .value_name("FILE")
+-                        .help("Stores to check; `-` or none reads stdin (rule P)"),
++                        .help("Stores to check; `-` reads stdin, none checks .smysl/store"),
+                 ),
+             "diff" => sub
+                 .arg(
+@@ -1006,6 +1006,10 @@ fn finish_over(bar: Bar, n: usize, verb: &str) {
+     }
+ }
+ 
++/// Where `check` looks when given neither a path nor `--store`: the conventional location of
++/// a project's store, relative to the working directory.
++const DEFAULT_CHECK_STORE: &str = ".smysl/store";
++
+ /// `smysl check` - run the check pipeline (§23.1).
+ ///
+ /// Exits 3 on any error-severity diagnostic, and `--strict` promotes warnings to that
+@@ -1026,7 +1030,7 @@ fn cmd_check(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             global
+                 .get_one::<String>("store")
+                 .map(|s| vec![s.clone()])
+-                .unwrap_or_else(|| vec!["-".to_string()])
++                .unwrap_or_else(|| vec![DEFAULT_CHECK_STORE.to_string()])
+         });
+ 
+     // `--as` names the schemas a consumer implements; the kernel is always implied.
+diff --git a/tests/cmd_check.rs b/tests/cmd_check.rs
+new file mode 100644
+index 0000000..31023e8
+--- /dev/null
++++ b/tests/cmd_check.rs
+@@ -0,0 +1,196 @@
++//! `smysl check`, driven as a user drives it, for the one decision this file exists to pin:
++//! what a bare `smysl check`, with no path and no `--store`, checks.
++//!
++//! It used to read stdin, the same as `fmt` with no files. That is `-`'s job now: a bare
++//! invocation checks `.smysl/store`, the conventional location a project's store already lives
++//! relative to (`.smysl/staged.smy`, `.smysl/config.hjson`, `.smysl/usage.log`), so `smysl
++//! check` composes with the rest of the toolchain without a caller having to name the file.
++
++// The binary only exists with `cli`, and a test that cannot find its subject is worse than one
++// that is not there — the same reason `cmd_fmt.rs` and `cmd_merge.rs` compile themselves out
++// this way.
++#![cfg(feature = "cli")]
++
++use std::path::{Path, PathBuf};
++use std::process::{Command, Stdio};
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++
++/// Exit codes, by the names the specification gives them.
++const SUCCESS: i32 = 0;
++const FAILURE: i32 = 1;
++
++struct Out {
++    stdout: String,
++    stderr: String,
++    code: i32,
++}
++
++/// Run the binary from `dir` with stdin closed, so a build that regressed to reading stdin
++/// fails instead of hanging.
++fn run_in(dir: &Path, args: &[&str]) -> Out {
++    let o = Command::new(BIN)
++        .current_dir(dir)
++        .args(args)
++        .stdin(Stdio::null())
++        .output()
++        .expect("the binary under test must run");
++    Out {
++        stdout: String::from_utf8_lossy(&o.stdout).into_owned(),
++        stderr: String::from_utf8_lossy(&o.stderr).into_owned(),
++        code: o.status.code().unwrap_or(-1),
++    }
++}
++
++/// A directory of this test's own, named for the process, so two runs cannot collide.
++fn scratch(name: &str) -> PathBuf {
++    let dir = std::env::temp_dir().join(format!("smysl-check-{name}-{}", std::process::id()));
++    std::fs::create_dir_all(&dir).expect("scratch dir");
++    dir
++}
++
++/// A bare `smysl check`, in a project whose store sits where the convention puts it, reads
++/// that store rather than stdin.
++#[test]
++fn no_path_checks_dot_smysl_store_by_default() {
++    let dir = scratch("present");
++    std::fs::create_dir_all(dir.join(".smysl")).expect(".smysl dir");
++    std::fs::write(
++        dir.join(".smysl/store"),
++        "@claim c/x { status: speculative }\n~ a claim living where check now looks by default\n",
++    )
++    .expect("write store");
++
++    let out = run_in(&dir, &["check"]);
++    assert_eq!(
++        out.code, SUCCESS,
++        "checking the default store should succeed; stderr was {}",
++        out.stderr
++    );
++    assert!(
++        out.stderr.contains(".smysl/store") || out.stdout.contains(".smysl/store"),
++        "the report should name the store it actually read: stdout={} stderr={}",
++        out.stdout,
++        out.stderr
++    );
++}
++
++/// The same default applies whether the report is announced or not — `--json` does not change
++/// which file gets read, only how the result is printed.
++#[test]
++fn no_path_checks_dot_smysl_store_under_json_too() {
++    let dir = scratch("json");
++    std::fs::create_dir_all(dir.join(".smysl")).expect(".smysl dir");
++    std::fs::write(
++        dir.join(".smysl/store"),
++        "@claim c/x { status: speculative }\n~ a claim living where check now looks by default\n",
++    )
++    .expect("write store");
++
++    let out = run_in(&dir, &["check", "--json"]);
++    assert_eq!(
++        out.code, SUCCESS,
++        "checking the default store should succeed under --json; stderr was {}",
++        out.stderr
++    );
++}
++
++/// With no `.smysl/store` to find, `check` fails on that path rather than blocking on stdin —
++/// the regression this file exists to catch, since a hang would time the test out instead of
++/// failing it cleanly.
++#[test]
++fn no_path_and_no_store_fails_on_the_missing_default_rather_than_stdin() {
++    let dir = scratch("absent");
++
++    let out = run_in(&dir, &["check"]);
++    assert_eq!(
++        out.code, FAILURE,
++        "no default store to read should fail, not hang or succeed; stdout={} stderr={}",
++        out.stdout, out.stderr
++    );
++    assert!(
++        out.stderr.contains(".smysl/store"),
++        "the failure should name the path it tried: {}",
++        out.stderr
++    );
++}
++
++/// `--store` still overrides the default, and an explicit `-` still means stdin — the default
++/// only fills the gap when neither is given.
++#[test]
++fn explicit_store_flag_still_wins_over_the_default() {
++    let dir = scratch("explicit-store");
++    std::fs::create_dir_all(dir.join(".smysl")).expect(".smysl dir");
++    std::fs::write(
++        dir.join(".smysl/store"),
++        "@claim c/wrong { status: speculative }\n~ not the store this run should read\n",
++    )
++    .expect("write default store");
++    std::fs::write(
++        dir.join("elsewhere.smy"),
++        "@claim c/right { status: speculative }\n~ the store this run should read\n",
++    )
++    .expect("write explicit store");
++
++    let out = run_in(&dir, &["check", "--store", "elsewhere.smy"]);
++    assert_eq!(
++        out.code, SUCCESS,
++        "an explicit --store should still be read over the default; stderr was {}",
++        out.stderr
++    );
++    assert!(
++        out.stdout.contains("elsewhere.smy"),
++        "the report should name the explicit store, not the default: stdout={} stderr={}",
++        out.stdout,
++        out.stderr
++    );
++    assert!(
++        !out.stdout.contains(".smysl/store"),
++        "the default store must not be the one read when --store is given: stdout={}",
++        out.stdout
++    );
++}
++
++/// A bare positional `-` is unchanged: it still reads stdin, even with a default store sitting
++/// right there unread.
++#[test]
++fn explicit_dash_still_reads_stdin() {
++    let dir = scratch("dash");
++    std::fs::create_dir_all(dir.join(".smysl")).expect(".smysl dir");
++    std::fs::write(
++        dir.join(".smysl/store"),
++        "@claim c/wrong { status: speculative }\n~ not the store this run should read\n",
++    )
++    .expect("write default store");
++
++    let mut child = Command::new(BIN)
++        .current_dir(&dir)
++        .args(["check", "-"])
++        .stdin(Stdio::piped())
++        .stdout(Stdio::piped())
++        .stderr(Stdio::piped())
++        .spawn()
++        .expect("the binary under test must run");
++    {
++        use std::io::Write;
++        child
++            .stdin
++            .take()
++            .expect("stdin")
++            .write_all(b"@claim c/right { status: speculative }\n~ the stdin store\n")
++            .expect("write to stdin");
++    }
++    let o = child.wait_with_output().expect("wait for the binary");
++    let stdout = String::from_utf8_lossy(&o.stdout).into_owned();
++    let stderr = String::from_utf8_lossy(&o.stderr).into_owned();
++
++    assert_eq!(
++        o.status.code().unwrap_or(-1),
++        SUCCESS,
++        "an explicit `-` should still read stdin; stderr was {stderr}"
++    );
++    assert!(
++        stdout.starts_with("-:"),
++        "the report should name `-` as what it read, not the default store: stdout={stdout} stderr={stderr}"
++    );
++}
+diff --git a/tests/dispatch.rs b/tests/dispatch.rs
+index 5904afd..5587342 100644
+--- a/tests/dispatch.rs
++++ b/tests/dispatch.rs
+@@ -111,8 +111,8 @@ fn scratch(name: &str) -> PathBuf {
+ 
+ /// Run one command with the least it needs, from a directory of its own, and return its output.
+ ///
+-/// Stdin is `/dev/null` rather than inherited: `fmt` and `check` read stdin when given no path,
+-/// and a test harness that hands them a terminal would hang instead of failing.
++/// Stdin is `/dev/null` rather than inherited: `fmt` reads stdin when given no path, and a
++/// test harness that hands it a terminal would hang instead of failing.
+ fn dispatch(command: &str) -> String {
+     let out = Command::new(BIN)
+         .arg(command)

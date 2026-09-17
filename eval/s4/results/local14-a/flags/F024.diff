@@ -1,0 +1,205 @@
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..8d345ad 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -49,6 +49,19 @@ use ucal_core::{Instant, Profile, Ticks, Tier, TimeError, UC1};
+ /// Nine: `SubSecond::new(nanos, 9)`. A structural ceiling, not a measurement.
+ pub const CLOCK_DECIMALS: u32 = 9;
+ 
++/// The least a single [`Session::reading`] call may catch a session up by,
++/// when the real (monotonic) time since the previous call is smaller than
++/// this.
++///
++/// One second. `ucal wallclock` redraws every 50 ms (`REFRESH` in the
++/// `wallclock` module, behind the `tui` feature), so this floor is about
++/// twenty times that cadence:
++/// an ordinary tick advances by far less than a second between two calls and
++/// is never throttled by it, while a step correction — a resume from
++/// suspend, an NTP correction — is walked toward at at least this pace
++/// rather than landed in one call. See [`Session::reading`] for the rule.
++pub const CATCH_UP_FLOOR_NANOS: u128 = 1_000_000_000;
++
+ /// Ticks in `n` nanoseconds, exactly.
+ ///
+ /// The bridge second is `18548584399861 × 10³⁰` ticks, so dividing by `10⁹` is
+@@ -96,17 +109,28 @@ pub fn finest_tier_for(q: &Ticks) -> Option<Tier> {
+ /// # The rule
+ ///
+ /// ```text
+-/// reading = max(wall_now, anchor + monotonic_elapsed)
++/// raw     = max(wall_now, anchor + monotonic_elapsed, last)
++/// room    = max(elapsed_since_previous_call, CATCH_UP_FLOOR_NANOS)
++/// reading = min(raw, last + room)
+ /// ```
+ ///
+-/// - **Ordinarily** the two agree to within the clock's quantum and either wins.
++/// - **Ordinarily** the branches agree to within the clock's quantum, `room`
++///   is far larger than the gap between them, and it never binds.
+ /// - **A backward step** loses to the monotonic branch, which keeps advancing at
+ ///   the oscillator's rate rather than freezing until the wall clock catches up.
+-/// - **A forward step** wins, because a forward jump is a correction arriving and
+-///   refusing it would be preferring this process's opinion to the system's.
++/// - **A forward step** is accepted — refusing it would be preferring this
++///   process's opinion to the system's — but `room` caps how much of it lands
++///   in one call. `ucal wallclock` reads the clock twenty times a second;
++///   without the cap, a VM resuming from an hour's suspend would make the fast
++///   hand leap a full turn between two frames. With it, the reading is walked
++///   forward by at least [`CATCH_UP_FLOOR_NANOS`] each call until it reaches
++///   the correction, which reads as the clock running fast rather than as a
++///   jump — and it does reach it, in a bounded number of calls, rather than
++///   being held back forever.
+ ///
+-/// So a reading never goes backwards, and the clock still tracks the system
+-/// forwards. Those are the two properties; neither is a claim about accuracy.
++/// So a reading never goes backwards, a forward correction is never refused
++/// and never lands as a single leap, and the clock still tracks the system
++/// forwards. None of this is a claim about accuracy.
+ ///
+ /// # What it does not do
+ ///
+@@ -121,6 +145,10 @@ pub struct Session {
+     anchor: Ticks,
+     /// The largest reading handed out so far.
+     last: Ticks,
++    /// `monotonic_elapsed` as of the previous [`reading`](Session::reading)
++    /// call, so the next one can tell how much real time passed since then —
++    /// which is what bounds how far it may carry `last` forward.
++    last_call_elapsed: Ticks,
+ }
+ 
+ impl Session {
+@@ -129,6 +157,7 @@ impl Session {
+         Session {
+             anchor: wall.ticks().clone(),
+             last: wall.ticks().clone(),
++            last_call_elapsed: <Ticks as TickInt>::zero(),
+         }
+     }
+ 
+@@ -156,7 +185,33 @@ impl Session {
+         if self.last > best {
+             best = self.last.clone();
+         }
++
++        // Cap how far this one call may carry `last` forward — see the module
++        // doc's rule. `since_last_call` is the real time this call and the
++        // previous one were apart; a caller handing back a smaller elapsed
++        // than before would make it go negative, so that is read as "no room
++        // earned yet" rather than propagated as an error, the same posture
++        // `last` already takes on the raw branches above.
++        let since_last_call = monotonic_elapsed
++            .try_sub(&self.last_call_elapsed)
++            .unwrap_or_else(<Ticks as TickInt>::zero);
++        let floor = ticks_in_nanos(CATCH_UP_FLOOR_NANOS)
++            .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++        let room = if since_last_call > floor {
++            since_last_call
++        } else {
++            floor
++        };
++        let ceiling = self
++            .last
++            .try_add(&room)
++            .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++        if best > ceiling {
++            best = ceiling;
++        }
++
+         self.last = best.clone();
++        self.last_call_elapsed = monotonic_elapsed.clone();
+         Instant::from_ticks(best)
+     }
+ 
+@@ -455,6 +510,11 @@ mod tests {
+         Instant::from_ticks(t).expect("in the domain")
+     }
+ 
++    fn at_nanos(total_nanos: u128) -> Instant<UC1> {
++        let t = ticks_in_nanos(total_nanos).expect("in range");
++        Instant::from_ticks(t).expect("in the domain")
++    }
++
+     fn ns(n: u128) -> Ticks {
+         ticks_in_nanos(n).expect("in range")
+     }
+@@ -499,22 +559,72 @@ mod tests {
+         );
+     }
+ 
+-    /// A forward step is a correction arriving, and is accepted.
++    /// A forward step is a correction arriving, and is accepted — but not all
++    /// at once.
+     ///
+     /// Refusing it would be preferring this process's opinion of the time to the
+     /// system's, which is not a trade a clock gets to make on its reader's
+-    /// behalf.
++    /// behalf. Landing all 59 seconds of it in the one call that saw it would
++    /// make `ucal wallclock`'s fast hand leap a full turn between two frames,
++    /// which is the jump this cap exists to smooth.
+     #[test]
+-    fn a_forward_step_is_accepted() {
++    fn a_forward_step_is_capped_in_a_single_call() {
+         let mut s = Session::anchored_at(&at(100));
+-        s.reading(&at(101), &ns(1_000_000_000)).expect("a reading");
++        let before = s
++            .reading(&at(101), &ns(1_000_000_000))
++            .expect("a reading");
+         let jumped = s
+             .reading(&at(160), &ns(2_000_000_000))
+             .expect("a reading");
+-        assert_eq!(
+-            jumped.ticks().to_dec_string(),
+-            at(160).ticks().to_dec_string(),
+-            "a forward correction was refused"
++        assert!(
++            jumped.ticks() > before.ticks(),
++            "the reading did not move forward at all"
++        );
++        assert!(
++            jumped.ticks() < at(160).ticks(),
++            "the whole 59-second correction landed in a single call"
++        );
++    }
++
++    /// And it is not refused: enough calls, at the cadence `ucal wallclock`
++    /// actually uses, walk the reading the rest of the way to the correction.
++    #[test]
++    fn a_capped_forward_step_is_still_reached() {
++        let mut s = Session::anchored_at(&at(100));
++        s.reading(&at(101), &ns(1_000_000_000)).expect("a reading");
++        // The wall clock jumps 59 seconds ahead of the session's projection.
++        let mut elapsed_ns: u128 = 2_000_000_000;
++        let mut prev = s
++            .reading(&at(160), &ns(elapsed_ns))
++            .expect("a reading")
++            .ticks()
++            .clone();
++
++        // From here the wall clock ticks normally again, at the cadence
++        // `ucal wallclock` reads the clock — 50 ms, `REFRESH` in `wallclock`.
++        const STEP_NS: u128 = 50_000_000;
++        let mut caught_up = false;
++        for i in 0..200u128 {
++            elapsed_ns += STEP_NS;
++            let wall_ns = 160_000_000_000u128 + (i + 1) * STEP_NS;
++            let wall_now = at_nanos(wall_ns);
++            let r = s
++                .reading(&wall_now, &ns(elapsed_ns))
++                .expect("a reading");
++            assert!(
++                r.ticks() >= &prev,
++                "the catch-up went backwards at step {i}"
++            );
++            prev = r.ticks().clone();
++            if r.ticks() == wall_now.ticks() {
++                caught_up = true;
++                break;
++            }
++        }
++        assert!(
++            caught_up,
++            "the correction was never fully adopted within 200 calls at `ucal \
++             wallclock`'s cadence"
+         );
+     }
+ 

@@ -449,7 +449,11 @@ goes.
 
 ## 10. smysl requests (not blocking)
 
-**1.5.0** (`docs/smysl-requests-1.5.md`), sent before the cut: R16 retrieval restricted to a candidate set,
+**1.6.0** (`docs/smysl-requests-1.6.md`): R21 a pack that fits the caller's whole prompt budget (D17's
+fitting lives outside smysl today), R22 which query terms a hit matched (task 5's miss was invisible),
+R23 retrieval filtered by an extension schema's own kind (`code:kind`, which `KernelType` cannot express).
+
+**1.5.0** (`docs/smysl-requests-1.5.md`), sent before the cut, **all five implemented and verified**: R16 retrieval restricted to a candidate set,
 R17 a unit's labels without a scan, R18 where a quote matched, R19 optional suffix folding in the
 tokenizer, R20 units by source prefix. All five come from building `check` (S4).
 

@@ -2,6 +2,7 @@
 """S4 scoring (eval/s4-protocol.md §3–4). Development tooling only.
 
   score.py report RUN [RUN…]   recall by pattern, flag counts, validation drops, cost, determinism
+  score.py agreed RUN_A RUN_B  the two passes' agreement: recall, flags kept, flags dropped
   score.py sheet RUN [RUN…]    blind adjudication sheet for every flag: eval/s4/results/RUN/adjudication.md,
                                diffs under …/flags/, key under eval/.s4work/keys/RUN.json
   score.py gate RUN [RUN…]     after adjudication: recall, precision and clean-commit false flags against
@@ -28,6 +29,40 @@ def patterns():
     text = (EVAL / "s4-protocol.md").read_text()
     return {int(m.group(1)): re.compile(m.group(2).replace("\\|", "|"), re.I)
             for m in re.finditer(r"^\| (\d+) \| `([^`]+)` \|", text, re.M)}
+
+
+def agree(run_a, run_b):
+    """Findings both passes report. A pass sees the same units grouped differently, so a flag only one
+    pass makes is an artefact of its grouping (eval/s4-protocol.md, two passes)."""
+    a, b = load([run_a]), load([run_b])
+    out = {}
+    for case, ra in a.items():
+        rb = b.get(case)
+        if rb is None:
+            continue
+        keep = {f["label"] for f in rb["findings"]}
+        r = dict(ra)
+        r["findings"] = [f for f in ra["findings"] if f["label"] in keep]
+        r["dropped_by_agreement"] = [f for f in ra["findings"] if f["label"] not in keep]
+        out[case] = r
+    return out
+
+
+def agreed(runs):
+    a, b = runs[0], runs[1]
+    pats = patterns()
+    both = agree(a, b)
+    ra, rb = load([a]), load([b])
+    def tally(rows):
+        contra = [r for r in rows.values() if r.get("contradicting") and r["task"] not in NOT_IN_CORPUS]
+        commits = [r for r in rows.values() if r["kind"] == "commit"]
+        return (sum(hit(r, pats) for r in contra), len(contra),
+                sum(len(r["findings"]) for r in rows.values()),
+                sum(1 for r in commits if r["findings"]), len(commits))
+    for name, rows in ((a, ra), (b, rb), ("agreed", both)):
+        h, n, f, cf, c = tally(rows)
+        print(f"{name:<14} recall {h}/{n}  flags {f:>4}  real commits flagged {cf}/{c}")
+    return both
 
 
 def load(runs):
@@ -83,7 +118,8 @@ def report(runs):
 
 
 def sheet(runs):
-    rows = load(runs)
+    # Two runs are read as the two passes of one measurement: only agreed flags are adjudicated.
+    rows = agree(runs[0], runs[1]) if len(runs) == 2 else load(runs)
     run = runs[0]
     out = RESULTS / run
     flags_dir = out / "flags"
@@ -160,4 +196,4 @@ def gate(runs):
 
 if __name__ == "__main__":
     cmd, *runs = sys.argv[1:]
-    {"report": report, "sheet": sheet, "gate": gate}[cmd](runs)
+    {"report": report, "sheet": sheet, "gate": gate, "agreed": agreed}[cmd](runs)

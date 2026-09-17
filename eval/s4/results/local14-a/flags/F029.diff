@@ -1,0 +1,224 @@
+diff --git a/.gitignore b/.gitignore
+index fcc987f..f767b9f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -32,3 +32,8 @@ Documentation/LIFE_UNIVERSE_AND_GOD/assets/images/*-photo.png
+ minisign.key
+ *.key
+ !fixtures/*.pub
++
++# `gen-examples`/`check-docs` write this fixture for the `ephem residuals`
++# example and remove it when done (xtask/src/examples.rs); it does not belong
++# in the tree, but this catches a run that did not clean up.
++Documentation/examples/observations.txt
+diff --git a/Documentation/examples/observations.txt b/Documentation/examples/observations.txt
+deleted file mode 100644
+index ccc12a8..0000000
+--- a/Documentation/examples/observations.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-# Observed instants, one decimal tick count per line, for
+-# `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed <this>`.
+-#
+-# Blank lines and lines starting with `#` are skipped. Reading none at all is an
+-# error rather than a report of agreement having compared nothing.
+-#
+-# THESE ARE SYNTHETIC, like the ephemeris they go with: each is the predicted
+-# centre of a cycle, moved by a stated number of seconds, so the residuals are
+-# known in advance and the arithmetic can be checked by eye.
+-
+-# cycle 0, +0 s
+-8070205175623907873429294080830071880530466139316558837890624
+-
+-# cycle 100, +3 s
+-8070205176188783324648635603786425480530466139316558837890624
+-
+-# cycle 250, -7 s
+-8070205177036096232523174090236455880530466139316558837890624
+-
+-# cycle 500, +41 s
+-8070205178448285611789196091997839880530466139316558837890624
+diff --git a/crates/ucal/tests/json_surface.rs b/crates/ucal/tests/json_surface.rs
+index 9726231..967e713 100644
+--- a/crates/ucal/tests/json_surface.rs
++++ b/crates/ucal/tests/json_surface.rs
+@@ -47,6 +47,22 @@ fn baseline_path() -> std::path::PathBuf {
+         .join("fixtures/json-surface.txt")
+ }
+ 
++/// Writes one observation for `ephem residuals` and returns its path.
++///
++/// Not a committed fixture: 1.12.0 committed one after two test binaries
++/// wrote the same fixed name under `std::env::temp_dir()` and raced. This
++/// binary's own tests run concurrently too (`cargo test` uses threads by
++/// default), so the name here is unique per call, not just per process.
++fn write_observations_fixture() -> std::path::PathBuf {
++    use std::sync::atomic::{AtomicU64, Ordering};
++    static CALLS: AtomicU64 = AtomicU64::new(0);
++    let n = CALLS.fetch_add(1, Ordering::Relaxed);
++    let path = std::env::temp_dir()
++        .join(format!("ucal-residuals-fixture-json_surface-{}-{n}.txt", std::process::id()));
++    std::fs::write(&path, "8070205176188783269002882404203425480530466139316558837890625\n").unwrap();
++    path
++}
++
+ /// Every command, with the name it is recorded under.
+ fn commands() -> Vec<(&'static str, Doc)> {
+     let mut v: Vec<(&'static str, Doc)> = vec![
+@@ -174,21 +190,13 @@ fn commands() -> Vec<(&'static str, Doc)> {
+         v.push(("ephem-show", ucal::cmd_ephem_show(EPH).unwrap()));
+         v.push(("ephem-at", ucal::cmd_ephem_at(EPH, 5000, 3).unwrap()));
+         v.push(("ephem-next", ucal::cmd_ephem_next(EPH, T, 3, 2).unwrap()));
+-        // O1 — residuals read observations from a **committed** fixture.
+-        //
+-        // The first version wrote one into `std::env::temp_dir()` under a fixed
+-        // name, and this file and `manual_fields.rs` both did it — two test
+-        // binaries, one path, run concurrently. One truncated the file while the
+-        // other read it, which produced a residuals run that had read nothing.
+-        // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        // O1 — residuals read observations, so one is written for the test.
++        let obs = write_observations_fixture();
+         v.push((
+             "ephem-residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, obs.to_str().unwrap(), 1).unwrap(),
+         ));
++        let _ = std::fs::remove_file(&obs);
+     }
+     #[cfg(feature = "cosmo")]
+     {
+diff --git a/crates/ucal/tests/manual_fields.rs b/crates/ucal/tests/manual_fields.rs
+index 994355e..8c640d3 100644
+--- a/crates/ucal/tests/manual_fields.rs
++++ b/crates/ucal/tests/manual_fields.rs
+@@ -34,6 +34,22 @@ use ucal::emit::{Doc, Value};
+ const T: &str = "8070205189123984864657505252035637180530466139316558837890625";
+ const T2: &str = "8070205189999984864657505252035637180530466139316558837890625";
+ 
++/// Writes one observation for `ephem residuals` and returns its path.
++///
++/// Not a committed fixture: 1.12.0 committed one after two test binaries
++/// wrote the same fixed name under `std::env::temp_dir()` and raced. This
++/// binary's own tests run concurrently too (`cargo test` uses threads by
++/// default), so the name here is unique per call, not just per process.
++fn write_observations_fixture() -> std::path::PathBuf {
++    use std::sync::atomic::{AtomicU64, Ordering};
++    static CALLS: AtomicU64 = AtomicU64::new(0);
++    let n = CALLS.fetch_add(1, Ordering::Relaxed);
++    let path = std::env::temp_dir()
++        .join(format!("ucal-residuals-fixture-manual_fields-{}-{n}.txt", std::process::id()));
++    std::fs::write(&path, "8070205176188783269002882404203425480530466139316558837890625\n").unwrap();
++    path
++}
++
+ /// Every command, so that every emitted field is reachable.
+ fn all_commands() -> Vec<(&'static str, Doc)> {
+     let mut v: Vec<(&'static str, Doc)> = vec![
+@@ -178,21 +194,13 @@ fn all_commands() -> Vec<(&'static str, Doc)> {
+         v.push(("ephem show", ucal::cmd_ephem_show(EPH).unwrap()));
+         v.push(("ephem at", ucal::cmd_ephem_at(EPH, 5000, 3).unwrap()));
+         v.push(("ephem next", ucal::cmd_ephem_next(EPH, T, 3, 2).unwrap()));
+-        // O1 — residuals read observations from a **committed** fixture.
+-        //
+-        // The first version wrote one into `std::env::temp_dir()` under a fixed
+-        // name, and this file and `manual_fields.rs` both did it — two test
+-        // binaries, one path, run concurrently. One truncated the file while the
+-        // other read it, which produced a residuals run that had read nothing.
+-        // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        // O1 — residuals read observations, so one is written for the test.
++        let obs = write_observations_fixture();
+         v.push((
+             "ephem residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, obs.to_str().unwrap(), 1).unwrap(),
+         ));
++        let _ = std::fs::remove_file(&obs);
+     }
+     #[cfg(feature = "cosmo")]
+     {
+diff --git a/xtask/src/examples.rs b/xtask/src/examples.rs
+index f27ef6f..9bb13c4 100644
+--- a/xtask/src/examples.rs
++++ b/xtask/src/examples.rs
+@@ -45,6 +45,65 @@ struct Example {
+ 
+ const T: &str = "8070205189123984864657505252035637180530466139316558837890625";
+ 
++/// The `ephem residuals` example's input, synthetic like the ephemeris it goes
++/// with: each line is the predicted centre of a cycle, moved by a stated
++/// number of seconds, so the residuals are known in advance and the
++/// arithmetic can be checked by eye.
++///
++/// Written to `Documentation/examples/observations.txt` for the duration of
++/// [`generate`] rather than committed there — see [`ObservationsFixture`].
++const OBSERVATIONS_FIXTURE: &str = "\
++# Observed instants, one decimal tick count per line, for
++# `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed <this>`.
++#
++# Blank lines and lines starting with `#` are skipped. Reading none at all is
++# an error rather than a report of agreement having compared nothing.
++#
++# THESE ARE SYNTHETIC, like the ephemeris they go with: each is the predicted
++# centre of a cycle, moved by a stated number of seconds, so the residuals are
++# known in advance and the arithmetic can be checked by eye.
++
++# cycle 0, +0 s
++8070205175623907873429294080830071880530466139316558837890624
++
++# cycle 100, +3 s
++8070205176188783324648635603786425480530466139316558837890624
++
++# cycle 250, -7 s
++8070205177036096232523174090236455880530466139316558837890624
++
++# cycle 500, +41 s
++8070205178448285611789196091997839880530466139316558837890624
++";
++
++/// Writes [`OBSERVATIONS_FIXTURE`] at the exact relative path the `ephem
++/// residuals` example names, and removes it again on drop.
++///
++/// A committed copy of this file once caused a flaky test: two test binaries
++/// wrote the same fixed temp path concurrently and raced (1.12.0). Generating
++/// the manual has no such concurrency — one process, one call to
++/// [`generate`] — so writing it here and cleaning it up via `Drop` (which
++/// runs even when an earlier example's `capture` fails and `generate` returns
++/// early) is safe, and the fixture no longer sits in the tree only to
++/// demonstrate one command.
++struct ObservationsFixture {
++    path: std::path::PathBuf,
++}
++
++impl ObservationsFixture {
++    fn write(root: &Path) -> Result<Self, String> {
++        let path = root.join("Documentation/examples/observations.txt");
++        std::fs::write(&path, OBSERVATIONS_FIXTURE).map_err(|e| format!("{}: {e}", path.display()))?;
++        Ok(Self { path })
++    }
++}
++
++impl Drop for ObservationsFixture {
++    fn drop(&mut self) {
++        let _ = std::fs::remove_file(&self.path);
++    }
++}
++
+ fn examples() -> Vec<Example> {
+     vec![
+         Example {
+@@ -235,6 +294,7 @@ fn capture(bin: &Path, args: &[&str]) -> Result<String, String> {
+ 
+ /// Build the examples document.
+ pub fn generate(root: &Path, bin: &Path) -> Result<String, String> {
++    let _obs = ObservationsFixture::write(root)?;
+     let mut out = String::new();
+     out.push_str("# Worked examples\n\n");
+     out.push_str("**Generated — do not edit.** Every block below is the real output of the command above it, captured by running it. Regenerate with:\n\n");

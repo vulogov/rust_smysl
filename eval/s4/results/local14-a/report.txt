@@ -1,0 +1,8 @@
+cases scored: 35
+recall by pattern (prerequisite in corpus): 14/20 = 0.70
+  by task: 1:1/1 2:2/3 3:3/3 4:0/1 5:0/3 6:1/1 7:2/2 8:2/2 9:1/1 11:2/3
+  misses with other findings (owner may count a hit): ['naive-11', 'naive-4', 'naive-5']
+tasks 10 and 12 (not in corpus), pattern hits: 1/4
+real commits: 0/11 flagged, 0 flag(s)
+flags 135; contradicts verdicts dropped by validation 5
+tokens: prompt 521947, completion 16808; median seconds per diff 80
