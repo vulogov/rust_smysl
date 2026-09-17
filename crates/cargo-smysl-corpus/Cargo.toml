@@ -12,3 +12,7 @@ repository.workspace   = true
 # `model`/`ingest` features.
 [dependencies]
 smysl = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

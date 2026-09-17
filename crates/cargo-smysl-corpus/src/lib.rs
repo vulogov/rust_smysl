@@ -4,7 +4,14 @@
 //! Model-free: everything here is deterministic, so the corpus can be built, checked and queried
 //! without a model or a network.
 
-use smysl::{IdError, Label};
+pub mod build;
+
+pub use build::{
+    build, code_schema, Batch, BuildError, CommitText, Extraction, QuoteTally, KIND_KEY,
+};
+
+use smysl::stage::{prepare_declared, Attest};
+use smysl::{AgentId, Hlc, IdError, Label, Rung, Staged, Store};
 
 /// Where the corpus lives, relative to the workspace root.
 pub const CORPUS_DIR: &str = ".smysl";
@@ -20,6 +27,26 @@ pub const REL_EXERCISES: &str = "x.code/exercises";
 pub fn schema_declaration() -> String {
     format!(
         "@schema {CODE_SCHEMA_ID} {{ version: 1, relations: [{REL_TOUCHES}, {REL_EXERCISES}] }}"
+    )
+}
+
+/// The agent every unit this tool stages is attested to.
+pub const AGENT: &str = "tool:cargo-smysl";
+
+/// Stage a batch against a store: rule M, check and attestation, with `x.code/v1` declared.
+///
+/// Extraction reads the commit's own documents, so units are attested at the `document` rung, whose
+/// ceiling is `cited`: the most any quoted item may claim (rule T).
+pub fn stage(store: &Store, batch: Batch, hop: u32) -> Staged {
+    let agent = AgentId::new(AGENT).expect("valid agent id");
+    let attest = Attest::new(agent.clone(), Rung::Document, Hlc::zero(agent)).at_hop(hop);
+    prepare_declared(
+        store,
+        batch.units,
+        batch.relations,
+        batch.labels,
+        vec![code_schema()],
+        &attest,
     )
 }
 
