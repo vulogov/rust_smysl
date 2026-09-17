@@ -1,0 +1,180 @@
+{
+  "decisions": [
+    {
+      "decision": "Retain the precision field name and value in now output",
+      "kind": "decline",
+      "rationale": "The field path belongs to ucal-json/1, so changing or repurposing it would introduce a breaking API change.",
+      "quote": "The name and value stay, because it is a path in ucal-json/1 and repurposing one is breaking.",
+      "hunks": []
+    },
+    {
+      "decision": "Add a clock section to the doctor and now commands",
+      "kind": "act",
+      "rationale": "The application previously failed to state uncertainty for the single quantity it measured itself while conflating granularity with precision.",
+      "quote": "So doctor and now grow a clock section, and doctor --clock samples what this machine actually does.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6",
+        "H8",
+        "H10",
+        "H11",
+        "H15",
+        "H16",
+        "H17",
+        "H18",
+        "H19"
+      ]
+    },
+    {
+      "decision": "Place machine clock measurement behind a doctor --clock flag",
+      "kind": "act",
+      "rationale": "Resolution measurements vary across runs and machines, which would break byte-for-byte comparisons of doctor's standard output against committed examples.",
+      "quote": "resolution is measured and is behind a flag, since doctor's ordinary output is compared against a committed example",
+      "hunks": [
+        "H3",
+        "H4",
+        "H5",
+        "H7",
+        "H9",
+        "H12",
+        "H13",
+        "H14"
+      ]
+    },
+    {
+      "decision": "Decline to measure or guess system clock accuracy",
+      "kind": "decline",
+      "rationale": "Specification 8.4 mandates offline operation without reference sources, and short-baseline rate errors falsely identify quantisation as drift.",
+      "quote": "accuracy is not measured and will not be guessed, because §8.4 makes operation offline and a rate error from a short baseline reports quantisation as drift",
+      "hunks": []
+    },
+    {
+      "decision": "Express monotonic clock interpolation gain as a fraction rather than a decimal",
+      "kind": "act",
+      "rationale": "Rule E prohibits floating-point numbers across the crate.",
+      "quote": "As a fraction, not a decimal — Rule E forbids a float in a shipped crate and the lint caught the first draft using one.",
+      "hunks": [
+        "H3",
+        "H4",
+        "H5"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The precision field path belongs to ucal-json/1, where repurposing an existing path is breaking.",
+      "kind": "invariant",
+      "quote": "it is a path in ucal-json/1 and repurposing one is breaking."
+    },
+    {
+      "decision": 3,
+      "text": "Doctor standard output is compared byte-for-byte against a committed example.",
+      "kind": "existing-behaviour",
+      "quote": "doctor's ordinary output is compared against a committed example"
+    },
+    {
+      "decision": 4,
+      "text": "Section 8.4 mandates that the program operates offline without external references.",
+      "kind": "invariant",
+      "quote": "§8.4 makes operation offline"
+    },
+    {
+      "decision": 5,
+      "text": "Rule E prohibits floating-point numbers across any shipped crate.",
+      "kind": "invariant",
+      "quote": "Rule E forbids a float in a shipped crate"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Repurposing or removing the precision field",
+      "reason": "The field is a path in ucal-json/1, so changing or repurposing it would cause a breaking API change.",
+      "quote": "removing or repurposing one is a breaking change."
+    },
+    {
+      "decision": 2,
+      "alternative": "Leaving the precision field's meaning to be inferred",
+      "reason": "Leaving the interpretation unexplained allowed callers to conflate coordinate rendering with actual measurement precision.",
+      "quote": "rather than left to be inferred"
+    },
+    {
+      "decision": 3,
+      "alternative": "Placing the clock measurement in doctor's ordinary output",
+      "reason": "Sampled clock measurements vary across runs and machines, breaking byte-for-byte comparisons against committed documentation examples.",
+      "quote": "rather than in `doctor`'s ordinary output"
+    },
+    {
+      "decision": 4,
+      "alternative": "Naming resolution and calling it accuracy",
+      "reason": "Operating offline precludes an external reference, causing short-baseline rate estimates to falsely identify quantisation as drift.",
+      "quote": "Naming resolution and calling it accuracy is the error this module exists to avoid."
+    },
+    {
+      "decision": 5,
+      "alternative": "Using a decimal float for monotonic clock interpolation gain",
+      "reason": "Rule E strictly forbids floating-point values in any shipped crate.",
+      "quote": "Reported as a fraction rather than a decimal, because Rule E forbids a float anywhere in a shipped crate and the lint caught the first draft using one."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Avoids a breaking API change while addressing misleading precision claims alongside the field.",
+      "quote": "What it invites is answered beside it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Explicitly reports clock granularity and structural limits for the measured instant.",
+      "quote": "So doctor and now grow a clock section, and doctor --clock samples what this machine actually does.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Prevents doctor diagnostic output comparisons from failing across runs and machines.",
+      "quote": "A diagnostic that could not be reproduced would fail `check-docs` on every machine but the one that generated it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Avoids falsely reporting quantisation noise as clock drift.",
+      "quote": "a rate error from a short baseline reports quantisation as drift",
+      "verified": true,
+      "verification_quote": "which a throwaway probe duly did, at 1.2e-5."
+    },
+    {
+      "decision": 5,
+      "text": "Complies with Rule E by avoiding floating-point types in crate code.",
+      "quote": "Rule E forbids a float in a shipped crate",
+      "verified": true,
+      "verification_quote": "the lint caught the first draft using one."
+    }
+  ],
+  "tokens": [
+    [
+      8013,
+      2864
+    ],
+    [
+      8228,
+      2292
+    ],
+    [
+      8182,
+      2429
+    ],
+    [
+      8179,
+      1625
+    ]
+  ]
+}

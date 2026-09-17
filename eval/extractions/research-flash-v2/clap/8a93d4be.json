@@ -1,0 +1,49 @@
+{
+  "decisions": [
+    {
+      "decision": "Display the word alias as singular when only one alias exists",
+      "kind": "act",
+      "rationale": "When an argument or subcommand has only a single alias, using the singular form 'alias' instead of plural 'aliases' provides more natural and accurate help text.",
+      "quote": "Display word alias as singular when unique",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6",
+        "H7",
+        "H8",
+        "H9",
+        "H10",
+        "H11",
+        "H12",
+        "H13",
+        "H14",
+        "H15",
+        "H16"
+      ]
+    }
+  ],
+  "prerequisites": [],
+  "alternatives": [],
+  "consequences": [],
+  "tokens": [
+    [
+      2630,
+      707
+    ],
+    [
+      2698,
+      867
+    ],
+    [
+      2652,
+      230
+    ],
+    [
+      2649,
+      521
+    ]
+  ]
+}

@@ -1,0 +1,26 @@
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..3ba50ce 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -325,6 +325,21 @@ pub fn measured() -> Result<Vec<(String, Value)>, TimeError> {
+             )),
+         ));
+     }
++    // How far the session clock has drifted from the system clock right now:
++    // session reading minus a fresh wall reading, negative when the session is
++    // behind.
++    #[cfg(feature = "civil")]
++    if let (Ok(session), Ok(wall_now)) = (session_now(), crate::wall_instant()) {
++        let (s, w) = (session.ticks(), wall_now.ticks());
++        let skew = match s.try_sub(w) {
++            Some(d) => d.to_dec_string(),
++            None => format!("-{}", w.try_sub(s).map(|d| d.to_dec_string()).unwrap_or_default()),
++        };
++        out.push((
++            "session_skew_ticks".into(),
++            Value::text(format!("{skew} — session clock minus system clock, in ticks")),
++        ));
++    }
+     Ok(out)
+ }
+ 

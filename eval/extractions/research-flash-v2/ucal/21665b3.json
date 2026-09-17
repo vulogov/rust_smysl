@@ -1,0 +1,110 @@
+{
+  "decisions": [
+    {
+      "decision": "Add `-D warnings` to the features workflow environment.",
+      "kind": "act",
+      "rationale": "Both `verify.yml` and `features.yml` catch mismatched `#[cfg]` defects; without `-D warnings`, `features.yml` permitted these defects to pass as unread warnings.",
+      "quote": "verify.yml set it and features.yml did not, while the two exist to catch the same defect: a #[cfg] that does not match what the code needs. This workflow has caught six of those by build failure and let the identical defect through as a warning nobody read.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Gate six previously ungated items with feature attributes rather than suppressions.",
+      "kind": "act",
+      "rationale": "The items were imported or defined without declaring their feature dependencies, producing unused warnings in specific feature builds.",
+      "quote": "Every fix is an attribute, not a suppression.",
+      "hunks": [
+        "H3",
+        "H4",
+        "H5",
+        "H6"
+      ]
+    },
+    {
+      "decision": "Separate the missing release failure into distinct messages based on gh authentication.",
+      "kind": "act",
+      "rationale": "The previous single diagnostic covered two different failure conditions with different remedies, leaving users to guess the cause when unauthenticated.",
+      "quote": "Two conditions with different remedies now get two messages, which is the shape D-A24 catalogued.",
+      "hunks": [
+        "H7"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The backend guard must remain the first error line for the refused job's checks to hold.",
+      "kind": "invariant",
+      "quote": "the backend guard is still the first error line, which is the property that job defends"
+    },
+    {
+      "decision": 1,
+      "text": "All five library crates already compile without warnings across feature builds.",
+      "kind": "existing-behaviour",
+      "quote": "The five libraries were already clean"
+    },
+    {
+      "decision": 2,
+      "text": "years_quantity is only called when either the events or cosmo features are active.",
+      "kind": "existing-behaviour",
+      "quote": "years_quantity is called by events for a window's width and by cosmo for an enclosure's ends"
+    },
+    {
+      "decision": 2,
+      "text": "parse_form and codec::Form belong exclusively to run_now, which requires both civil and std.",
+      "kind": "existing-behaviour",
+      "quote": "parse_form and codec::Form belong to run_now, which needs civil and std."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 2,
+      "alternative": "Lint suppressions",
+      "reason": "The author resolved the unused warnings by gating items to their actual feature dependencies rather than silencing the warnings.",
+      "quote": "Every fix is an attribute, not a suppression."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The refused job inherits -D warnings and its checks still hold.",
+      "quote": "The refused job inherits the flag and its checks still hold — the backend guard is still the first error line",
+      "verified": true,
+      "verification_quote": "the backend guard is still the first error line, which is the property that job defends and the one -D warnings could most easily have broken."
+    },
+    {
+      "decision": 2,
+      "text": "Warnings across eight of the nineteen builds in the binary crate surfaced one layer at a time.",
+      "quote": "all of it was in the binary crate, in eight of the nineteen builds, and it surfaced one layer at a time because a lib that fails to compile never lets the binary's own warnings appear.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Two distinct failure conditions with different remedies now each receive an explicit message.",
+      "quote": "Two conditions with different remedies now get two messages, which is the shape D-A24 catalogued.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      2673,
+      368
+    ],
+    [
+      2833,
+      2745
+    ],
+    [
+      2787,
+      4581
+    ],
+    [
+      2784,
+      295
+    ]
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "decisions": [
+    {
+      "decision": "Use a committed observations file instead of writing a temporary file in tests",
+      "kind": "act",
+      "rationale": "Two test binaries running concurrently wrote to the same temporary file path, causing race conditions where one truncated the file while the other read it. Using a committed fixture eliminates the race condition and allows the residuals to be checked by eye.",
+      "quote": "The repair is that the observations are now a **committed** file,",
+      "hunks": [
+        "H2",
+        "H3",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Include the ephemeris residuals command in the documentation's worked examples",
+      "kind": "act",
+      "rationale": "The new committed observations fixture serves as a demonstrable example that can be generated into the manual alongside other CLI examples.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example",
+      "hunks": [
+        "H1",
+        "H6"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The observations file parser skips blank lines and lines starting with hash characters.",
+      "kind": "existing-behaviour",
+      "quote": "Blank lines and lines starting with `#` are skipped."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Writing the observations fixture dynamically to a temporary directory during test runs",
+      "reason": "Concurrent test binaries writing to the same temporary path raced, resulting in truncated reads and flaky test failures.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The test fixture cannot race when test binaries run concurrently.",
+      "quote": "it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Residuals are known in advance and can be checked by eye.",
+      "quote": "so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The fixture is generated into the manual alongside the rest of the worked examples.",
+      "quote": "the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": true,
+      "verification_quote": "37 worked examples now"
+    }
+  ],
+  "tokens": [
+    [
+      4234,
+      3293
+    ],
+    [
+      4360,
+      1914
+    ],
+    [
+      4314,
+      845
+    ],
+    [
+      4311,
+      2037
+    ]
+  ]
+}

@@ -1,0 +1,14 @@
+[package]
+name                   = "cargo-smysl-git"
+description            = "cargo-smysl: read a commit's message and changed files in-process, without the git binary"
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+authors.workspace      = true
+repository.workspace   = true
+
+# Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`.
+[dependencies]
+gix       = { version = "0.87", default-features = false, features = ["sha1", "revision"] }
+thiserror = { workspace = true }

@@ -1,0 +1,263 @@
+{
+  "decisions": [
+    {
+      "decision": "Construct Constraints using default and adjust budget in pack_exact fuzz target",
+      "kind": "act",
+      "rationale": "Constraints was marked non-exhaustive, so constructing it from default prevents future field additions from breaking the fuzz target compilation.",
+      "quote": "Built from its default and adjusted now, like the other four call sites.",
+      "hunks": [
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Add fuzz-build target to Makefile and include it in make ci",
+      "kind": "act",
+      "rationale": "The fuzz directory is a separate workspace that cargo check from the root does not compile, allowing breakage to slip past local checks.",
+      "quote": "fuzz-build: ## Compile the fuzz targets without running them",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "decision": "Decline to run the fuzzers as part of fuzz-build or make ci",
+      "kind": "decline",
+      "rationale": "Running fuzz targets requires nightly Rust and takes a minute per target, whereas compiling them takes seconds.",
+      "quote": "nightly and a minute per target, which is why that stays its own job.",
+      "hunks": []
+    },
+    {
+      "decision": "Do not pipe cargo check through tail in the fuzz-build recipe",
+      "kind": "act",
+      "rationale": "Piping masks failures because the pipeline takes the exit code of tail rather than cargo check, returning zero even on build failure.",
+      "quote": "Not piped through `tail`. A pipeline's exit status is the last command's, so",
+      "hunks": [
+        "H2"
+      ]
+    },
+    {
+      "decision": "Support overriding the binary path in verify-doc-output.py via SMYSL_BIN environment variable",
+      "kind": "act",
+      "rationale": "Allows tests to point doc verification at the specific binary built for testing rather than an outdated debug build, which is necessary for mutation testing.",
+      "quote": "SM = os.environ.get('SMYSL_BIN', './target/debug/smysl')",
+      "hunks": [
+        "H6"
+      ]
+    },
+    {
+      "decision": "Ignore the binary argument token when scanning for paths in verify-doc-output.py",
+      "kind": "act",
+      "rationale": "When an absolute path is passed for the binary under test, treating token 0 as a path caused the script to skip all commands.",
+      "quote": "`i` starts at 1: token 0 is the binary this script was told to run, not an input the",
+      "hunks": [
+        "H7"
+      ]
+    },
+    {
+      "decision": "Add doc_output integration test to verify manual transcripts during cargo test",
+      "kind": "act",
+      "rationale": "Replaying documentation transcripts under cargo test makes coverage visible to mutation testing tools like cargo-mutants.",
+      "quote": "The manual's transcripts, replayed against the binary, as something `cargo test` can see.",
+      "hunks": [
+        "H8"
+      ]
+    },
+    {
+      "decision": "Gate doc_output test to run only under the default feature matrix configuration",
+      "kind": "act",
+      "rationale": "The documentation manual describes default-feature behavior, so compiling the test in other configurations would report false drift.",
+      "quote": "So this runs in exactly one of the eight matrix configurations — the plain",
+      "hunks": [
+        "H8"
+      ]
+    },
+    {
+      "decision": "Assert that doc_output replays at least 40 transcripts",
+      "kind": "act",
+      "rationale": "Checking only for error outputs would mistakenly pass if a bug caused all transcripts to be skipped entirely.",
+      "quote": "So the assertion is on the count. A gate that cannot tell \"nothing was wrong\" from",
+      "hunks": [
+        "H8"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The Constraints struct implements the Default trait.",
+      "kind": "existing-behaviour",
+      "quote": "let mut constraints = Constraints::default();"
+    },
+    {
+      "decision": 1,
+      "text": "Constraints is non-exhaustive as of version 0.13.",
+      "kind": "prior-change",
+      "quote": "`Constraints` is `#[non_exhaustive]` as of 0.13, so it is built from its default and"
+    },
+    {
+      "decision": 2,
+      "text": "The fuzz directory is configured as its own independent workspace.",
+      "kind": "existing-behaviour",
+      "quote": "`fuzz/` is its own workspace, so `cargo check --workspace` from the root never compiles it"
+    },
+    {
+      "decision": 4,
+      "text": "In a shell pipeline, the overall exit status is determined by the last executed command.",
+      "kind": "tool-setting",
+      "quote": "A pipeline's exit status is the last command's, so"
+    },
+    {
+      "decision": 5,
+      "text": "CARGO_BIN_EXE_smysl contains the path to the binary compiled specifically for tests.",
+      "kind": "existing-behaviour",
+      "quote": "`CARGO_BIN_EXE_smysl` is the binary cargo built *for this test*."
+    },
+    {
+      "decision": 6,
+      "text": "CARGO_BIN_EXE_smysl is an absolute path.",
+      "kind": "existing-behaviour",
+      "quote": "`tests/doc_output.rs` passes `CARGO_BIN_EXE_smysl`, which always is"
+    },
+    {
+      "decision": 7,
+      "text": "cargo-mutants executes cargo test rather than make targets.",
+      "kind": "existing-behaviour",
+      "quote": "`cargo-mutants` runs `cargo test`, and `make doc-output` is not `cargo test`."
+    },
+    {
+      "decision": 7,
+      "text": "Python 3 is available on the system executing the tests.",
+      "kind": "assumption",
+      "quote": "python3 must be available to replay the manual's transcripts"
+    },
+    {
+      "decision": 8,
+      "text": "The documentation manual describes output produced with default features.",
+      "kind": "existing-behaviour",
+      "quote": "The script compares against output the manual claims, and the manual documents a **default-features** build."
+    },
+    {
+      "decision": 9,
+      "text": "The script verify-doc-output.py prints a summary line formatted with ran N.",
+      "kind": "existing-behaviour",
+      "quote": "The script prints `ran N, skipped N, excerpt-matched N, MISMATCHED N`."
+    },
+    {
+      "decision": 9,
+      "text": "The documentation manual contains 46 replayable transcripts out of 168 total.",
+      "kind": "existing-behaviour",
+      "quote": "46 of the manual's 168 are replayable"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 4,
+      "alternative": "Piping cargo check through tail -5",
+      "reason": "The pipeline returns the exit status of tail instead of cargo check, masking build errors.",
+      "quote": "the recipe piped cargo through `tail -5`, and a pipeline's exit status is the last command's, so it printed the error and returned 0."
+    },
+    {
+      "decision": 5,
+      "alternative": "Replaying against the default target/debug/smysl binary",
+      "reason": "Mutation testing rebuilds the binary with changes, so checking a stale binary would falsely report mutants as caught.",
+      "quote": "rather than at whatever happens to be in target/debug."
+    },
+    {
+      "decision": 8,
+      "alternative": "Skipping the test at runtime in non-default feature configurations",
+      "reason": "A test that passes silently because it cannot find its subject is worse than having no test compiled.",
+      "quote": "Compiled out rather than skipped at runtime, for the reason `global_flags.rs` gives: a test that silently passes because it could not find its subject is worse than one that is not there."
+    },
+    {
+      "decision": 9,
+      "alternative": "Asserting only that the word MISMATCHED appeared in output",
+      "reason": "It allowed the test to pass even when zero transcripts were run and all commands were skipped.",
+      "quote": "The first version of this test asserted only that the word `MISMATCHED` appeared, which is satisfied by `ran 0, skipped 168, MISMATCHED 0` — a script that replayed nothing at all."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Future field additions to Constraints will not break compilation of the fuzz target.",
+      "quote": "A field added later will not stop this fuzz target compiling, which is the point of the attribute.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Compiles fuzz targets during make ci so local checks detect build breaks.",
+      "quote": "`make fuzz-build` compiles the fuzz targets without running them and is now part of `make ci`.",
+      "verified": true,
+      "verification_quote": "Verified by re-introducing the break and watching the gate fail"
+    },
+    {
+      "decision": 3,
+      "text": "Avoids requiring nightly Rust and spending a minute per fuzz target during standard checks.",
+      "quote": "Running the fuzzers needs nightly and a minute per target, which is why that stays its own job.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Fails the build with exit code 2 when errors occur instead of masking them via tail.",
+      "quote": "Unpiped, it exits 2 with the break present and 0 without.",
+      "verified": true,
+      "verification_quote": "Unpiped, it exits 2 with the break present and 0 without."
+    },
+    {
+      "decision": 5,
+      "text": "Ensures mutation testing replays against the freshly compiled binary rather than a stale debug build.",
+      "quote": "replaying against it exercises the mutated code.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Prevents absolute binary paths from matching input path filters and skipping all transcript commands.",
+      "quote": "the absolute-path rule below would then match the program itself and skip every command in the book.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Makes manual documentation replay visible to mutation testing tools like cargo-mutants.",
+      "quote": "The manual's transcripts, replayed against the binary, as something `cargo test` can see.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Prevents compiling features that would produce false drift against default-feature documentation outputs.",
+      "quote": "a stale `--all-features` binary made a correct `SMY-W202` claim look like drift, because `exact-pack` was compiled in where the doc assumed it was not.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Prevents test from passing falsely if transcripts are skipped entirely.",
+      "quote": "A gate that cannot tell \"nothing was wrong\" from \"nothing was checked\" is the failure this repository keeps rediscovering.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      3619,
+      5393
+    ],
+    [
+      4038,
+      773
+    ],
+    [
+      3992,
+      3460
+    ],
+    [
+      3989,
+      2212
+    ]
+  ]
+}

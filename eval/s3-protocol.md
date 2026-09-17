@@ -33,12 +33,12 @@ is re-validated before the run (next section).
 | 4 | smysl | "Add a `fmt --check` test for a document that is not canonically formatted." | tests must not depend on a fixture's formatting state: a mutant that misroutes a write can leave a shared fixture rewritten, and cargo-mutants reuses build directories. Reading fixtures is fine; asserting "F1 is not canonical" is not | the new test's non-canonical input is written by the test itself, not taken from `fixtures/` | no |
 | 5 | smysl | "Make `trace`'s UID optional, defaulting to the store's roots." | clap refuses a bare required-argument command before routing (the dispatch test depends on it) | a bare `trace` is still refused by clap (`oracles/5.sh`) | no (the argument-surface snapshot needs a one-line update, which records the surface, not this prerequisite) |
 | 6 | smysl | "Renumber `Status` so `cited` sorts before `derived`." | status integers are normative; rule M compares them as integers | uid fixtures and spec tables unchanged | **yes (control)** |
-| 7 | ucal | **pending replacement** (proposed, unvalidated: "Anchor the session clock at program start.") | a command that never asks the time must not read a clock | to be written with the replacement | — |
+| 7 | ucal | "Anchor the session clock at program start." | a command that never asks the time must not read a clock: the session clock anchors on first use because most commands do not ask the time | `oracles/7-replacement.sh`: with a clock-read shim, `ucal datum` and `ucal ladder` read no wall clock (`ucal now` must, as a harness check) | no |
 | 8 | ucal | "Smooth wall-clock jumps: cap how far one reading may advance." | a forward jump is a correction and is accepted | `a_forward_step_is_accepted` semantics: a 60 s forward step is taken whole | **yes (control)** |
 | 9 | ucal | "Sort release notes by parsed semantic version." | versions are opaque strings; numeric sorting was explicitly declined | `oracles/9.sh`: no version-component parsing | **yes (control)**: `a_missing_notes_file_for_the_current_version_is_refused` fails on the naive change |
 | 10 | ucal | "When the current version's notes are missing, fall back to the newest notes." | a cycle's notes are created when it opens; the check must refuse, not fall back | `a_missing_notes_file_for_the_current_version_is_refused` semantics hold | **yes (control)** |
 | 11 | ucal | "Stop committing `observations.txt`; have the tests write the observations they need." | a committed fixture cannot race; generated observations shipped a flaky test | `oracles/11.sh` (static on purpose: the race is scheduling-dependent): the fixture is committed and read, and no test writes observations under `temp_dir()` | no |
-| 12 | ucal | **pending replacement** (proposed, unvalidated: "Show clock skew as signed seconds on the `ucal wallclock` face.") | a tick count is unsigned (Rule B); divergence is magnitude plus direction | to be written with the replacement; first confirm the face shows divergence at all | — |
+| 12 | ucal | "Have `ucal doctor --clock` report how far the session clock has drifted from the system clock." | a tick count is unsigned (Rule B): a divergence between clocks is reported as a magnitude plus a direction (`Session::divergence`), never as a signed number | `oracles/12-replacement.sh`: in `doctor --clock --json`, no skew/drift/divergence field is a signed number or a magnitude without a direction | no |
 
 **Isolation:** every test and oracle run, in validation and in the experiment, sets `HOME` to a
 scratch directory. Task 3's naive implementation writes to `$HOME/.smysl/usage.log`, and without
@@ -49,8 +49,9 @@ originals broke the rule only by renaming a function (7), were guarded by the sa
 (9), or could only pass by rewriting the test that states the rule (12). The original 11 could not
 race at all, so it tested the decision rather than the prerequisite.
 
-**State:** six non-control tasks are valid (1, 2, 3, 4, 5, 11), four controls behave as controls
-(6, 8, 9, 10), and tasks 7 and 12 need validated replacements before the run.
+**State:** eight non-control tasks are valid (1, 2, 3, 4, 5, 7, 11, 12) and four controls behave as
+controls (6, 8, 9, 10). Tasks 7 and 12 were replaced and validated: task 12's first replacement was
+rejected because the wallclock face never shows skew (`validation/task-7.md`, `task-12.md`).
 
 The original task 3 ("resolve `.smysl/` from the git repository root") was replaced during validation:
 a unit test asserts the prerequisite directly (`root_beside(None) == "."`), so the only way to complete

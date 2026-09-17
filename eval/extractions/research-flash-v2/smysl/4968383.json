@@ -1,0 +1,226 @@
+{
+  "decisions": [
+    {
+      "decision": "Add `spec-tables` CI job and verification script comparing implementations to spec tables.",
+      "kind": "act",
+      "rationale": "Every implementation read the spec only to assert it contained \"Deterministic CBOR\", while hand-typed test tables were never verified directly against the document's tables.",
+      "quote": "Parses the spec's tables rather than quoting them, and compares all four implementations against them in both directions. 38 comparisons, its own CI job.",
+      "hunks": [
+        "H1",
+        "H15",
+        "H16",
+        "H17",
+        "H36"
+      ]
+    },
+    {
+      "decision": "Implement BLAKE3-256 and C-Produce UID derivation in `nodejs/`.",
+      "kind": "act",
+      "rationale": "Testing against a C library binding would test two callers of one implementation rather than proving the spec is sufficient, so BLAKE3 was hand-rolled to provide an independent derivation.",
+      "quote": "nodejs/src/blake3.js is a hand-rolled BLAKE3-256, for the reason the other two are: a binding to the same C library the Rust calls would test two callers of one implementation.",
+      "hunks": [
+        "H25",
+        "H27",
+        "H28",
+        "H29",
+        "H31",
+        "H32",
+        "H33",
+        "H34"
+      ]
+    },
+    {
+      "decision": "Document normative status integers, source map layout, kind enum, base32 alphabet, and empty set omission in spec.",
+      "kind": "act",
+      "rationale": "Implementations had previously deduced these normative details only by decoding fixtures rather than reading the spec, and empty deps/grounds were incorrectly documented as required.",
+      "quote": "The reading found four facts a C-Produce implementer cannot proceed without, none of them in the document. All four are now at §2.1 and §2.2, and marked SPEC: at the point of use",
+      "hunks": [
+        "H11",
+        "H12",
+        "H13",
+        "H14"
+      ]
+    },
+    {
+      "decision": "Normalize text to NFC in the Node.js CBOR encoder.",
+      "kind": "act",
+      "rationale": "§3 constraint 6 explicitly mandates normalization at the encoder, which is needed so that authored decomposed Unicode strings match canonical fixture UIDs.",
+      "quote": "One behaviour change outside the new files: the CBOR encoder now NFC-normalises text, which §3 constraint 6 asks for by name (\"normalise at the encoder\").",
+      "hunks": [
+        "H30"
+      ]
+    },
+    {
+      "decision": "Replay tutorial chapters sequentially using scratch workspaces and `edits.json` reader edits.",
+      "kind": "act",
+      "rationale": "Fixtures were previously keyed by filename instead of position, preventing states printed as fragments or diffs from being replayed safely without mutating committed files.",
+      "quote": "verify-doc-output.py now replays a chapter as a chapter: a scratch copy of its fixtures, walked in document order, with fmt --write allowed to write.",
+      "hunks": [
+        "H18",
+        "H19",
+        "H20",
+        "H21",
+        "H37",
+        "H38",
+        "H39",
+        "H40",
+        "H41",
+        "H42",
+        "H43",
+        "H44"
+      ]
+    },
+    {
+      "decision": "Hold back repair of chapter 29's `beta.smy` drift.",
+      "kind": "decline",
+      "rationale": "The missing stanza cannot be deduced or reconstructed directly from the printed chapter, so guessing what it was is unacceptable.",
+      "quote": "Held back rather than repaired: the missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair.",
+      "hunks": []
+    },
+    {
+      "decision": "Decline implementing rule M in outside reader implementations.",
+      "kind": "decline",
+      "rationale": "Rule M constrains unit status against grounds statuses which are held in a store rather than in unit cores, so validating it on a unit alone cannot fail without building a store.",
+      "quote": "Rule M is implemented by none of the three outside readers, deliberately. It constrains a unit against the statuses of its grounds, and a unit core carries grounds as uids — so M is checkable against a store and not against a unit",
+      "hunks": []
+    },
+    {
+      "decision": "Fix incorrect spec section citations in Go and Python UID implementations.",
+      "kind": "act",
+      "rationale": "The implementations cited nonexistent sections (§1.1), which reads misleadingly as a settled clause.",
+      "quote": "go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had.",
+      "hunks": [
+        "H23",
+        "H24",
+        "H35"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 2,
+      "text": "Node.js does not provide a BLAKE3 implementation in its standard library.",
+      "kind": "tool-setting",
+      "quote": "Node has no BLAKE3 in its standard library"
+    },
+    {
+      "decision": 4,
+      "text": "The CBOR decoder already rejects any input text that is not NFC-normalized.",
+      "kind": "existing-behaviour",
+      "quote": "the decoder rejects anything not already NFC"
+    },
+    {
+      "decision": 7,
+      "text": "Unit cores store grounds solely as UIDs without retaining their corresponding status values.",
+      "kind": "invariant",
+      "quote": "a unit core carries its grounds as uids — the statuses they name are not in hand."
+    },
+    {
+      "decision": 8,
+      "text": "Section 1 of the format specification contains no subsections.",
+      "kind": "invariant",
+      "quote": "There is no §1.1 — §1 has no subsections."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Quoting the spec's tables in hand-typed test assertions.",
+      "reason": "Editing the spec and editing tests would remain separate acts unable to catch mismatches.",
+      "quote": "Parses the spec's tables rather than quoting them"
+    },
+    {
+      "decision": 2,
+      "alternative": "Using a binding to the same C library that Rust calls.",
+      "reason": "It would test two callers of one implementation rather than proving the specification is sufficient.",
+      "quote": "a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 5,
+      "alternative": "Splitting multi-state tutorial files into separate files for each step.",
+      "reason": "It would force the chapters to name different files at each step, changing what the book teaches.",
+      "quote": "Splitting them would mean the chapters naming a different file at each step, which changes what they teach."
+    },
+    {
+      "decision": 6,
+      "alternative": "Repairing chapter 29's beta.smy immediately by guessing the missing stanza.",
+      "reason": "The missing stanza cannot be reconstructed from the page and guessing is not an acceptable repair.",
+      "quote": "Held back rather than repaired: the missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair."
+    },
+    {
+      "decision": 7,
+      "alternative": "Enforcing Rule M directly in outside reader unit validation.",
+      "reason": "Rule M requires inspecting grounds statuses stored elsewhere, so a unit-level check cannot fail.",
+      "quote": "a `validate` claiming to enforce it would be a check that cannot fail."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Uncovers masthead version drift and phantom section citations across implementations.",
+      "quote": "It found four more on its first run: the masthead read `smysl/0.1` while §8.6 of the same document says `smysl/1.0` is what new documents declare; and go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had.",
+      "verified": true,
+      "verification_quote": "Eight breakages verified, each failing the right check: a status row deleted from the spec, a unit-core key renumbered, an undocumented status added to an implementation, a record code renumbered, a record renamed, a source key shifted, the masthead reverted, and a phantom citation reintroduced."
+    },
+    {
+      "decision": 2,
+      "text": "Node.js reproduces all canonical wire encodings and expands test coverage to 126 tests.",
+      "quote": "`nodejs/src/uid.js` reproduces all sixteen canonical encodings and all sixteen uids in `fixtures/wire/uid/cases.json`, and implements §7's *shape* clause with `uid()` running it first — a malformed unit cannot obtain an identity from the package, which is what makes the class a claim about emitting.",
+      "verified": true,
+      "verification_quote": "Eight new invariants, each verified capable of failing before being trusted: status dropped from the hashed core, NFC removed from the encoder, empty sets emitted, the source keys shifted, the sort dropped, base32hex substituted, `validate` ungated from `uid()`, and the BLAKE3 tree ignored. Eight breakages, eight distinct failures, each naming its clause."
+    },
+    {
+      "decision": 4,
+      "text": "Enables reproducing the decomposed Unicode fixture in Node.js UID calculations.",
+      "quote": "It was a no-op for C-Read — the decoder rejects anything not already NFC — and is what makes `unicode-decomposed` reproducible.",
+      "verified": true,
+      "verification_quote": "Eight new invariants, each verified capable of failing before being trusted: status dropped from the hashed core, NFC removed from the encoder, empty sets emitted, the source keys shifted, the sort dropped, base32hex substituted, `validate` ungated from `uid()`, and the BLAKE3 tree ignored. Eight breakages, eight distinct failures, each naming its clause."
+    },
+    {
+      "decision": 5,
+      "text": "Replays 85 transcripts end-to-end while surfacing real transcript drift in chapter 29.",
+      "quote": "78 → 85 replayed, with `first.smy`'s whole four-state narrative now running end to end, and `step1 → step2 → step3` in chapter 4 — one document under three names, none of the later two committable.",
+      "verified": true,
+      "verification_quote": "Three breakages verified: an anchor that stops resolving, a stanza match that finds nothing, and a base fixture edited away from its chapter."
+    },
+    {
+      "decision": 6,
+      "text": "Leaves seven transcripts blocked from replay until the missing chapter stanza is known.",
+      "quote": "Restoring it makes seven more commands replayable at once, the largest single block left.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Avoids introducing a validation check that cannot fail without a full store.",
+      "quote": "M is checkable against a store and not against a unit, so a `validate` claiming to enforce it would be a check that cannot fail.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Prevents misleading readers with citations to nonexistent specification sections.",
+      "quote": "A citation to a section that does not exist reads as a clause settling the question",
+      "verified": true,
+      "verification_quote": "Eight breakages verified, each failing the right check: a status row deleted from the spec, a unit-core key renumbered, an undocumented status added to an implementation, a record code renumbered, a record renamed, a source key shifted, the masthead reverted, and a phantom citation reintroduced."
+    }
+  ],
+  "tokens": [
+    [
+      31036,
+      1167
+    ],
+    [
+      31470,
+      3683
+    ],
+    [
+      31424,
+      5443
+    ],
+    [
+      31421,
+      4560
+    ]
+  ]
+}

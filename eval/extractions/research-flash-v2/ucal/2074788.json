@@ -1,0 +1,137 @@
+{
+  "decisions": [
+    {
+      "decision": "Route all clock readings through a session clock ensuring monotonicity across the process.",
+      "kind": "act",
+      "rationale": "The system clock can step backwards from NTP corrections, VM resumption, or manual changes, which causes clock readings to move backwards in time. The session clock maintains monotonicity using the monotonic clock while still tracking the system clock.",
+      "quote": "Every reading comes from it now, and it exists for monotonicity rather than precision",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6",
+        "H7"
+      ]
+    },
+    {
+      "decision": "Accept forward wall clock steps instead of suppressing them.",
+      "kind": "act",
+      "rationale": "A forward jump indicates a valid system time correction arriving. Rejecting it would wrongly favor the local process's opinion over the system's.",
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Store session state in an Option and anchor it lazily within session_now.",
+      "kind": "act",
+      "rationale": "Anchoring reads the clock and can fail, but OnceLock cannot return a Result from its initializer. Using expect to bypass this was disallowed by the no-panic-in-cli lint.",
+      "quote": "no-panic-in-cli refused an .expect() used to fill the gap where OnceLock's initialiser cannot return a Result — the state is an Option now, anchored where a failure can be returned.",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Gate wall_instant behind the civil feature flag.",
+      "kind": "act",
+      "rationale": "Unix time is a UTC label, so converting raw clock readings requires a leap-table lookup provided by civil. Separating wall_instant from now_instant had accidentally dropped the feature gate.",
+      "quote": "converting a clock reading is a leap-table lookup, because Unix time is a UTC label.",
+      "hunks": [
+        "H7"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 3,
+      "text": "OnceLock's initializer cannot return a Result.",
+      "kind": "existing-behaviour",
+      "quote": "OnceLock's initialiser cannot return a Result"
+    },
+    {
+      "decision": 3,
+      "text": "The no-panic-in-cli lint disallows calls to expect.",
+      "kind": "tool-setting",
+      "quote": "no-panic-in-cli refused an .expect()"
+    },
+    {
+      "decision": 4,
+      "text": "Converting clock readings requires a leap-table lookup from civil because Unix time is a UTC label.",
+      "kind": "existing-behaviour",
+      "quote": "converting a clock reading is a leap-table lookup, because Unix time is a UTC label."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Freezing the reading until the wall clock catches up",
+      "reason": "The monotonic branch is designed to keep advancing at the oscillator's rate during backward steps instead of stalling.",
+      "quote": "rather than freezing until the wall clock catches up"
+    },
+    {
+      "decision": 2,
+      "alternative": "Refusing or suppressing forward clock steps",
+      "reason": "A forward jump indicates a correction arriving, and refusing it would unfairly prefer the process's view of time over the system's.",
+      "quote": "refusing it would prefer this process's opinion of the time to the system's"
+    },
+    {
+      "decision": 3,
+      "alternative": "Initializing inside OnceLock using expect to unwrap the clock read Result",
+      "reason": "The no-panic-in-cli lint forbade using expect because failures must return an error code and exit status.",
+      "quote": "The first draft filled the gap with an .expect() and the `no-panic-in-cli` lint refused it"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Clock readings remain strictly monotone when the system clock steps backwards.",
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up.",
+      "verified": true,
+      "verification_quote": "Verified strict by disabling the monotonic branch and watching the reading stall."
+    },
+    {
+      "decision": 2,
+      "text": "A forward step is accepted as a valid correction, tracking the system time.",
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Clock initialization failures can be returned as a Result rather than panicking.",
+      "quote": "the state is an Option now, anchored where a failure can be returned.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Compiling without default features properly includes civil for leap-table lookups when reading the clock.",
+      "quote": "converting a clock reading is a leap-table lookup, because Unix time is a UTC label.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      6146,
+      1807
+    ],
+    [
+      6390,
+      1976
+    ],
+    [
+      6344,
+      268
+    ],
+    [
+      6341,
+      3457
+    ]
+  ]
+}

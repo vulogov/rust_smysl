@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "decision": "Skip groups when mapping conflicting argument IDs to prevent parser panics.",
+      "kind": "act",
+      "rationale": "Subcommands conflicting with groups would cause an unwrap panic because group IDs cannot be found as individual arguments in `self.cmd.find(id)`.",
+      "quote": "Don't panic when subcommands conflict with groups",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "self.cmd.find(id) returns None when queried with a group ID.",
+      "kind": "existing-behaviour",
+      "quote": ".filter_map(|id| self.cmd.find(id).map(|a| a.to_string()))"
+    }
+  ],
+  "alternatives": [],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Prevents panicking when subcommands conflict with groups.",
+      "quote": "Don't panic when subcommands conflict with groups",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      425,
+      417
+    ],
+    [
+      494,
+      1326
+    ],
+    [
+      448,
+      323
+    ],
+    [
+      445,
+      585
+    ]
+  ]
+}

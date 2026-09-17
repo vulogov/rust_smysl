@@ -1,0 +1,185 @@
+{
+  "decisions": [
+    {
+      "decision": "Compare CLI argument surface against a golden file inside cargo test instead of a Makefile gate.",
+      "kind": "act",
+      "rationale": "Deleting an arm in cli() removes arguments rather than the subcommand, which bare invocations do not detect. Testing the golden file in cargo test ensures coverage tools record the check.",
+      "quote": "golden file, compared inside cargo test rather than by a Makefile target: a",
+      "hunks": [
+        "H8",
+        "H10",
+        "H11"
+      ]
+    },
+    {
+      "decision": "Hardcode the command list rather than deriving it from binary help output.",
+      "kind": "act",
+      "rationale": "If the list were parsed from smysl --help, a deleted command would vanish from both the binary and the expected test list, silently passing.",
+      "quote": "This list must not come from the thing it is testing.",
+      "hunks": [
+        "H7",
+        "H11"
+      ]
+    },
+    {
+      "decision": "Supply minimal arguments for required-argument commands and assert when clap rejects bare invocations.",
+      "kind": "act",
+      "rationale": "Seven commands fail in clap before reaching dispatch logic. Providing minimal arguments allows router coverage, and failing on clap rejections prevents new required arguments from silently bypassing tests.",
+      "quote": "clap refusal is now itself a failure, so adding a required argument tomorrow",
+      "hunks": [
+        "H11"
+      ]
+    },
+    {
+      "decision": "Run each command under test inside its own scratch directory.",
+      "kind": "act",
+      "rationale": "Commands like ingest and usage write log and stage files to the current directory, which would dirty the repository checkout and bleed state across commands.",
+      "quote": "Every command in the test now runs from a scratch directory of its own.",
+      "hunks": [
+        "H11"
+      ]
+    },
+    {
+      "decision": "Set command stdin to null rather than inheriting it during dispatch testing.",
+      "kind": "act",
+      "rationale": "Commands like fmt and check read from stdin when invoked without file paths, which would cause an interactive terminal to hang.",
+      "quote": "and a test harness that hands them a terminal would hang instead of failing.",
+      "hunks": [
+        "H11"
+      ]
+    },
+    {
+      "decision": "Decline to add a test targeting the mutated command lookup comparison in main.",
+      "kind": "decline",
+      "rationale": "Mutating the equality check selects the incorrect command descriptor, but that descriptor is only read inside an unreachable fallback arm, making the mutant functionally equivalent.",
+      "quote": "than answered with a test that cannot distinguish the two programs.",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Subcommand argument arms are not feature-gated across build configurations.",
+      "kind": "invariant",
+      "quote": "the arms are not feature-gated, so what a build *accepts* does not change with its features, only what it then does."
+    },
+    {
+      "decision": 4,
+      "text": "Ingest and usage append to files resolved against the working directory.",
+      "kind": "existing-behaviour",
+      "quote": "`ingest` appends to `.smysl/staged.smy` and `usage` to `.smysl/usage.log`, both resolved against the working directory."
+    },
+    {
+      "decision": 5,
+      "text": "Fmt and check read standard input when invoked without path arguments.",
+      "kind": "existing-behaviour",
+      "quote": "`fmt` and `check` read stdin when given no path"
+    },
+    {
+      "decision": 6,
+      "text": "Clap only yields registered subcommand names, ensuring the fallback dispatch arm is unreachable.",
+      "kind": "invariant",
+      "quote": "clap only yields subcommand names that `cli()` registered, and `cli()` registers exactly `COMMANDS`."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Checking the CLI argument surface via a Makefile target",
+      "reason": "A Makefile gate is invisible to tools that measure test coverage.",
+      "quote": "compared inside cargo test rather than by a Makefile target: a Makefile gate is invisible to anything that counts coverage"
+    },
+    {
+      "decision": 2,
+      "alternative": "Deriving the command list dynamically by parsing the binary's help output",
+      "reason": "A deleted command arm would vanish from both the help text and the test list, silently passing.",
+      "quote": "Parsing `smysl --help` for the names and then checking each one dispatches is a check that cannot fail: delete a `cli` arm and the command vanishes from the help *and* from the list, so the loop simply stops testing it and reports success."
+    },
+    {
+      "decision": 3,
+      "alternative": "Silently accepting clap rejections when invocations lack required arguments",
+      "reason": "Silently accepting clap failures would allow newly introduced required arguments to bypass test coverage undetected.",
+      "quote": "Treating it as a failure rather than silently accepting it is what stops the hole reopening: add a required argument to a command tomorrow and this test says so, instead of quietly ceasing to cover it."
+    },
+    {
+      "decision": 4,
+      "alternative": "Running the commands directly in the repository checkout root",
+      "reason": "Running commands in the repository root leaves untracked log and staging files and bleeds state between invocations.",
+      "quote": "running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written."
+    },
+    {
+      "decision": 5,
+      "alternative": "Inheriting standard input during dispatch testing",
+      "reason": "Commands that default to reading standard input when invoked without paths would cause the test harness to hang.",
+      "quote": "Stdin is `/dev/null` rather than inherited: `fmt` and `check` read stdin when given no path, and a test harness that hands them a terminal would hang instead of failing."
+    },
+    {
+      "decision": 6,
+      "alternative": "Writing a test targeting the mutated equality check in main",
+      "reason": "The mutant is functionally equivalent because the selected command descriptor is only used inside an unreachable fallback arm.",
+      "quote": "rather than answered with a test that cannot distinguish the two programs"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Reduces surviving mutants across cli and main from 15 to 1.",
+      "quote": "cli + main  15 -> 1",
+      "verified": true,
+      "verification_quote": "main.rs     73 -> 59   (of 207 viable, 35.3% -> 28.5%)"
+    },
+    {
+      "decision": 2,
+      "text": "The hardcoded list can go stale when a command is added.",
+      "quote": "the list can go stale when a command is added",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Adding a required argument alerts developers instead of quietly ceasing to cover the command.",
+      "quote": "add a required argument tomorrow and this test says so, instead of quietly",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Prevents tests from dirtying the working tree and depending on state written by earlier commands.",
+      "quote": "A test that dirties the tree is one step from a test that depends on the tree.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Prevents the test harness from hanging when commands read stdin without arguments.",
+      "quote": "and a test harness that hands them a terminal would hang instead of failing.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Avoids answering equivalent mutation with a test unable to distinguish between the two programs.",
+      "quote": "than answered with a test that cannot distinguish the two programs.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      8620,
+      5720
+    ],
+    [
+      8943,
+      3650
+    ],
+    [
+      8897,
+      3311
+    ],
+    [
+      8894,
+      8678
+    ]
+  ]
+}

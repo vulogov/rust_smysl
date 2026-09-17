@@ -17,6 +17,7 @@ cargo-smysl-facts    = { path = "crates/cargo-smysl-facts",    version = "0.1.0"
 cargo-smysl-extract  = { path = "crates/cargo-smysl-extract",  version = "0.1.0" }
 cargo-smysl-verdict  = { path = "crates/cargo-smysl-verdict",  version = "0.1.0" }
 cargo-smysl-evidence = { path = "crates/cargo-smysl-evidence", version = "0.1.0" }
+cargo-smysl-git      = { path = "crates/cargo-smysl-git",      version = "0.1.0" }
 
 # smysl is a library dependency, never the smysl CLI. The model-free `stage` feature is the whole
 # route this tool needs: unit staging, quote checks, label resolution, dependents, CSV import.

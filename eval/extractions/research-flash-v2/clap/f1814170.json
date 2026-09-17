@@ -1,0 +1,46 @@
+{
+  "decisions": [
+    {
+      "decision": "Parse attribute values as expressions and validate literal strings during attribute inspection",
+      "kind": "act",
+      "rationale": "Peeking for string literals caused expressions that begin with string literals to fail to parse. Parsing all values as expressions allows method calls on string literals while still rejecting non-literal expressions where string literals are strictly required.",
+      "quote": "fix: Require literal attribute values",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Syn parses string literal tokens as Expr::Lit containing syn::Lit::Str.",
+      "kind": "existing-behaviour",
+      "quote": "syn::Lit::Str(lit) => Ok(lit),"
+    }
+  ],
+  "alternatives": [],
+  "consequences": [],
+  "tokens": [
+    [
+      1565,
+      1746
+    ],
+    [
+      1644,
+      2646
+    ],
+    [
+      1598,
+      1319
+    ],
+    [
+      1595,
+      2765
+    ]
+  ]
+}

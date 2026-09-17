@@ -1,0 +1,45 @@
+{
+  "decisions": [
+    {
+      "decision": "Do not report conflicting arguments in the usage string when reporting conflict errors",
+      "kind": "act",
+      "rationale": "Conflicting arguments should be excluded from the generated usage message in conflict error reports.",
+      "quote": "Don't report conflicting arguments in usage",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4"
+      ]
+    }
+  ],
+  "prerequisites": [],
+  "alternatives": [],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Fixes issue #6236.",
+      "quote": "Fixes #6236",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      827,
+      1101
+    ],
+    [
+      881,
+      1182
+    ],
+    [
+      835,
+      208
+    ],
+    [
+      832,
+      852
+    ]
+  ]
+}

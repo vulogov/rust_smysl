@@ -20,3 +20,6 @@ clap       = { workspace = true }
 serde      = { workspace = true }
 serde_json = { workspace = true }
 toml       = "1"
+cargo-smysl-corpus = { workspace = true }
+cargo-smysl-git    = { workspace = true }
+smysl              = { workspace = true }

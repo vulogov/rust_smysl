@@ -1,0 +1,127 @@
+{
+  "decisions": [
+    {
+      "decision": "Add integration tests exercising `smysl fmt` binary command decisions.",
+      "kind": "act",
+      "rationale": "Twelve mutants survived in `cmd_fmt` because there is no library seam to call; reaching and covering their decision branches requires driving the binary directly.",
+      "quote": "Twelve mutants survived in `cmd_fmt` at 1.1 — the joint largest cluster in the CLI, tied with `cmd_providers`. Every one is a branch that decides what the command *does*: whether it refuses a flag, whether a warning raises the exit code, whether it writes at all. They survived because nothing reached them. `cmd_fmt` reads a filesystem, parses, writes, and prints; there is no seam to call, so the only way in is to run the binary",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Generate test document fixtures dynamically in process-isolated scratch directories instead of reusing repository fixtures.",
+      "kind": "act",
+      "rationale": "cargo-mutants reuses build directories across runs; if a mutant misroutes a write and modifies a repo fixture, subsequent tests fail spuriously and artificially inflate mutant kill counts.",
+      "quote": "Every test that needs a document with a *property* — not canonical, has comments — builds it here rather than relying on a repository fixture having that property. The first version of this file used `F1` for \"not canonically formatted\" and `F9` for \"has comments\", and that was wrong in a way worth recording: `cargo-mutants` reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten, and every later mutant tested in that directory then sees a canonical `F1`.",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Do not write tests to eliminate the two remaining round-trip guard mutants in `cmd_fmt`.",
+      "kind": "decline",
+      "rationale": "The guard only fires when `write_surface` generates something that re-parses differently, which cannot be triggered by any valid or user-supplied input.",
+      "quote": "The two that remain are the round-trip guard, which fires only when write_surface produces something the parser reads back differently. No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not.",
+      "hunks": []
+    },
+    {
+      "decision": "Update documentation readiness table with corrected CLI mutant survivor rates.",
+      "kind": "act",
+      "rationale": "The previously recorded 64.2% was measured prior to work done in 2.2, whereas the survivor count was measured afterwards; re-measurement fixes the reported rate to reflect the accurate 40.0%.",
+      "quote": "The recorded 64.2% was measured in 2.1, *before* 2.2 did the work; the survivor count of 110 was measured after. Quoting them together read as though both described the present, and the conclusion drawn from that pairing — that the CLI's rate was probably still near 64% — was wrong by a whole phase. It is **40.0% of 275 viable**.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The smysl binary has no library seam for cmd_fmt, requiring direct process execution.",
+      "kind": "existing-behaviour",
+      "quote": "there is no seam to call, so the only way in is to run the binary"
+    },
+    {
+      "decision": 2,
+      "text": "cargo-mutants reuses build directories across mutation test executions.",
+      "kind": "tool-setting",
+      "quote": "cargo-mutants reuses build directories, so a mutant that misroutes a write leaves a fixture rewritten"
+    },
+    {
+      "decision": 3,
+      "text": "No user-supplied input can make write_surface output parse back differently.",
+      "kind": "invariant",
+      "quote": "No input a user can supply reaches it"
+    },
+    {
+      "decision": 4,
+      "text": "The survivor count of 110 was measured after the changes in 2.2.",
+      "kind": "prior-change",
+      "quote": "the survivor count of 110 was measured after"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Aiming tests at individual mutants instead of binary decisions",
+      "reason": "A reader needs tests focused on decisions, whereas mutants are only the means by which gaps are discovered.",
+      "quote": "names the decision it pins rather than the mutant, because the decision is what a reader needs and the mutant is only how the gap was found."
+    },
+    {
+      "decision": 2,
+      "alternative": "Relying on existing repository fixtures having specific properties",
+      "reason": "Reused build directories allow mutated writes to alter fixtures, causing subsequent tests to fail spuriously and distort kill counts.",
+      "quote": "builds it here rather than relying on a repository fixture having that property."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Reduces mutant survivors in cmd_fmt from twelve to two.",
+      "quote": "cmd_fmt   12 -> 2",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified."
+    },
+    {
+      "decision": 2,
+      "text": "Keeps mutant counts in uninvoked commands untouched at 12 and 11, preventing artificial inflation.",
+      "quote": "cmd_providers and cmd_merge are untouched at 12 and 11",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified."
+    },
+    {
+      "decision": 3,
+      "text": "Leaves two round-trip guard mutants uneliminated because parser discrepancies cannot be triggered by user input.",
+      "quote": "write_surface produces something the parser reads back differently.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Corrects the CLI mutant survivor rate to 40.0% of 275 viable mutants.",
+      "quote": "It is **40.0% of 275 viable**.",
+      "verified": true,
+      "verification_quote": "reproduced exactly by a full sharded run."
+    }
+  ],
+  "tokens": [
+    [
+      3403,
+      756
+    ],
+    [
+      3655,
+      1109
+    ],
+    [
+      3609,
+      3851
+    ],
+    [
+      3606,
+      5424
+    ]
+  ]
+}

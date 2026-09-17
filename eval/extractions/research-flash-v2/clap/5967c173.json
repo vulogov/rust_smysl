@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "decision": "Move shell detection logic to Shells",
+      "kind": "act",
+      "rationale": "Shell detection belongs on the `Shells` type rather than being handled directly by the completion runner.",
+      "quote": "Move shell detection to Shells",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    }
+  ],
+  "prerequisites": [],
+  "alternatives": [],
+  "consequences": [],
+  "tokens": [
+    [
+      1093,
+      662
+    ],
+    [
+      1145,
+      876
+    ],
+    [
+      1099,
+      435
+    ],
+    [
+      1096,
+      483
+    ]
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "decisions": [
+    {
+      "decision": "Make G10's event error message a literal string instead of interpolating the event id.",
+      "kind": "act",
+      "rationale": "The `body_file::leak` helper needed to turn an owned string into a `&'static str` is gated behind the `body` feature, but this code is gated behind `events`, causing compilation to fail when `events` is enabled without `body`.",
+      "quote": "G10's event message used body_file::leak, which is gated behind `body`, from an arm gated behind `events` — and `--no-default-features --features u512,std,events` is one of the twenty-two combinations that workflow builds.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Accept broken pipe errors when writing to stdin in test runner harness.",
+      "kind": "act",
+      "rationale": "`between - -` refuses input and can exit before stdin is read, leading to an EPIPE if the test harness is still writing, which is expected behavior rather than a failure.",
+      "quote": "A broken pipe is now an accepted outcome, since the assertions are on the status and the output and both survive it.",
+      "hunks": [
+        "H3"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The leak helper resides in body_file, which is gated behind the body feature.",
+      "kind": "existing-behaviour",
+      "quote": "body_file::leak, which is gated behind `body`, from an arm gated behind `events`"
+    },
+    {
+      "decision": 2,
+      "text": "`between - -` is rejected before any bytes of stdin are read.",
+      "kind": "prior-change",
+      "quote": "`between - -` is refused before a byte of stdin is read"
+    },
+    {
+      "decision": 2,
+      "text": "The test assertions check process exit status and output, which survive a broken pipe.",
+      "kind": "existing-behaviour",
+      "quote": "the assertions are on the status and the output and both survive it"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Interpolating the event ID into the error message",
+      "reason": "The leak helper needed to produce a static string is gated behind the body feature instead of events.",
+      "quote": "The message is a literal rather than the id interpolated into one"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The event error message no longer interpolates the event id typed by the caller.",
+      "quote": "The message is a literal now; the id it would have interpolated is one the caller just typed.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Broken pipe errors on stdin write are now an accepted outcome in the test harness.",
+      "quote": "A broken pipe is now an accepted outcome, since the assertions are on the status and the output and both survive it.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      1411,
+      312
+    ],
+    [
+      1568,
+      937
+    ],
+    [
+      1522,
+      5388
+    ],
+    [
+      1519,
+      171
+    ]
+  ]
+}

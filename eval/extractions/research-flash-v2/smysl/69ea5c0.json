@@ -1,0 +1,201 @@
+{
+  "decisions": [
+    {
+      "decision": "Add smysl/1.0 to FORMAT_VERSIONS_SUPPORTED while keeping the writer on smysl/0.1.",
+      "kind": "act",
+      "rationale": "Readers must be released before the writer is flipped so existing readers in the field do not reject output declaring the new version.",
+      "quote": "§0.1 of ROAD_TO_1.0.md sequences that: readers learn `smysl/1.0` and are *released* first, and only a later cycle makes it what new documents say. Flip the writer before the field has a reader for it and every other implementation refuses the output — §8.2 requires a reader to reject a version absent from its list rather than guess.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H13"
+      ]
+    },
+    {
+      "decision": "Defer making smysl/1.0 the default version that new documents declare.",
+      "kind": "decline",
+      "rationale": "The reader support in version 0.14 must first be published and adopted to prevent rejection by other implementations.",
+      "quote": "Step 3 — making smysl/1.0 what new documents declare — waits for 0.14 to be published, because §8.2 requires a reader to refuse a version absent from its list: flip the writer before the field has a reader for it and every other implementation rejects the output.",
+      "hunks": []
+    },
+    {
+      "decision": "Introduce FORMAT_VERSION_DEFAULT separately from FORMAT_VERSIONS_SUPPORTED[0].",
+      "kind": "act",
+      "rationale": "The emitted format version and the accepted format versions no longer mean the same thing once multiple versions are supported.",
+      "quote": "FORMAT_VERSION_DEFAULT is new and separate from FORMAT_VERSIONS_SUPPORTED[0], because the two stopped meaning the same thing the moment the list grew: one is what we emit, the other is what we accept.",
+      "hunks": [
+        "H3",
+        "H4",
+        "H13",
+        "H15",
+        "H16",
+        "H19",
+        "H20"
+      ]
+    },
+    {
+      "decision": "Preserve declared format version across parsing and surface writing.",
+      "kind": "act",
+      "rationale": "Previously, the writer assumed FORMAT_VERSIONS_SUPPORTED[0], which would silently relabel documents declaring other supported versions upon formatting.",
+      "quote": "ParseOutcome carries the version the document declared; WriteContext carries what the header will say; write_surface emits that instead of a build-time constant.",
+      "hunks": [
+        "H5",
+        "H6",
+        "H7",
+        "H8",
+        "H9",
+        "H10",
+        "H14",
+        "H17"
+      ]
+    },
+    {
+      "decision": "Drive format version acceptance unit and integration tests from FORMAT_VERSIONS_SUPPORTED.",
+      "kind": "act",
+      "rationale": "Hard-coded version checks caused tests to fail when smysl/1.0 was added because tests treated it as an example of an unknown version.",
+      "quote": "All four are now driven by the list rather than by a literal, so they grow with it instead of failing on it.",
+      "hunks": [
+        "H4",
+        "H12",
+        "H14",
+        "H16"
+      ]
+    },
+    {
+      "decision": "Decline updating version lists in python, nodejs, and go implementations.",
+      "kind": "decline",
+      "rationale": "Those implementations decode CBOR wire data only and never parse or see surface syntax @doc headers.",
+      "quote": "The plan was wrong about the other three implementations. It said the same list grows in python/, nodejs/ and go/. There is no such list: all three read CBOR only, the wire carries no version string, and go/conformance_test.go says so outright — \"surface syntax is not decoded here\".",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The specification requires readers to reject any document format version missing from their supported versions list.",
+      "kind": "invariant",
+      "quote": "§8.2 requires a reader to refuse a version absent from its list: flip the writer before the field has a reader for it and every other implementation rejects the output."
+    },
+    {
+      "decision": 2,
+      "text": "A reader must refuse a document declaring a version missing from its supported version list.",
+      "kind": "invariant",
+      "quote": "A reader must refuse a version absent from its list, so until 0.14 is on crates.io and in the field, a document declaring `smysl/1.0` is a document most readers reject."
+    },
+    {
+      "decision": 4,
+      "text": "ParseOutcome and WriteContext are non-exhaustive types, allowing non-breaking field additions.",
+      "kind": "existing-behaviour",
+      "quote": "ParseOutcome and WriteContext are both #[non_exhaustive], so each could gain a field without a major bump and write_surface's signature never moved."
+    },
+    {
+      "decision": 4,
+      "text": "The CBOR wire format carries no format version string.",
+      "kind": "invariant",
+      "quote": "The wire carries no version, so an implementation that reads only CBOR — `python/`, `nodejs/` and `go/` all do — has no version list to grow and nothing to change."
+    },
+    {
+      "decision": 5,
+      "text": "Tests were designed to fail automatically when the supported format version list expanded.",
+      "kind": "prior-change",
+      "quote": "versioning.rs was written in 0.10 to fail the moment the list grew, and it did — along with two sibling tests that had picked smysl/1.0 as their example of an *unknown* version"
+    },
+    {
+      "decision": 6,
+      "text": "The Python, Node.js, and Go implementations only read CBOR wire data and do not parse surface syntax.",
+      "kind": "existing-behaviour",
+      "quote": "all three read CBOR only, the wire carries no version string, and go/conformance_test.go says so outright — \"surface syntax is not decoded here\"."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Flipping the writer to smysl/1.0 before readers in the field are deployed.",
+      "reason": "Existing readers in the field reject any format version absent from their supported list.",
+      "quote": "Flip the writer before the field has a reader for it and every other implementation refuses the output"
+    },
+    {
+      "decision": 2,
+      "alternative": "Making smysl/1.0 the default emitted version immediately in release 0.14.",
+      "reason": "Un-upgraded readers in the field would reject documents declaring smysl/1.0 until 0.14 is adopted.",
+      "quote": "until 0.14 is on crates.io and in the field, a document declaring `smysl/1.0` is a document most readers reject."
+    },
+    {
+      "decision": 3,
+      "alternative": "Continuing to rely on FORMAT_VERSIONS_SUPPORTED[0] for what the writer emits.",
+      "reason": "The emitted format version and accepted format versions diverge once multiple versions are supported.",
+      "quote": "the two stopped meaning the same thing the moment the list grew: the first is *what we emit*, the list is *what we accept*."
+    },
+    {
+      "decision": 4,
+      "alternative": "Working around the defect and continuing to emit a build-time constant in write_surface.",
+      "reason": "Writing a build-time constant silently rewrites documents declaring a different supported version.",
+      "quote": "The defect the tripwire was guarding is fixed rather than worked around."
+    },
+    {
+      "decision": 5,
+      "alternative": "Driving format version acceptance tests from literal version strings.",
+      "reason": "Literal checks fail when supported versions change instead of adapting alongside the supported list.",
+      "quote": "All four are now driven by the list rather than by a literal, so they grow with it instead of failing on it."
+    },
+    {
+      "decision": 6,
+      "alternative": "Updating version lists across the python, nodejs, and go implementations.",
+      "reason": "Those implementations only decode CBOR wire data and do not have a surface syntax version list.",
+      "quote": "There is no such list: all three read CBOR only, the wire carries no version string"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 4,
+      "text": "Documents declaring either supported version preserve their declared version across round-trip formatting.",
+      "quote": "a document declaring either supported version comes back declaring the one it declared",
+      "verified": true,
+      "verification_quote": "Verified by restoring the old writer and watching it report \"a document declaring `smysl/1.0` was rewritten as: @doc smysl/0.1\"."
+    },
+    {
+      "decision": 4,
+      "text": "ParseOutcome and WriteContext gained fields without introducing a breaking semver change.",
+      "quote": "ParseOutcome and WriteContext are both #[non_exhaustive], so each could gain a field without a major bump",
+      "verified": true,
+      "verification_quote": "make semver is 12/12 clean"
+    },
+    {
+      "decision": 5,
+      "text": "Tests adapt with FORMAT_VERSIONS_SUPPORTED instead of failing whenever the list expands.",
+      "quote": "All four are now driven by the list rather than by a literal, so they grow with it instead of failing on it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Migration work is reduced because non-Rust implementations do not process surface syntax headers.",
+      "quote": "the migration is smaller than it looked",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      8226,
+      933
+    ],
+    [
+      8536,
+      561
+    ],
+    [
+      8490,
+      3031
+    ],
+    [
+      8487,
+      3289
+    ]
+  ]
+}

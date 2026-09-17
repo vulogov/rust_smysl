@@ -1,0 +1,70 @@
+{
+  "decisions": [
+    {
+      "decision": "Gate `report_against` and its tests on the gemini or anthropic features",
+      "kind": "act",
+      "rationale": "`report_against` is only reached from `gemini` and `anthropic`. Builds lacking those features triggered unused function warnings, which CI rejected due to `-D warnings`.",
+      "quote": "It is only reached from `gemini` and `anthropic`, both feature-gated, so any\nbuild without them had an unused function — and CI sets `-D warnings`.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Do not fix the pre-existing unused `jitter` error under `--no-default-features`",
+      "kind": "decline",
+      "rationale": "The failure existed on the previous commit, falls outside CI's matrix, and should not be folded into this repair.",
+      "quote": "Pre-existing, outside CI's matrix, and not something to fold\ninto a repair.",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`report_against` is only called by code enabled under `gemini` or `anthropic`.",
+      "kind": "existing-behaviour",
+      "quote": "It is only reached from `gemini` and `anthropic`, both feature-gated"
+    },
+    {
+      "decision": 2,
+      "text": "The unused `jitter` error is pre-existing and outside the CI matrix.",
+      "kind": "existing-behaviour",
+      "quote": "Pre-existing, outside CI's matrix"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 2,
+      "alternative": "Fix the pre-existing unused jitter warning under --no-default-features.",
+      "reason": "It is pre-existing, outside CI's matrix, and should not be folded into this repair.",
+      "quote": "Pre-existing, outside CI's matrix, and not something to fold into a repair."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Fixes unused function warnings on builds lacking gemini and anthropic features that broke CI under `-D warnings`.",
+      "quote": "any\nbuild without them had an unused function — and CI sets `-D warnings`.",
+      "verified": true,
+      "verification_quote": "Verified against both failing CI commands and each provider feature on its own."
+    }
+  ],
+  "tokens": [
+    [
+      743,
+      261
+    ],
+    [
+      873,
+      1913
+    ],
+    [
+      827,
+      3833
+    ],
+    [
+      824,
+      3647
+    ]
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "decisions": [
+    {
+      "decision": "Remove the local-improvement pass.",
+      "kind": "act",
+      "rationale": "Measurements across 28,000 generated packs showed that it degraded pack quality in 22 of the 26 instances where it changed anything, violating the value function it was supposed to maximize.",
+      "quote": "Remove the local-improvement pass: it was making packs worse",
+      "hunks": [
+        "H1",
+        "H6",
+        "H7"
+      ]
+    },
+    {
+      "decision": "Remove IMPROVEMENT_PASSES constant and PackRequest::improvement_passes field.",
+      "kind": "act",
+      "rationale": "Retaining configuration knobs for a pass that no longer exists is undesirable.",
+      "quote": "A knob\nfor a pass that no longer exists is worse than no knob.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Delete the search test that uncovered the issue with the improvement pass.",
+      "kind": "act",
+      "rationale": "Without the pass, the test would simply compare two identical configurations, and tests that cannot fail should be removed.",
+      "quote": "With the pass gone it would compare two\nidentical configurations, and a test that cannot fail is the shape this project\nkeeps deleting.",
+      "hunks": [
+        "H6"
+      ]
+    }
+  ],
+  "prerequisites": [],
+  "alternatives": [
+    {
+      "decision": 2,
+      "alternative": "Retaining configuration knobs for the removed improvement pass.",
+      "reason": "Having a configuration knob for a pass that no longer exists is worse than having no knob.",
+      "quote": "A knob for a pass that no longer exists is worse than no knob."
+    },
+    {
+      "decision": 3,
+      "alternative": "Keeping the search test that uncovered the issue with the improvement pass.",
+      "reason": "Without the pass, the test would compare two identical configurations and could never fail.",
+      "quote": "With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The golden file remains byte-identical across nine fixtures at six budgets, with no selection moved.",
+      "quote": "The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection moved.",
+      "verified": true,
+      "verification_quote": "The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection moved."
+    },
+    {
+      "decision": 1,
+      "text": "Removes 22 of the remaining 46 mutation test survivors located inside improve.",
+      "quote": "After the tests above and the removal below, the interesting residue is gone: 22 of the 46 remaining survivors were inside `improve`.",
+      "verified": true,
+      "verification_quote": "22 of the 46 remaining survivors were inside `improve`."
+    },
+    {
+      "decision": 1,
+      "text": "Constraint properties, the branch-and-bound gate, and pack fuzz targets remain clean.",
+      "quote": "Constraint properties, the branch-and-bound gate, and both pack fuzz targets are clean.",
+      "verified": true,
+      "verification_quote": "Constraint properties, the branch-and-bound gate, and both pack fuzz targets are clean."
+    },
+    {
+      "decision": 3,
+      "text": "The test numbers are preserved in the changelog.",
+      "quote": "Its numbers are in the changelog, which is where a measurement belongs once the thing it measured is gone.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      3415,
+      339
+    ],
+    [
+      3568,
+      2494
+    ],
+    [
+      3522,
+      3716
+    ],
+    [
+      3519,
+      1944
+    ]
+  ]
+}

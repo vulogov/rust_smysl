@@ -31,6 +31,9 @@ enum Cmd {
     Adjudicate { system: String },
     /// Score a system: precision and recall per kind, per repository, and overall.
     Score { system: String },
+    /// Build and stage every extraction of a system against its commit's real text (read with gix),
+    /// and report units, quote support and staging errors. Exits non-zero if any batch has errors.
+    Stage { system: String },
 }
 
 fn default_eval_dir() -> PathBuf {
@@ -43,6 +46,7 @@ fn main() -> ExitCode {
         Cmd::Templates => templates(&cli.eval_dir),
         Cmd::Adjudicate { system } => adjudicate(&cli.eval_dir, system),
         Cmd::Score { system } => score_system(&cli.eval_dir, system),
+        Cmd::Stage { system } => stage_system(&cli.eval_dir, system),
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,
@@ -84,25 +88,31 @@ fn git(repo_dir: &Path, args: &[&str]) -> Result<String, String> {
     Ok(String::from_utf8_lossy(&out.stdout).into_owned())
 }
 
-/// A blobless clone under eval/.repos, created on first use.
+/// A full clone under eval/.repos, created on first use. Full, not blobless: commit text is read with
+/// gix (cargo-smysl-git), which reads only objects that are present. A blobless clone left by an older
+/// version of this tool is replaced.
 fn repo_dir(eval: &Path, name: &str, url: &str) -> Result<PathBuf, String> {
     let dir = eval.join(".repos").join(name);
-    if !dir.join(".git").exists() && !dir.join("HEAD").exists() {
-        std::fs::create_dir_all(dir.parent().unwrap()).map_err(|e| e.to_string())?;
-        let status = Command::new("git")
-            .args([
-                "clone",
-                "--quiet",
-                "--filter=blob:none",
-                "--no-checkout",
-                url,
-            ])
-            .arg(&dir)
-            .status()
-            .map_err(|e| format!("git clone: {e}"))?;
-        if !status.success() {
-            return Err(format!("git clone {url} failed"));
+    let exists = dir.join(".git").exists() || dir.join("HEAD").exists();
+    if exists {
+        let partial = git(
+            &dir,
+            &["config", "--get", "remote.origin.partialclonefilter"],
+        )
+        .is_ok();
+        if !partial {
+            return Ok(dir);
         }
+        std::fs::remove_dir_all(&dir).map_err(|e| format!("{}: {e}", dir.display()))?;
+    }
+    std::fs::create_dir_all(dir.parent().unwrap()).map_err(|e| e.to_string())?;
+    let status = Command::new("git")
+        .args(["clone", "--quiet", "--no-checkout", url])
+        .arg(&dir)
+        .status()
+        .map_err(|e| format!("git clone: {e}"))?;
+    if !status.success() {
+        return Err(format!("git clone {url} failed"));
     }
     Ok(dir)
 }
@@ -287,6 +297,88 @@ fn score_system(eval: &Path, system: &str) -> Result<(), String> {
                 t.pending
             );
         }
+    }
+    Ok(())
+}
+
+fn stage_system(eval: &Path, system: &str) -> Result<(), String> {
+    let set = commits(eval)?;
+    let mut failures = 0;
+    let mut totals = (0usize, 0usize, 0usize, 0usize, 0usize);
+    println!(
+        "{:<6} {:<9} {:>5} {:>5} {:>7} {:>5} {:>6} {:>7} {:>6}",
+        "repo", "commit", "units", "edges", "present", "loose", "absent", "dropped", "errors"
+    );
+    for c in &set.commits {
+        let ex_path = extraction_path(eval, system, c);
+        if !ex_path.exists() {
+            continue;
+        }
+        let repo = set
+            .repos
+            .get(&c.repo)
+            .ok_or_else(|| format!("unknown repo {}", c.repo))?;
+        let dir = repo_dir(eval, &c.repo, &repo.url)?;
+        let data = cargo_smysl_git::read_commit(&dir, &c.sha)
+            .map_err(|e| format!("{} {}: {e}", c.repo, c.sha))?;
+        let texts: Vec<(String, String)> = data
+            .files
+            .iter()
+            .map(|f| (f.path.clone(), f.text()))
+            .collect();
+        let commit = cargo_smysl_corpus::CommitText {
+            sha: &data.sha,
+            message: &data.message,
+            files: texts
+                .iter()
+                .map(|(p, t)| (p.as_str(), t.as_str()))
+                .collect(),
+        };
+        let ex: cargo_smysl_corpus::Extraction = serde_json::from_str(&read(&ex_path)?)
+            .map_err(|e| format!("{}: {e}", ex_path.display()))?;
+        let batch = cargo_smysl_corpus::build(&ex, &commit, 0)
+            .map_err(|e| format!("{} {}: {e}", c.repo, c.sha))?;
+        let (units, edges, quotes, dropped) = (
+            batch.units.len(),
+            batch.relations.len(),
+            batch.quotes,
+            batch.dropped.len(),
+        );
+        let staged = cargo_smysl_corpus::stage(&smysl::Store::from_records(Vec::new()), batch, 0);
+        let errors: Vec<String> = staged
+            .report
+            .iter()
+            .filter(|d| d.severity == smysl::Severity::Error)
+            .map(|d| d.to_string())
+            .collect();
+        println!(
+            "{:<6} {:<9} {:>5} {:>5} {:>7} {:>5} {:>6} {:>7} {:>6}",
+            c.repo,
+            c.sha,
+            units,
+            edges,
+            quotes.present,
+            quotes.loose,
+            quotes.absent,
+            dropped,
+            errors.len()
+        );
+        for e in errors.iter().take(3) {
+            println!("    {e}");
+        }
+        failures += usize::from(!errors.is_empty());
+        totals.0 += units;
+        totals.1 += quotes.present;
+        totals.2 += quotes.loose;
+        totals.3 += quotes.absent;
+        totals.4 += errors.len();
+    }
+    println!(
+        "\nsystem {system}: {} units; quotes present {}, loose {}, absent {}; {} staging error(s)",
+        totals.0, totals.1, totals.2, totals.3, totals.4
+    );
+    if failures > 0 {
+        return Err(format!("{failures} commit(s) staged with errors"));
     }
     Ok(())
 }

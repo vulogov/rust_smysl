@@ -1,0 +1,40 @@
+{
+  "decisions": [
+    {
+      "decision": "Use longer lifetimes for clap_lex ParsedArg and related RawArgs methods",
+      "kind": "act",
+      "rationale": "Explicitly tying returned slices and parsed argument structures to the underlying storage lifetime instead of elided references to self enables zero-copy parsing.",
+      "quote": "fix: Use longer lifetime in clap_lex ParsedArg",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6",
+        "H7"
+      ]
+    }
+  ],
+  "prerequisites": [],
+  "alternatives": [],
+  "consequences": [],
+  "tokens": [
+    [
+      2150,
+      559
+    ],
+    [
+      2217,
+      925
+    ],
+    [
+      2171,
+      388
+    ],
+    [
+      2168,
+      1170
+    ]
+  ]
+}

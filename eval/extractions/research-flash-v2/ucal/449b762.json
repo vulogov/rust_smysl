@@ -1,0 +1,179 @@
+{
+  "decisions": [
+    {
+      "decision": "Add `cal from` and `instant_of` to convert derived calendar local dates to absolute time.",
+      "kind": "act",
+      "rationale": "Derived calendars previously only converted forwards, creating an asymmetry with Earth's legacy calendars and contradicting §15.4's rule that Earth has no special distinctions.",
+      "quote": "The inverse of cal show, and the asymmetry it closes was real. to-civil has had from-civil beside it since 0.1.0; the fifteen derived calendars went one way only.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6",
+        "H7",
+        "H8",
+        "H9",
+        "H10",
+        "H11",
+        "H13",
+        "H14",
+        "H16"
+      ]
+    },
+    {
+      "decision": "Format `cal from` to accept the local date string format produced by `cal show`.",
+      "kind": "act",
+      "rationale": "Allowing both commands to parse each other's representations ensures a human can directly execute the round trip.",
+      "quote": "It reads the form cal show prints, so the two commands read each other's output and the round trip is something a person runs.",
+      "hunks": [
+        "H2",
+        "H3",
+        "H5",
+        "H6",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Return a Window interval rather than a single moment when inverting a local date.",
+      "kind": "act",
+      "rationale": "A local day spans an entire interval rather than a single instant, and uncertainty in the anchor propagates outward.",
+      "quote": "The answer is a Window and would be wrong not to be. A local day is a span, so year 82 day 83 names a day rather than a moment; and the anchor carries uncertainty, which propagates.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Expand interval endpoints outward to tick boundaries instead of narrowing them inward.",
+      "kind": "act",
+      "rationale": "Day boundaries almost never land directly on tick boundaries, and narrowing endpoints would introduce unwarranted assumptions.",
+      "quote": "Endpoints are taken outward, never inward: a local day boundary almost never lands on a tick boundary, and narrowing to fit would be narrowing by assumption.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Evaluate the inverse placement directly rather than using a search or iterative estimation loop.",
+      "kind": "act",
+      "rationale": "Placement formula D-A21 allows exact evaluation without needing an initial estimate or search.",
+      "quote": "No search. D-A21 fixed the placement, so the inverse evaluates it rather than hunting for it — the forward split_year corrects an estimate in a loop and this needs no estimate.",
+      "hunks": [
+        "H2",
+        "H3",
+        "H4"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 2,
+      "text": "`cal show` outputs local dates in the form `YEAR-DAY` or `YEAR-DAY.FRACTION`.",
+      "kind": "existing-behaviour",
+      "quote": "`YEAR-DAY`, or `YEAR-DAY.FRACTION` — the form `cal show` prints."
+    },
+    {
+      "decision": 3,
+      "text": "Calendar anchors carry uncertainty that propagates into absolute time calculations.",
+      "kind": "invariant",
+      "quote": "the anchor's uncertainty propagates into it (Rule J.2)."
+    },
+    {
+      "decision": 4,
+      "text": "Rule R makes rendering the only place where information may be lost.",
+      "kind": "invariant",
+      "quote": "Rule R makes rendering the only place information may be lost."
+    },
+    {
+      "decision": 5,
+      "text": "Decision D-A21 fixed the calendar placement formula.",
+      "kind": "prior-change",
+      "quote": "D-A21 fixed the placement"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 3,
+      "alternative": "Returning a single moment",
+      "reason": "A local day spans an interval and anchor uncertainty propagates into absolute time.",
+      "quote": "year 82 day 83 names a day rather than a moment"
+    },
+    {
+      "decision": 4,
+      "alternative": "Narrowing interval endpoints inward to fit tick boundaries",
+      "reason": "Narrowing endpoints inward would introduce unwarranted assumptions.",
+      "quote": "Endpoints are taken outward, never inward: a local day boundary almost never lands on a tick boundary, and narrowing to fit would be narrowing by assumption."
+    },
+    {
+      "decision": 5,
+      "alternative": "Hunting for placement with a search loop correcting an estimate",
+      "reason": "The inverse placement can be evaluated directly without requiring an estimate.",
+      "quote": "D-A21 fixed the placement, so the inverse evaluates it rather than hunting for it — the forward split_year corrects an estimate in a loop and this needs no estimate."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "For every anchored calendar and offset spread, the recovered window contains the original instant.",
+      "quote": "for every anchored calendar and a spread of offsets, the window for fields(t) contains t.",
+      "verified": true,
+      "verification_quote": "Verified strict by shifting the inverse one day and watching it fail."
+    },
+    {
+      "decision": 2,
+      "text": "The two commands can read each other's output so round-tripping is executable by a human.",
+      "quote": "the two commands read each other's output and the round trip is something a person runs.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "With a fraction, the window narrows only to the anchor's width, preserving absolute time uncertainty.",
+      "quote": "Give a fraction and the window narrows to the anchor's own width and no further",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Consecutive local days leave no gap between their intervals.",
+      "quote": "consecutive local days leave no gap.",
+      "verified": true,
+      "verification_quote": "A test asserts consecutive local days leave no gap."
+    },
+    {
+      "decision": 5,
+      "text": "Inverting placement directly evaluates the formula rather than correcting an estimate in a loop.",
+      "quote": "the forward split_year corrects an estimate in a loop and this needs no estimate.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      10966,
+      4970
+    ],
+    [
+      11212,
+      5714
+    ],
+    [
+      11166,
+      5127
+    ],
+    [
+      11163,
+      2734
+    ]
+  ]
+}

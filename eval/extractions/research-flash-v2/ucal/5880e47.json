@@ -1,0 +1,98 @@
+{
+  "decisions": [
+    {
+      "decision": "Read release notes for the workspace version rather than guessing via sorted filenames.",
+      "kind": "act",
+      "rationale": "Sorting numerically repairs the ordering bug but leaves guessing in place, failing if a version is bumped without writing notes. Deriving the version removes ordering errors entirely.",
+      "quote": "The fix is not a better sort. Sorting numerically repairs that one bug and leaves the guess in place. The check now reads the notes for the version being built, derived from [workspace.package] — no ordering, nothing to get wrong.",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "decision": "Restore check_ci_covers_the_procedure's doc comment separated during helper insertion.",
+      "kind": "act",
+      "rationale": "A previous edit placed the helper function directly above check_ci_covers_the_procedure, accidentally capturing its doc comment and leaving it undocumented.",
+      "quote": "the fix had stolen a doc comment. The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented",
+      "hunks": [
+        "H1",
+        "H3"
+      ]
+    },
+    {
+      "decision": "Assert specific error text in test instead of generic failure or version check.",
+      "kind": "act",
+      "rationale": "Asserting that some error occurred and mentioned the version passed even when the explicit check was disabled, because read_to_string fails and includes the path containing the version.",
+      "quote": "Asserting only that *some* error came back passed even with that check disabled — `read_to_string` fails too, and its message names the path, which contains the version. A test that cannot tell the two apart is not testing the branch it claims to.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 3,
+      "text": "read_to_string failure messages include the target path containing the version number.",
+      "kind": "existing-behaviour",
+      "quote": "read_to_string fails too, and its message contains the path, and the path contains the version."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Sorting release-notes filenames numerically",
+      "reason": "It repairs only the immediate ordering bug while leaving guesswork in place and failing to catch missing notes.",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 3,
+      "alternative": "Asserting only that some error occurred and named the version",
+      "reason": "The test passed even with the check disabled because read_to_string also fails and includes the path containing the version.",
+      "quote": "It asserted that some error came back and that the message named the version, which passed with the check disabled"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Eliminates ordering errors and errors when release notes are missing for a bumped version.",
+      "quote": "There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed. That is an error naming the version now.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Fixes leaving check_ci_covers_the_procedure undocumented after its doc comment was swallowed by a helper function.",
+      "quote": "The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Allows the test to specifically verify the explicit check branch rather than an incidental file-read failure.",
+      "quote": "A test that cannot tell the two branches apart is not testing the branch it claims to.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      4491,
+      436
+    ],
+    [
+      4671,
+      3546
+    ],
+    [
+      4625,
+      1159
+    ],
+    [
+      4622,
+      3247
+    ]
+  ]
+}
