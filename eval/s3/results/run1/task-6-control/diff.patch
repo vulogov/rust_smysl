@@ -1,0 +1,208 @@
+ crates/smysl-check/src/passes/epistemics.rs |  4 +-
+ crates/smysl-check/src/passes/trust.rs      |  2 +-
+ crates/smysl-core/src/types/epistemics.rs   | 64 ++++++++++++++++++++++++++---
+ crates/smysl-ingest/src/ceiling.rs          |  5 ++-
+ crates/smysl-ingest/src/stage.rs            |  7 +++-
+ fixtures/schema/unit.json                   |  2 +-
+ 6 files changed, 72 insertions(+), 12 deletions(-)
+
+diff --git a/crates/smysl-check/src/passes/epistemics.rs b/crates/smysl-check/src/passes/epistemics.rs
+index 798ef36..77786c9 100644
+--- a/crates/smysl-check/src/passes/epistemics.rs
++++ b/crates/smysl-check/src/passes/epistemics.rs
+@@ -156,8 +156,8 @@ mod tests {
+         let (um, uc) = (canonical_uid(&m), canonical_uid(&c));
+         let records = vec![Record::Unit(m), Record::Unit(c)];
+ 
+-        // `cited` (4) is the weaker of the two, and `derived` (3) is below it.
+-        let ok = grounded("ok", Status::Derived, vec![um, uc]);
++        // `cited` ranks weaker than `measured` under rule M, and `inferred` is below both.
++        let ok = grounded("ok", Status::Inferred, vec![um, uc]);
+         let mut all = records.clone();
+         all.push(Record::Unit(ok));
+         assert!(check(all).is_empty());
+diff --git a/crates/smysl-check/src/passes/trust.rs b/crates/smysl-check/src/passes/trust.rs
+index ca4ba20..b5da3fb 100644
+--- a/crates/smysl-check/src/passes/trust.rs
++++ b/crates/smysl-check/src/passes/trust.rs
+@@ -261,7 +261,7 @@ mod tests {
+         assert!(permits(Rung::Model, Status::Inferred));
+         assert!(!permits(Rung::Model, Status::Derived));
+         assert!(permits(Rung::Computed, Status::Derived));
+-        assert!(!permits(Rung::Computed, Status::Cited));
++        assert!(!permits(Rung::Document, Status::Derived));
+     }
+ 
+     /// A deterministic tool transcribing a reading may record `measured`. This is the only
+diff --git a/crates/smysl-core/src/types/epistemics.rs b/crates/smysl-core/src/types/epistemics.rs
+index 3d49aa3..5673418 100644
+--- a/crates/smysl-core/src/types/epistemics.rs
++++ b/crates/smysl-core/src/types/epistemics.rs
+@@ -1,5 +1,6 @@
+ //! Epistemic status, level of detail, and source references (§1.3, §1.4, §9.3).
+ 
++use core::cmp::Ordering;
+ use core::fmt;
+ 
+ use crate::error::IdError;
+@@ -10,9 +11,12 @@ use crate::error::IdError;
+ 
+ /// What an agent claimed about its own certainty - never what is so (N1).
+ ///
+-/// The integer order **is** the order rule M compares, which is why the discriminants are
+-/// pinned: changing one would silently change what rule M permits.
+-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
++/// `as_u8`/`from_u8` are the wire discriminants (§2.3 of the format spec) and are pinned
++/// there, normatively, across every implementation - they MUST NOT be renumbered. Rule M's
++/// comparison order is a separate ranking, [`Status::rank`], kept deliberately independent
++/// of the wire value so that reordering what counts as stronger than what never touches a
++/// uid.
++#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+ #[repr(u8)]
+ #[non_exhaustive]
+ pub enum Status {
+@@ -26,12 +30,15 @@ pub enum Status {
+ }
+ 
+ impl Status {
++    /// In rule M's comparison order, ascending. `cited` ranks below `derived`: a source
++    /// cited from outside the graph is a weaker ground than a claim this graph derived for
++    /// itself, even though `cited` carries the higher wire discriminant (§2.3).
+     pub const ALL: &'static [Status] = &[
+         Status::Unfounded,
+         Status::Speculative,
+         Status::Inferred,
+-        Status::Derived,
+         Status::Cited,
++        Status::Derived,
+         Status::Measured,
+     ];
+ 
+@@ -51,6 +58,19 @@ impl Status {
+         }
+     }
+ 
++    /// Position in rule M's comparison order (ascending), independent of the wire
++    /// discriminant `as_u8` returns. This is what `Ord`/`PartialOrd` compare on.
++    const fn rank(self) -> u8 {
++        match self {
++            Status::Unfounded => 0,
++            Status::Speculative => 1,
++            Status::Inferred => 2,
++            Status::Cited => 3,
++            Status::Derived => 4,
++            Status::Measured => 5,
++        }
++    }
++
+     pub const fn as_str(self) -> &'static str {
+         match self {
+             Status::Unfounded => "unfounded",
+@@ -83,6 +103,18 @@ impl Status {
+     }
+ }
+ 
++impl PartialOrd for Status {
++    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
++        Some(self.cmp(other))
++    }
++}
++
++impl Ord for Status {
++    fn cmp(&self, other: &Self) -> Ordering {
++        self.rank().cmp(&other.rank())
++    }
++}
++
+ impl fmt::Display for Status {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+         f.pad(self.as_str())
+@@ -377,16 +409,38 @@ impl fmt::Display for SourceRef {
+ mod tests {
+     use super::*;
+ 
++    /// The wire discriminants (§2.3) are pinned and independent of rule M's order.
+     #[test]
+-    fn status_discriminants_are_the_rule_m_order() {
++    fn status_wire_discriminants_are_pinned() {
+         assert_eq!(Status::Unfounded.as_u8(), 0);
+         assert_eq!(Status::Speculative.as_u8(), 1);
+         assert_eq!(Status::Inferred.as_u8(), 2);
+         assert_eq!(Status::Derived.as_u8(), 3);
+         assert_eq!(Status::Cited.as_u8(), 4);
+         assert_eq!(Status::Measured.as_u8(), 5);
++    }
++
++    /// Rule M compares by [`Status::rank`], not the wire discriminant: `cited` grounds out
++    /// externally and ranks weaker than `derived`, even though its wire value (4) is higher
++    /// than `derived`'s (3).
++    #[test]
++    fn status_rank_is_the_rule_m_order() {
++        assert!(Status::Unfounded < Status::Speculative);
+         assert!(Status::Speculative < Status::Inferred);
++        assert!(Status::Inferred < Status::Cited);
++        assert!(Status::Cited < Status::Derived);
+         assert!(Status::Derived < Status::Measured);
++        assert_eq!(
++            Status::ALL,
++            [
++                Status::Unfounded,
++                Status::Speculative,
++                Status::Inferred,
++                Status::Cited,
++                Status::Derived,
++                Status::Measured,
++            ]
++        );
+     }
+ 
+     #[test]
+diff --git a/crates/smysl-ingest/src/ceiling.rs b/crates/smysl-ingest/src/ceiling.rs
+index bc05a97..91ac10a 100644
+--- a/crates/smysl-ingest/src/ceiling.rs
++++ b/crates/smysl-ingest/src/ceiling.rs
+@@ -265,10 +265,11 @@ mod tests {
+         assert_eq!(attainable(&sourced, Status::Cited), Status::Cited);
+         assert_eq!(attainable(&sourced, Status::Inferred), Status::Speculative);
+ 
+-        // Grounded: `derived` and `inferred` become reachable.
++        // Grounded: `derived` and `inferred` become reachable, but `derived` ranks above
++        // `cited` under rule M, so capping at `cited` still lands on `inferred`.
+         let grounded = core(Status::Inferred, false);
+         assert_eq!(attainable(&grounded, Status::Derived), Status::Derived);
+-        assert_eq!(attainable(&grounded, Status::Cited), Status::Derived);
++        assert_eq!(attainable(&grounded, Status::Cited), Status::Inferred);
+     }
+ 
+     /// Everything else about the unit survives the downgrade: only the status moves.
+diff --git a/crates/smysl-ingest/src/stage.rs b/crates/smysl-ingest/src/stage.rs
+index c1e3d53..e224850 100644
+--- a/crates/smysl-ingest/src/stage.rs
++++ b/crates/smysl-ingest/src/stage.rs
+@@ -489,7 +489,12 @@ mod tests {
+     /// the union - a claim resting on something ingested an hour ago is the normal case.
+     #[test]
+     fn grounds_already_in_the_store_satisfy_rule_m() {
+-        let ground = cited("already ingested");
++        // `measured` ranks above `derived` under rule M, so grounding on it stays legal.
++        let ground =
++            UnitCoreBuilder::new(KernelType::Evidence, "already ingested", Status::Measured)
++                .source(SourceRef::new(SourceKind::Metric, "m"))
++                .build()
++                .unwrap();
+         let uid = canonical_uid(&ground);
+         let store = Store::from_records(vec![Record::Unit(ground)]);
+ 
+diff --git a/fixtures/schema/unit.json b/fixtures/schema/unit.json
+index 6d4b2ad..73e565a 100644
+--- a/fixtures/schema/unit.json
++++ b/fixtures/schema/unit.json
+@@ -10,7 +10,7 @@
+     "gist": { "type": "string", "minLength": 1, "maxLength": 120 },
+     "body": { "type": "string" },
+     "detail": { "type": "string" },
+-    "status": { "enum": ["speculative", "inferred", "derived", "cited", "measured"] },
++    "status": { "enum": ["speculative", "inferred", "cited", "derived", "measured"] },
+     "source": {
+       "type": "object",
+       "required": ["kind", "ref"],

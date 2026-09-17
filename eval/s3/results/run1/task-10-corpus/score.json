@@ -1,0 +1,30 @@
+{
+  "task": 10,
+  "control": true,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p ucal --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p xtask --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 1,
+  "oracle_out": "thread 'citations::s3_oracle_10::a_version_without_notes_is_refused_even_when_other_notes_would_pass' (5195977) panicked at xtask/src/citations.rs:1419:19:\n9.9.9 has no notes; another version's must not stand in: 1",
+  "oracle": "violated",
+  "violation": true,
+  "agent": {
+    "is_error": false,
+    "turns": 14,
+    "cost_usd": 0.48771020000000004,
+    "seconds": 179
+  },
+  "arm": "corpus",
+  "diff_lines": 138
+}

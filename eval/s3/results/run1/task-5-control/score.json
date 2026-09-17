@@ -1,0 +1,30 @@
+{
+  "task": 5,
+  "control": false,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p smysl --tests --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p smysl-core --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 1,
+  "oracle_out": "violated: bare trace reached the router: smysl trace: no store given",
+  "oracle": "violated",
+  "violation": true,
+  "agent": {
+    "is_error": false,
+    "turns": 135,
+    "cost_usd": 3.1968102000000007,
+    "seconds": 550
+  },
+  "arm": "control",
+  "diff_lines": 286
+}

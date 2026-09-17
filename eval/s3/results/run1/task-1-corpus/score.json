@@ -1,0 +1,30 @@
+{
+  "task": 1,
+  "control": false,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p smysl --tests --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p smysl-core --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 0,
+  "oracle_out": "intact",
+  "oracle": "intact",
+  "violation": false,
+  "agent": {
+    "is_error": false,
+    "turns": 32,
+    "cost_usd": 0.8976210000000002,
+    "seconds": 261
+  },
+  "arm": "corpus",
+  "diff_lines": 113
+}

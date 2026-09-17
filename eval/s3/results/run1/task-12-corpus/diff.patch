@@ -1,0 +1,165 @@
+ Documentation/CLI.md     |  10 +++++
+ crates/ucal/src/clock.rs | 103 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 113 insertions(+)
+
+diff --git a/Documentation/CLI.md b/Documentation/CLI.md
+index 8dbbc41..71c9c65 100644
+--- a/Documentation/CLI.md
++++ b/Documentation/CLI.md
+@@ -2181,6 +2181,16 @@ the rate difference between the oscillator and whatever disciplines the wall
+ clock; `max` bounds the result by whichever is ahead, and that bound is the
+ honest statement of what a session clock costs.
+ 
++**`--clock` measures that divergence rather than only describing it.** A fresh
++session is anchored at the start of the sample and compared against a wall
++reading taken at the end, over the same window the resolution samples above
++spend — `session_drift` reports the gap in nanoseconds and which clock is
++ahead. This is still not accuracy: both readings come from clocks on the same
++machine, so this is the *oscillator vs. wall clock* comparison the rule above
++already describes, measured rather than asserted. It needs `civil` — turning a
++Unix reading into an instant is the leap-table lookup only that feature has —
++so a build without it has no session clock to report on and omits the field.
++
+ **`features[]` names every optional feature this crate has**, and did not until
+ 1.9.0: it listed four and the crate had eight, so a binary built with
+ `--features full` reported `u512, std, civil` while `body`, `events`, `cosmo`
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..8fcc3a8 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -66,6 +66,24 @@ pub fn ticks_in_nanos(n: u128) -> Option<Ticks> {
+     per_nano.try_mul(&nanos)
+ }
+ 
++/// The inverse of [`ticks_in_nanos`]: whole nanoseconds in `t`, rounded down.
++///
++/// Only used to put a tick count sampled from a nanosecond-resolution clock
++/// back into the unit it came from for display — every input here arrived as
++/// an exact number of nanoseconds, so the division is exact and nothing is
++/// lost by rounding down.
++///
++/// Gated on `civil`: its one caller is `measured`'s `session_drift` field,
++/// which needs `wall_instant` to have a session clock to measure at all.
++#[cfg(feature = "civil")]
++fn nanos_in_ticks(t: &Ticks) -> Option<u128> {
++    let per_second = UC1::bridge().ticks;
++    let billion = <Ticks as TickInt>::from_u64(1_000_000_000);
++    let (per_nano, _) = per_second.quot_rem(&billion);
++    let (whole, _) = t.quot_rem(&per_nano);
++    whole.to_dec_string().parse().ok()
++}
++
+ /// The finest tier one unit of which a quantum of `q` ticks can distinguish.
+ ///
+ /// A tier is *fillable* when its own unit is at least as large as the quantum:
+@@ -273,6 +291,13 @@ pub fn facts() -> Result<Vec<(String, Value)>, TimeError> {
+ /// against a committed example.
+ #[cfg(feature = "std")]
+ pub fn measured() -> Result<Vec<(String, Value)>, TimeError> {
++    // Anchored before the resolution samples below, so the divergence
++    // reported for `session_drift` spans the same window rather than adding
++    // a sampling budget of its own — `doctor` must stay a diagnostic, not a
++    // benchmark.
++    #[cfg(feature = "civil")]
++    let drift_anchor = (std::time::Instant::now(), crate::wall_instant().ok());
++
+     let wall = sample_wall();
+     let mono = sample_monotonic();
+ 
+@@ -325,6 +350,45 @@ pub fn measured() -> Result<Vec<(String, Value)>, TimeError> {
+             )),
+         ));
+     }
++
++    // How far the session clock's projection has moved from a fresh wall
++    // reading, over the window just spent sampling resolution. Needs `civil`
++    // because turning a Unix reading into an `Instant<UC1>` is a leap-table
++    // lookup (`wall_instant`); a build without it has no session clock to
++    // report on. This is not accuracy — §8.4 forbids that measurement — it is
++    // two clocks on this machine compared against each other, the same
++    // comparison `Session::divergence` exists for.
++    #[cfg(feature = "civil")]
++    if let (mono_base, Some(anchor)) = drift_anchor {
++        if let Ok(wall_now) = crate::wall_instant() {
++            let elapsed_ns = mono_base.elapsed().as_nanos();
++            if let Some(elapsed) = ticks_in_nanos(elapsed_ns) {
++                let (ticks, wall_ahead) =
++                    Session::anchored_at(&anchor).divergence(&wall_now, &elapsed);
++                // Rendered back into nanoseconds, the unit both clocks were
++                // sampled in — a raw tick count here would be unreadable and
++                // no more exact, since both readings were nanosecond-quantised
++                // going in (Rule R).
++                let drift_ns = nanos_in_ticks(&ticks);
++                out.push((
++                    "session_drift".into(),
++                    Value::text(match drift_ns {
++                        Some(ns) => format!(
++                            "{ns} ns — the wall clock is {} the session \
++                             clock's monotonic projection, over the \
++                             {elapsed_ns} ns this sample spent reading both \
++                             clocks. This is the rate difference between the \
++                             oscillator and whatever disciplines the wall \
++                             clock, not a claim about which one is right",
++                            if wall_ahead { "ahead of" } else { "behind" },
++                        ),
++                        None => "not observed within the sampling budget".to_string(),
++                    }),
++                ));
++            }
++        }
++    }
++
+     Ok(out)
+ }
+ 
+@@ -393,6 +457,16 @@ mod tests {
+         );
+     }
+ 
++    /// [`nanos_in_ticks`] is the exact inverse of [`ticks_in_nanos`].
++    #[cfg(feature = "civil")]
++    #[test]
++    fn nanos_in_ticks_round_trips_ticks_in_nanos() {
++        for n in [0, 1, 41, 1_000, 123_456_789] {
++            let t = ticks_in_nanos(n).expect("in range");
++            assert_eq!(nanos_in_ticks(&t), Some(n));
++        }
++    }
++
+     /// **A nanosecond fills `T-2` and not `T-3`.**
+     ///
+     /// The structural ceiling on anything this program reads from a clock, and
+@@ -590,4 +664,33 @@ mod tests {
+             );
+         }
+     }
++
++    /// `doctor --clock` reports the session clock's drift from the system
++    /// clock, and only when a session clock exists to have one.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn the_measurement_reports_session_drift() {
++        let m = measured().expect("measured");
++        let (_, v) = m
++            .iter()
++            .find(|(k, _)| k == "session_drift")
++            .expect("no `session_drift`");
++        assert!(
++            v.rendered_text().contains("ns"),
++            "session_drift reported nothing: {}",
++            v.rendered_text()
++        );
++    }
++
++    /// Without `civil` there is no session clock — [`session_now`] does not
++    /// even compile — so `doctor --clock` must not claim a drift for it.
++    #[cfg(all(feature = "std", not(feature = "civil")))]
++    #[test]
++    fn no_session_drift_is_reported_without_a_session_clock() {
++        let m = measured().expect("measured");
++        assert!(
++            m.iter().all(|(k, _)| k != "session_drift"),
++            "session_drift reported with no session clock to measure"
++        );
++    }
+ }

@@ -1,0 +1,175 @@
+ CHANGELOG.md                                       | 10 ++++-
+ .../manual/ch04-05-creating-formatting.typ         | 33 ++++++++++------
+ src/main.rs                                        | 23 +++++++----
+ tests/cmd_fmt.rs                                   | 46 +++++++++++++++++++++-
+ 4 files changed, 91 insertions(+), 21 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..283c976 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,15 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++### Changed
++
++- **`smysl fmt` skips its round-trip reparse when nothing changed.** The guard that re-parses
++  formatted text and refuses to emit anything whose records or labels moved now only runs when
++  `write_surface` actually produced text different from the input — when it is byte-identical,
++  it is the same string `parse_surface` already read to build `out`, so a second parse could
++  only recompute `out.labels`/`out.records`, never disagree with them. An already-canonical
++  tree under `fmt --check`, or a second `fmt --write`, now costs one parse per file instead of
++  two. Behaviour is unchanged; only files `fmt` actually rewrites still pay for the reparse.
+ 
+ ---
+ 
+diff --git a/Documentation/manual/ch04-05-creating-formatting.typ b/Documentation/manual/ch04-05-creating-formatting.typ
+index 2996cbf..1b6c808 100644
+--- a/Documentation/manual/ch04-05-creating-formatting.typ
++++ b/Documentation/manual/ch04-05-creating-formatting.typ
+@@ -865,16 +865,19 @@ mean something again.
+ #section("The round-trip guarantee")
+ 
+ `fmt` does not trust its own output blindly. Reading `cmd_fmt` in
+-`src/main.rs`: after writing the canonical text, it re-parses that exact
+-text and compares the result against what it started from —
+-
+-```
+-match parse_surface(&formatted) {
+-    Ok(again) if again.labels == out.labels && again.records == out.records => {}
+-    _ => {
+-        eprintln!("{path}: canonical form does not reproduce the same records");
+-        worst = worse(worst, ExitCode::HashVerification);
+-        continue;
++`src/main.rs`: whenever writing the canonical text actually changed
++something, it re-parses that exact text and compares the result against
++what it started from —
++
++```
++if formatted != src {
++    match parse_surface(&formatted) {
++        Ok(again) if again.labels == out.labels && again.records == out.records => {}
++        _ => {
++            eprintln!("{path}: canonical form does not reproduce the same records");
++            worst = worse(worst, ExitCode::HashVerification);
++            continue;
++        }
+     }
+ }
+ ```
+@@ -883,9 +886,17 @@ match parse_surface(&formatted) {
+ that reparse matches exactly. A mismatch here refuses to write anything and
+ exits `9`, before either `--check` or `--write` ever runs.
+ 
++The `formatted != src` guard is a shortcut, not a loophole: when the two
++strings are identical, `formatted` *is* the text `parse_surface` already
++read to produce `out`, so a second parse of it could only recompute
++`out.labels` and `out.records` a second time — never disagree with them.
++Skipping that reparse is what makes `fmt --check` and a second
++`fmt --write` on an already-canonical tree cheap: one parse instead of two,
++on every file that needed no change.
++
+ #callout(label: "Why")[
+   This assertion is not about your document — it is `fmt` checking
+-  *itself*, on every single run, rather than trusting once during
++  *itself* whenever it changes anything, rather than trusting once during
+   development that the writer and the parser agree. If a future change to
+   the writer ever produced text the parser would read back differently,
+   this is the guard that would catch it immediately, on the very first
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..6e8d7e0 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -949,13 +949,22 @@ fn cmd_fmt(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             .with_format_version(out.format_version.clone());
+         let formatted = write_surface(out.view.as_ref(), &out.records, &ctx);
+ 
+-        // The round trip must not move a uid.
+-        match parse_surface(&formatted) {
+-            Ok(again) if again.labels == out.labels && again.records == out.records => {}
+-            _ => {
+-                eprintln!("{path}: canonical form does not reproduce the same records");
+-                worst = worse(worst, ExitCode::HashVerification);
+-                continue;
++        // The round trip must not move a uid. When `formatted` is byte-identical to `src`,
++        // it is literally the string `parse_surface` already read to produce `out` — the
++        // same input to the same pure function returns the same records, so re-parsing it
++        // can only reconfirm `out.labels`/`out.records` and never catch anything the guard
++        // is for. Skipping the reparse in that case saves a full second parse on every
++        // already-canonical file, which is the common case for `fmt --check` and repeated
++        // `fmt --write` runs, without weakening the guard where it can matter: whenever the
++        // writer actually changed the text.
++        if formatted != src {
++            match parse_surface(&formatted) {
++                Ok(again) if again.labels == out.labels && again.records == out.records => {}
++                _ => {
++                    eprintln!("{path}: canonical form does not reproduce the same records");
++                    worst = worse(worst, ExitCode::HashVerification);
++                    continue;
++                }
+             }
+         }
+ 
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..2d87536 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -364,8 +364,12 @@ fn write_rewrites_a_file_and_leaves_stdin_alone() {
+ // ---------------------------------------------------------------------------------------
+ 
+ // `cmd_fmt` re-parses what it formatted and refuses to emit anything whose records or labels
+-// moved. Two mutants sit on that guard — replacing it with `true`, and loosening its `&&` to
+-// `||` — and both survive this file.
++// moved — but only when formatting actually changed the text. When `formatted == src`, the
++// reparse would feed `parse_surface` the exact string it already read to produce `out`, so
++// the answer is already known; skipping it turns the common case — an already-canonical file
++// under `fmt --check`, or a second `fmt --write` — from two parses into one. Two mutants sit
++// on the guard that remains — replacing it with `true`, and loosening its `&&` to `||` — and
++// both survive this file.
+ //
+ // They are unreachable rather than untested. The guard fires only when the writer produces
+ // something the parser reads back differently, which is a defect in `write_surface`, not an
+@@ -378,3 +382,41 @@ fn write_rewrites_a_file_and_leaves_stdin_alone() {
+ // that a document round-trips declaring the version it declared, and `tests/surface.rs`
+ // asserts the records survive. If those ever fail, this guard is why `fmt` will refuse rather
+ // than write the damage to disk.
++
++/// Pins the `formatted != src` branch on both sides: an already-canonical document takes the
++/// fast path that skips the reparse, and one `fmt` actually rewrites still goes through it.
++/// The behaviour is identical either way — only the parse count differs, which a black-box
++/// test cannot see — so what this pins is that neither path was accidentally dropped: both
++/// still exit `0` and still print the canonical text.
++#[test]
++fn an_already_canonical_document_takes_the_fast_path_and_a_changed_one_still_verifies() {
++    let dir = scratch("fast-path");
++    let body = "@claim c/a { status: speculative }\n~ a claim that stands alone\n";
++
++    // `formatted == src`: the reparse is skipped, and the output must equal the input.
++    let canonical = dir.join("canonical.smy");
++    std::fs::write(&canonical, body).expect("write");
++    let already = run(&["fmt", canonical.to_str().unwrap()]);
++    assert_eq!(already.code, SUCCESS, "{}", already.stderr);
++    assert_eq!(
++        already.stdout, body,
++        "an already-canonical file is unchanged by fmt"
++    );
++
++    // `formatted != src`: the reparse still runs, and must still succeed for a document
++    // `write_surface` actually rewrites.
++    let loose = dir.join("loose.smy");
++    std::fs::write(
++        &loose,
++        "@claim c/a {  status: speculative  }\n~ a claim with loose spacing\n",
++    )
++    .expect("write");
++    let changed = run(&["fmt", loose.to_str().unwrap()]);
++    assert_eq!(changed.code, SUCCESS, "{}", changed.stderr);
++    assert_ne!(
++        changed.stdout,
++        std::fs::read_to_string(&loose).unwrap(),
++        "a loosely-spaced file must actually be reformatted"
++    );
++    let _ = std::fs::remove_dir_all(&dir);
++}

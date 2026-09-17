@@ -1,0 +1,206 @@
+ xtask/src/corpus.rs   |  16 +++++++
+ xtask/src/main.rs     |  15 ++++++
+ xtask/src/releases.rs | 126 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 157 insertions(+)
+
+diff --git a/xtask/src/corpus.rs b/xtask/src/corpus.rs
+index c02c694..86a99f7 100644
+--- a/xtask/src/corpus.rs
++++ b/xtask/src/corpus.rs
+@@ -172,6 +172,21 @@ pub const MUTATIONS: &[Mutation] = &[
+         find: "cargo test --workspace --release",
+         replace: "cargo test --workspace --release\ncargo run -p xtask -- invented-check",
+     },
++    Mutation {
++        // Two adjacent rows swapped is exactly the shape a hand-edit produces:
++        // every version string still parses, and a check that reads them as
++        // text rather than as `major.minor.patch` sees `1.10.0` and `1.11.0`
++        // and has no opinion about which belongs on top.
++        check: "release-notes-order",
++        what: "two rows of the release-notes Contents table swapped out of order",
++        file: "Documentation/Release_Notes/README.md",
++        find: "\
++| [1.11.0](1.11.0.md) | 2026-08-30 | released \u{2014} the standard that stops at the edge of one build |
++| [1.10.0](1.10.0.md) | 2026-08-28 | **cut, never published** \u{2014} a requirement with no wire; superseded by 1.11.0 |",
++        replace: "\
++| [1.10.0](1.10.0.md) | 2026-08-28 | **cut, never published** \u{2014} a requirement with no wire; superseded by 1.11.0 |
++| [1.11.0](1.11.0.md) | 2026-08-30 | released \u{2014} the standard that stops at the edge of one build |",
++    },
+     Mutation {
+         check: "generated-docs",
+         what: "a stale generated tier table",
+@@ -416,6 +431,7 @@ pub fn run_check(name: &str, root: &Path) -> bool {
+         "json-surface-commands" => {
+             crate::citations::check_json_surface_covers_commands(root).is_ok()
+         }
++        "release-notes-order" => crate::releases::check_order(root).is_ok(),
+         other => panic!("the corpus names a check that does not exist: `{other}`"),
+     }
+ }
+diff --git a/xtask/src/main.rs b/xtask/src/main.rs
+index a31af53..fb7d7c3 100644
+--- a/xtask/src/main.rs
++++ b/xtask/src/main.rs
+@@ -1313,6 +1313,21 @@ fn run_docs(mode: &str) -> i32 {
+                 code = 6;
+             }
+         }
++        match releases::check_order(&root) {
++            Ok(n) => code |= report(
++                "the release notes' Contents table is sorted by parsed version",
++                "rows",
++                15,
++                n,
++            ),
++            Err(bad) => {
++                eprintln!("  FAIL  the Contents table is not in descending semantic-version order:");
++                for b in &bad {
++                    eprintln!("          {b}");
++                }
++                code = 6;
++            }
++        }
+         code
+     }
+ }
+diff --git a/xtask/src/releases.rs b/xtask/src/releases.rs
+index 50903a6..5fa4c32 100644
+--- a/xtask/src/releases.rs
++++ b/xtask/src/releases.rs
+@@ -143,6 +143,53 @@ fn parse_version(v: &str) -> Option<(u64, u64, u64)> {
+     ))
+ }
+ 
++/// The Contents table must list versions newest first, by *parsed* semantic
++/// version.
++///
++/// The table is hand-edited, and a version string sorts wrong as text: `1.9.0`
++/// reads after `1.10.0`, so a table kept in string order — or a row inserted by
++/// eye — silently misorders exactly where a two-digit component first appears.
++/// `check_ci_covers_the_procedure` hit the same defect from the other side and
++/// worked around it by deriving the version it needed rather than sorting; here
++/// the table's whole *point* is the order, so there is nothing to derive
++/// instead. Parsing each version into `(major, minor, patch)` before comparing
++/// is what makes the check agree with a reader who knows what `1.10.0 > 1.9.0`
++/// means, rather than with `str::cmp`.
++pub fn check_order(root: &Path) -> Result<usize, Vec<String>> {
++    let rows = rows(root).map_err(|e| vec![e])?;
++
++    let mut parsed = Vec::with_capacity(rows.len());
++    let mut bad = Vec::new();
++    for row in &rows {
++        match parse_version(&row.version) {
++            Some(v) => parsed.push((row.version.as_str(), v)),
++            None => bad.push(format!(
++                "`{}` in the Contents table is not a parseable `major.minor.patch`",
++                row.version
++            )),
++        }
++    }
++    if !bad.is_empty() {
++        return Err(bad);
++    }
++
++    for i in 1..parsed.len() {
++        let (av, a) = parsed[i - 1];
++        let (bv, b) = parsed[i];
++        if a <= b {
++            bad.push(format!(
++                "`{av}` is listed above `{bv}`, but {av} is not newer than {bv} as a \
++                 semantic version — the Contents table lists newest first"
++            ));
++        }
++    }
++    if bad.is_empty() {
++        Ok(parsed.len())
++    } else {
++        Err(bad)
++    }
++}
++
+ /// Every tag on the remote, without the `refs/tags/` and without `^{}`.
+ fn remote_tags(root: &Path) -> Result<BTreeSet<String>, String> {
+     let out = Command::new("git")
+@@ -359,3 +406,82 @@ pub fn run(root: &Path) -> i32 {
+         7
+     }
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    /// A scratch root with a Contents table made of exactly these rows, in
++    /// this order.
++    fn table(label: &str, rows: &[&str]) -> std::path::PathBuf {
++        let dir = std::env::temp_dir().join(format!("ucal-release-order-{label}"));
++        let _ = std::fs::remove_dir_all(&dir);
++        std::fs::create_dir_all(dir.join("Documentation/Release_Notes")).expect("mkdir");
++        let mut body = String::from("# Release notes\n\n## Contents\n\n| version | date | state |\n|---|---|---|\n");
++        for r in rows {
++            body.push_str(r);
++            body.push('\n');
++        }
++        std::fs::write(
++            dir.join("Documentation/Release_Notes/README.md"),
++            body,
++        )
++        .expect("write");
++        dir
++    }
++
++    /// `1.10.0` sorts before `1.2.0` as text and after it as a version. This is
++    /// the exact defect class `check_ci_covers_the_procedure` names in its own
++    /// history; here it must be *caught*, not worked around.
++    #[test]
++    fn a_two_digit_minor_out_of_numeric_order_is_caught() {
++        let dir = table(
++            "two-digit",
++            &[
++                "| [1.2.0](1.2.0.md) | 2026-08-08 | released |",
++                "| [1.10.0](1.10.0.md) | 2026-08-28 | released |",
++            ],
++        );
++        let e = check_order(&dir).expect_err("1.2.0 above 1.10.0 is out of numeric order");
++        assert!(e.iter().any(|m| m.contains("1.2.0") && m.contains("1.10.0")), "{e:?}");
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// Newest-first, correctly, is accepted.
++    #[test]
++    fn newest_first_is_accepted() {
++        let dir = table(
++            "ok",
++            &[
++                "| [1.10.0](1.10.0.md) | 2026-08-28 | released |",
++                "| [1.9.0](1.9.0.md) | 2026-08-27 | released |",
++                "| [1.1.0](1.1.0.md) | 2026-08-07 | released |",
++            ],
++        );
++        assert_eq!(check_order(&dir), Ok(3));
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// A version string this project has never produced still has to be
++    /// reported, not silently skipped from the comparison.
++    #[test]
++    fn an_unparseable_version_is_reported_rather_than_skipped() {
++        let dir = table(
++            "bad-version",
++            &[
++                "| [1.9](1.9.md) | 2026-08-27 | released |",
++                "| [1.1.0](1.1.0.md) | 2026-08-07 | released |",
++            ],
++        );
++        let e = check_order(&dir).expect_err("`1.9` is not major.minor.patch");
++        assert!(e.iter().any(|m| m.contains("1.9")), "{e:?}");
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// This repository's own table, as it stands, is in order.
++    #[test]
++    fn the_real_contents_table_is_in_order() {
++        let root = crate::workspace_root();
++        assert!(check_order(&root).is_ok(), "{:?}", check_order(&root));
++    }
++}

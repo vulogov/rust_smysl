@@ -1,0 +1,132 @@
+ crates/ucal/src/clock.rs | 70 +++++++++++++++++++++++++++++++++++++++++++++---
+ crates/ucal/src/main.rs  | 14 ++++++++++
+ 2 files changed, 80 insertions(+), 4 deletions(-)
+
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..42ba7bc 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -178,9 +178,9 @@ impl Session {
+     }
+ }
+ 
+-/// The process-wide session, anchored on first use.
++/// The process-wide session, anchored at program start.
+ ///
+-/// `Option`, and anchored inside [`session_now`] rather than in `get_or_init`:
++/// `Option`, and filled by [`anchor_session`] rather than in `get_or_init`:
+ /// anchoring needs a clock reading, reading a clock can fail, and `OnceLock`'s
+ /// initialiser cannot return a `Result`. The first draft filled the gap with an
+ /// `.expect()` and the `no-panic-in-cli` lint refused it — §19.5 says a failure
+@@ -195,6 +195,41 @@ fn session() -> &'static SessionState {
+     S.get_or_init(|| Mutex::new(None))
+ }
+ 
++/// Fix the session's anchor and monotonic base, if nothing has yet.
++///
++/// # Why at program start rather than on first use
++///
++/// A first draft anchored inside [`session_now`], on whichever call happened
++/// to come first. That reading is honest about *that* moment, but it is silent
++/// about everything the process did before it: argument parsing, a body file
++/// loaded, an ephemeris walked. If the wall clock stepped backwards during that
++/// stretch — the operator setting the date while `ucal` was already
++/// running — the anchor was taken *after* the step and never saw it, so the
++/// one guarantee this module sells, that a reading never goes backwards, held
++/// only from first use onward and not from the process's own beginning.
++///
++/// Calling this as close to `main`'s first line as the panic handler allows
++/// closes that gap: the anchor and the monotonic base are the process's, not
++/// whichever command's turn it was to ask first.
++///
++/// # Idempotent
++///
++/// The first call fixes both; every later call, including the one inside
++/// [`session_now`], leaves them alone. A binary that never calls this still
++/// gets the old behaviour — anchored lazily on first use — which is what every
++/// caller that only links the library, rather than running the `ucal` binary,
++/// still does.
++#[cfg(all(feature = "std", feature = "civil"))]
++pub fn anchor_session() -> Result<(), TimeError> {
++    let wall = crate::wall_instant()?;
++    let mut g = match session().lock() {
++        Ok(g) => g,
++        Err(poisoned) => poisoned.into_inner(),
++    };
++    g.get_or_insert_with(|| (Session::anchored_at(&wall), std::time::Instant::now()));
++    Ok(())
++}
++
+ /// The session clock's reading, for [`crate::now_instant`].
+ #[cfg(all(feature = "std", feature = "civil"))]
+ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+@@ -207,8 +242,10 @@ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+         Ok(g) => g,
+         Err(poisoned) => poisoned.into_inner(),
+     };
+-    // Anchored on first use rather than at start-up: a command that never asks
+-    // the time should not read a clock, and most of them do not.
++    // Ordinarily already anchored by `anchor_session`, called at program
++    // start. Filled here too, for a caller that never made that call — a
++    // library consumer, or a test that reaches this function directly without
++    // going through `main`.
+     let (sess, base) = g.get_or_insert_with(|| {
+         (Session::anchored_at(&wall), std::time::Instant::now())
+     });
+@@ -573,6 +610,31 @@ mod tests {
+         assert_eq!(finest_tier_for(&q).expect("a tier").index(), raw.index());
+     }
+ 
++    // ---- anchoring at program start -------------------------------------
++
++    /// **The reason `anchor_session` exists.** Calling it again, after the
++    /// session is already anchored, changes neither the anchor nor the
++    /// monotonic base — so `main` can call it unconditionally, and a caller
++    /// racing `session_now` for the first reading can never re-anchor over an
++    /// already-fixed session.
++    ///
++    /// The only test in this module that touches the process-global session:
++    /// every other test drives a bare [`Session`], which is what lets them run
++    /// in any order and in parallel with this one.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn anchoring_twice_changes_nothing() {
++        anchor_session().expect("anchors");
++        let first = session_now().expect("a reading");
++        std::thread::sleep(std::time::Duration::from_millis(5));
++        anchor_session().expect("anchoring again is a no-op");
++        let second = session_now().expect("a reading");
++        assert!(
++            second.ticks() >= first.ticks(),
++            "a later reading of an already-anchored session went backwards"
++        );
++    }
++
+     /// And the measurement returns something on a machine that has a clock.
+     #[cfg(feature = "std")]
+     #[test]
+diff --git a/crates/ucal/src/main.rs b/crates/ucal/src/main.rs
+index 7e3778c..50dbf40 100644
+--- a/crates/ucal/src/main.rs
++++ b/crates/ucal/src/main.rs
+@@ -717,6 +717,20 @@ fn install_panic_handler() {
+ fn main() {
+     install_panic_handler();
+ 
++    // As close to the first line as the panic handler allows: the session
++    // clock's anchor and monotonic base are fixed here, once, so that
++    // `ucal::now_instant`'s guarantee — a reading never goes backwards — holds
++    // from the process's own beginning and not merely from whichever command's
++    // turn it was to ask the time first. See `clock::anchor_session` for why
++    // that gap mattered.
++    //
++    // Best-effort: a failure here (the clock preceding the Unix epoch, say) is
++    // not reported now. It is reported properly, with a code and a message, the
++    // first time something actually asks the session clock for a reading —
++    // this call either wins that race or changes nothing.
++    #[cfg(all(feature = "civil", feature = "std"))]
++    let _ = ucal::clock::anchor_session();
++
+     // Checking that the handler works needs a panic to hand. An environment
+     // variable rather than a flag: it is not part of the CLI surface, does not
+     // appear in `--help`, adds no JSON path, and cannot be reached by a user

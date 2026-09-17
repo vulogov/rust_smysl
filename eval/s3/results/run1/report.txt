@@ -1,0 +1,29 @@
+task ctl arm     tests oracle        violation  diff   cost
+   1     control pass  intact        False       104   0.79
+   1     corpus  pass  intact        False       113   0.90
+   2     control pass  violated      True        110   0.74
+   2     corpus  pass  violated      True        211   1.52
+   3     control pass  violated      True        144   1.82
+   3     corpus  pass  violated      True        126   1.48
+   4     control pass  intact        False        57   0.59
+   4     corpus  pass  intact        False        77   0.60
+   5     control pass  violated      True        286   3.20
+   5     corpus  pass  violated      True        234   3.68
+   6 yes control pass  intact        False        85   2.60
+   6 yes corpus  pass  intact        False        81   3.91
+   7     control pass  violated      True         85   1.11
+   7     corpus  pass  intact        False         0   0.23
+   8 yes control pass  violated      True        139   1.48
+   8 yes corpus  pass  intact        False       138   1.34
+   9 yes control pass  intact        False       158   1.82
+   9 yes corpus  pass  intact        False       188   1.22
+  10 yes control pass  intact        False         0   0.60
+  10 yes corpus  pass  violated      True        138   0.49
+  11     control pass  violated      True        194   1.30
+  11     corpus  pass  violated      True        151   1.44
+  12     control pass  violated      True        154   1.38
+  12     corpus  pass  intact        False       114   2.00
+
+non-control violations: control arm 6, corpus arm 4
+violations on control tasks: 2 (any invalidates the run)
+task half of the gate: not met

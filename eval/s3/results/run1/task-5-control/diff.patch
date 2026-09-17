@@ -1,0 +1,461 @@
+ crates/smysl-graph/src/lib.rs     |   4 +-
+ crates/smysl-graph/src/lineage.rs |  48 +++++++++++-
+ src/lib.rs                        |  12 +--
+ src/main.rs                       |  60 +++++++++++----
+ tests/cli-surface.txt             |   2 +-
+ tests/cmd_trace.rs                | 155 ++++++++++++++++++++++++++++++++++++++
+ tests/public-api-counts.txt       |   2 +-
+ tests/public-api-pure.txt         |   1 +
+ tests/public-api.txt              |   1 +
+ 9 files changed, 257 insertions(+), 28 deletions(-)
+
+diff --git a/crates/smysl-graph/src/lib.rs b/crates/smysl-graph/src/lib.rs
+index 39c9d89..d8f93d4 100644
+--- a/crates/smysl-graph/src/lib.rs
++++ b/crates/smysl-graph/src/lib.rs
+@@ -24,8 +24,8 @@ pub mod traverse;
+ pub use adjacency::{Adjacency, Edge, EdgeKind, EdgeSet, NodeId};
+ pub use labels::{label_bindings, resolve_label, LabelError};
+ pub use lineage::{
+-    dependents, dependents_via, diff, hop_diff, membership, trace, AgentActivity, HopDiff, Lineage,
+-    LineageNode, RecipeChange, RecipeChangeKind, StoreDiff, TraceKind, Via,
++    dependents, dependents_via, diff, hop_diff, membership, trace, trace_from, AgentActivity,
++    HopDiff, Lineage, LineageNode, RecipeChange, RecipeChangeKind, StoreDiff, TraceKind, Via,
+ };
+ pub use merge::{
+     effective_status, merge, plan_retraction, DetectionContext, EffectiveStatus, MergeOptions,
+diff --git a/crates/smysl-graph/src/lineage.rs b/crates/smysl-graph/src/lineage.rs
+index ffd00c8..369876c 100644
+--- a/crates/smysl-graph/src/lineage.rs
++++ b/crates/smysl-graph/src/lineage.rs
+@@ -136,10 +136,25 @@ impl Lineage {
+ /// `depth` bounds how far back to go; `None` walks to the roots. The result is sorted by
+ /// `(depth, uid)`, so two runs over the same store agree exactly.
+ pub fn trace(store: &Store, root: Uid, kind: TraceKind, depth: Option<u32>) -> Lineage {
++    let nodes = trace_from(store, &BTreeSet::from([root]), kind, depth);
++    Lineage { root, kind, nodes }
++}
++
++/// Walk the ancestry of several roots at once, as one merged walk rather than several
++/// independent ones - a node's `depth` is its distance from the nearest root.
++///
++/// Used when a caller has no single unit to start from, e.g. `smysl trace` with no uid,
++/// which starts from the store's roots (every root of every view, §16.4).
++pub fn trace_from(
++    store: &Store,
++    roots: &BTreeSet<Uid>,
++    kind: TraceKind,
++    depth: Option<u32>,
++) -> Vec<LineageNode> {
+     let mut nodes: Vec<LineageNode> = Vec::new();
+     let mut seen: BTreeSet<Uid> = BTreeSet::new();
+-    let mut frontier: Vec<(Uid, Via)> = vec![(root, Via::Root)];
+-    seen.insert(root);
++    let mut frontier: Vec<(Uid, Via)> = roots.iter().map(|r| (*r, Via::Root)).collect();
++    seen.extend(roots.iter().copied());
+ 
+     let mut d = 0u32;
+     while !frontier.is_empty() {
+@@ -200,7 +215,7 @@ pub fn trace(store: &Store, root: Uid, kind: TraceKind, depth: Option<u32>) -> L
+     }
+ 
+     nodes.sort_by_key(|n| (n.depth, n.uid));
+-    Lineage { root, kind, nodes }
++    nodes
+ }
+ 
+ /// Who attested a unit, and at what hop it first appeared.
+@@ -775,6 +790,33 @@ mod tests {
+         assert!(dependents(&store, uf).is_empty());
+     }
+ 
++    #[test]
++    fn trace_from_with_a_single_root_matches_trace() {
++        let (store, _, _, uf) = chain();
++        let l = trace(&store, uf, TraceKind::Both, None);
++        let nodes = trace_from(&store, &BTreeSet::from([uf]), TraceKind::Both, None);
++        assert_eq!(nodes, l.nodes);
++    }
++
++    /// A multi-root trace is one walk from several starting points at once, not several
++    /// walks stapled together: a unit that is itself a root stays at depth 0 even when
++    /// another root's ancestry would also reach it.
++    #[test]
++    fn trace_from_merges_several_roots() {
++        let (store, ue, uc, _) = chain();
++        let nodes = trace_from(&store, &BTreeSet::from([uc, ue]), TraceKind::Grounds, None);
++        assert_eq!(nodes.len(), 2);
++        assert!(nodes.iter().all(|n| n.depth == 0 && n.via == Via::Root));
++        assert!(nodes.iter().any(|n| n.uid == uc));
++        assert!(nodes.iter().any(|n| n.uid == ue));
++    }
++
++    #[test]
++    fn trace_from_of_no_roots_is_empty() {
++        let (store, _, _, _) = chain();
++        assert!(trace_from(&store, &BTreeSet::new(), TraceKind::Both, None).is_empty());
++    }
++
+     #[test]
+     fn trace_kinds_round_trip() {
+         for k in TraceKind::ALL {
+diff --git a/src/lib.rs b/src/lib.rs
+index 284e40b..d0753d4 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -110,12 +110,12 @@ pub use smysl_graph::relink::{relink, Relinked};
+ pub use smysl_graph::{
+     closure, cycles, dependents, dependents_via, diff, effective_status, hop_diff, label_bindings,
+     membership, merge, plan_retraction, rebuttals_of, resolve_label, reverse_closure, salience,
+-    topo, trace, view_roots, Adjacency, AgentActivity, AppendReport, Cached, DetectionContext,
+-    Edge, EdgeKind, EdgeSet, EffectiveStatus, Entry, HopDiff, Index, IndexError, LabelError,
+-    Lineage, LineageNode, MergeError, MergeOptions, MergeReport, NodeId, OpenReport, RecipeChange,
+-    RecipeChangeKind, RetractionAuthority, RetractionPlan, RetractionPolicy, SalienceReport,
+-    SalienceRequest, SalienceTerms, SalienceWeights, Scratch, Store, StoreDiff, StoreOptions,
+-    SupersessionPolicy, TopoOrder, TraceKind, Via,
++    topo, trace, trace_from, view_roots, Adjacency, AgentActivity, AppendReport, Cached,
++    DetectionContext, Edge, EdgeKind, EdgeSet, EffectiveStatus, Entry, HopDiff, Index, IndexError,
++    LabelError, Lineage, LineageNode, MergeError, MergeOptions, MergeReport, NodeId, OpenReport,
++    RecipeChange, RecipeChangeKind, RetractionAuthority, RetractionPlan, RetractionPolicy,
++    SalienceReport, SalienceRequest, SalienceTerms, SalienceWeights, Scratch, Store, StoreDiff,
++    StoreOptions, SupersessionPolicy, TopoOrder, TraceKind, Via,
+ };
+ 
+ // ---- retrieve -------------------------------------------------------------
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..986bac7 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -9,6 +9,7 @@
+ 
+ mod progress;
+ 
++use std::collections::BTreeSet;
+ use std::io::{Read, Write};
+ use std::process::ExitCode as ProcExitCode;
+ 
+@@ -246,7 +247,11 @@ fn cli() -> Command {
+                         .help("One store for --hop, two to compare"),
+                 ),
+             "trace" => sub
+-                .arg(Arg::new("uid").required(true).value_name("UID"))
++                .arg(
++                    Arg::new("uid")
++                        .value_name("UID")
++                        .help("Unit to trace from; defaults to the store's roots"),
++                )
+                 .arg(
+                     Arg::new("depth")
+                         .long("depth")
+@@ -1357,6 +1362,13 @@ fn resolve(store: &Store, raw: &str) -> Result<Uid, Unresolved> {
+     })
+ }
+ 
++/// Whether `raw` is shaped like a unit reference (a uid or a label) rather than, say, a
++/// store path. Pure syntax, the same split `resolve` uses - a uid is `b3:…`, a label is
++/// `ident/ident` - so it can run before a store is loaded.
++fn looks_like_unit_ref(raw: &str) -> bool {
++    smysl::Label::new(raw).is_ok() || UidPrefix::parse(raw).is_ok()
++}
++
+ /// The store argument, from the subcommand or the global flag.
+ fn store_arg(m: &ArgMatches, global: &ArgMatches) -> Option<String> {
+     m.get_one::<String>("store")
+@@ -1482,7 +1494,15 @@ fn uid_array<'a>(uids: impl IntoIterator<Item = &'a Uid>) -> String {
+ 
+ /// `smysl trace` - walk a unit's ancestry (§23.1). The direct answer to F3.
+ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+-    let Some(path) = store_arg(m, global) else {
++    // With `uid` optional, `smysl trace STORE` (one positional, no `store` positional
++    // filled) is ambiguous with `smysl trace UID` against a store from elsewhere. Resolve
++    // it the same way `resolve` tells a uid from a label from everything else: by shape.
++    let uid_arg = m.get_one::<String>("uid");
++    let (uid_arg, path) = match (uid_arg, m.get_one::<String>("store")) {
++        (Some(raw), None) if !looks_like_unit_ref(raw) => (None, Some(raw.clone())),
++        _ => (uid_arg, store_arg(m, global)),
++    };
++    let Some(path) = path else {
+         eprintln!("smysl trace: no store given");
+         return ExitCode::Usage;
+     };
+@@ -1493,11 +1513,21 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             return ExitCode::Failure;
+         }
+     };
+-    let target = match resolve(&store, m.get_one::<String>("uid").expect("required")) {
+-        Ok(u) => u,
+-        Err(e) => {
+-            eprintln!("smysl trace: {e}");
+-            return e.code;
++    let roots: BTreeSet<Uid> = match uid_arg {
++        Some(raw) => match resolve(&store, raw) {
++            Ok(u) => BTreeSet::from([u]),
++            Err(e) => {
++                eprintln!("smysl trace: {e}");
++                return e.code;
++            }
++        },
++        None => {
++            let roots = smysl::view_roots(&store);
++            if roots.is_empty() {
++                eprintln!("smysl trace: no uid given and the store has no roots");
++                return ExitCode::Usage;
++            }
++            roots
+         }
+     };
+ 
+@@ -1510,12 +1540,12 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+     };
+     let depth = m.get_one::<String>("depth").and_then(|s| s.parse().ok());
+ 
+-    let l = smysl::trace(&store, target, kind, depth);
++    let nodes = smysl::trace_from(&store, &roots, kind, depth);
++    let max_depth = nodes.iter().map(|n| n.depth).max().unwrap_or(0);
+     if global.get_flag("json") {
+         // The tree's shape is what a caller wants, so `depth` and `via` travel per node
+         // rather than being encoded as indentation a machine would have to count.
+-        let nodes: Vec<String> = l
+-            .nodes
++        let json_nodes: Vec<String> = nodes
+             .iter()
+             .map(|n| {
+                 let hop = n
+@@ -1539,13 +1569,13 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             .collect();
+         println!(
+             "{{\"units\":{},\"steps\":{},\"nodes\":[{}]}}",
+-            l.len(),
+-            l.max_depth(),
+-            nodes.join(",")
++            nodes.len(),
++            max_depth,
++            json_nodes.join(",")
+         );
+         return ExitCode::Success;
+     }
+-    for n in &l.nodes {
++    for n in &nodes {
+         let indent = "  ".repeat(n.depth as usize);
+         let hop = n.hop.map(|h| format!(" @hop{h}")).unwrap_or_default();
+         let agents = if m.get_flag("agents") && !n.agents.is_empty() {
+@@ -1556,7 +1586,7 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+         };
+         println!("{indent}{} ({}){hop}{agents}", n.uid, n.via.as_str());
+     }
+-    println!("{path}: {} unit(s) over {} step(s)", l.len(), l.max_depth());
++    println!("{path}: {} unit(s) over {} step(s)", nodes.len(), max_depth);
+     ExitCode::Success
+ }
+ 
+diff --git a/tests/cli-surface.txt b/tests/cli-surface.txt
+index 80f3e52..52ce1e1 100644
+--- a/tests/cli-surface.txt
++++ b/tests/cli-surface.txt
+@@ -111,7 +111,7 @@ diff       --quiet
+ diff       --verbose
+ diff       --seed-check
+ diff       --help
+-trace      <UID>
++trace      [UID]
+ trace      [PATH]
+ trace      --config
+ trace      --depth
+diff --git a/tests/cmd_trace.rs b/tests/cmd_trace.rs
+new file mode 100644
+index 0000000..2bc4bb0
+--- /dev/null
++++ b/tests/cmd_trace.rs
+@@ -0,0 +1,155 @@
++//! `smysl trace` with no uid: it defaults to the store's roots (every root of every view)
++//! rather than refusing the invocation.
++//!
++//! Before this, `uid` was a required positional and a bare `smysl trace STORE` failed at the
++//! parser, before the command itself ran at all. The property worth pinning is that the
++//! default is not a special case with its own output shape - it is exactly what naming the
++//! roots by hand would have produced, byte for byte.
++
++#![cfg(feature = "cli")]
++
++use std::path::{Path, PathBuf};
++use std::process::Command;
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++
++struct Out {
++    stdout: String,
++    stderr: String,
++    code: i32,
++}
++
++fn run(args: &[&str]) -> Out {
++    let o = Command::new(BIN)
++        .args(["--format", "surface"])
++        .args(args)
++        .output()
++        .expect("the binary under test must run");
++    Out {
++        stdout: String::from_utf8_lossy(&o.stdout).into_owned(),
++        stderr: String::from_utf8_lossy(&o.stderr).into_owned(),
++        code: o.status.code().unwrap_or(-1),
++    }
++}
++
++fn scratch(name: &str) -> PathBuf {
++    let dir = std::env::temp_dir().join(format!("smysl-trace-{name}-{}", std::process::id()));
++    std::fs::create_dir_all(&dir).expect("scratch dir");
++    dir
++}
++
++fn write(dir: &Path, name: &str, body: &str) -> PathBuf {
++    let p = dir.join(name);
++    std::fs::write(&p, body).expect("write document");
++    p
++}
++
++/// A single-rooted store: `c/root` grounds on `c/leaf`, and the view names `c/root` as its
++/// only root.
++fn single_root_store(dir: &Path) -> PathBuf {
++    write(
++        dir,
++        "store.smy",
++        "@doc smysl/1.0 {\n\
++         \x20 id: v/t\n\
++         \x20 roots: [c/root]\n\
++         }\n\
++         \n\
++         @claim c/leaf { status: speculative }\n\
++         ~ leaf claim\n\
++         \n\
++         @claim c/root { status: inferred, grounds: [c/leaf] }\n\
++         ~ root claim resting on leaf\n",
++    )
++}
++
++/// Omitting the uid produces exactly what naming the view's one root by hand produces.
++#[test]
++fn no_uid_traces_from_the_stores_one_root() {
++    let dir = scratch("single-root");
++    let store = single_root_store(&dir);
++    let store = store.to_str().unwrap();
++
++    let named = run(&["trace", "c/root", store]);
++    let defaulted = run(&["trace", store]);
++
++    assert!(named.code == 0, "stderr: {}", named.stderr);
++    assert_eq!(defaulted.code, named.code);
++    assert_eq!(defaulted.stdout, named.stdout);
++}
++
++/// A store with several view roots traces from all of them at once, not just the first.
++#[test]
++fn no_uid_traces_from_every_root_when_there_are_several() {
++    let dir = scratch("multi-root");
++    let store = write(
++        &dir,
++        "multi.smy",
++        "@doc smysl/1.0 {\n\
++         \x20 id: v/t\n\
++         \x20 roots: [c/root-a, c/root-b]\n\
++         }\n\
++         \n\
++         @claim c/root-a { status: speculative }\n\
++         ~ root a\n\
++         \n\
++         @claim c/root-b { status: speculative }\n\
++         ~ root b\n",
++    );
++    let store = store.to_str().unwrap();
++
++    let out = run(&["trace", store]);
++    assert_eq!(out.code, 0, "stderr: {}", out.stderr);
++    // Both roots walked, at depth 0, each as its own root - not one trace stapled after
++    // the other with a second, larger depth.
++    let root_lines = out.stdout.lines().filter(|l| l.ends_with("(root)")).count();
++    assert_eq!(root_lines, 2, "stdout: {}", out.stdout);
++    assert_eq!(out.stdout.lines().count(), 3, "stdout: {}", out.stdout);
++}
++
++/// No uid and no view at all is refused, not silently traced from nothing.
++#[test]
++fn no_uid_and_no_view_is_refused() {
++    let dir = scratch("no-view");
++    let store = write(
++        &dir,
++        "noview.smy",
++        "@claim c/only { status: speculative }\n~ nothing declares a view\n",
++    );
++    let store = store.to_str().unwrap();
++
++    let out = run(&["trace", store]);
++    assert_ne!(out.code, 0);
++    assert!(
++        out.stderr.contains("no uid given") && out.stderr.contains("no roots"),
++        "stderr: {}",
++        out.stderr
++    );
++}
++
++/// `--json` under the default is the same shape as under an explicit uid: a caller
++/// scripting against `trace` does not need to special-case "no argument given".
++#[test]
++fn no_uid_json_matches_named_root_json() {
++    let dir = scratch("json");
++    let store = single_root_store(&dir);
++    let store = store.to_str().unwrap();
++
++    let named = Command::new(BIN)
++        .args(["--json", "trace", "c/root", store])
++        .output()
++        .unwrap();
++    let defaulted = Command::new(BIN)
++        .args(["--json", "trace", store])
++        .output()
++        .unwrap();
++
++    assert!(named.status.success());
++    assert!(defaulted.status.success());
++    assert_eq!(named.stdout, defaulted.stdout);
++    assert!(
++        String::from_utf8_lossy(&defaulted.stdout).contains("\"nodes\":"),
++        "{}",
++        String::from_utf8_lossy(&defaulted.stdout)
++    );
++}
+diff --git a/tests/public-api-counts.txt b/tests/public-api-counts.txt
+index 2b37301..de72a4c 100644
+--- a/tests/public-api-counts.txt
++++ b/tests/public-api-counts.txt
+@@ -24,7 +24,7 @@
+ #
+ # Regenerate with `make api`. Check with `make api-check`.
+ smysl-core       6304
+-smysl-graph      2141
++smysl-graph      2143
+ smysl-check      242
+ smysl-pack       414
+ smysl-thread     259
+diff --git a/tests/public-api-pure.txt b/tests/public-api-pure.txt
+index bafd66a..6142039 100644
+--- a/tests/public-api-pure.txt
++++ b/tests/public-api-pure.txt
+@@ -218,6 +218,7 @@ pub use smysl::to_cbor_seq
+ pub use smysl::tokens
+ pub use smysl::topo
+ pub use smysl::trace
++pub use smysl::trace_from
+ pub use smysl::unit_core_bytes
+ pub use smysl::verify
+ pub use smysl::verify_pack
+diff --git a/tests/public-api.txt b/tests/public-api.txt
+index ba50346..80713bd 100644
+--- a/tests/public-api.txt
++++ b/tests/public-api.txt
+@@ -272,6 +272,7 @@ pub use smysl::to_cbor_seq
+ pub use smysl::tokens
+ pub use smysl::topo
+ pub use smysl::trace
++pub use smysl::trace_from
+ pub use smysl::tui
+ pub use smysl::unit_core_bytes
+ pub use smysl::verify

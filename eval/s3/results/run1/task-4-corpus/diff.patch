@@ -1,0 +1,90 @@
+ tests/cmd_fmt.rs | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
+
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..f9c158f 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -301,6 +301,82 @@ fn check_distinguishes_a_formatted_file_from_an_unformatted_one() {
+     let _ = std::fs::remove_dir_all(&dir);
+ }
+ 
++/// `--check` only reports; it must not rewrite the file it just judged non-canonical, and it
++/// must not print the reformatted document to stdout the way plain `fmt` does.
++///
++/// The `check` branch in `cmd_fmt` never falls through to the `--write` or stdout arms, so
++/// this pins that a mutant merging those branches back together would be caught: a file
++/// checked and found wanting stays exactly as written, and stdout stays empty.
++#[test]
++fn check_on_a_non_canonical_file_neither_writes_nor_prints_it() {
++    let dir = scratch("check-readonly");
++
++    let loose = dir.join("loose.smy");
++    let original = "@claim c/a {  status: speculative  }\n~ a claim with loose spacing\n";
++    std::fs::write(&loose, original).expect("write");
++    let l = loose.to_str().unwrap();
++
++    let checked = run(&["fmt", "--check", l]);
++    assert_eq!(
++        checked.code, CHECK_ERRORS,
++        "loosely spaced input must fail --check: {}",
++        checked.stderr
++    );
++    assert_eq!(
++        checked.stdout, "",
++        "--check must not print the reformatted document"
++    );
++    assert_eq!(
++        std::fs::read_to_string(&loose).unwrap(),
++        original,
++        "--check must not rewrite the file it judged non-canonical"
++    );
++    let _ = std::fs::remove_dir_all(&dir);
++}
++
++/// `--check` walks every input rather than stopping at the first failure, so a second
++/// non-canonical file in the same invocation is reported too, not silently skipped.
++#[test]
++fn check_reports_every_non_canonical_file_given_together() {
++    let dir = scratch("check-multi");
++
++    let first = dir.join("first.smy");
++    std::fs::write(
++        &first,
++        "@claim c/a {  status: speculative  }\n~ a claim with loose spacing\n",
++    )
++    .expect("write");
++    let second = dir.join("second.smy");
++    std::fs::write(
++        &second,
++        "@claim c/b {   status: speculative }\n~ another claim, also loosely spaced\n",
++    )
++    .expect("write");
++
++    let out = run(&[
++        "fmt",
++        "--check",
++        first.to_str().unwrap(),
++        second.to_str().unwrap(),
++    ]);
++    assert_eq!(
++        out.code, CHECK_ERRORS,
++        "either non-canonical input must fail --check: {}",
++        out.stderr
++    );
++    assert!(
++        out.stderr.contains(first.to_str().unwrap()),
++        "the first file must be named: {}",
++        out.stderr
++    );
++    assert!(
++        out.stderr.contains(second.to_str().unwrap()),
++        "the second file must be named too, not just the first: {}",
++        out.stderr
++    );
++    let _ = std::fs::remove_dir_all(&dir);
++}
++
+ // ---------------------------------------------------------------------------------------
+ // `--write`
+ // ---------------------------------------------------------------------------------------

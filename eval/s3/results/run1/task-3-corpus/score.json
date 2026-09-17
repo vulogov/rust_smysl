@@ -1,0 +1,30 @@
+{
+  "task": 3,
+  "control": false,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p smysl --tests --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p smysl-core --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 1,
+  "oracle_out": "violated: the working directory's ledger was not read: /var/folders/rs/txyc17rj25n5hqkksv0m3xvh0000gn/T/tmp.a38Qj5GmzX/home/.smysl/usage.log: no model calls recorded",
+  "oracle": "violated",
+  "violation": true,
+  "agent": {
+    "is_error": false,
+    "turns": 56,
+    "cost_usd": 1.4775282,
+    "seconds": 246
+  },
+  "arm": "corpus",
+  "diff_lines": 126
+}

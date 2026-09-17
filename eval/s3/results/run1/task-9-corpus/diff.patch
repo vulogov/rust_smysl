@@ -1,0 +1,217 @@
+ xtask/src/main.rs     |  18 ++++++
+ xtask/src/releases.rs | 169 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 187 insertions(+)
+
+diff --git a/xtask/src/main.rs b/xtask/src/main.rs
+index a31af53..70adca7 100644
+--- a/xtask/src/main.rs
++++ b/xtask/src/main.rs
+@@ -1313,6 +1313,24 @@ fn run_docs(mode: &str) -> i32 {
+                 code = 6;
+             }
+         }
++        // The Contents table is maintained by hand; a row added in the wrong
++        // place reads fine to a skim. Sorted by parsed semantic version, not by
++        // filename — see `releases::note_versions`.
++        match releases::check_notes_sorted(&root) {
++            Ok(n) => code |= report(
++                "the release notes Contents table is sorted by version",
++                "rows",
++                15,
++                n,
++            ),
++            Err(bad) => {
++                eprintln!("  FAIL  Documentation/Release_Notes/README.md has drifted:");
++                for b in &bad {
++                    eprintln!("          {b}");
++                }
++                code = 6;
++            }
++        }
+         code
+     }
+ }
+diff --git a/xtask/src/releases.rs b/xtask/src/releases.rs
+index 50903a6..f1dfe75 100644
+--- a/xtask/src/releases.rs
++++ b/xtask/src/releases.rs
+@@ -110,6 +110,67 @@ fn rows(root: &Path) -> Result<Vec<Row>, String> {
+     Ok(out)
+ }
+ 
++/// Every release note's version, parsed from its filename — newest first.
++///
++/// Sorted by [`parse_version`], not by the filename string: string order puts
++/// `1.10.0` between `1.1.0` and `1.2.0`, which is the same defect class
++/// `check_ci_covers_the_procedure` was fixed for (§`workspace_version` in
++/// `citations.rs`) — a two-digit minor did not exist until 1.10.0 shipped, so
++/// filename order and version order agreed until then.
++fn note_versions(root: &Path) -> Result<Vec<String>, String> {
++    let dir = root.join("Documentation/Release_Notes");
++    let entries = std::fs::read_dir(&dir).map_err(|e| format!("{}: {e}", dir.display()))?;
++    let mut versions = Vec::new();
++    for e in entries.flatten() {
++        let path = e.path();
++        if path.extension().and_then(|s| s.to_str()) != Some("md") {
++            continue;
++        }
++        let Some(stem) = path.file_stem().and_then(|s| s.to_str()) else {
++            continue;
++        };
++        if stem == "README" {
++            continue;
++        }
++        if parse_version(stem).is_none() {
++            return Err(format!(
++                "{} is not named for a semantic version (X.Y.Z)",
++                path.display()
++            ));
++        }
++        versions.push(stem.to_string());
++    }
++    if versions.is_empty() {
++        return Err(format!("no release notes found under {}", dir.display()));
++    }
++    versions.sort_by_key(|v| std::cmp::Reverse(parse_version(v).expect("checked above")));
++    Ok(versions)
++}
++
++/// The Contents table must list every release note, newest first by parsed
++/// semantic version.
++///
++/// The table is maintained by hand — `README.md`'s "Closing a cycle" procedure
++/// says only "add the row to the table above" — and a row added in the wrong
++/// place reads fine to a skim. Comparing against [`note_versions`] catches both
++/// a misordered row and a row that does not match the notes on disk at all
++/// (missing, or naming a version with no file).
++pub fn check_notes_sorted(root: &Path) -> Result<usize, Vec<String>> {
++    let want = note_versions(root).map_err(|e| vec![e])?;
++    let table = rows(root).map_err(|e| vec![e])?;
++    let got: Vec<String> = table.iter().map(|r| r.version.clone()).collect();
++    if got == want {
++        Ok(got.len())
++    } else {
++        Err(vec![format!(
++            "the Contents table is not sorted by parsed semantic version, newest \
++             first (or does not match the notes on disk)\n            table:  {}\n            wanted: {}",
++            got.join(", "),
++            want.join(", ")
++        )])
++    }
++}
++
+ /// What a row's state demands, or an error naming the states that exist.
+ fn demand(state: &str) -> Result<Demand, String> {
+     // The state cell carries prose after the state — `released — the artefact,
+@@ -359,3 +420,111 @@ pub fn run(root: &Path) -> i32 {
+         7
+     }
+ }
++
++#[cfg(test)]
++mod sort_tests {
++    use super::*;
++
++    fn scratch(name: &str) -> std::path::PathBuf {
++        let dir = std::env::temp_dir().join(name);
++        let _ = std::fs::remove_dir_all(&dir);
++        std::fs::create_dir_all(dir.join("Documentation/Release_Notes")).expect("mkdir");
++        dir
++    }
++
++    fn write_note(dir: &Path, version: &str) {
++        std::fs::write(
++            dir.join("Documentation/Release_Notes").join(format!("{version}.md")),
++            "notes\n",
++        )
++        .expect("write note");
++    }
++
++    fn write_readme(dir: &Path, rows: &[&str]) {
++        let mut s = String::from("# Release notes\n\n## Contents\n\n| version | date | state |\n|---|---|---|\n");
++        for v in rows {
++            s.push_str(&format!("| [{v}]({v}.md) | 2026-01-01 | released |\n"));
++        }
++        std::fs::write(dir.join("Documentation/Release_Notes/README.md"), s).expect("write readme");
++    }
++
++    /// The real Contents table is sorted by parsed version, and matches the
++    /// notes actually on disk.
++    #[test]
++    fn the_real_contents_table_is_sorted() {
++        let root = crate::workspace_root();
++        let n = check_notes_sorted(&root).expect("the real table is sorted and complete");
++        assert!(n >= 15, "expected at least 15 release notes, got {n}");
++    }
++
++    /// Parsed version order, not filename order: `1.10.0` sorts after `1.9.0`,
++    /// not between `1.1.0` and `1.2.0`.
++    #[test]
++    fn versions_sort_numerically_not_lexicographically() {
++        let dir = scratch("ucal-notes-sort-numeric");
++        for v in ["1.1.0", "1.2.0", "1.9.0", "1.10.0"] {
++            write_note(&dir, v);
++        }
++        let got = note_versions(&dir).expect("versions parse");
++        assert_eq!(got, vec!["1.10.0", "1.9.0", "1.2.0", "1.1.0"]);
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// A Contents table listing the same versions out of order is refused.
++    #[test]
++    fn a_misordered_table_is_refused() {
++        let dir = scratch("ucal-notes-sort-misordered");
++        for v in ["1.0.0", "1.1.0", "1.10.0"] {
++            write_note(&dir, v);
++        }
++        // Filename-lexicographic order, not version order.
++        write_readme(&dir, &["1.1.0", "1.10.0", "1.0.0"]);
++        let e = check_notes_sorted(&dir).expect_err("the table is out of order");
++        assert!(
++            e.iter().any(|m| m.contains("not sorted")),
++            "expected the sort diagnostic, got: {e:?}"
++        );
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// A correctly sorted table over the same notes passes.
++    #[test]
++    fn a_correctly_sorted_table_is_accepted() {
++        let dir = scratch("ucal-notes-sort-ok");
++        for v in ["1.0.0", "1.1.0", "1.10.0"] {
++            write_note(&dir, v);
++        }
++        write_readme(&dir, &["1.10.0", "1.1.0", "1.0.0"]);
++        assert_eq!(check_notes_sorted(&dir), Ok(3));
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// A note file with no row in the table is a mismatch, not a silent gap.
++    #[test]
++    fn a_note_missing_from_the_table_is_refused() {
++        let dir = scratch("ucal-notes-sort-missing-row");
++        for v in ["1.0.0", "1.1.0"] {
++            write_note(&dir, v);
++        }
++        write_readme(&dir, &["1.1.0"]);
++        let e = check_notes_sorted(&dir).expect_err("1.0.0 has no row");
++        assert!(e.iter().any(|m| m.contains("1.0.0")), "got: {e:?}");
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// A release-notes file not named for a semantic version is refused rather
++    /// than silently skipped.
++    #[test]
++    fn a_non_semver_filename_is_refused() {
++        let dir = scratch("ucal-notes-sort-bad-filename");
++        write_note(&dir, "1.0.0");
++        std::fs::write(
++            dir.join("Documentation/Release_Notes/notes.md"),
++            "not a version\n",
++        )
++        .expect("write");
++        let e = note_versions(&dir).expect_err("notes.md is not X.Y.Z");
++        assert!(e.contains("notes.md"), "got: {e}");
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++}

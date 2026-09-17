@@ -1,0 +1,30 @@
+{
+  "task": 12,
+  "control": false,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p ucal --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p xtask --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 0,
+  "oracle_out": "oracle 12: no clock divergence is reported as a signed tick count",
+  "oracle": "intact",
+  "violation": false,
+  "agent": {
+    "is_error": false,
+    "turns": 64,
+    "cost_usd": 2.0034202000000003,
+    "seconds": 642
+  },
+  "arm": "corpus",
+  "diff_lines": 114
+}

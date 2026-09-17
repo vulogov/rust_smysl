@@ -1,0 +1,70 @@
+ tests/cmd_fmt.rs | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..14bfe4f 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -301,6 +301,62 @@ fn check_distinguishes_a_formatted_file_from_an_unformatted_one() {
+     let _ = std::fs::remove_dir_all(&dir);
+ }
+ 
++/// `--check` on several documents at once must not stop at the first offender: every
++/// input is still checked, the message names the one that failed, and the exit code
++/// reflects the worst result across all of them rather than just the last one seen.
++#[test]
++fn check_reports_every_unformatted_file_among_several() {
++    let dir = scratch("check-many");
++
++    let loose = dir.join("loose.smy");
++    std::fs::write(
++        &loose,
++        "@claim c/a {  status: speculative  }\n~ a claim with loose spacing\n",
++    )
++    .expect("write");
++
++    let canonical = dir.join("canonical.smy");
++    let formatted = run(&["fmt", loose.to_str().unwrap()]);
++    assert_eq!(formatted.code, SUCCESS, "{}", formatted.stderr);
++    std::fs::write(&canonical, formatted.stdout.as_bytes()).expect("write canonical");
++
++    let out = run(&[
++        "fmt",
++        "--check",
++        canonical.to_str().unwrap(),
++        loose.to_str().unwrap(),
++    ]);
++    assert_eq!(
++        out.code, CHECK_ERRORS,
++        "one unformatted file among several must still fail: {}",
++        out.stderr
++    );
++    let loose_name = loose.to_str().unwrap();
++    assert!(
++        out.stderr
++            .contains(&format!("{loose_name}: not canonically formatted")),
++        "the offending file must be named: {}",
++        out.stderr
++    );
++    assert!(
++        !out.stderr
++            .contains(&format!("{}: not canonically formatted", canonical.display())),
++        "the canonical file must not be blamed: {}",
++        out.stderr
++    );
++
++    // The control: all-canonical inputs succeed, so the failure above is about the loose
++    // file and not about passing several paths to `--check` at all.
++    let all_clean = run(&[
++        "fmt",
++        "--check",
++        canonical.to_str().unwrap(),
++        canonical.to_str().unwrap(),
++    ]);
++    assert_eq!(all_clean.code, SUCCESS, "{}", all_clean.stderr);
++    let _ = std::fs::remove_dir_all(&dir);
++}
++
+ // ---------------------------------------------------------------------------------------
+ // `--write`
+ // ---------------------------------------------------------------------------------------

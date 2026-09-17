@@ -1,0 +1,237 @@
+ CHANGELOG.md                       |  10 +++-
+ crates/smysl-provider/src/usage.rs | 102 ++++++++++++++++++++++++++++++++++++-
+ src/main.rs                        |  14 ++++-
+ tests/dispatch.rs                  |  17 ++++---
+ 4 files changed, 133 insertions(+), 10 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..7994d8d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,15 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++### The usage ledger moved to the home directory
++
++`.smysl/usage.log` used to live beside whichever project `smysl` happened to run from, so
++cost accounting reset every time the working directory changed. It now lives under
++`$HOME/.smysl/usage.log` (`$USERPROFILE` on Windows; `$SMYSL_HOME` overrides both, for a
++caller that wants isolation), so `smysl usage` reports what one person has spent across every
++project rather than one project's slice of it. Falls back to the old project-relative
++location when no home directory resolves, so the ledger stays informational rather than
++becoming a new way for a command to fail.
+ 
+ ---
+ 
+diff --git a/crates/smysl-provider/src/usage.rs b/crates/smysl-provider/src/usage.rs
+index 7ac6228..d268b99 100644
+--- a/crates/smysl-provider/src/usage.rs
++++ b/crates/smysl-provider/src/usage.rs
+@@ -10,6 +10,12 @@
+ //!
+ //! Informational. Caps never block (§23.1): a ledger that could stop work would make cost
+ //! accounting a failure mode.
++//!
++//! Lives under the user's home directory ([`Ledger::home_path`]), not under any one
++//! project: cost is a property of the person paying for it, and a ledger that reset every
++//! time `smysl` ran from a different checkout would undercount by construction. `Ledger`
++//! itself stays agnostic about where its file is - it opens whatever path it is given - so
++//! a caller that wants a project-scoped ledger, or none at all, still can.
+ 
+ use std::collections::BTreeMap;
+ use std::fmt;
+@@ -281,14 +287,36 @@ impl fmt::Display for Totals {
+     }
+ }
+ 
++/// The user's home directory, or `None` if it cannot be resolved.
++///
++/// `$SMYSL_HOME` first — an explicit override, so the test suite (and an embedder that
++/// wants project-scoped isolation) never touches a real user's ledger — then `$HOME`, then
++/// `$USERPROFILE` for Windows. No dependency for this: three environment variables are the
++/// whole of what "home directory" means on every platform this builds for.
++pub fn home_dir() -> Option<PathBuf> {
++    ["SMYSL_HOME", "HOME", "USERPROFILE"]
++        .into_iter()
++        .find_map(|var| std::env::var_os(var).filter(|v| !v.is_empty()))
++        .map(PathBuf::from)
++}
++
+ impl Ledger {
+     pub fn new() -> Ledger {
+         Ledger::default()
+     }
+ 
+-    /// Where a project's ledger lives, relative to its root.
++    /// Where the ledger lives under the home directory, relative to it (§29, §7.3).
+     pub const PATH: &'static str = ".smysl/usage.log";
+ 
++    /// The ledger's actual location: under the user's home directory rather than under any
++    /// one project, so usage accrues across every project `smysl` is run from instead of
++    /// resetting each time it is run from a different checkout. `None` when the home
++    /// directory cannot be resolved - the caller decides what to fall back to, because the
++    /// ledger is informational and must never be why a command fails (§23.1).
++    pub fn home_path() -> Option<PathBuf> {
++        home_dir().map(|h| h.join(Self::PATH))
++    }
++
+     /// Read a ledger, tolerating a truncated or partly corrupt file.
+     ///
+     /// A ledger is informational, so an unreadable line is skipped rather than fatal:
+@@ -630,4 +658,76 @@ mod tests {
+     fn the_ledger_path_is_the_documented_one() {
+         assert_eq!(Ledger::PATH, ".smysl/usage.log");
+     }
++
++    // -- home directory --------------------------------------------------------
++
++    /// Restores whatever a test's environment variables held before it ran, so one test's
++    /// `SMYSL_HOME` can never leak into another's - including one running in parallel in the
++    /// same process, which is why this is a single test rather than several.
++    struct EnvGuard(Vec<(&'static str, Option<std::ffi::OsString>)>);
++
++    impl EnvGuard {
++        fn capture(vars: &[&'static str]) -> EnvGuard {
++            EnvGuard(vars.iter().map(|&v| (v, std::env::var_os(v))).collect())
++        }
++    }
++
++    impl Drop for EnvGuard {
++        fn drop(&mut self) {
++            for (k, prev) in &self.0 {
++                match prev {
++                    Some(v) => std::env::set_var(k, v),
++                    None => std::env::remove_var(k),
++                }
++            }
++        }
++    }
++
++    /// One test, not several: `home_dir` reads process-wide environment variables, and
++    /// separate `#[test]` functions run concurrently in the same process, so splitting this
++    /// into multiple tests would make them race on `SMYSL_HOME`/`HOME`/`USERPROFILE`.
++    #[test]
++    fn home_dir_resolution() {
++        let _g = EnvGuard::capture(&["SMYSL_HOME", "HOME", "USERPROFILE"]);
++
++        std::env::set_var("SMYSL_HOME", "/tmp/smysl-home-override");
++        std::env::set_var("HOME", "/tmp/should-not-be-used");
++        std::env::set_var("USERPROFILE", "/tmp/should-not-be-used-either");
++        assert_eq!(
++            home_dir(),
++            Some(PathBuf::from("/tmp/smysl-home-override")),
++            "an explicit SMYSL_HOME wins over both"
++        );
++        assert_eq!(
++            Ledger::home_path(),
++            Some(PathBuf::from("/tmp/smysl-home-override/.smysl/usage.log")),
++            "the ledger's home path is the home directory plus the documented relative path"
++        );
++
++        std::env::remove_var("SMYSL_HOME");
++        assert_eq!(
++            home_dir(),
++            Some(PathBuf::from("/tmp/should-not-be-used")),
++            "HOME wins over USERPROFILE once SMYSL_HOME is gone"
++        );
++
++        std::env::remove_var("HOME");
++        assert_eq!(
++            home_dir(),
++            Some(PathBuf::from("/tmp/should-not-be-used-either")),
++            "USERPROFILE is the last resort"
++        );
++
++        std::env::set_var("USERPROFILE", "");
++        assert_eq!(
++            home_dir(),
++            None,
++            "an empty value is treated the same as unset"
++        );
++        assert_eq!(
++            Ledger::home_path(),
++            None,
++            "with no home directory to resolve, there is no home path either"
++        );
++    }
+ }
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..1ab2d17 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -2950,6 +2950,16 @@ fn project_file(global: &ArgMatches, name: &str) -> std::path::PathBuf {
+     root_beside(global.get_one::<String>("store").map(String::as_str)).join(name)
+ }
+ 
++/// Where the usage ledger lives: under the user's home directory, so usage accrues across
++/// every project rather than resetting each time `smysl` runs from a different checkout.
++/// Falls back to the per-project location `project_file` would have used, so a caller with
++/// no resolvable home directory still gets a ledger rather than none - the ledger is
++/// informational (§23.1) and its absence must never be the surprise.
++#[cfg(feature = "providers")]
++fn ledger_path(global: &ArgMatches) -> std::path::PathBuf {
++    smysl::Ledger::home_path().unwrap_or_else(|| project_file(global, smysl::Ledger::PATH))
++}
++
+ /// The directory a sidecar belongs in, given `--store`.
+ ///
+ /// Separated from the two helpers that call it because they take an `ArgMatches`, which is
+@@ -3220,7 +3230,7 @@ fn cmd_ingest(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+ 
+     // The ledger records counts, models, task and recipe - never content (§29).
+     if let Some(provider) = &report.provider {
+-        let mut ledger = smysl::Ledger::open(project_file(global, smysl::Ledger::PATH));
++        let mut ledger = smysl::Ledger::open(ledger_path(global));
+         let entry = smysl::LedgerEntry::new(
+             now_millis(),
+             provider.clone(),
+@@ -3494,7 +3504,7 @@ fn cmd_providers(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+ /// `smysl usage` - the token ledger (§23.1). Informational; caps never block.
+ #[cfg(feature = "providers")]
+ fn cmd_usage(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+-    let path = project_file(global, smysl::Ledger::PATH);
++    let path = ledger_path(global);
+     let mut ledger = smysl::Ledger::open(&path);
+ 
+     if m.get_flag("reset") {
+diff --git a/tests/dispatch.rs b/tests/dispatch.rs
+index 5904afd..5fc9298 100644
+--- a/tests/dispatch.rs
++++ b/tests/dispatch.rs
+@@ -98,11 +98,10 @@ fn minimal_args(command: &str) -> Vec<&'static str> {
+ 
+ /// A directory of this command's own, because several of them write.
+ ///
+-/// `ingest` appends to `.smysl/staged.smy` and `usage` to `.smysl/usage.log`, both resolved
+-/// against the working directory. Running the twenty-two in a checkout leaves two untracked
+-/// files behind — which is not hypothetical: probing this by hand did exactly that, and the
+-/// `usage` invocation then read a ledger the `ingest` invocation had just written. A test that
+-/// dirties the tree is one step from a test that depends on the tree.
++/// `ingest` appends to `.smysl/staged.smy`, resolved against the working directory. Running
++/// the twenty-two in a checkout leaves an untracked file behind — which is not hypothetical:
++/// probing this by hand did exactly that. A test that dirties the tree is one step from a
++/// test that depends on the tree.
+ fn scratch(name: &str) -> PathBuf {
+     let dir = std::env::temp_dir().join(format!("smysl-dispatch-{name}-{}", std::process::id()));
+     std::fs::create_dir_all(&dir).expect("scratch dir");
+@@ -113,11 +112,17 @@ fn scratch(name: &str) -> PathBuf {
+ ///
+ /// Stdin is `/dev/null` rather than inherited: `fmt` and `check` read stdin when given no path,
+ /// and a test harness that hands them a terminal would hang instead of failing.
++///
++/// `SMYSL_HOME` is pointed at the same scratch directory: `usage` reads and writes its ledger
++/// under the home directory now, not the working directory, and a dispatch test must not read
++/// or write whatever ledger the person running it already has at their real `$HOME`.
+ fn dispatch(command: &str) -> String {
++    let dir = scratch(command);
+     let out = Command::new(BIN)
+         .arg(command)
+         .args(minimal_args(command))
+-        .current_dir(scratch(command))
++        .current_dir(&dir)
++        .env("SMYSL_HOME", &dir)
+         .stdin(Stdio::null())
+         .output()
+         .expect("the binary under test must run");

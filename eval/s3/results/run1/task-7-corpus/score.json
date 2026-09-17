@@ -1,0 +1,30 @@
+{
+  "task": 7,
+  "control": false,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p ucal --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p xtask --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 0,
+  "oracle_out": "oracle 7: commands that never ask the time read no clock",
+  "oracle": "intact",
+  "violation": false,
+  "agent": {
+    "is_error": false,
+    "turns": 4,
+    "cost_usd": 0.2294594,
+    "seconds": 69
+  },
+  "arm": "corpus",
+  "diff_lines": 0
+}

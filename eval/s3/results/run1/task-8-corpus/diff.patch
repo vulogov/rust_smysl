@@ -1,0 +1,216 @@
+ Documentation/CLI.md     |  11 +++++
+ crates/ucal/src/clock.rs | 126 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 135 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/CLI.md b/Documentation/CLI.md
+index 8dbbc41..2cf31b9 100644
+--- a/Documentation/CLI.md
++++ b/Documentation/CLI.md
+@@ -2181,6 +2181,17 @@ the rate difference between the oscillator and whatever disciplines the wall
+ clock; `max` bounds the result by whichever is ahead, and that bound is the
+ honest statement of what a session clock costs.
+ 
++**A forward step is also capped in how fast it may arrive.** Winning does not
++mean arriving in one reading: `ucal wallclock` caps how far a single reading
++may advance past the last one it handed out to one second's worth of ticks.
++Ordinarily that cap is never reached — the fastest caller reads the clock
++fifty milliseconds apart — so it only engages when a correction outruns real
++elapsed time, and a face that would otherwise jump minutes ahead instead
++catches up over the following second or so of readings. The cap never holds
++back the monotonic branch: real elapsed time always gets through, so it slows
++only the *extra* distance a correction is asking for, never the part that
++would have arrived anyway.
++
+ **`features[]` names every optional feature this crate has**, and did not until
+ 1.9.0: it listed four and the crate had eight, so a binary built with
+ `--features full` reported `u512, std, civil` while `body`, `events`, `cosmo`
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..0e1dee4 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -108,6 +108,18 @@ pub fn finest_tier_for(q: &Ticks) -> Option<Tier> {
+ /// So a reading never goes backwards, and the clock still tracks the system
+ /// forwards. Those are the two properties; neither is a claim about accuracy.
+ ///
++/// # Smoothing a forward jump
++///
++/// "Wins" does not have to mean "in one step." [`Session::with_max_advance`]
++/// caps how far a single reading may move past the last one it handed out, so
++/// a large forward correction — the wall clock jumping minutes ahead — is
++/// visible as the face catching up quickly rather than as a jump nobody
++/// watching a running `ucal wallclock` could otherwise make sense of. The cap
++/// never holds back the monotonic branch: real elapsed time always gets
++/// through, so a reading only ever slows the *extra* distance a wall
++/// correction is asking for, never the part of it that would have arrived
++/// anyway.
++///
+ /// # What it does not do
+ ///
+ /// It does not make a reading finer, more accurate, or traceable to anything.
+@@ -121,6 +133,9 @@ pub struct Session {
+     anchor: Ticks,
+     /// The largest reading handed out so far.
+     last: Ticks,
++    /// The most a single [`reading`](Self::reading) may advance the clock
++    /// beyond `last`, when it is the wall branch pushing it forward.
++    max_advance: Option<Ticks>,
+ }
+ 
+ impl Session {
+@@ -129,9 +144,23 @@ impl Session {
+         Session {
+             anchor: wall.ticks().clone(),
+             last: wall.ticks().clone(),
++            max_advance: None,
+         }
+     }
+ 
++    /// Cap how far one [`reading`](Self::reading) may advance the clock past
++    /// the last one handed out, so a large forward correction is smoothed
++    /// across several readings instead of shown as a single jump.
++    ///
++    /// The cap only ever holds back the *wall* branch. The monotonic branch —
++    /// `anchor + monotonic_elapsed` — is real elapsed time passing, and a
++    /// session clock does not get to refuse that: whenever it alone already
++    /// exceeds the cap, it still wins.
++    pub fn with_max_advance(mut self, max_advance: Ticks) -> Session {
++        self.max_advance = Some(max_advance);
++        self
++    }
++
+     /// The next reading, given the wall clock now and monotonic elapsed since
+     /// the anchor.
+     ///
+@@ -151,11 +180,24 @@ impl Session {
+         // elapsed would make them, and this type sells monotonicity.
+         let mut best = wall_now.ticks().clone();
+         if projected > best {
+-            best = projected;
++            best = projected.clone();
+         }
+         if self.last > best {
+             best = self.last.clone();
+         }
++        // Smooth a jump: `best` may not outrun `last` by more than the cap in
++        // one call, unless the monotonic branch alone already has — real
++        // elapsed time is never held back, only how fast a wall-clock
++        // correction is allowed to catch up. If the ceiling itself cannot be
++        // computed (a session near the top of the domain), there is nothing
++        // sensible to cap against and the uncapped answer stands.
++        if let Some(max_advance) = &self.max_advance {
++            if let Some(ceiling) = self.last.try_add(max_advance) {
++                if best > ceiling {
++                    best = if projected > ceiling { projected } else { ceiling };
++                }
++            }
++        }
+         self.last = best.clone();
+         Instant::from_ticks(best)
+     }
+@@ -195,10 +237,25 @@ fn session() -> &'static SessionState {
+     S.get_or_init(|| Mutex::new(None))
+ }
+ 
++/// How far one session-clock reading may advance past the last: one second's
++/// worth of ticks.
++///
++/// Generous next to how far a reading moves between two calls in the ordinary
++/// case — `ucal wallclock`'s fastest caller reads the clock twenty times a
++/// second, fifty milliseconds apart — so this only ever engages when the wall
++/// clock has stepped further than real elapsed time could explain, and a
++/// correction of any size is smoothed across at most that many readings
++/// rather than shown as a jump.
++#[cfg(all(feature = "std", feature = "civil"))]
++fn default_max_advance() -> Result<Ticks, TimeError> {
++    ticks_in_nanos(1_000_000_000).ok_or_else(|| TimeError::new(ucal_core::Code::E0021))
++}
++
+ /// The session clock's reading, for [`crate::now_instant`].
+ #[cfg(all(feature = "std", feature = "civil"))]
+ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+     let wall = crate::wall_instant()?;
++    let max_advance = default_max_advance()?;
+     // A poisoned lock means another thread panicked holding it. The state is a
+     // pair of tick counts and cannot be torn, so taking the inner value is
+     // correct rather than merely convenient — the same judgement
+@@ -210,7 +267,10 @@ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+     // Anchored on first use rather than at start-up: a command that never asks
+     // the time should not read a clock, and most of them do not.
+     let (sess, base) = g.get_or_insert_with(|| {
+-        (Session::anchored_at(&wall), std::time::Instant::now())
++        (
++            Session::anchored_at(&wall).with_max_advance(max_advance),
++            std::time::Instant::now(),
++        )
+     });
+     let elapsed = ticks_in_nanos(base.elapsed().as_nanos())
+         .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+@@ -573,6 +633,68 @@ mod tests {
+         assert_eq!(finest_tier_for(&q).expect("a tier").index(), raw.index());
+     }
+ 
++    // ---- capping how far one reading may advance ------------------------
++
++    /// A forward jump that outruns the cap is held to it for that reading.
++    #[test]
++    fn max_advance_caps_a_forward_jump() {
++        let mut s = Session::anchored_at(&at(100)).with_max_advance(ns(1_000_000_000));
++        let _ = s.reading(&at(100), &ns(0)).expect("a reading");
++        // The wall clock jumps ten seconds ahead between two readings taken
++        // ten milliseconds apart in real time — nowhere near enough elapsed
++        // time to justify the jump on its own.
++        let jumped = s
++            .reading(&at(110), &ns(10_000_000))
++            .expect("a reading");
++        assert_eq!(
++            jumped.ticks().to_dec_string(),
++            at(101).ticks().to_dec_string(),
++            "one reading advanced further than the cap allows"
++        );
++    }
++
++    /// The cap never refuses real elapsed time, only a wall correction that
++    /// outruns it.
++    #[test]
++    fn max_advance_never_holds_back_real_elapsed_time() {
++        let mut s = Session::anchored_at(&at(100)).with_max_advance(ns(1_000_000_000));
++        let _ = s.reading(&at(100), &ns(0)).expect("a reading");
++        // Five real seconds pass, and the wall clock agrees: the monotonic
++        // branch alone already clears the cap and must not be held to it.
++        let r = s
++            .reading(&at(105), &ns(5_000_000_000))
++            .expect("a reading");
++        assert_eq!(
++            r.ticks().to_dec_string(),
++            at(105).ticks().to_dec_string(),
++            "the cap held back a reading that real elapsed time justified"
++        );
++    }
++
++    /// A jump the cap cannot cover in one reading is caught up over several,
++    /// monotonically and without overshooting the wall clock's value.
++    #[test]
++    fn max_advance_smooths_a_jump_over_several_readings() {
++        let mut s = Session::anchored_at(&at(0)).with_max_advance(ns(1_000_000_000));
++        let mut prev = s.reading(&at(0), &ns(0)).expect("a reading").ticks().clone();
++        let target = at(10).ticks().clone();
++        // The wall clock jumps to ten seconds ahead and stays there; each
++        // call is only a millisecond of real elapsed time further on, so
++        // nothing but the cap explains any of this catching up.
++        for i in 1..=12u64 {
++            let elapsed = ns(u128::from(i) * 1_000_000);
++            let r = s.reading(&at(10), &elapsed).expect("a reading");
++            assert!(r.ticks() >= &prev, "step {i} went backwards");
++            assert!(r.ticks() <= &target, "step {i} overshot the wall clock");
++            prev = r.ticks().clone();
++        }
++        assert_eq!(
++            prev.to_dec_string(),
++            target.to_dec_string(),
++            "ten one-second-capped readings should have caught up to a ten second jump"
++        );
++    }
++
+     /// And the measurement returns something on a machine that has a clock.
+     #[cfg(feature = "std")]
+     #[test]
