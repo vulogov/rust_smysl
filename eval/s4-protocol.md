@@ -66,6 +66,10 @@ under the self-contained rule and the plan's item 7 (own client or smysl's `mode
 S3 base, in smysl and ucal: about 88 in smysl (`a18e230..183be01`) and 30 in ucal (`8fdb9b3..425bb3a`). For each real commit the corpus holds only the S0 commits that are its
 ancestors, as `check` would see it at that point in history.
 
+**The split is fixed** in `s4/sets.toml` (`s4/sets.py`), generated before the detector existed: 12 naive
+patches, 48 agent diffs (4 empty ones skipped) and 59 real commits for development; 59 + 10 real commits
+and 24 agent runs still to be made for the held-out set.
+
 **Freezing:** the detector's code and parameters are committed, and the commit id recorded in
 `s4/frozen.txt`, before any held-out diff is checked. A held-out result obtained after a later change to
 the detector is reported, but does not count for the gate.
@@ -90,6 +94,8 @@ does not match but the unit states the same thing.
 | 10 | `created when\|cycle opens\|refus` | **no** (extraction miss) |
 | 11 | `cannot race\|committed (file\|fixture)` | yes |
 | 12 | `unsigned\|direction\|magnitude` | **no** (extraction miss) |
+
+**Confirmed by the owner, 2026-09-17, as written.**
 
 **Every flag** on any diff is adjudicated by the owner, blind to whether the diff is an agent run, a
 naive patch or a real commit:
