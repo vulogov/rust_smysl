@@ -1,5 +1,5 @@
-//! smysl 1.4.0 acceptance for request R10 (docs/smysl-requests-1.4.md), on real staged batches.
-//! Passed against dev/1.4.0 at c7bf5a3 (docs/smysl-1.4.0-acceptance.md). Ignored while the pin is 1.3.
+//! smysl 1.4.0 acceptance for requests R10 and R12 (docs/smysl-requests-1.4.md), on real staged batches and
+//! test-result rows. Passed against dev/1.4.0 (docs/smysl-1.4.0-acceptance.md). Ignored while the pin is 1.3.
 
 use std::path::Path;
 
@@ -27,7 +27,7 @@ fn staged_store(sha: &str) -> Store {
 }
 
 #[test]
-#[ignore = "needs smysl 1.4.0 (R10); un-ignore with the pin"]
+#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
 fn r10_repeated_self_merge_appends_nothing() {
     let a = staged_store("90ec2f7");
     let n = a.iter().count();
@@ -56,7 +56,7 @@ fn r10_repeated_self_merge_appends_nothing() {
 }
 
 #[test]
-#[ignore = "needs smysl 1.4.0 (R10); un-ignore with the pin"]
+#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
 fn r10_two_commits_merged_both_ways_then_again_are_stable() {
     let a = staged_store("90ec2f7");
     let b = staged_store("532e4d2");
@@ -74,7 +74,7 @@ fn r10_two_commits_merged_both_ways_then_again_are_stable() {
 }
 
 #[test]
-#[ignore = "needs smysl 1.4.0 (R10); un-ignore with the pin"]
+#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
 fn r10_a_label_bound_to_a_different_uid_is_still_appended() {
     let a = staged_store("90ec2f7");
     let (label, other) = {
@@ -106,7 +106,7 @@ fn r10_a_label_bound_to_a_different_uid_is_still_appended() {
 }
 
 #[test]
-#[ignore = "needs smysl 1.4.0 (R10); un-ignore with the pin"]
+#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
 fn r10_a_store_opened_from_a_file_merged_with_its_own_contents_appends_nothing() {
     let a = staged_store("532e4d2");
     let records: Vec<Record> = a.iter().cloned().collect();
@@ -121,4 +121,87 @@ fn r10_a_store_opened_from_a_file_merged_with_its_own_contents_appends_nothing()
     std::fs::remove_dir_all(&dir).ok();
     assert_eq!(r.added, 0);
     assert_eq!(opened.iter().count(), n);
+}
+
+/// R12: test evidence imported with `from_csv` must check clean, with every cell kept.
+#[test]
+#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
+fn r12_an_imported_reading_with_a_long_key_checks_clean_and_keeps_every_cell() {
+    use smysl::{check, from_csv, AgentId, CheckOptions, Hlc, ImportOptions, Severity};
+    let long_test = format!("tests::a_very_long_test_name_{}", "x".repeat(72));
+    assert!(long_test.len() >= 100);
+    let wide_cell = "y".repeat(300);
+    let mut header: Vec<String> = [
+        "test",
+        "commit",
+        "outcome",
+        "run_seconds",
+        "toolchain",
+        "os",
+        "profile",
+    ]
+    .iter()
+    .map(|s| s.to_string())
+    .collect();
+    let mut row: Vec<String> = [
+        long_test.as_str(),
+        "90ec2f7",
+        "passed",
+        "0.1",
+        "1.94.1",
+        "macos",
+        "debug",
+    ]
+    .iter()
+    .map(|s| s.to_string())
+    .collect();
+    // Wider than 23 columns, with one cell over 255 bytes.
+    for i in 0..20 {
+        header.push(format!("extra{i}"));
+        row.push(if i == 0 {
+            wide_cell.clone()
+        } else {
+            format!("v{i}")
+        });
+    }
+    let csv = format!(
+        "{}\n{}\nshort,90ec2f7,failed,0.2,1.94.1,macos,debug{}\n",
+        header.join(","),
+        row.join(","),
+        (0..20).map(|i| format!(",w{i}")).collect::<String>()
+    );
+    let agent = AgentId::new("tool:cargo-smysl").unwrap();
+    for key in [vec!["test".to_string()], vec![]] {
+        let mut opts = ImportOptions::new("results.csv", agent.clone(), Hlc::zero(agent.clone()));
+        opts.key = key.clone();
+        let imported = from_csv(&csv, &opts);
+        assert_eq!(
+            imported.units.len(),
+            2,
+            "key {key:?}: {:?}",
+            imported.diagnostics
+        );
+        let store = Store::from_records(imported.records());
+        let report = check(&store, CheckOptions::default());
+        let errors: Vec<String> = report
+            .iter()
+            .filter(|d| d.severity == Severity::Error)
+            .map(|d| d.to_string())
+            .collect();
+        assert!(errors.is_empty(), "key {key:?}: {errors:?}");
+        let payload = imported.units[0].payload.as_ref().expect("a payload");
+        for cell in &row {
+            assert!(
+                payload.windows(cell.len()).any(|w| w == cell.as_bytes()),
+                "key {key:?}: cell {:.40}… missing from the payload",
+                cell
+            );
+        }
+        for name in &header {
+            assert!(
+                payload.windows(name.len()).any(|w| w == name.as_bytes()),
+                "column {name} missing"
+            );
+        }
+    }
 }
