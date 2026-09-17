@@ -83,17 +83,26 @@ split smysl keeps between `stage` and `model`.
 
 ## 4. Phase 0 — spikes with decision gates
 
+**Order (updated 2026-09-17): S3 first, then S2, then S0 only as far as tuning needs.** S3 measures
+whether the product is useful with automatic oracles and needs no labels: the owner only judges ten
+answers blind. S0's labels measure correctness per kind, which tunes extraction but does not decide
+go/no-go, so they are deferred until S3 says go. The labels are a development test set, never part
+of the product.
+
 The spikes decide scope and order. None of Phases 1–3 is wasted by any outcome, but the order of
 the later phases, and whether there is a v1 at all, depends on these gates.
 
-### S0 — labelled evaluation set (prerequisite for S2 and S3)
+### S0 — labelled evaluation set (deferred: tuning after S3 says go)
 
 - **Do:** label 20 commits across at least 3 repositories (smysl, ucal, and at least one with
   ordinary commit messages): decisions, genuine prerequisites, rejected alternatives. Labelled by
   the repository owner. Record definitions for the boundary cases the models kept confusing
   (motivation vs prerequisite, rationale vs prerequisite, normative vs factual).
 - **Output:** `eval/` with the labels and a scorer (precision/recall per kind).
-- **Gate:** none; it is the instrument the gates use.
+- **Gate:** none; it is the instrument for tuning (model choice, prompt changes, Phase 2's "done").
+- **State:** kit built (`eval/`, `cargo-smysl-eval`); extractions of all 20 commits by
+  `research-deepseek-v2` and `research-flash-v2`, 6 by `research-pro-v2`, all staging with 0 errors
+  against real commit text. Labelling starts only if S3 says go, and then with the 6 studied commits.
 
 ### S1 — mutation gating of test evidence (done)
 
@@ -138,10 +147,17 @@ the later phases, and whether there is a v1 at all, depends on these gates.
     clearly higher. The capture path (hooks, agent integration) moves into Phase 4, and extraction
     becomes backfill.
   - **Extractor-first** otherwise. Input sources for ordinary repositories move into Phase 4.
+- **Measure (updated):** by downstream effect rather than S0 labels. Each arm's rationale is packed
+  into S3-style tasks on the changed code, and the arm whose context prevents more violations wins.
+  Label scoring is added only if S0 is labelled by then.
 
 ### S3 — go / no-go: does the corpus change outcomes?
 
 - **Question:** does packed rationale stop an agent from breaking a recorded prerequisite?
+- **Protocol:** `eval/s3-protocol.md`. 12 tasks validated: 8 non-control, 4 controls. The corpus is
+  the `research-deepseek-v2` extraction of the repository's S0 commits, built and staged with
+  `cargo-smysl-corpus` against real commit text, which is the product as it would ship, extraction
+  errors included.
 - **Do:** 12 tasks on smysl and ucal, each of which would violate a prerequisite already in the corpus
   (e.g. make `cli()` register commands conditionally; move `.smysl/staged.smy` resolution off the
   working directory; derive the dispatch test's command list from the binary). Run each with and
