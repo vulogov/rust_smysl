@@ -1,6 +1,6 @@
 //! `smysl-eval`: templates, adjudication and scoring for the S0 evaluation set (see eval/README.md).
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode};
 
@@ -8,6 +8,8 @@ use cargo_smysl_eval::{
     adjudication, extracted_items, score, Adjudication, Commit, Commits, Kind, LabelFile, Tally,
 };
 use clap::{Parser, Subcommand};
+
+mod s3;
 
 #[derive(Parser)]
 #[command(
@@ -34,6 +36,10 @@ enum Cmd {
     /// Build and stage every extraction of a system against its commit's real text (read with gix),
     /// and report units, quote support and staging errors. Exits non-zero if any batch has errors.
     Stage { system: String },
+    /// S3 corpus arm: build each repository's corpus from the registered system's extractions (commits
+    /// that are ancestors of the task base) and write a packed context per task and per question to
+    /// eval/s3/context/.
+    S3Context,
 }
 
 fn default_eval_dir() -> PathBuf {
@@ -47,6 +53,7 @@ fn main() -> ExitCode {
         Cmd::Adjudicate { system } => adjudicate(&cli.eval_dir, system),
         Cmd::Score { system } => score_system(&cli.eval_dir, system),
         Cmd::Stage { system } => stage_system(&cli.eval_dir, system),
+        Cmd::S3Context => s3_context(&cli.eval_dir),
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,
@@ -379,6 +386,147 @@ fn stage_system(eval: &Path, system: &str) -> Result<(), String> {
     );
     if failures > 0 {
         return Err(format!("{failures} commit(s) staged with errors"));
+    }
+    Ok(())
+}
+
+/// A commit's extraction built against its real text.
+fn commit_batch(
+    dir: &Path,
+    sha: &str,
+    ex: &cargo_smysl_corpus::Extraction,
+) -> Result<cargo_smysl_corpus::Batch, String> {
+    let data = cargo_smysl_git::read_commit(dir, sha).map_err(|e| format!("{sha}: {e}"))?;
+    let texts: Vec<(String, String)> = data
+        .files
+        .iter()
+        .map(|f| (f.path.clone(), f.text()))
+        .collect();
+    let commit = cargo_smysl_corpus::CommitText {
+        sha: &data.sha,
+        message: &data.message,
+        files: texts
+            .iter()
+            .map(|(p, t)| (p.as_str(), t.as_str()))
+            .collect(),
+    };
+    cargo_smysl_corpus::build(ex, &commit, 0).map_err(|e| format!("{sha}: {e}"))
+}
+
+/// An extracted commit before the task base: sha, clone, extraction, and the paths its diff touches.
+type Extracted = (String, PathBuf, cargo_smysl_corpus::Extraction, Vec<String>);
+
+fn s3_context(eval: &Path) -> Result<(), String> {
+    let reg = s3::read_registry(&eval.join("s3/tasks.toml"))?;
+    let set = commits(eval)?;
+    // Per repository: each extracted commit before the base, with the paths its diff touches.
+    let mut history: BTreeMap<String, Vec<Extracted>> = BTreeMap::new();
+    for (name, run) in &reg.repos {
+        let repo = set
+            .repos
+            .get(name)
+            .ok_or_else(|| format!("unknown repo {name}"))?;
+        let dir = repo_dir(eval, name, &repo.url)?;
+        let entry = history.entry(name.clone()).or_default();
+        for c in set.commits.iter().filter(|c| &c.repo == name) {
+            let ex_path = extraction_path(eval, &reg.system, c);
+            if !ex_path.exists() {
+                continue;
+            }
+            // Only history the agent's working tree already has: a commit after the base did not happen.
+            if git(&dir, &["merge-base", "--is-ancestor", &c.sha, &run.base]).is_err() {
+                println!("{name} {}: not an ancestor of the base, skipped", c.sha);
+                continue;
+            }
+            let ex: cargo_smysl_corpus::Extraction = serde_json::from_str(&read(&ex_path)?)
+                .map_err(|e| format!("{}: {e}", ex_path.display()))?;
+            let paths = cargo_smysl_git::read_commit(&dir, &c.sha)
+                .map_err(|e| format!("{}: {e}", c.sha))?
+                .files
+                .into_iter()
+                .map(|f| f.path)
+                .collect();
+            entry.push((c.sha.clone(), dir.clone(), ex, paths));
+        }
+    }
+    // A corpus of the commits in `scope`, or all of the repository's when `scope` is None.
+    let corpus_of = |repo: &str, scope: Option<&BTreeSet<String>>| -> Result<s3::Corpus, String> {
+        let mut corpus = s3::Corpus::new();
+        for (sha, dir, ex, _) in history.get(repo).into_iter().flatten() {
+            if scope.is_none_or(|s| s.contains(sha)) {
+                corpus.add(sha, commit_batch(dir, sha, ex)?)?;
+            }
+        }
+        Ok(corpus)
+    };
+    let whole: BTreeMap<&String, s3::Corpus> = reg
+        .repos
+        .keys()
+        .map(|r| corpus_of(r, None).map(|c| (r, c)))
+        .collect::<Result<_, _>>()?;
+
+    let out = eval.join("s3/context");
+    std::fs::create_dir_all(&out).map_err(|e| e.to_string())?;
+    let jobs = reg
+        .tasks
+        .iter()
+        .map(|t| {
+            (
+                format!("task-{}", t.n),
+                &t.repo,
+                &t.statement,
+                t.files.clone(),
+            )
+        })
+        .chain(
+            reg.questions
+                .iter()
+                .map(|q| (format!("question-{}", q.n), &q.repo, &q.text, Vec::new())),
+        );
+    println!(
+        "{:<12} {:>7} {:>5} {:>5} {:>5} {:>6}  commits",
+        "context", "corpus", "focus", "units", "L1+", "tokens"
+    );
+    for (name, repo, query, files) in jobs {
+        // A task's scope: the commits that touched its files, plus the commits whose units the statement
+        // retrieves across the whole repository (rationale for code is often recorded where its tests
+        // changed). Questions name no files and search the whole repository.
+        let all = whole
+            .get(repo)
+            .ok_or_else(|| format!("{name}: no corpus for {repo}"))?;
+        let touched = history
+            .get(repo)
+            .into_iter()
+            .flatten()
+            .any(|(_, _, _, paths)| paths.iter().any(|p| files.contains(p)));
+        // No extracted commit touched the files: the whole repository is the scope.
+        let corpus = if !touched {
+            None
+        } else {
+            let mut scope = all.commits_retrieved(query, 6);
+            scope.extend(
+                history
+                    .get(repo)
+                    .into_iter()
+                    .flatten()
+                    .filter(|(_, _, _, paths)| paths.iter().any(|p| files.contains(p)))
+                    .map(|(sha, ..)| sha.clone()),
+            );
+            Some(corpus_of(repo, Some(&scope)).map_err(|e| format!("{name}: {e}"))?)
+        };
+        let corpus = corpus.as_ref().unwrap_or(all);
+        let p = s3::pack(corpus, query, &files, reg.budget).map_err(|e| format!("{name}: {e}"))?;
+        std::fs::write(out.join(format!("{name}.txt")), &p.text).map_err(|e| e.to_string())?;
+        println!(
+            "{:<12} {:>7} {:>5} {:>5} {:>5} {:>6}  {}",
+            name,
+            corpus.store.units().count(),
+            p.focus,
+            p.units,
+            p.detailed,
+            p.used,
+            corpus.commits.join(" ")
+        );
     }
     Ok(())
 }

@@ -1,0 +1,9 @@
+{
+  "n": 10,
+  "arm": "git",
+  "answer": "The observations file was previously generated at runtime by test binaries writing a residuals fixture into the shared temp directory under a fixed name. Two tests did this concurrently, so one truncated the file while the other read it, producing a flaky failure in CI (though it passed locally) because reading zero observations is treated as an error rather than a vacuous match. The fix was to commit the observations as a static file instead: four synthetic instants representing predicted cycle centers offset by known amounts, so the expected residuals are known in advance and can be checked by eye, and there is nothing left for concurrent processes to race over. It also lets the fixture double as a documented, demonstrable example generated into the manual.",
+  "is_error": false,
+  "cost_usd": 0.0731712,
+  "turns": 5,
+  "prompt": "A question about the `ucal` Rust repository in the current directory: Why is the observations example a committed file?\n\nAnswer from the repository's git history (git log, git show, git blame) and its code. Answer in plain prose, at most 150 words. Say what the reason is and, if it matters, what would break otherwise. Do not include commit ids, hashes, unit labels or file line numbers, and do not describe where or how you found the answer. If the material does not say why, answer exactly: Not recorded."
+}

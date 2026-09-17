@@ -1,0 +1,9 @@
+{
+  "n": 7,
+  "arm": "git",
+  "answer": "The doc comment directly above `reading` states the reason: it's kept \"Pure: no clock is read here, which is what lets a test drive a wall clock backwards and check that the answer does not follow it.\"\n\n`Session::reading` takes the wall-clock reading and monotonic-elapsed time as arguments rather than reading them itself so that the function stays pure. That's what makes it possible to test the core guarantee of the type \u2014 that a reading never moves backwards even if the system wall clock jumps backwards \u2014 by feeding it a fabricated, backward-stepping wall time and checking the output still only moves forward. If `reading` read the clocks internally, a test could not control or fake a backward step in the wall clock, so this key monotonicity property (a system-clock step back must lose to the monotonic branch, while a forward step wins) would be untestable.",
+  "is_error": false,
+  "cost_usd": 0.0847766,
+  "turns": 3,
+  "prompt": "A question about the `ucal` Rust repository in the current directory: Why does `Session::reading` take the wall clock and elapsed time as arguments instead of reading the clock?\n\nAnswer from the repository's git history (git log, git show, git blame) and its code. Answer in plain prose, at most 150 words. Say what the reason is and, if it matters, what would break otherwise. Do not include commit ids, hashes, unit labels or file line numbers, and do not describe where or how you found the answer. If the material does not say why, answer exactly: Not recorded."
+}

@@ -1,0 +1,629 @@
+[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Route all time readings through a process-wide session clock.
+  The system clock can step backwards due to NTP, VM resume, or operator; a continuously running wallclock would show time going backward. The session clock ensures one monotonic reading order.
+  -> causes q/g2074788f713e-1-1
+
+[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Ignore poison on the session mutex and take the inner value.
+  A poisoned lock means another thread panicked holding it; state is a pair of tick counts and cannot be torn, so taking inner value is correct.
+  -> causes q/g2074788f713e-11-1
+
+[d/g2074788f713e-2] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.
+  -> causes q/g2074788f713e-2-1
+  -> causes q/g2074788f713e-2-2
+
+[d/g2074788f713e-3] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Do not interpolate wall-clock ticks for precision.
+  -> causes q/g2074788f713e-3-1
+
+[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Make Session::reading a pure function of its inputs.
+  Pure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence.
+  -> causes q/g2074788f713e-4-1
+
+[d/g2074788f713e-5] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Track the last reading to enforce monotonicity against smaller elapsed inputs.
+  -> causes q/g2074788f713e-5-1
+
+[d/g2074788f713e-6] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Store session state as Option and anchor lazily inside session_now, avoiding .expect.
+  OnceLock's initializer cannot return a Result; no-panic-in-cli lint refused .expect. Option allows anchoring where a failure can be returned.
+  -> causes q/g2074788f713e-6-1
+
+[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Split wall_instant out of now_instant to expose a raw system clock reading.
+  now_instant goes through session clock; doctor --clock and measurements need the raw reading. Splitting also exposed the feature gate issue.
+  -> causes q/g2074788f713e-7-1
+
+[d/g2074788f713e-8] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Gate wall_instant (and session clock) under the civil feature.
+  Converting a clock reading is a leap-table lookup, because Unix time is a UTC label. The feature workflow caught the missing gate when building with u512,std.
+  -> causes q/g2074788f713e-8-1
+
+[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)
+  Document the session clock and its rule in CLI.md and release notes.
+  Record one process, one clock and the max rule for users.
+  -> causes q/g2074788f713e-9-1
+
+[d/g21665b3aac9b-1] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Set RUSTFLAGS=-D warnings in features.yml workflow
+  The workflow catches the same cfg mismatch defects as verify.yml, but had been letting identical defects through as warnings nobody reads.
+  -> causes q/g21665b3aac9b-1-1
+
+[d/g21665b3aac9b-2] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Fix the six items with cfg attributes rather than warning suppressions
+  The author chose attributes over suppressions for the six items.
+  -> causes q/g21665b3aac9b-2-1
+
+[d/g21665b3aac9b-3] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Gate RatInterval import behind feature cosmo
+  RatInterval is only parse_redshift's return type and nothing else's, so it arrives with cosmo or not at all.
+  -> causes q/g21665b3aac9b-3-1
+
+[d/g21665b3aac9b-4] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Gate qualified::Kind import behind feature civil
+  It is read once, by to-civil.
+  -> causes q/g21665b3aac9b-4-1
+
+[d/g21665b3aac9b-5] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Gate Rounding import behind feature civil
+  Rounding is to-civil's default when --round is absent.
+  -> causes q/g21665b3aac9b-5-1
+
+[d/g21665b3aac9b-6] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Gate parse_form and codec::Form behind all(civil, std)
+  They belong to run_now, which needs both civil and std features.
+  -> causes q/g21665b3aac9b-6-1
+
+[d/g21665b3aac9b-7] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Gate years_quantity behind any(events, cosmo)
+  It is called by events for a window's width and by cosmo for an enclosure's ends; no single feature name could express that shape.
+  -> causes q/g21665b3aac9b-7-1
+
+[d/g21665b3aac9b-8] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Do not exclude the refused job from -D warnings
+  -> causes q/g21665b3aac9b-8-1
+
+[d/g21665b3aac9b-9] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Split sign-release error message into two messages based on gh auth status
+  The original message conflated two conditions with different remedies; the first person to hit it was unauthenticated, not missing a release.
+  -> causes q/g21665b3aac9b-9-1
+
+[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Add a clock section to doctor and now output.
+  The precision field invited an accuracy claim; a clock section states what a reading can actually fill.
+  -> causes q/g31e52cc10b1f-1-1
+
+[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Add doctor --clock flag to sample and report machine resolution.
+  Resolution is measured and varies by machine; it must be behind a flag because doctor's ordinary output is compared against a committed example.
+  -> causes q/g31e52cc10b1f-2-1
+
+[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Keep precision field name and value unchanged.
+  It is a path in ucal-json/1; repurposing one is breaking.
+  -> causes q/g31e52cc10b1f-3-1
+
+[d/g31e52cc10b1f-4] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Do not measure accuracy.
+
+[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Keep granularity, resolution, and accuracy as separate numbers.
+  Conflating them is the defect; separation makes clear what each number represents.
+  -> causes q/g31e52cc10b1f-5-1
+
+[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Report which error terms cancel in a difference.
+  Knowing which terms cancel helps interpret differences; constant offset cancels, rate error does not.
+  -> causes q/g31e52cc10b1f-6-1
+
+[d/g31e52cc10b1f-7] decision (cited, source Documentation/Release_Notes/1.9.0.md@31e52cc10b1f)
+  Report interpolation cost as a fraction, not a decimal.
+  -> causes q/g31e52cc10b1f-7-1
+
+[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)
+  Add note that precision is tier rendered to, not accuracy.
+  The same field name means something else in explain; clarify meaning to prevent conflation.
+  -> causes q/g31e52cc10b1f-8-1
+
+[d/g449b762e3cca-1] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)
+  Add `ucal cal from` as inverse of `cal show`
+
+[d/g449b762e3cca-10] decision (cited, source Documentation/CLI.md@449b762e3cca)
+  Refuse calendars with no anchor
+  -> causes q/g449b762e3cca-10-1
+
+[d/g449b762e3cca-11] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)
+  Add property test recovering every instant
+  Verify strictness by shifting the inverse one day and watching it fail, ensuring the window contains the original instant.
+  -> causes q/g449b762e3cca-11-1
+
+[d/g449b762e3cca-12] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)
+  Assert consecutive local days leave no gap
+  Ensures outward endpoints never create a gap no instant belongs to.
+  -> causes q/g449b762e3cca-12-1
+
+[d/g449b762e3cca-2] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)
+  Return a Window from the inverse
+  A local day is a span, and the anchor's uncertainty propagates, so the result must be an interval, not a point.
+  -> causes q/g449b762e3cca-2-1
+
+[d/g449b762e3cca-3] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)
+  Parse the exact form `cal show` prints
+  So the two commands read each other's output, making the round trip something a person runs.
+  -> causes q/g449b762e3cca-3-1
+
+[d/g449b762e3cca-4] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)
+  Take window endpoints outward, never inward
+  A local day boundary almost never lands on a tick boundary, and narrowing to fit would be narrowing by assumption.
+  -> causes q/g449b762e3cca-4-1
+
+[d/g449b762e3cca-5] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)
+  Do not use search to find the year
+  D-A21 fixed the placement, so the inverse evaluates it directly; the forward split_year corrects an estimate in a loop, but the inverse needs no estimate.
+  -> causes q/g449b762e3cca-5-1
+
+[d/g449b762e3cca-6] decision (cited, source Documentation/CLI.md@449b762e3cca)
+  Refuse year 0
+  Local years are 1-based from the anchor; year 1 is the year that began there, and there is no year 0.
+  -> causes q/g449b762e3cca-6-1
+
+[d/g449b762e3cca-7] decision (cited, source crates/ucal-body/src/calendar.rs@449b762e3cca)
+  Refuse day 0
+  Local days of the year are 1-based too.
+  -> causes q/g449b762e3cca-7-1
+
+[d/g449b762e3cca-8] decision (cited, source Documentation/CLI.md@449b762e3cca)
+  Refuse a day past the year's end, not roll it forward
+  The length of a local year is set by the leap rule and varies between them, so a day beyond it is invalid.
+  -> causes q/g449b762e3cca-8-1
+
+[d/g449b762e3cca-9] decision (cited, source Documentation/CLI.md@449b762e3cca)
+  Refuse a fraction of 1 or more
+  A fraction through a day lies in [0, 1); 1 is the next day, not the end of this one.
+  -> causes q/g449b762e3cca-9-1
+
+[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Read notes for version being built rather than newest sorted file
+  -> causes q/g5880e472260e-1-1
+
+[d/g5880e472260e-2] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Error naming the version when current release notes missing
+  -> causes q/g5880e472260e-2-1
+
+[d/g5880e472260e-3] decision (cited, source xtask/src/citations.rs@5880e472260e)
+  Replace old version-sort tests with current-version and missing-notes tests
+  -> causes q/g5880e472260e-3-1
+
+[d/g5880e472260e-4] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Make missing-notes test strict about the diagnostic
+  -> causes q/g5880e472260e-4-1
+
+[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Restore doc comment for check_ci_covers_the_procedure
+  -> causes q/g5880e472260e-5-1
+
+[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)
+  Update release notes with the fix rationale and sweep findings
+  Record the change, why it is not a better sort, the missing-notes behavior, and the version-ordering sweep result for 1.10.0.
+  -> causes q/g5880e472260e-6-1
+
+[d/g5880e472260e-7] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Leave other version-ordering sites unchanged
+  -> causes q/g5880e472260e-7-1
+
+[d/g8fdb9b3edb7c-1] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)
+  Replace interpolated event id with literal in event error message.
+  -> causes q/g8fdb9b3edb7c-1-2
+  -> causes q/g8fdb9b3edb7c-1-1
+
+[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)
+  Accept broken pipe as non-fatal when writing test stdin.
+  The child can exit while the harness writes because `between - -` refuses before reading stdin; the behavior is correct and the assertions on status and output survive the error.
+  -> causes q/g8fdb9b3edb7c-2-2
+  -> causes q/g8fdb9b3edb7c-2-1
+
+[d/gcc3aafefb1da-1] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)
+  Replace test-written temp fixture with committed observations file.
+  Two test binaries wrote the same temp path concurrently causing a race; a committed file cannot race and a reader can open it.
+  -> causes q/gcc3aafefb1da-1-1
+
+[d/gcc3aafefb1da-2] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)
+  Create observations as four synthetic instants with known shifts.
+  -> causes q/gcc3aafefb1da-2-2
+  -> causes q/gcc3aafefb1da-2-1
+
+[d/gcc3aafefb1da-3] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)
+  Add residuals command as worked example in manual.
+  -> causes q/gcc3aafefb1da-3-1
+
+[d/gcc3aafefb1da-4] decision (cited, source Documentation/Release_Notes/1.12.0.md@cc3aafefb1da)
+  Add release note documenting flaky test and repair.
+  Record that CI found flaky test and how it was fixed.
+  -> causes q/gcc3aafefb1da-4-1
+
+[d/gcc3aafefb1da-5] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)
+  Keep 'no observations read' as error rather than agreement.
+  Comparing nothing should not be a report of agreement.
+  -> causes q/gcc3aafefb1da-5-1
+
+[d/gcc3aafefb1da-6] decision (cited, source Documentation/CLI-EXAMPLES.md@cc3aafefb1da)
+  Do not fit or extract quadratic trend (Ṗ) from residuals.
+  Least squares fitting needs to know which code produced the number, so it is not produced.
+  -> causes q/gcc3aafefb1da-6-1
+
+[e/g21665b3aac9b-8-1] evidence (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Check: the backend guard is still the first error line
+  -> backs q/g21665b3aac9b-8-1
+
+[e/g31e52cc10b1f-4-1] evidence (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Check: which a throwaway probe duly did, at 1.2e-5
+
+[e/g31e52cc10b1f-7-1] evidence (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Check: the lint caught the first draft using one
+  -> backs q/g31e52cc10b1f-7-1
+
+[e/g449b762e3cca-10-1] evidence (cited, source crates/ucal/tests/cal_from.rs@449b762e3cca)
+  Check: assert!(ucal::cmd_cal_from("titan-d", "1-1").is_err());
+  -> backs q/g449b762e3cca-10-1
+
+[e/g5880e472260e-2-1] evidence (cited, source xtask/src/citations.rs@5880e472260e)
+  Check: e.iter().any(|m| m.contains("9.9.9"))
+  -> backs q/g5880e472260e-2-1
+
+[e/g5880e472260e-4-1] evidence (cited, source xtask/src/citations.rs@5880e472260e)
+  Check: e.iter().any(|m| m.contains("a cycle's notes"))
+  -> backs q/g5880e472260e-4-1
+
+[e/gcc3aafefb1da-2-2] evidence (cited, source Documentation/CLI-EXAMPLES.md@cc3aafefb1da)
+  Check: outside_the_window 1 …
+  Check: outside_the_window  1
+  -> backs q/gcc3aafefb1da-2-2
+
+[e/gcc3aafefb1da-3-1] evidence (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)
+  Check: 37 worked examples now
+  -> backs q/gcc3aafefb1da-3-1
+
+[p/g2074788f713e-10-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  `Session::reading` is pure, allowing tests to drive wall clock backwards.
+
+[p/g2074788f713e-11-1] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  State is a pair of tick counts and cannot be torn.
+  -> conditions d/g2074788f713e-11
+
+[p/g2074788f713e-11-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  `body_file::leak` makes the same judgment about its intern pool.
+  -> conditions d/g2074788f713e-11
+
+[p/g2074788f713e-2-1] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Ticks has `try_add` to compute anchor plus monotonic elapsed.
+  -> conditions d/g2074788f713e-2
+
+[p/g2074788f713e-5-1] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  The first two branches cannot go backwards on their own.
+  -> conditions d/g2074788f713e-5
+
+[p/g2074788f713e-6-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  `OnceLock`'s initialiser cannot return a `Result`.
+  -> conditions d/g2074788f713e-6
+
+[p/g2074788f713e-6-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  The `no-panic-in-cli` lint refused an `.expect`.
+  -> conditions d/g2074788f713e-6
+
+[p/g2074788f713e-8-3] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)
+  `now_instant` is gated under the `civil` feature.
+  -> conditions d/g2074788f713e-8
+
+[p/g2074788f713e-9-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Session clock with `max` rule exists to document.
+  -> conditions d/g2074788f713e-9
+
+[p/g21665b3aac9b-3-1] constraint (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  parse_redshift is compiled only when feature cosmo is enabled.
+  -> conditions d/g21665b3aac9b-3
+
+[p/g31e52cc10b1f-2-2] constraint (cited, source crates/ucal/src/clock.rs@31e52cc10b1f)
+  Resolution measurements vary by machine and by run.
+  -> conditions d/g31e52cc10b1f-2
+
+[p/g31e52cc10b1f-3-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  The precision field is a path in ucal-json/1.
+  -> conditions d/g31e52cc10b1f-3
+
+[p/g31e52cc10b1f-5-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Granularity is structural and fills T-2.
+  -> conditions d/g31e52cc10b1f-5
+
+[p/g31e52cc10b1f-6-2] constraint (cited, source Documentation/Release_Notes/1.9.0.md@31e52cc10b1f)
+  ucal datum already states the frame term cancels.
+  -> conditions d/g31e52cc10b1f-6
+
+[p/g31e52cc10b1f-7-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Rule E forbids a float in a shipped crate.
+  -> conditions d/g31e52cc10b1f-7
+
+[p/g31e52cc10b1f-8-1] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)
+  `--precision` is documented as tier to render to.
+  -> conditions d/g31e52cc10b1f-8
+
+[p/g31e52cc10b1f-8-2] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)
+  The same field name means something else in `ucal explain`.
+  -> conditions d/g31e52cc10b1f-8
+
+[p/g449b762e3cca-11-2] constraint (cited, source crates/ucal/tests/cal_from.rs@449b762e3cca)
+  `cal.fields(&t)` returns local year/day for an instant.
+  -> conditions d/g449b762e3cca-11
+
+[p/g449b762e3cca-12-1] constraint (cited, source crates/ucal/tests/cal_from.rs@449b762e3cca)
+  `earth-d` is an anchored calendar retrievable by id.
+  -> conditions d/g449b762e3cca-12
+
+[p/g8fdb9b3edb7c-1-2] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)
+  Features workflow builds `events` without `body`.
+  -> conditions d/g8fdb9b3edb7c-1
+
+[p/g8fdb9b3edb7c-2-1] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)
+  `between - -` is refused before any byte of stdin is read.
+  -> conditions d/g8fdb9b3edb7c-2
+
+[p/g8fdb9b3edb7c-2-2] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)
+  Child can exit while harness writes, producing EPIPE.
+  -> conditions d/g8fdb9b3edb7c-2
+
+[p/g8fdb9b3edb7c-2-3] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)
+  Assertions are on status and output, which survive EPIPE.
+  -> conditions d/g8fdb9b3edb7c-2
+
+[p/g8fdb9b3edb7c-2-4] constraint (cited, source crates/ucal/tests/stdin_stream.rs@8fdb9b3edb7c)
+  `std::io::ErrorKind::BrokenPipe` represents EPIPE write errors.
+  -> conditions d/g8fdb9b3edb7c-2
+
+[p/g8fdb9b3edb7c-3-1] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)
+  `between - -` is refused before stdin is read.
+
+[p/g8fdb9b3edb7c-3-2] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)
+  G7's early refusal is intended program behavior, not a bug.
+
+[p/gcc3aafefb1da-3-1] constraint (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)
+  Manual examples are generated from xtask/src/examples.rs entries
+  -> conditions d/gcc3aafefb1da-3
+
+[p/gcc3aafefb1da-4-2] constraint (cited, source Documentation/Release_Notes/1.12.0.md@cc3aafefb1da)
+  The repair uses a committed observations file
+  -> conditions d/gcc3aafefb1da-4
+
+[q/g2074788f713e-1-1] claim (inferred)
+  All time readings go through session clock, preventing wallclock face from going back in time.
+
+[q/g2074788f713e-10-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Tests verify monotonic sequence over backward steps.
+
+[q/g2074788f713e-10-2] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Test asserts session reading no finer than raw.
+
+[q/g2074788f713e-11-1] claim (inferred)
+  Taking inner value on poisoned mutex is correct because state cannot be torn.
+
+[q/g2074788f713e-2-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Backward step loses to monotonic branch, keeps advancing at oscillator's rate.
+
+[q/g2074788f713e-2-2] claim (inferred)
+  Forward step wins, tracks system corrections arriving.
+
+[q/g2074788f713e-3-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Session clock exists for monotonicity, not precision; interpolation worth 24/3125 rung.
+
+[q/g2074788f713e-4-1] claim (inferred)
+  Pure function lets tests drive wall clock backwards and assert monotonic sequence.
+
+[q/g2074788f713e-5-1] claim (inferred)
+  last prevents smaller elapsed inputs from making reading go backwards.
+
+[q/g2074788f713e-6-1] claim (inferred)
+  Option avoids .expect, allows anchoring where failure can be returned.
+
+[q/g2074788f713e-7-1] claim (inferred)
+  wall_instant exposes raw system clock for doctor --clock and measurements.
+
+[q/g2074788f713e-8-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Civil feature gate ensures leap-table lookup; u512,std build caught missing gate.
+
+[q/g2074788f713e-9-1] claim (inferred)
+  Documents one process, one clock and max rule in CLI.md and release notes.
+
+[q/g21665b3aac9b-1-1] claim (inferred)
+  Feature workflow now applies -D warnings to twenty-three combinations, catching cfg mismatch defects.
+
+[q/g21665b3aac9b-2-1] claim (inferred)
+  Six items fixed with cfg attributes, not warning suppressions.
+
+[q/g21665b3aac9b-3-1] claim (inferred)
+  RatInterval import is gated to cosmo because only parse_redshift uses it.
+
+[q/g21665b3aac9b-4-1] claim (inferred)
+  qualified::Kind import is gated to civil because to-civil reads it.
+
+[q/g21665b3aac9b-5-1] claim (inferred)
+  Rounding import is gated to civil because to-civil uses it when --round absent.
+
+[q/g21665b3aac9b-6-1] claim (inferred)
+  parse_form and codec::Form gated behind all(civil, std) because run_now needs both.
+
+[q/g21665b3aac9b-7-1] claim (inferred)
+  years_quantity gated behind any(events, cosmo) because both features call it.
+
+[q/g21665b3aac9b-8-1] finding (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Refused job inherits -D warnings and its checks still hold with backend guard first.
+
+[q/g21665b3aac9b-9-1] claim (inferred)
+  Sign-release splits error into separate messages for unauthenticated versus missing release conditions.
+
+[q/g31e52cc10b1f-1-1] claim (inferred)
+  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy …
+  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy claim.
+
+[q/g31e52cc10b1f-2-1] claim (inferred)
+  Doctor --clock must be behind a flag because resolution varies by machine and ordinary output is compared …
+  Doctor --clock must be behind a flag because resolution varies by machine and ordinary output is compared against committed examples.
+
+[q/g31e52cc10b1f-3-1] claim (inferred)
+  Keeping precision unchanged avoids breaking ucal-json/1 paths.
+
+[q/g31e52cc10b1f-5-1] claim (inferred)
+  Separation makes clear what each number represents; conflating them is the defect.
+
+[q/g31e52cc10b1f-6-1] claim (inferred)
+  Reporting cancellations helps interpret differences: constant offset cancels, rate error does not.
+
+[q/g31e52cc10b1f-7-1] finding (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Reporting as fraction avoids Rule E violation; lint caught first decimal draft.
+
+[q/g31e52cc10b1f-8-1] claim (inferred)
+  Note clarifies precision means tier rendered to, not accuracy, preventing conflation with explain's precision.
+
+[q/g449b762e3cca-10-1] finding (cited, source Documentation/CLI.md@449b762e3cca)
+  Unanchored calendars refuse with UCAL-E0062.
+
+[q/g449b762e3cca-11-1] claim (inferred)
+  Property test ensures inverse window contains the original instant for every anchored calendar.
+
+[q/g449b762e3cca-12-1] claim (inferred)
+  Consecutive local days leave no gap.
+
+[q/g449b762e3cca-2-1] claim (inferred)
+  The inverse returns a Window, an interval, not a point.
+
+[q/g449b762e3cca-3-1] claim (inferred)
+  The command accepts the exact format cal show prints, enabling manual round trips.
+
+[q/g449b762e3cca-4-1] claim (inferred)
+  Endpoints are taken outward, never inward, so the window contains the interval.
+
+[q/g449b762e3cca-5-1] claim (inferred)
+  The inverse evaluates directly without iterative search.
+
+[q/g449b762e3cca-6-1] claim (inferred)
+  Year 0 is refused with error E0020.
+
+[q/g449b762e3cca-7-1] claim (inferred)
+  Day 0 is refused with error E0018.
+
+[q/g449b762e3cca-8-1] claim (inferred)
+  Days beyond the year's end are refused, not rolled forward.
+
+[q/g449b762e3cca-9-1] claim (inferred)
+  Fractions of 1 or more are refused.
+
+[q/g5880e472260e-1-1] claim (inferred)
+  Check reads current version's notes from [workspace.package], removing ordering guess.
+
+[q/g5880e472260e-2-1] finding (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Missing current-version notes now error naming version, not silent previous-cycle fallback.
+
+[q/g5880e472260e-3-1] claim (inferred)
+  Old version-sort tests replaced with current-version and missing-notes tests.
+
+[q/g5880e472260e-4-1] finding (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Missing-notes test now requires specific diagnostic, so disabled check cannot pass.
+
+[q/g5880e472260e-5-1] claim (inferred)
+  Doc comment restored for check_ci_covers_the_procedure, leaving function documented.
+
+[q/g5880e472260e-6-1] claim (inferred)
+  Release notes updated with fix rationale, missing-notes behavior, and sweep findings.
+
+[q/g5880e472260e-7-1] finding (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  No other version-ordering sites changed; all other sites treat version as opaque string.
+
+[q/g8fdb9b3edb7c-1-1] finding (cited, source crates/ucal/src/lib.rs@8fdb9b3edb7c)
+  Event error arm no longer calls body_file::leak, so it compiles without the `body` feature.
+
+[q/g8fdb9b3edb7c-1-2] claim (inferred)
+  Error message no longer interpolates the id, so the test assertion drops `recombination` and only checks …
+
+[q/g8fdb9b3edb7c-2-1] claim (inferred)
+  BrokenPipe on stdin write is treated as success, preventing EPIPE race from failing the test.
+
+[q/g8fdb9b3edb7c-2-2] claim (inferred)
+  Status and output assertions still execute after an EPIPE, so test validity remains.
+
+[q/gcc3aafefb1da-1-1] claim (inferred)
+  Committed fixture cannot race and a reader can open it.
+
+[q/gcc3aafefb1da-2-1] claim (inferred)
+  Residuals are known in advance and can be checked by eye.
+
+[q/gcc3aafefb1da-2-2] finding (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)
+  Three residuals inside own windows, +41 outside, demonstrating width property.
+
+[q/gcc3aafefb1da-3-1] finding (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)
+  Manual works count becomes 37 and includes the residuals example.
+
+[q/gcc3aafefb1da-4-1] claim (inferred)
+  Release note records CI found the flaky test and the repair.
+
+[q/gcc3aafefb1da-5-1] claim (inferred)
+  No observations read remains an error, not a report of agreement.
+
+[q/gcc3aafefb1da-6-1] claim (inferred)
+  Residuals command does not fit or extract quadratic trend (Ṗ).
+
+[r/g2074788f713e-4-1] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Rejected: Have Session::reading read the wall clock itself.
+  A pure function lets tests drive a wall clock backwards and assert the answer does not follow.
+  -> contrasts d/g2074788f713e-4
+
+[r/g2074788f713e-6-2] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)
+  Rejected: Anchor the session at process start-up.
+  -> contrasts d/g2074788f713e-6
+
+[r/g2074788f713e-7-1] claim (cited, source crates/ucal/src/lib.rs@2074788f713e)
+  Rejected: Sample the session clock for `doctor --clock`.
+  -> contrasts d/g2074788f713e-7
+
+[r/g2074788f713e-8-1] claim (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)
+  Rejected: Leave `wall_instant` ungated after the split.
+  -> contrasts d/g2074788f713e-8
+
+[r/g21665b3aac9b-5-1] claim (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)
+  Rejected: Leave the Rounding import without a cfg gate.
+  -> contrasts d/g21665b3aac9b-5
+
+[r/g31e52cc10b1f-4-1] claim (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)
+  Rejected: Attempt to measure or estimate clock accuracy.
+  -> contrasts d/g31e52cc10b1f-4
+
+[r/g449b762e3cca-10-1] claim (cited, source Documentation/CLI.md@449b762e3cca)
+  Rejected: Allow the inverse for calendars with no anchor.
+  -> contrasts d/g449b762e3cca-10
+
+[r/g449b762e3cca-12-1] claim (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)
+  Rejected: Allow a gap between consecutive local days.
+  -> contrasts d/g449b762e3cca-12
+
+[r/g449b762e3cca-2-1] claim (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)
+  Rejected: Return an exact instant rather than a Window.
+  -> contrasts d/g449b762e3cca-2
+
+[r/g449b762e3cca-9-1] claim (cited, source Documentation/CLI.md@449b762e3cca)
+  Rejected: Treat fraction 1 as the end of the current day.
+  -> contrasts d/g449b762e3cca-9
+
+[r/g5880e472260e-2-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Rejected: silently fall back to the previous cycle's notes file
+  -> contrasts d/g5880e472260e-2
+
+[r/g5880e472260e-3-1] claim (cited, source xtask/src/citations.rs@5880e472260e)
+  Rejected: keep the two old tests for version-sort behavior
+  -> contrasts d/g5880e472260e-3
+
+[r/g5880e472260e-5-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)
+  Rejected: not restore the check's doc comment
+  -> contrasts d/g5880e472260e-5
+
+[r/gcc3aafefb1da-6-1] claim (cited, source Documentation/CLI-EXAMPLES.md@cc3aafefb1da)
+  Rejected: Fit or extract quadratic trend (Ṗ) from residuals.
+  -> contrasts d/gcc3aafefb1da-6
+

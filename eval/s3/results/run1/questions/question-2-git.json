@@ -1,0 +1,9 @@
+{
+  "n": 2,
+  "arm": "git",
+  "answer": "Each command in `tests/dispatch.rs` gets its own scratch directory because running all twenty-two commands from the same working directory (the repo root, during manual probing) left behind state \u2014 `.smysl/staged.smy` and `.smysl/usage.log` \u2014 that later commands then read. The `usage` invocation, for instance, ended up reading a ledger that the `ingest` invocation had just written, so the commands were no longer independent of each other's side effects. Isolating every command in its own scratch directory prevents that cross-contamination: each invocation runs against a clean state, so a failure or false pass can't be caused by leftovers from a previous command in the same test run.",
+  "is_error": false,
+  "cost_usd": 0.1098792,
+  "turns": 5,
+  "prompt": "A question about the `smysl` Rust repository in the current directory: Why does each dispatch-test command run in its own scratch directory?\n\nAnswer from the repository's git history (git log, git show, git blame) and its code. Answer in plain prose, at most 150 words. Say what the reason is and, if it matters, what would break otherwise. Do not include commit ids, hashes, unit labels or file line numbers, and do not describe where or how you found the answer. If the material does not say why, answer exactly: Not recorded."
+}

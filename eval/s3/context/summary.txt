@@ -1,0 +1,23 @@
+context       corpus focus units   L1+ tokens  commits
+task-1           210     6   185    14   3990  90ec2f7 532e4d2 8734565 69ea5c0
+task-2           344     6   216    13   3995  4968383 90ec2f7 532e4d2 8734565 69ea5c0 0bc1aeb
+task-3           199     6   185    12   3997  90ec2f7 a18e230 8734565 69ea5c0
+task-4           281     6   199    11   4000  4968383 90ec2f7 532e4d2 69ea5c0
+task-5           187     6   181    13   3998  90ec2f7 8734565 69ea5c0 0bc1aeb
+task-6           370     6   161    38   3995  4968383 90ec2f7 532e4d2 a18e230 8734565 69ea5c0 0bc1aeb
+task-7           190     6   185    26   3995  2074788 31e52cc 21665b3 449b762
+task-8            99     6    99    44   3123  2074788 31e52cc
+task-9            33     6    33    16   1228  5880e47
+task-10           33     6    33    16   1228  5880e47
+task-11           87     6    87    42   2469  cc3aafe 449b762
+task-12          190     6   185    25   3996  2074788 31e52cc 21665b3 449b762
+question-1       370     6   162    36   3997  4968383 90ec2f7 532e4d2 a18e230 8734565 69ea5c0 0bc1aeb
+question-2       370     6   158    37   3994  4968383 90ec2f7 532e4d2 a18e230 8734565 69ea5c0 0bc1aeb
+question-3       370     6   161    37   3997  4968383 90ec2f7 532e4d2 a18e230 8734565 69ea5c0 0bc1aeb
+question-4       370     6   160    38   3993  4968383 90ec2f7 532e4d2 a18e230 8734565 69ea5c0 0bc1aeb
+question-5       370     6   156    37   3997  4968383 90ec2f7 532e4d2 a18e230 8734565 69ea5c0 0bc1aeb
+question-6       370     6   160    37   3999  4968383 90ec2f7 532e4d2 a18e230 8734565 69ea5c0 0bc1aeb
+question-7       278     6   162    42   3996  2074788 5880e47 cc3aafe 31e52cc 8fdb9b3 21665b3 449b762
+question-8       278     6   160    44   3984  2074788 5880e47 cc3aafe 31e52cc 8fdb9b3 21665b3 449b762
+question-9       278     6   159    43   3987  2074788 5880e47 cc3aafe 31e52cc 8fdb9b3 21665b3 449b762
+question-10      278     6   167    43   3987  2074788 5880e47 cc3aafe 31e52cc 8fdb9b3 21665b3 449b762

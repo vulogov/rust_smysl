@@ -1,0 +1,9 @@
+{
+  "n": 1,
+  "arm": "git",
+  "answer": "The comment on the `dispatch` helper explains it directly: stdin is redirected to `/dev/null` rather than left inherited because two of the commands, `fmt` and `check`, read from stdin when no path is given. If the test harness were run interactively and let those commands inherit a real terminal as stdin, they would block waiting for input and the test would hang rather than fail. Using `/dev/null` guarantees an immediate EOF, so those commands fail fast (as expected, since they're being invoked without their required input) instead of hanging the whole test run.",
+  "is_error": false,
+  "cost_usd": 0.0927742,
+  "turns": 4,
+  "prompt": "A question about the `smysl` Rust repository in the current directory: Why does the dispatch test pass `/dev/null` as stdin to every command?\n\nAnswer from the repository's git history (git log, git show, git blame) and its code. Answer in plain prose, at most 150 words. Say what the reason is and, if it matters, what would break otherwise. Do not include commit ids, hashes, unit labels or file line numbers, and do not describe where or how you found the answer. If the material does not say why, answer exactly: Not recorded."
+}

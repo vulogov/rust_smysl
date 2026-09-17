@@ -1,0 +1,9 @@
+{
+  "n": 3,
+  "arm": "git",
+  "answer": "The list is hardcoded on purpose, so the test's expectations don't come from the same binary being tested. If the names were instead parsed out of the binary's own `--help` output, deleting a command's registration would make it disappear from both the help text and the derived list at once\u2014so the loop would simply stop testing that command and still report success. That defeats the whole point of the test, which exists specifically to catch a command silently losing its wiring or its arguments. A separate test then checks that the hardcoded list still matches what `--help` reports, in both directions, so the list can't quietly drift from the binary either. The one cost is that adding a new subcommand requires a human to update the array by hand, which is considered acceptable since the alternative is a test that can't fail.",
+  "is_error": false,
+  "cost_usd": 0.062064,
+  "turns": 2,
+  "prompt": "A question about the `smysl` Rust repository in the current directory: Why is the list of 22 subcommands hardcoded in `tests/dispatch.rs` rather than read from the binary?\n\nAnswer from the repository's git history (git log, git show, git blame) and its code. Answer in plain prose, at most 150 words. Say what the reason is and, if it matters, what would break otherwise. Do not include commit ids, hashes, unit labels or file line numbers, and do not describe where or how you found the answer. If the material does not say why, answer exactly: Not recorded."
+}

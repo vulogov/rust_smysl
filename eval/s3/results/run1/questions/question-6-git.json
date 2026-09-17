@@ -1,0 +1,9 @@
+{
+  "n": 6,
+  "arm": "git",
+  "answer": "The mutant is treated as an equivalent mutant, not a real gap. Flipping `==` to `!=` in that lookup makes it select the wrong `Cmd` entry from the table, but the only field ever read off that `Cmd` is consumed in the `_ =>` fallback arm, which no actual input reaches. Since no observable behavior differs regardless of which `Cmd` is picked, no test could ever distinguish the mutated code from the original \u2014 so writing one would be chasing a mutation that can't manifest as a failure. It was left documented in place instead, following the same practice used earlier for the `worse` function's `>=` mutant.",
+  "is_error": false,
+  "cost_usd": 0.053732600000000005,
+  "turns": 3,
+  "prompt": "A question about the `smysl` Rust repository in the current directory: Why does the `COMMANDS.iter().find` `==`/`!=` mutant not have a test?\n\nAnswer from the repository's git history (git log, git show, git blame) and its code. Answer in plain prose, at most 150 words. Say what the reason is and, if it matters, what would break otherwise. Do not include commit ids, hashes, unit labels or file line numbers, and do not describe where or how you found the answer. If the material does not say why, answer exactly: Not recorded."
+}

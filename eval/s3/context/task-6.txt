@@ -1,0 +1,601 @@
+[d/g0bc1aeb96d6b-1] decision (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)
+  Gate `report_against` and its tests on `gemini` or `anthropic` features
+  -> causes q/g0bc1aeb96d6b-1-1
+  -> causes q/g0bc1aeb96d6b-1-3
+  -> causes q/g0bc1aeb96d6b-1-2
+
+[d/g4968383dc452-1] decision (cited, source nodejs/README.md@4968383dc452)
+  Upgrade nodejs conformance target from C-Read to C-Produce.
+  -> causes q/g4968383dc452-1-1
+
+[d/g4968383dc452-11] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)
+  Update masthead format version to smysl/1.0.
+  -> causes q/g4968383dc452-11-1
+
+[d/g4968383dc452-12] decision (cited, source CHANGELOG.md@4968383dc452)
+  Correct README claims that tables were asserted against document.
+  The tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document.
+  -> causes q/g4968383dc452-12-1
+
+[d/g4968383dc452-15] decision (cited, source Documentation/READINESS.md@4968383dc452)
+  Revise gate 7 blocked command explanation, no longer 'decision about book'.
+  The block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision.
+  -> causes q/g4968383dc452-15-1
+
+[d/g4968383dc452-16] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)
+  Hold beta.smy repair rather than guess missing stanza.
+  The missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair.
+  -> causes q/g4968383dc452-16-1
+
+[d/g4968383dc452-17] decision (cited, source CHANGELOG.md@4968383dc452)
+  Do not implement rule M in outside readers.
+  Rule M is checkable against a store, not against a unit; a validate claiming to enforce it would be a check that cannot fail.
+  -> causes q/g4968383dc452-17-1
+
+[d/g4968383dc452-21] decision (cited, source Documentation/READINESS.md@4968383dc452)
+  Do not apply 22% artefact fraction to other modules.
+  One module evidence is not generalizable; applying the fraction would repeat the error of quoting a number without its configuration.
+  -> causes q/g4968383dc452-21-1
+
+[d/g4968383dc452-22] decision (cited, source nodejs/src/blake3.js@4968383dc452)
+  Add BLAKE3 test vectors for chunk boundary lengths.
+  -> causes q/g4968383dc452-22-1
+
+[d/g4968383dc452-23] decision (cited, source nodejs/src/uid.js@4968383dc452)
+  Implement status integers and source/kind enums as constants in nodejs.
+  These values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures.
+  -> causes q/g4968383dc452-23-1
+
+[d/g4968383dc452-24] decision (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)
+  Implement RFC 4648 base32 alphabet in nodejs.
+  The spec lacked an alphabet; base32hex was equally faithful but would produce mutually unreadable names.
+  -> causes q/g4968383dc452-24-1
+
+[d/g4968383dc452-26] decision (cited, source nodejs/src/uid.js@4968383dc452)
+  Sort and deduplicate deps/grounds in nodejs.
+  -> causes q/g4968383dc452-26-1
+
+[d/g4968383dc452-4] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)
+  Run shape clause validation before uid() in nodejs.
+  -> causes q/g4968383dc452-4-1
+
+[d/g4968383dc452-5] decision (cited, source CHANGELOG.md@4968383dc452)
+  NFC-normalise text in nodejs CBOR encoder.
+  -> causes q/g4968383dc452-5-1
+
+[d/g4968383dc452-8] decision (cited, source CHANGELOG.md@4968383dc452)
+  Mark spec-derived constants with SPEC: in nodejs src/uid.js.
+  To record that these values were previously guessed from fixtures, making the method explicit.
+  -> causes q/g4968383dc452-8-1
+
+[d/g532e4d229a6c-3] decision (cited, source tests/cmd_fmt.rs@532e4d229a6c)
+  Make each test write its own document with the needed property instead of using repository fixtures.
+  -> causes q/g532e4d229a6c-3-2
+  -> causes q/g532e4d229a6c-3-1
+
+[d/g69ea5c05d859-1] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Accept smysl/1.0 in FORMAT_VERSIONS_SUPPORTED while keeping smysl/0.1.
+  The first migration step requires readers to accept both before the writer flips, so old documents keep working and the new version is not refused.
+
+[d/g69ea5c05d859-11] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Update ROAD_TO_1.0.md to mark steps 1 and 2 done, step 3 deferred, and correct the assumption that python/, …
+  -> causes q/g69ea5c05d859-11-1
+
+[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.
+  The trap was invisible until it bit; the spec should now state the fix so the historical warning is replaced with the actual current behavior.
+  -> causes q/g69ea5c05d859-12-1
+
+[d/g69ea5c05d859-13] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Update format spec §8.6 to say smysl/1.0 is not a break and means the format is settled rather than changed.
+  The version bump signals visibility, not a format change; readers learned the new string quietly, so the compatibility event is the readers' acceptance.
+  -> causes q/g69ea5c05d859-13-1
+
+[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Defer flipping the writer default to smysl/1.0 until 0.14 is published.
+  -> causes q/g69ea5c05d859-14-1
+
+[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Do not add version lists to python/, nodejs/, go/ implementations.
+  -> causes q/g69ea5c05d859-15-1
+
+[d/g69ea5c05d859-4] decision (cited, source crates/smysl-core/src/surface/parse.rs@69ea5c05d859)
+  Implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.
+  -> causes q/g69ea5c05d859-4-1
+
+[d/g69ea5c05d859-6] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.
+  -> causes q/g69ea5c05d859-6-1
+
+[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)
+  Build Constraints via default and field assignment instead of struct literal
+  -> causes q/g87345653cdf3-1-1
+
+[d/g87345653cdf3-10] decision (cited, source tests/doc_output.rs@87345653cdf3)
+  Assert on transcript count rather than just MISMATCHED presence in doc output test
+  -> causes q/g87345653cdf3-10-1
+
+[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)
+  Compile out the doc output test outside the default-ish feature set
+  -> causes q/g87345653cdf3-11-1
+
+[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)
+  Remove unused BTreeSet import from pack_exact.rs
+  The BTreeSet import became unused after replacing the struct literal with default construction.
+  -> causes q/g87345653cdf3-2-1
+
+[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)
+  Make `make ci` depend on fuzz-build
+  CI must see fuzz compilation because local checks passed while the break existed; this makes the gate structural.
+  -> causes q/g87345653cdf3-4-1
+
+[d/g87345653cdf3-5] decision (cited, source Makefile@87345653cdf3)
+  Do not pipe fuzz-build's cargo check through tail
+  -> causes q/g87345653cdf3-5-1
+
+[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)
+  Do not run fuzzers as part of make ci; only compile them
+  Running fuzzers requires nightly and a minute per target, so it remains a separate job; compilation catches the break in seconds.
+  -> causes q/g87345653cdf3-6-1
+
+[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)
+  Make verify-doc-output.py binary path overridable via SMYSL_BIN
+  This lets the new cargo test pass the binary cargo built for it, so mutation testing exercises the mutated binary rather than a stale one.
+  -> causes q/g87345653cdf3-7-1
+
+[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)
+  Fix path extraction in verify-doc-output.py to skip token 0
+  Token 0 is the binary name, not a manual input; if the binary path is absolute, the absolute-path rule would otherwise skip all commands.
+  -> causes q/g87345653cdf3-8-1
+
+[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)
+  Add tests/doc_output.rs so cargo test runs the doc output replay
+  The replay script existed but was invisible to cargo test and coverage tools; adding it as an integration test makes it measurable.
+  -> causes q/g87345653cdf3-9-1
+
+[d/g90ec2f781421-10] decision (cited, source Documentation/READINESS.md@90ec2f781421)
+  Update CHANGELOG, READINESS, and ROAD_TO_1.0 to record dispatch pass findings.
+  Document the 15->1 survivor reduction, the seven untested commands, and that dispatch pass is worth stating as finding.
+  -> causes q/g90ec2f781421-10-1
+
+[d/g90ec2f781421-12] decision (cited, source Documentation/READINESS.md@90ec2f781421)
+  Do not change tests/doc_output.rs gating to run under --all-features.
+  Design is deliberate; manual documents default build and exact-pack makes correct claim read as drift, so gating is correct.
+  -> causes q/g90ec2f781421-12-1
+
+[d/g90ec2f781421-2] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)
+  Compare all 380 arguments against a golden CLI surface inside cargo test.
+  -> causes q/g90ec2f781421-2-1
+
+[d/g90ec2f781421-3] decision (cited, source Makefile@90ec2f781421)
+  Hardcode command names in tests and Makefile instead of deriving from --help.
+  A list derived from the binary shrinks silently when the binary does; regenerated golden would record absence as intent.
+  -> causes q/g90ec2f781421-3-1
+
+[d/g90ec2f781421-4] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)
+  Run each command in a scratch directory of its own.
+  Probing by hand dirtied checkout with .smysl files; usage read ledger ingest wrote. Test should not dirty tree.
+  -> causes q/g90ec2f781421-4-1
+
+[d/g90ec2f781421-6] decision (cited, source tests/dispatch.rs@90ec2f781421)
+  Set stdin to /dev/null for dispatch test commands.
+  fmt and check read stdin when no path; inherited terminal would hang instead of failing.
+  -> causes q/g90ec2f781421-6-1
+
+[d/g90ec2f781421-7] decision (cited, source src/main.rs@90ec2f781421)
+  Document the `==` to `!=` mutation of COMMANDS.iter().find as equivalent.
+  Flipping comparison selects wrong Cmd but only field read is in unreachable _ arm; record like prior equivalents.
+  -> causes q/g90ec2f781421-7-1
+
+[d/g90ec2f781421-8] decision (cited, source src/main.rs@90ec2f781421)
+  Do not add a test to distinguish the equivalent `!=` mutation.
+  The mutation is unreachable; a test cannot distinguish the two programs, so record rather than chase.
+  -> causes q/g90ec2f781421-8-1
+
+[d/g90ec2f781421-9] decision (cited, source tests/dispatch.rs@90ec2f781421)
+  Do not assert exit code in every_command_dispatches.
+  Most commands fail without a store; how they fail is rest of suite's job. Claim only that failure came from command not router.
+  -> causes q/g90ec2f781421-9-1
+
+[d/ga18e230ae345-1] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)
+  Remove the local-improvement pass (§18.3 step 3).
+  -> causes q/ga18e230ae345-1-1
+
+[d/ga18e230ae345-2] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)
+  Remove `IMPROVEMENT_PASSES` constant and `PackRequest::improvement_passes` field.
+  A knob for a pass that no longer exists is worse than no knob.
+  -> causes q/ga18e230ae345-2-1
+
+[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)
+  Decline to keep the search that measured the pass.
+  With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.
+  -> causes q/ga18e230ae345-3-1
+
+[d/ga18e230ae345-4] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)
+  Decline to update the golden file.
+  -> causes q/ga18e230ae345-4-1
+
+[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)
+  Add a comment explaining the removal in place of the loop.
+  To document why the pass was removed, including the measurements that justified it.
+  -> causes q/ga18e230ae345-5-1
+
+[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)
+  Document the removal in the changelog.
+  To record the removal and its justification for the 0.8.0 release notes.
+  -> causes q/ga18e230ae345-6-1
+
+[e/g0bc1aeb96d6b-2-1] evidence (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)
+  Check: fails the same way on the previous commit
+
+[e/g4968383dc452-18-1] evidence (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)
+  Check: doc-output 85/0
+  -> backs q/g4968383dc452-18-1
+  -> backs q/g4968383dc452-13-1
+
+[e/g4968383dc452-20-1] evidence (cited, source Documentation/READINESS.md@4968383dc452)
+  Check: Re-run with `--timeout 400` it is 0 timeouts
+  -> backs q/g4968383dc452-20-1
+
+[e/g4968383dc452-9-1] evidence (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)
+  Check: spec-tables 0 mismatched
+  -> backs q/g4968383dc452-11-1
+  -> backs q/g4968383dc452-6-1
+
+[e/g532e4d229a6c-1-1] evidence (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)
+  Check: cmd_fmt 12 -> 2 …
+  Check: cmd_fmt   12 -> 2
+  -> backs q/g532e4d229a6c-1-1
+
+[e/g532e4d229a6c-1-2] evidence (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)
+  Check: main.rs 109 -> 99 …
+  Check: main.rs  109 -> 99
+  -> backs q/g532e4d229a6c-1-2
+
+[e/g532e4d229a6c-2-1] evidence (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)
+  Check: The two that remain are the round-trip guard
+  -> backs q/g532e4d229a6c-2-1
+
+[e/g69ea5c05d859-16-1] evidence (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Check: make semver is 12/12 clean
+
+[e/g69ea5c05d859-9-1] evidence (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Check: make ci green
+  -> backs q/g69ea5c05d859-8-1
+  -> backs q/g69ea5c05d859-3-1
+
+[e/g90ec2f781421-5-1] evidence (cited, source git:90ec2f781421002876548124e9fe02073503372c)
+  Check: cli + main 15 -> 1 …
+  Check: cli + main  15 -> 1
+  -> backs q/g90ec2f781421-1-1
+
+[p/g0bc1aeb96d6b-2-2] constraint (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)
+  The `jitter` unused failure is outside CI's matrix
+
+[p/g4968383dc452-11-1] constraint (cited, source CHANGELOG.md@4968383dc452)
+  §8.6 says smysl/1.0 is what new documents declare.
+  -> conditions d/g4968383dc452-11
+
+[p/g69ea5c05d859-8-1] constraint (cited, source crates/smysl-core/src/lib.rs@69ea5c05d859)
+  Old unit test asserted smysl/1.0 as unknown version.
+
+[p/g87345653cdf3-5-1] constraint (cited, source Makefile@87345653cdf3)
+  Shell pipeline exit status is the last command's, so tail masks failure.
+  -> conditions d/g87345653cdf3-5
+
+[p/g87345653cdf3-9-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)
+  The replay script exists and works.
+  -> conditions d/g87345653cdf3-9
+
+[p/g90ec2f781421-10-1] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)
+  cli+main survivors went from 15 to 1.
+  -> conditions d/g90ec2f781421-10
+
+[p/g90ec2f781421-10-2] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)
+  Seven of twenty-two commands were untested.
+  -> conditions d/g90ec2f781421-10
+
+[p/g90ec2f781421-5-1] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)
+  Seven commands require an argument, so clap rejects bare names before the router runs.
+
+[q/g0bc1aeb96d6b-1-1] finding (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)
+  Builds without those features no longer fail on unused function under `-D warnings`.
+
+[q/g0bc1aeb96d6b-1-2] claim (inferred)
+  `report_against` compiles only when `gemini` or `anthropic` feature is enabled.
+
+[q/g0bc1aeb96d6b-1-3] claim (inferred)
+  The `cap_tests` module compiles only when tests and relevant features are enabled.
+
+[q/g4968383dc452-1-1] claim (inferred)
+  Provides fourth independent derivation of uids and third witness for §2.3 beyond Rust.
+
+[q/g4968383dc452-11-1] finding (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)
+  Masthead format version updated to smysl/1.0, matching §8.6.
+
+[q/g4968383dc452-12-1] claim (inferred)
+  README corrected to say tests use hand-typed copy, not asserted against document.
+
+[q/g4968383dc452-13-1] finding (cited, source fixtures/tutorial/README.md@4968383dc452)
+  Doc-output replays chapters in scratch copy, deriving later states from commands.
+
+[q/g4968383dc452-14-1] finding (cited, source CHANGELOG.md@4968383dc452)
+  Reader edits anchored by prose prevent staleness and duplicates.
+
+[q/g4968383dc452-15-1] claim (inferred)
+  Gate 7 block explanation revised from book decision to filename vs position keying.
+
+[q/g4968383dc452-16-1] claim (inferred)
+  beta.smy repair declined; missing stanza cannot be reconstructed from page.
+
+[q/g4968383dc452-17-1] claim (inferred)
+  Rule M not implemented; validate claiming it would be check that cannot fail.
+
+[q/g4968383dc452-18-1] finding (cited, source Documentation/READINESS.md@4968383dc452)
+  Replayed transcript count increased from 78 to 85, skipped from 116 to 108.
+
+[q/g4968383dc452-19-1] finding (cited, source CHANGELOG.md@4968383dc452)
+  Mutation measurement gives 23 survivors per-package vs 18 workspace, 16.8% vs 13.1%.
+
+[q/g4968383dc452-20-1] finding (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)
+  --test-workspace requires explicit --timeout; default gave 15 timeouts.
+
+[q/g4968383dc452-21-1] claim (inferred)
+  Decline applying 22% artefact fraction to other modules; one module not generalizable.
+
+[q/g4968383dc452-22-1] finding (cited, source nodejs/src/blake3.js@4968383dc452)
+  BLAKE3 vectors straddling chunk boundary catch single-chunk shortcut.
+
+[q/g4968383dc452-23-1] claim (inferred)
+  Status and source/kind constants implemented in nodejs for uid and rule M comparisons.
+
+[q/g4968383dc452-24-1] claim (inferred)
+  RFC 4648 base32 alphabet implemented, avoiding mutually unreadable names.
+
+[q/g4968383dc452-25-1] finding (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)
+  Empty deps/grounds omitted in nodejs encoder, matching fixtures.
+
+[q/g4968383dc452-26-1] finding (cited, source nodejs/src/uid.js@4968383dc452)
+  Deps and grounds sorted and deduplicated in nodejs per spec.
+
+[q/g4968383dc452-3-1] finding (cited, source CHANGELOG.md@4968383dc452)
+  Nodejs uid derivation reproduces all sixteen fixture uids and canonical encodings.
+
+[q/g4968383dc452-4-1] finding (cited, source CHANGELOG.md@4968383dc452)
+  Malformed unit cannot obtain identity because uid() runs shape validation first.
+
+[q/g4968383dc452-5-1] finding (cited, source CHANGELOG.md@4968383dc452)
+  NFC normalization at encoder makes unicode-decomposed reproducible.
+
+[q/g4968383dc452-6-1] finding (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)
+  Spec now contains status integers, source layout, kind enum, base32 alphabet.
+
+[q/g4968383dc452-7-1] finding (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)
+  Empty deps/grounds omitted, avoiding wrong five-key map uid.
+
+[q/g4968383dc452-8-1] claim (inferred)
+  Spec-derived constants marked SPEC: record that values were guessed from fixtures.
+
+[q/g532e4d229a6c-1-1] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)
+  Reduces cmd_fmt mutant survivors from 12 to 2.
+
+[q/g532e4d229a6c-1-2] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)
+  Reduces main.rs mutant survivors from 109 to 99.
+
+[q/g532e4d229a6c-2-1] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)
+  Round-trip guard remains one of two survivors.
+
+[q/g532e4d229a6c-3-1] claim (inferred)
+  Removes tests' dependency on repository fixtures F1 and F9.
+
+[q/g532e4d229a6c-3-2] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)
+  Eliminates 97 spurious mutants counted as catches.
+
+[q/g532e4d229a6c-5-1] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)
+  Leaves cmd_providers at 12 and cmd_merge at 11 survivors.
+
+[q/g69ea5c05d859-10-1] finding (cited, source tests/public-api-pure.txt@69ea5c05d859)
+  Public API snapshots updated with FORMAT_VERSION_DEFAULT and new smysl-core count.
+
+[q/g69ea5c05d859-11-1] claim (inferred)
+  ROAD_TO_1.0 updated: steps 1-2 done, step 3 deferred; python/nodejs/go have no version lists.
+
+[q/g69ea5c05d859-12-1] claim (inferred)
+  Format spec §8.5 records version-trap defect fixed in 0.14.
+
+[q/g69ea5c05d859-13-1] claim (inferred)
+  Format spec §8.6 says smysl/1.0 is not a break; format settled rather than changed.
+
+[q/g69ea5c05d859-14-1] claim (inferred)
+  Writer default deferred to smysl/1.0 until 0.14 published; avoids other implementations rejecting output.
+
+[q/g69ea5c05d859-15-1] claim (inferred)
+  No version lists added to python/nodejs/go; they read CBOR only and never see @doc header.
+
+[q/g69ea5c05d859-3-1] finding (cited, source crates/smysl-core/src/surface/parse.rs@69ea5c05d859)
+  ParseOutcome stores parsed @doc version so writers can emit what was read.
+
+[q/g69ea5c05d859-4-1] claim (inferred)
+  Default ParseOutcome sets format_version to FORMAT_VERSION_DEFAULT, avoiding empty @doc header on CBOR path.
+
+[q/g69ea5c05d859-6-1] claim (inferred)
+  `smysl fmt` passes parsed format_version to WriteContext, preserving document self-description.
+
+[q/g69ea5c05d859-8-1] finding (cited, source crates/smysl-core/src/lib.rs@69ea5c05d859)
+  Unit tests loop over supported versions and reject near misses like smysl/2.0.
+
+[q/g87345653cdf3-1-1] claim (inferred)
+  Constraints built via default and field assignment compiles despite non_exhaustive; future fields stay …
+  Constraints built via default and field assignment compiles despite non_exhaustive; future fields stay additive.
+
+[q/g87345653cdf3-10-1] claim (inferred)
+  Count assertion prevents gate from confusing nothing wrong with nothing checked.
+
+[q/g87345653cdf3-11-1] claim (inferred)
+  Compile out doc output test outside default feature set to avoid false drift.
+
+[q/g87345653cdf3-2-1] claim (inferred)
+  Remove unused BTreeSet import after replacing struct literal with default construction.
+
+[q/g87345653cdf3-3-1] finding (cited, source Makefile@87345653cdf3)
+  fuzz-build target compiles fuzz targets without running, catching breakages cheaply.
+
+[q/g87345653cdf3-4-1] claim (inferred)
+  make ci depends on fuzz-build, so CI gates on fuzz compilation.
+
+[q/g87345653cdf3-5-1] finding (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)
+  Not piping through tail gives cargo check's exit status, so gate returns non-zero on failure.
+
+[q/g87345653cdf3-6-1] claim (inferred)
+  Only compile fuzzers in CI; running remains separate due to nightly and time.
+
+[q/g87345653cdf3-7-1] claim (inferred)
+  SMYSL_BIN override lets cargo test use freshly built binary, so mutation tests exercise mutated code.
+
+[q/g87345653cdf3-8-1] claim (inferred)
+  Skip token 0 in path extraction to avoid absolute binary path skipping every command.
+
+[q/g87345653cdf3-9-1] claim (inferred)
+  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.
+
+[q/g90ec2f781421-1-1] finding (cited, source git:90ec2f781421002876548124e9fe02073503372c)
+  Mutants in cli and main reduced from 15 to 1; all commands now invoked.
+
+[q/g90ec2f781421-10-1] claim (inferred)
+  Findings documented: seven untested commands and 15->1 survivor reduction are recorded.
+
+[q/g90ec2f781421-12-1] claim (inferred)
+  Doc-output gating remains unchanged; design deliberate.
+
+[q/g90ec2f781421-2-1] claim (inferred)
+  Golden comparison inside cargo test detects cli() argument stripping; coverage sees the gate.
+
+[q/g90ec2f781421-3-1] claim (inferred)
+  Command list cannot shrink silently; golden regeneration won't record absence as intent.
+
+[q/g90ec2f781421-4-1] claim (inferred)
+  Test no longer dirties checkout; each command runs in isolated scratch directory.
+
+[q/g90ec2f781421-6-1] claim (inferred)
+  Dispatch test cannot hang on stdin-reading commands; /dev/null prevents inherited terminal.
+
+[q/g90ec2f781421-7-1] claim (inferred)
+  Equivalent `!=` mutant documented instead of chased; records unreachability.
+
+[q/g90ec2f781421-8-1] claim (inferred)
+  No pointless test added for unreachable mutation; recorded rather than chased.
+
+[q/g90ec2f781421-9-1] claim (inferred)
+  Test only asserts routing reached, not command-specific exit codes; avoids duplicating suite.
+
+[q/ga18e230ae345-1-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)
+  The local-improvement pass is removed because it made packs worse.
+
+[q/ga18e230ae345-2-1] claim (inferred)
+  IMPROVEMENT_PASSES constant and PackRequest::improvement_passes field removed from the public API.
+
+[q/ga18e230ae345-3-1] claim (inferred)
+  The search test is removed; keeping it would compare two identical configurations.
+
+[q/ga18e230ae345-4-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)
+  Golden file remains unchanged because no recorded selection moved.
+
+[q/ga18e230ae345-5-1] claim (inferred)
+  A comment in solve.rs documents the removal rationale and measurements.
+
+[q/ga18e230ae345-6-1] claim (inferred)
+  Changelog records the removal under Unreleased 0.8.0.
+
+[r/g4968383dc452-10-1] claim (cited, source CHANGELOG.md@4968383dc452)
+  Rejected: Keep citations to the nonexistent §1.1.
+
+[r/g4968383dc452-11-1] claim (cited, source CHANGELOG.md@4968383dc452)
+  Rejected: Leave the masthead at smysl/0.1.
+  -> contrasts d/g4968383dc452-11
+
+[r/g4968383dc452-13-1] claim (cited, source Documentation/READINESS.md@4968383dc452)
+  Rejected: Keep filename-keyed fixtures.
+
+[r/g4968383dc452-18-1] claim (cited, source Documentation/READINESS.md@4968383dc452)
+  Rejected: Leave the counted 78 and 116 unchanged.
+
+[r/g4968383dc452-2-1] claim (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)
+  Rejected: Bind to the same C library the Rust calls.
+
+[r/g4968383dc452-20-1] claim (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)
+  Rejected: Rely on cargo-mutants auto-set timeout.
+
+[r/g4968383dc452-22-1] claim (cited, source nodejs/test/blake3.test.js@4968383dc452)
+  Rejected: Test only short inputs that fit one chunk.
+  -> contrasts d/g4968383dc452-22
+
+[r/g4968383dc452-25-1] claim (cited, source nodejs/src/uid.js@4968383dc452)
+  Rejected: Encode empty deps/grounds as empty arrays.
+
+[r/g4968383dc452-5-1] claim (cited, source nodejs/src/cbor.js@4968383dc452)
+  Rejected: Leave text normalization as a no-op.
+  -> contrasts d/g4968383dc452-5
+
+[r/g4968383dc452-7-1] claim (cited, source Documentation/READINESS.md@4968383dc452)
+  Rejected: Encode empty deps/grounds as empty arrays.
+
+[r/g4968383dc452-8-1] claim (cited, source nodejs/README.md@4968383dc452)
+  Rejected: Leave gaps unmarked, as python and go did.
+  -> contrasts d/g4968383dc452-8
+
+[r/g532e4d229a6c-2-1] claim (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)
+  Rejected: Writing a test for the round-trip guard
+
+[r/g532e4d229a6c-4-1] claim (cited, source Documentation/READINESS.md@532e4d229a6c)
+  Rejected: Leaving READINESS rate at 64.2% unchanged
+
+[r/g69ea5c05d859-1-1] claim (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)
+  Rejected: Keep the supported list as only 'smysl/0.1' until the writer default flips.
+  Readers must accept both before the writer flips so old documents keep working and the new version is not refused.
+  -> contrasts d/g69ea5c05d859-1
+
+[r/g69ea5c05d859-4-1] claim (cited, source crates/smysl-core/src/surface/parse.rs@69ea5c05d859)
+  Rejected: Derive Default for ParseOutcome.
+  -> contrasts d/g69ea5c05d859-4
+
+[r/g87345653cdf3-1-1] claim (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)
+  Rejected: Use a struct literal for Constraints
+  -> contrasts d/g87345653cdf3-1
+
+[r/g87345653cdf3-10-1] claim (cited, source tests/doc_output.rs@87345653cdf3)
+  Rejected: Assert only that MISMATCHED appears
+  -> contrasts d/g87345653cdf3-10
+
+[r/g87345653cdf3-2-1] claim (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)
+  Rejected: Keep the unused BTreeSet import
+  -> contrasts d/g87345653cdf3-2
+
+[r/g87345653cdf3-5-1] claim (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)
+  Rejected: Pipe cargo check output through tail -5
+  A pipeline's exit status is the last command's, so tail would return 0 despite errors.
+  -> contrasts d/g87345653cdf3-5
+
+[r/g87345653cdf3-6-1] claim (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)
+  Rejected: Run fuzzers as part of make ci
+  -> contrasts d/g87345653cdf3-6
+
+[r/g87345653cdf3-8-1] claim (cited, source scripts/verify-doc-output.py@87345653cdf3)
+  Rejected: Include token 0 in the path filter
+  -> contrasts d/g87345653cdf3-8
+
+[r/g90ec2f781421-4-1] claim (cited, source git:90ec2f781421002876548124e9fe02073503372c)
+  Rejected: run each command in the repository root
+  -> contrasts d/g90ec2f781421-4
+
+[r/ga18e230ae345-1-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)
+  Rejected: Keep the local-improvement pass
+  -> contrasts d/ga18e230ae345-1
+
+[r/ga18e230ae345-3-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)
+  Rejected: Keep the search that measured the pass
+  -> contrasts d/ga18e230ae345-3
+
+[r/ga18e230ae345-4-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)
+  Rejected: Update the golden file to reflect removal
+  -> contrasts d/ga18e230ae345-4
+

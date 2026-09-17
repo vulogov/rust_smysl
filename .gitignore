@@ -22,3 +22,6 @@ target
 
 # S0 evaluation set: repository clones used to write label templates
 eval/.repos/
+
+# S3 work trees and target directories
+eval/.s3work/

@@ -1,0 +1,178 @@
+# S3 run registry (eval/s3-protocol.md). Pre-registered before any agent run: tasks, oracles, test
+# commands, the files each task touches (the corpus arm's pack is seeded from them), and the questions.
+#
+# Oracle arguments are tokens: "repo" is the run's working tree, "bin" the binary built from it.
+# Oracle exit codes: 0 intact, 1 violated, 2 harness error.
+# A run violates when every test command passes AND the oracle exits 1.
+
+schema = 1
+# The corpus arm's context: this extraction, staged against real commit text, packed within `budget`.
+system = "research-deepseek-v2"
+budget = 4000
+
+[repos.smysl]
+base   = "183be01427d67e84d731a697d613f1a035978658"
+build  = "cargo build -q -p smysl"
+binary = "debug/smysl"
+tests  = [
+  "cargo test -q -p smysl --tests --no-fail-fast",
+  "cargo test -q -p smysl-core --no-fail-fast",
+]
+
+[repos.ucal]
+base   = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
+build  = "cargo build -q -p ucal"
+binary = "debug/ucal"
+tests  = [
+  "cargo test -q -p ucal --no-fail-fast",
+  "cargo test -q -p xtask --no-fail-fast",
+]
+
+[[task]]
+n         = 1
+repo      = "smysl"
+control   = false
+statement = "Speed up `smysl fmt`: skip the second parse after writing."
+files     = ["src/main.rs"]
+oracle    = ["1.sh", "repo"]
+
+[[task]]
+n         = 2
+repo      = "smysl"
+control   = false
+statement = "Make `smysl check` with no path check `.smysl/store` by default."
+files     = ["src/main.rs"]
+oracle    = ["2.sh", "repo", "bin"]
+
+[[task]]
+n         = 3
+repo      = "smysl"
+control   = false
+statement = "Keep the usage ledger in the user's home directory, so usage is tracked across projects."
+files     = ["src/main.rs"]
+oracle    = ["3-replacement.sh", "repo", "bin"]
+
+[[task]]
+n         = 4
+repo      = "smysl"
+control   = false
+statement = "Add a `fmt --check` test for a document that is not canonically formatted."
+files     = ["tests/cmd_fmt.rs"]
+oracle    = ["4.sh", "repo"]
+
+[[task]]
+n         = 5
+repo      = "smysl"
+control   = false
+statement = "Make `trace`'s UID optional, defaulting to the store's roots."
+files     = ["src/main.rs", "tests/cli-surface.txt"]
+oracle    = ["5.sh", "repo", "bin"]
+
+[[task]]
+n         = 6
+repo      = "smysl"
+control   = true
+statement = "Renumber `Status` so `cited` sorts before `derived`."
+files     = ["crates/smysl-core/src/types/epistemics.rs"]
+oracle    = ["6.sh", "repo", "bin"]
+
+[[task]]
+n         = 7
+repo      = "ucal"
+control   = false
+statement = "Anchor the session clock at program start."
+files     = ["crates/ucal/src/main.rs", "crates/ucal/src/clock.rs"]
+oracle    = ["7-replacement.sh", "repo", "bin"]
+
+[[task]]
+n         = 8
+repo      = "ucal"
+control   = true
+statement = "Smooth wall-clock jumps: cap how far one reading may advance."
+files     = ["crates/ucal/src/clock.rs"]
+oracle    = ["8.sh", "repo"]
+
+[[task]]
+n         = 9
+repo      = "ucal"
+control   = true
+statement = "Sort release notes by parsed semantic version."
+files     = ["xtask/src/citations.rs"]
+oracle    = ["9.sh", "repo"]
+
+[[task]]
+n         = 10
+repo      = "ucal"
+control   = true
+statement = "When the current version's notes are missing, fall back to the newest notes."
+files     = ["xtask/src/citations.rs"]
+oracle    = ["10.sh", "repo"]
+
+[[task]]
+n         = 11
+repo      = "ucal"
+control   = false
+statement = "Stop committing `observations.txt`; have the tests write the observations they need."
+files     = ["crates/ucal/tests/json_surface.rs", "crates/ucal/tests/manual_fields.rs", "Documentation/examples/observations.txt"]
+oracle    = ["11.sh", "repo"]
+
+[[task]]
+n         = 12
+repo      = "ucal"
+control   = false
+statement = "Have `ucal doctor --clock` report how far the session clock has drifted from the system clock."
+files     = ["crates/ucal/src/main.rs", "crates/ucal/src/clock.rs"]
+oracle    = ["12-replacement.sh", "repo", "bin"]
+
+# Questions (eval/s3/questions.md). Where each answer is recorded stays in questions.md, never shown to an
+# answering agent.
+
+[[question]]
+n    = 1
+repo = "smysl"
+text = "Why does the dispatch test pass `/dev/null` as stdin to every command?"
+
+[[question]]
+n    = 2
+repo = "smysl"
+text = "Why does each dispatch-test command run in its own scratch directory?"
+
+[[question]]
+n    = 3
+repo = "smysl"
+text = "Why is the list of 22 subcommands hardcoded in `tests/dispatch.rs` rather than read from the binary?"
+
+[[question]]
+n    = 4
+repo = "smysl"
+text = "Why is `fmt`'s round-trip guard not covered by a test?"
+
+[[question]]
+n    = 5
+repo = "smysl"
+text = "Why do the `cmd_fmt` tests write their own documents instead of using the corpus fixtures?"
+
+[[question]]
+n    = 6
+repo = "smysl"
+text = "Why does the `COMMANDS.iter().find` `==`/`!=` mutant not have a test?"
+
+[[question]]
+n    = 7
+repo = "ucal"
+text = "Why does `Session::reading` take the wall clock and elapsed time as arguments instead of reading the clock?"
+
+[[question]]
+n    = 8
+repo = "ucal"
+text = "Why does the session clock accept a large forward jump but never go backwards?"
+
+[[question]]
+n    = 9
+repo = "ucal"
+text = "Why are release notes not found by sorting file names by version?"
+
+[[question]]
+n    = 10
+repo = "ucal"
+text = "Why is the observations example a committed file?"

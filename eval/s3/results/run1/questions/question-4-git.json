@@ -1,0 +1,9 @@
+{
+  "n": 4,
+  "arm": "git",
+  "answer": "The guard checks that re-parsing the just-formatted text still yields the same labels and records, but it only ever fires when `write_surface` itself is buggy \u2014 no valid input a user can supply drives the writer into producing text that parses back differently, so no test document can make the guard actually reject something. Two mutation-testing survivors mark this (replacing the check with `true`, and loosening the `&&` to `||`): they're unreachable, not untested, since nothing exercises the failing branch. The properties the guard exists to protect are still exercised indirectly: a versioning test asserts documents round-trip with their declared format version, and a surface test asserts records survive formatting. If a future change to the writer ever broke that invariant, this guard is what would make `fmt` refuse to write the damage to disk rather than silently corrupt a file.",
+  "is_error": false,
+  "cost_usd": 0.081044,
+  "turns": 6,
+  "prompt": "A question about the `smysl` Rust repository in the current directory: Why is `fmt`'s round-trip guard not covered by a test?\n\nAnswer from the repository's git history (git log, git show, git blame) and its code. Answer in plain prose, at most 150 words. Say what the reason is and, if it matters, what would break otherwise. Do not include commit ids, hashes, unit labels or file line numbers, and do not describe where or how you found the answer. If the material does not say why, answer exactly: Not recorded."
+}

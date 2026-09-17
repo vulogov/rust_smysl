@@ -1,0 +1,9 @@
+{
+  "n": 9,
+  "arm": "git",
+  "answer": "Sorting release-notes filenames as strings breaks on two-digit minor versions: a plain lexicographic sort puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so \"the newest file\" resolved to `1.9.0.md` instead of `1.10.0.md`. That made a CI-procedure check silently validate against the *previous* release's notes while reporting success. Even sorting numerically wasn't adopted as the fix, because sorting by version can't detect the adjacent failure where a version is bumped but its notes file is never written \u2014 the sort would just quietly fall back to the prior cycle's file and pass. Instead, the code now derives the version directly from the workspace package and reads that specific file, failing loudly if it's missing, removing any ordering guess entirely.",
+  "is_error": false,
+  "cost_usd": 0.0711242,
+  "turns": 5,
+  "prompt": "A question about the `ucal` Rust repository in the current directory: Why are release notes not found by sorting file names by version?\n\nAnswer from the repository's git history (git log, git show, git blame) and its code. Answer in plain prose, at most 150 words. Say what the reason is and, if it matters, what would break otherwise. Do not include commit ids, hashes, unit labels or file line numbers, and do not describe where or how you found the answer. If the material does not say why, answer exactly: Not recorded."
+}

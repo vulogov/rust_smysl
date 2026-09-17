@@ -1,0 +1,9 @@
+{
+  "n": 8,
+  "arm": "git",
+  "answer": "The session clock's reading is `max(wall_now, anchor + monotonic_elapsed)`. The system clock isn't trustworthy on its own: it can be disciplined backwards by NTP corrections, a resumed VM, or an operator resetting the date, and a long-running process (unlike a one-shot command) would actually observe that regression. A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate instead of freezing, so the reading never retreats \u2014 a live face never appears to go back in time. A forward step wins instead, because a forward jump is treated as a correction arriving, and rejecting it would mean preferring the process's own opinion of the time over the system's. If backward jumps were honored, monotonicity \u2014 the one property this clock exists to provide \u2014 would be broken.",
+  "is_error": false,
+  "cost_usd": 0.08060600000000001,
+  "turns": 5,
+  "prompt": "A question about the `ucal` Rust repository in the current directory: Why does the session clock accept a large forward jump but never go backwards?\n\nAnswer from the repository's git history (git log, git show, git blame) and its code. Answer in plain prose, at most 150 words. Say what the reason is and, if it matters, what would break otherwise. Do not include commit ids, hashes, unit labels or file line numbers, and do not describe where or how you found the answer. If the material does not say why, answer exactly: Not recorded."
+}
