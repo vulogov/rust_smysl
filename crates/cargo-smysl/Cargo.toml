@@ -1,0 +1,27 @@
+[package]
+name                   = "cargo-smysl"
+description            = "Cargo subcommand that records why Rust code changed — decisions, prerequisites, evidence — as a smysl corpus"
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+authors.workspace      = true
+repository.workspace   = true
+readme                 = "../../README.md"
+keywords               = ["cargo-subcommand", "rationale", "smysl", "provenance"]
+categories             = ["development-tools::cargo-plugins"]
+
+# Cargo finds external subcommands by binary name: `cargo smysl` runs `cargo-smysl smysl …`.
+[[bin]]
+name = "cargo-smysl"
+path = "src/main.rs"
+
+[dependencies]
+cargo-smysl-corpus   = { workspace = true }
+cargo-smysl-facts    = { workspace = true }
+cargo-smysl-extract  = { workspace = true }
+cargo-smysl-verdict  = { workspace = true }
+cargo-smysl-evidence = { workspace = true }
+smysl                = { workspace = true }
+clap                 = { workspace = true }
+cargo_metadata       = { workspace = true }

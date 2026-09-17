@@ -1,0 +1,37 @@
+[workspace]
+members  = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+version      = "0.1.0"
+edition      = "2021"
+# cargo_metadata 0.23 requires 1.86; smysl 1.3 requires 1.79; syn 3 requires 1.71.
+rust-version = "1.86"
+license      = "Unlicense"
+authors      = ["Vladimir Ulogov"]
+repository   = "https://github.com/vulogov/rust_smysl"
+
+[workspace.dependencies]
+cargo-smysl-corpus   = { path = "crates/cargo-smysl-corpus",   version = "0.1.0" }
+cargo-smysl-facts    = { path = "crates/cargo-smysl-facts",    version = "0.1.0" }
+cargo-smysl-extract  = { path = "crates/cargo-smysl-extract",  version = "0.1.0" }
+cargo-smysl-verdict  = { path = "crates/cargo-smysl-verdict",  version = "0.1.0" }
+cargo-smysl-evidence = { path = "crates/cargo-smysl-evidence", version = "0.1.0" }
+
+# smysl is a library dependency, never the smysl CLI. The model-free `stage` feature is the whole
+# route this tool needs: unit staging, quote checks, label resolution, dependents, CSV import.
+# Pinned to the latest published release; 1.2 and earlier lack `stage`.
+smysl = { version = "1.3", default-features = false, features = ["stage"] }
+
+syn            = { version = "3", features = ["full", "visit", "extra-traits", "printing", "parsing"] }
+proc-macro2    = { version = "1", features = ["span-locations"] }
+quote          = "1"
+clap           = { version = "4.6", features = ["derive"] }
+cargo_metadata = "0.23"
+serde          = { version = "1", features = ["derive"] }
+serde_json     = "1"
+thiserror      = "2"
+
+[profile.release]
+lto   = "thin"
+strip = true

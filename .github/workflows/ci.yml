@@ -1,0 +1,70 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      # Includes tests that go through real `cargo smysl`, not only the binary.
+      - run: cargo test --workspace --locked
+
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.86
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --workspace --locked
+
+  # The objective: an external cargo subcommand, installed by `cargo install`, working under cargo.
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install --path crates/cargo-smysl --locked --root "${{ runner.temp }}/root"
+      - name: cargo smysl works under cargo
+        shell: bash
+        run: |
+          export PATH="${{ runner.temp }}/root/bin:$PATH"
+          cargo smysl --version
+          cargo smysl --help
+          cargo smysl doctor
+
+  # The objective: self-contained. smysl is linked with the model-free `stage` feature only, and the
+  # model-free crates never pull in the model-facing ones.
+  self-contained:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: no provider layer or network stack in the binary's tree
+        run: |
+          if cargo tree -p cargo-smysl -e normal --locked | grep -E "smysl-provider|ureq|tokio|rustls"; then
+            echo "cargo-smysl must stay self-contained and model-free at the smysl layer"; exit 1
+          fi
+      - name: corpus and facts stay model-free
+        run: |
+          for crate in cargo-smysl-corpus cargo-smysl-facts; do
+            if cargo tree -p "$crate" -e normal --locked | grep -E "cargo-smysl-(extract|verdict|evidence)"; then
+              echo "$crate must not depend on model-facing crates"; exit 1
+            fi
+          done

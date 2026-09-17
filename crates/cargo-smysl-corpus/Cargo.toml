@@ -1,0 +1,14 @@
+[package]
+name                   = "cargo-smysl-corpus"
+description            = "cargo-smysl: change-rationale units, labels and the x.code schema on smysl"
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+authors.workspace      = true
+repository.workspace   = true
+
+# Model-free by design (plan §3): this crate must never depend on cargo-smysl-extract or on smysl's
+# `model`/`ingest` features.
+[dependencies]
+smysl = { workspace = true }
