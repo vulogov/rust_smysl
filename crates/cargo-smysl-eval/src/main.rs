@@ -43,7 +43,7 @@ enum Cmd {
     S3Context,
     /// S4 detector (eval/s4-protocol.md): check each diff of a set against the corpus of its base's
     /// ancestors, writing eval/s4/results/RUN/ID.json. Existing results are kept (resume).
-    S4Check(S4Args),
+    S4Check(Box<S4Args>),
 }
 
 #[derive(clap::Args)]
@@ -72,8 +72,35 @@ struct S4Args {
     file_lines: usize,
     #[arg(long, default_value_t = 80)]
     query_terms: usize,
-    #[arg(long, default_value = "deepseek-v4-pro")]
+    /// Model name, or $SMYSL_CHECK_MODEL.
+    #[arg(
+        long,
+        env = "SMYSL_CHECK_MODEL",
+        default_value = "Qwen2.5-Coder:7B-Instruct"
+    )]
     model: String,
+    /// `ollama` or `openai` (any OpenAI-compatible endpoint), or $SMYSL_CHECK_PROVIDER.
+    #[arg(long, env = "SMYSL_CHECK_PROVIDER", default_value = "ollama")]
+    provider: String,
+    /// Chat endpoint, or $SMYSL_CHECK_ENDPOINT.
+    #[arg(
+        long,
+        env = "SMYSL_CHECK_ENDPOINT",
+        default_value = "http://localhost:11434/api/chat"
+    )]
+    endpoint: String,
+    /// Environment variable holding the provider's key, or $SMYSL_CHECK_KEY_VAR.
+    #[arg(long, env = "SMYSL_CHECK_KEY_VAR", default_value = "DEEPSEEK_API_KEY")]
+    key_var: String,
+    /// Context window asked of the provider, where it takes one.
+    #[arg(long, env = "SMYSL_CHECK_NUM_CTX", default_value_t = 16384)]
+    num_ctx: u32,
+    /// Units judged per call; 0 asks about all of them at once.
+    #[arg(long, env = "SMYSL_CHECK_CHUNK", default_value_t = 6)]
+    chunk: usize,
+    /// A file holding the system prompt, or $SMYSL_CHECK_PROMPT_FILE; the built-in default otherwise.
+    #[arg(long, env = "SMYSL_CHECK_PROMPT_FILE")]
+    prompt_file: Option<PathBuf>,
 }
 
 fn default_eval_dir() -> PathBuf {
@@ -597,6 +624,19 @@ fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
         file_lines: a.file_lines,
         query_terms: a.query_terms,
         model: a.model.clone(),
+        provider: a.provider.clone(),
+        endpoint: a.endpoint.clone(),
+        key_var: a.key_var.clone(),
+        num_ctx: a.num_ctx,
+        chunk: a.chunk,
+        system: match &a.prompt_file {
+            Some(f) => read(f)?,
+            None => s4::DEFAULT_SYSTEM.to_string(),
+        },
+        system_source: match &a.prompt_file {
+            Some(f) => f.display().to_string(),
+            None => "built-in default".into(),
+        },
     };
     let reg = s3::read_registry(&eval.join("s3/tasks.toml"))?;
     let set = commits(eval)?;

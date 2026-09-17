@@ -21,6 +21,30 @@ pub struct Params {
     pub file_lines: usize,
     pub query_terms: usize,
     pub model: String,
+    /// `ollama` (its own chat API) or `openai` (any OpenAI-compatible endpoint). Never a fixed
+    /// vendor: the shipped command takes the same three settings from flags, the environment or
+    /// configuration, so an operator chooses provider, endpoint and model.
+    pub provider: String,
+    pub endpoint: String,
+    /// Environment variable holding the key, for a provider that needs one.
+    pub key_var: String,
+    /// Context window, where the provider must be asked for one (Ollama).
+    pub num_ctx: u32,
+    /// Units judged per call. A small local model loses the thread over a long list, so the judgement
+    /// is split into chunks; 0 means one call for everything.
+    pub chunk: usize,
+    /// The system prompt. `DEFAULT_SYSTEM` unless the operator supplies one: models differ in what they
+    /// need told, so the shipped command reads it from a flag, the environment or a file, and says which
+    /// it used.
+    pub system: String,
+    /// Where `system` came from, for the record.
+    pub system_source: String,
+}
+
+impl Params {
+    pub fn is_ollama(&self) -> bool {
+        self.provider.eq_ignore_ascii_case("ollama")
+    }
 }
 
 /// A unified diff, as the detector reads it.
@@ -32,6 +56,9 @@ pub struct Diff {
     pub shown: String,
     /// Every line of `shown` that is diff content, trimmed, for quote validation.
     pub shown_lines: BTreeSet<String>,
+    /// The same lines by the number the model is shown, so an answer can name one instead of
+    /// copying it: a small model paraphrases a quote and loses the check otherwise.
+    pub numbered: BTreeMap<u32, String>,
     pub truncated: bool,
 }
 
@@ -40,6 +67,7 @@ pub fn parse_diff(text: &str, p: &Params) -> Diff {
     let mut changed = Vec::new();
     let mut shown = Vec::new();
     let mut shown_lines = BTreeSet::new();
+    let mut numbered = BTreeMap::new();
     let mut truncated = false;
     let mut in_file = 0usize;
     let mut started = false;
@@ -51,7 +79,7 @@ pub fn parse_diff(text: &str, p: &Params) -> Diff {
                 files.push(b.to_string());
             }
             if shown.len() < p.diff_lines {
-                shown.push(line.to_string());
+                shown.push(format!("{:>4}| {line}", shown.len() as u32 + 1));
             } else {
                 truncated = true;
             }
@@ -74,11 +102,13 @@ pub fn parse_diff(text: &str, p: &Params) -> Diff {
             truncated = true;
             continue;
         }
-        shown.push(line.to_string());
+        let n = shown.len() as u32 + 1;
+        shown.push(format!("{n:>4}| {line}"));
         if let Some(c) = content {
             let t = c.trim();
             if !t.is_empty() {
                 shown_lines.insert(t.to_string());
+                numbered.insert(n, t.to_string());
             }
         }
     }
@@ -87,6 +117,7 @@ pub fn parse_diff(text: &str, p: &Params) -> Diff {
         changed,
         shown: shown.join("\n"),
         shown_lines,
+        numbered,
         truncated,
     }
 }
@@ -207,21 +238,21 @@ pub fn context(corpus: &Corpus, mut ranked: Vec<(Uid, Candidate)>, p: &Params) -
     None
 }
 
-const SYSTEM: &str = "You check a code change against the reasons recorded for this repository.\n\
+/// The default, tuned against the models this project measured. An operator may replace it.
+pub const DEFAULT_SYSTEM: &str = "You check a code change against the reasons recorded for this repository.\n\
 Recorded units are decisions, prerequisites (what must stay true for a decision to hold) and rejected \
-alternatives (options the project decided against). For each label listed under JUDGE, decide:\n\
-- contradicts: after this change a prerequisite no longer holds, a decision is reversed or undone, or a \
-rejected alternative is what the change does;\n\
-- consistent: the change bears on the unit and keeps it true;\n\
-- unrelated: the change does not bear on it.\n\
+alternatives (options the project decided against).\n\
+Report ONLY the units this change contradicts: after the change a prerequisite no longer holds, a \
+decision is reversed or undone, or a rejected alternative is what the change does. A unit the change \
+does not bear on, or bears on and keeps true, is left out. If the change contradicts none of them, \
+return {\"verdicts\": []} — that is the common answer.\n\
 Judge what the change does, not what its comments or changelog say about it. Two kinds of unit describe \
-one past commit rather than a lasting rule, and later work moving on from them is not a contradiction: \
-a statement of the repository's state at that time (a version number, a changelog section, a count), and a \
-decision about that commit's own scope (leaving other sites unchanged, deferring something). Return verdicts only for \
-units that are contradicted or consistent; leave unrelated units out. For each verdict give the label \
-exactly as written, one line copied verbatim from the diff (without its leading + or -) that shows it, and \
-one sentence of reason.\n\
-Return one JSON object: {\"verdicts\": [{\"label\": string, \"verdict\": \"contradicts\"|\"consistent\", \
+one past commit rather than a lasting rule, and later work moving on from them is never a contradiction: \
+a statement of the repository\'s state at that time (a version number, a changelog section, a count), and \
+a decision about that commit\'s own scope (leaving other sites unchanged, deferring something).\n\
+Every diff line is printed with a number. For each unit you report, give its label exactly as written, \
+the number of the line that shows the contradiction, that line copied, and one sentence of reason.\n\
+Return one JSON object: {\"verdicts\": [{\"label\": string, \"verdict\": \"contradicts\", \"line\": number, \
 \"diff_line\": string, \"reason\": string}]}";
 
 /// The labels the model judges: every decision, prerequisite and rejected alternative in the pack,
@@ -236,12 +267,26 @@ pub fn judged(ctx: &Context) -> Vec<String> {
     out
 }
 
+/// The units of `ctx.text`, keyed by label, so a chunk can carry only the ones it asks about.
+fn blocks(text: &str) -> BTreeMap<String, String> {
+    let mut out = BTreeMap::new();
+    for block in text.split("\n\n") {
+        if let Some(label) = block.strip_prefix('[').and_then(|b| b.split(']').next()) {
+            out.insert(label.to_string(), block.to_string());
+        }
+    }
+    out
+}
+
 #[derive(Deserialize, Serialize, Clone)]
 pub struct Verdict {
     #[serde(default)]
     pub label: String,
     #[serde(default)]
     pub verdict: String,
+    /// The number printed with the diff line, which a model reproduces more reliably than the text.
+    #[serde(default)]
+    pub line: Option<u32>,
     #[serde(default)]
     pub diff_line: String,
     #[serde(default)]
@@ -271,38 +316,71 @@ pub struct Usage {
     pub seconds: f64,
 }
 
-/// Step 3: one model judgement.
+/// Step 3: the model's judgement, in one call per `chunk` units (a small model loses a long list).
 pub fn judge(ctx: &Context, diff: &Diff, p: &Params) -> Result<(Vec<Verdict>, Usage), String> {
-    let key =
-        std::env::var("DEEPSEEK_API_KEY").map_err(|_| "DEEPSEEK_API_KEY is not set".to_string())?;
     let labels = judged(ctx);
-    let user = format!(
-        "RECORDED UNITS (each: [label] kind (status, source), its text, and its edges):\n\n{}\nJUDGE: {}\n\nDIFF{}:\n{}\n",
-        ctx.text,
-        labels.join(", "),
-        if diff.truncated { " (truncated)" } else { "" },
-        diff.shown
-    );
-    let body = serde_json::json!({
-        "model": p.model,
-        "temperature": 0,
-        "response_format": {"type": "json_object"},
-        "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}],
-    });
+    let units = blocks(&ctx.text);
+    let size = if p.chunk == 0 {
+        labels.len().max(1)
+    } else {
+        p.chunk
+    };
+    let mut verdicts = Vec::new();
+    let mut usage = Usage::default();
+    for group in labels.chunks(size) {
+        let text: String = group
+            .iter()
+            .filter_map(|l| units.get(l).cloned())
+            .collect::<Vec<_>>()
+            .join("\n\n");
+        let user = format!(
+            "RECORDED UNITS:\n\n{text}\n\nJUDGE: {}\n\nDIFF{}:\n{}\n",
+            group.join(", "),
+            if diff.truncated { " (truncated)" } else { "" },
+            diff.shown
+        );
+        let (mut v, u) = call(&user, p)?;
+        verdicts.append(&mut v);
+        usage.prompt_tokens += u.prompt_tokens;
+        usage.completion_tokens += u.completion_tokens;
+        usage.seconds += u.seconds;
+    }
+    Ok((verdicts, usage))
+}
+
+fn call(user: &str, p: &Params) -> Result<(Vec<Verdict>, Usage), String> {
+    let local = p.is_ollama();
+    let body = if local {
+        serde_json::json!({
+            "model": p.model,
+            "messages": [{"role": "system", "content": &p.system}, {"role": "user", "content": user}],
+            "format": "json",
+            "stream": false,
+            "options": {"temperature": 0, "num_ctx": p.num_ctx},
+        })
+    } else {
+        serde_json::json!({
+            "model": p.model,
+            "temperature": 0,
+            "response_format": {"type": "json_object"},
+            "messages": [{"role": "system", "content": &p.system}, {"role": "user", "content": user}],
+        })
+    };
     let started = Instant::now();
     let agent = ureq::AgentBuilder::new()
-        .timeout(Duration::from_secs(900))
+        .timeout(Duration::from_secs(1800))
         .build();
     let mut last = String::new();
     for attempt in 0..6 {
         if attempt > 0 {
-            std::thread::sleep(Duration::from_secs(20));
+            std::thread::sleep(Duration::from_secs(if local { 5 } else { 20 }));
         }
-        let resp = agent
-            .post("https://api.deepseek.com/chat/completions")
-            .set("Authorization", &format!("Bearer {key}"))
-            .send_json(body.clone());
-        let v: serde_json::Value = match resp {
+        let mut req = agent.post(&p.endpoint);
+        if !local {
+            let key = std::env::var(&p.key_var).map_err(|_| format!("{} is not set", p.key_var))?;
+            req = req.set("Authorization", &format!("Bearer {key}"));
+        }
+        let v: serde_json::Value = match req.send_json(body.clone()) {
             Ok(r) => match r.into_json() {
                 Ok(v) => v,
                 Err(e) => {
@@ -322,25 +400,49 @@ pub fn judge(ctx: &Context, diff: &Diff, p: &Params) -> Result<(Vec<Verdict>, Us
                 continue;
             }
         };
-        let content = v["choices"][0]["message"]["content"].as_str().unwrap_or("");
+        let (content, usage) = if local {
+            (
+                v["message"]["content"].as_str().unwrap_or("").to_string(),
+                Usage {
+                    prompt_tokens: v["prompt_eval_count"].as_u64().unwrap_or(0),
+                    completion_tokens: v["eval_count"].as_u64().unwrap_or(0),
+                    seconds: started.elapsed().as_secs_f64(),
+                },
+            )
+        } else {
+            (
+                v["choices"][0]["message"]["content"]
+                    .as_str()
+                    .unwrap_or("")
+                    .to_string(),
+                Usage {
+                    prompt_tokens: v["usage"]["prompt_tokens"].as_u64().unwrap_or(0),
+                    completion_tokens: v["usage"]["completion_tokens"].as_u64().unwrap_or(0),
+                    seconds: started.elapsed().as_secs_f64(),
+                },
+            )
+        };
         #[derive(Deserialize)]
         struct Answer {
             #[serde(default)]
             verdicts: Vec<Verdict>,
         }
-        let answer: Answer = match serde_json::from_str(content) {
-            Ok(a) => a,
-            Err(e) => {
-                last = format!("answer is not the JSON asked for: {e}");
-                continue;
-            }
+        // A small model sometimes answers with the array alone, or wraps it in another key.
+        let parsed: Result<Answer, _> = serde_json::from_str(&content);
+        let verdicts = match parsed {
+            Ok(a) if !a.verdicts.is_empty() => a.verdicts,
+            _ => match serde_json::from_str::<Vec<Verdict>>(&content) {
+                Ok(v) => v,
+                Err(_) => match parsed {
+                    Ok(a) => a.verdicts,
+                    Err(e) => {
+                        last = format!("answer is not the JSON asked for: {e}");
+                        continue;
+                    }
+                },
+            },
         };
-        let usage = Usage {
-            prompt_tokens: v["usage"]["prompt_tokens"].as_u64().unwrap_or(0),
-            completion_tokens: v["usage"]["completion_tokens"].as_u64().unwrap_or(0),
-            seconds: started.elapsed().as_secs_f64(),
-        };
-        return Ok((answer.verdicts, usage));
+        return Ok((verdicts, usage));
     }
     Err(format!("model call failed: {last}"))
 }
@@ -377,19 +479,24 @@ pub fn validate(
             });
             continue;
         }
-        let quote = v.diff_line.trim();
-        let quote = quote
+        let text = v.diff_line.trim();
+        let text = text
             .strip_prefix('+')
-            .or_else(|| quote.strip_prefix('-'))
-            .unwrap_or(quote)
+            .or_else(|| text.strip_prefix('-'))
+            .unwrap_or(text)
             .trim();
-        if quote.is_empty() || !diff.shown_lines.contains(quote) {
-            dropped.push(Dropped {
-                verdict: v.clone(),
-                why: "quote is not a line of the diff".into(),
-            });
-            continue;
-        }
+        // Either the line's number or its text identifies it; the number is what a small model gets right.
+        let quote = match v.line.and_then(|n| diff.numbered.get(&n)) {
+            Some(l) => l.clone(),
+            None if !text.is_empty() && diff.shown_lines.contains(text) => text.to_string(),
+            None => {
+                dropped.push(Dropped {
+                    verdict: v.clone(),
+                    why: "neither the line number nor the quote is a line of the diff".into(),
+                });
+                continue;
+            }
+        };
         if findings.iter().any(|f| f.label == label) {
             continue;
         }
@@ -412,7 +519,7 @@ pub fn validate(
                 .as_ref()
                 .map(|s| s.reference.clone())
                 .unwrap_or_default(),
-            diff_line: quote.to_string(),
+            diff_line: quote,
             reason: v.reason.clone(),
         });
     }

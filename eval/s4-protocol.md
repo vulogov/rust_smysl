@@ -37,8 +37,15 @@ a working-tree change has none, and a real commit's message would let the check 
      awaiting review), and anything else for an error.
 
 **Parameters** (tunable on the development set only; frozen before held-out measurement): candidate
-limit (start: 12), pack budget (start: 3000 tokens), diff truncation (start: 400 lines), model (start:
-`deepseek-v4-pro`, JSON mode, the extraction model), prompt text.
+limit (start: 12), pack budget (start: 3000 tokens), diff truncation (start: 400 lines), units judged per
+call (start: 6), provider and model, and the system prompt. Provider, endpoint, model, key variable,
+context window and prompt are settings, not constants (D16): `--provider ollama|openai`, `--model`,
+`--endpoint`, `--key-var`, `--num-ctx`, `--prompt-file`, each with an `SMYSL_CHECK_*` variable.
+
+**Which model.** The measured configuration is named in the result. **Local first** (`ollama`,
+`Qwen2.5-Coder:7B-Instruct`, the project's zero-budget default): the gate is attempted locally, and a
+hosted model is measured only after a local run shows the pipeline works. Diff lines are numbered and a
+verdict quotes by number, because a small model paraphrases a copied line.
 
 **Where it lives during S4:** `smysl-eval s4-check` in the eval crate, using the corpus and git crates.
 Its model client is development tooling. Porting it to `cargo smysl check` is Phase 3 work after S4,

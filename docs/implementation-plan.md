@@ -79,6 +79,7 @@ it starts is the `cargo` that invoked it (`$CARGO`).
 | D12 | **Verdict policy:** a single run never raises a status. `SUPPORTED` requires model coverage "full" **and** every part covered by a structural fact, **and** two independent runs agreeing (or a person). `PARTIAL` / `PROSE_ONLY` / `IMPLEMENTED_BY` attach evidence only; `CONTRADICTED` goes to review. Normative prerequisites can reach `IMPLEMENTED_BY` at most. With smysl 1.4.0, the outcomes of review are records (D15), never a status rewritten in place | round 6: part-based coverage alone overclaimed 4 times; two-run agreement had 1 wrong of 7 |
 | D13 | **Test evidence:** link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with `--locked`, the features its `cfg` requires, and `--exact`; import results with `from_csv` as `measured` `data` units; `backs` / `rebuts` for verifies, `x.code/exercises` for exercises. Prerequisite statuses never change from test results alone. Every link edge carries an attestation naming who asserted it (the linking model, or a person), and a `backs` edge is pending until a person confirms it (D15) | test-evidence run: 53 tests, 50 passed, attested stores; S1: 3 of 17 "verifies" links wrong, 1 vacuous test |
 | D14 | **Candidate tests are deterministic** (BM25 over test name, calls, assertions and doc; bonus for touched files and claim-named items); the model only classifies | test-linking run: 17 verifies / 42 exercises across 60 prerequisites |
+| D16 | **The model is the operator's choice, never the tool's.** Provider (`ollama`, any OpenAI-compatible endpoint), model, endpoint, key variable, context window and the system prompt come from flags, the environment or configuration, with sensible defaults and the prompt tunable per provider; a run records which it used. The default is local (Ollama), so the tool costs nothing to try | S4: the detector runs on a local 7B model and on a hosted one, with the same code |
 | D15 | **Review is recorded with smysl 1.4.0's edge lifecycle, never by deleting or rewriting.** Each edge has an identity (rid). **Confirm:** a person's attestation on the edge (`human:<name>`). **Reject:** a `Withdrawal`, whose reason unit says why; the edge stays in the log and is no longer followed, packed or counted. **Close a disagreement:** a `Resolution` naming the contention or the unthreaded `rebuts` edge, with a note unit; it records that review happened and decides nothing. **Queue:** open contentions, unresolved `rebuts` edges, and `backs` / `x.code/exercises` edges with no person's attestation and no withdrawal. Two-run agreement (D12) counts attestations from independent runs on the same rid wherever both endpoints are stable units (test readings, decisions, anchors); for model-worded prerequisites, whose uids differ between runs, agreement stays at the verdict level | smysl dev/1.4.0 `09271ab` (spec draft 1.4); S1 outcome; stability experiment |
 
 ---
@@ -311,6 +312,8 @@ already holds.
 ### S4 — does `cargo smysl check` operate as designed?
 
 - **Protocol:** `eval/s4-protocol.md`.
+- **Model policy (D16):** the gate is measured on a named configuration, and the local one is measured
+  first. Paid models are used only after a local run shows the idea works.
 - **Design under test:** given a diff and the corpus of the diff's ancestors, report the decisions,
   prerequisites and rejected alternatives the change contradicts, and nothing else.
   1. Candidates are deterministic: units anchored to the touched files, plus BM25 over the diff's
@@ -443,7 +446,18 @@ goes.
 - **A model-judged check has a false-flag rate.** S4 measures it. Advisory shipping is the fallback, not a
   failure.
 
-## 10. smysl requests for 1.4.0 (not blocking)
+## 10. smysl requests (not blocking)
+
+**1.5.0** (`docs/smysl-requests-1.5.md`), sent before the cut: R16 retrieval restricted to a candidate set,
+R17 a unit's labels without a scan, R18 where a quote matched, R19 optional suffix folding in the
+tokenizer, R20 units by source prefix. All five come from building `check` (S4).
+
+**1.5.0 features this plan adopts when it ships:** `PackRequest::resting_on` (C8) — a packed decision now
+carries the prerequisite it rests on, which D3's `conditions` edges kept outside its uid; `rests_on` and
+`trace_via` for `why`; `review_with(... confirming [Backs, …])` for D15's queue; `prepare_attested` for
+D13's model-asserted edges; `attestations_of` and `agreement` for D12's two-run agreement.
+
+### 1.4.0 (shipped)
 
 New smysl features land on the 1.4.0 development branch. cargo-smysl stays pinned to the latest
 published release, so a feature it needs becomes a 1.4.0 request and is adopted once 1.4.0 is on
