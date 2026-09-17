@@ -49,7 +49,11 @@ fn cargo_finds_and_runs_the_subcommand() {
         !all.contains("$CARGO unset"),
         "cargo must set $CARGO for the subcommand:\n{all}"
     );
-    assert!(all.contains("smysl library: 1.3"), "{all}");
+    // The linked smysl, whatever version the pin resolves to, not a hardcoded one.
+    assert!(
+        all.contains(&format!("smysl library: {}", smysl::VERSION)),
+        "{all}"
+    );
     assert!(all.contains(" 0 parse failure(s)"), "{all}");
 }
 

@@ -115,11 +115,12 @@ fn merge_is_idempotent_and_order_independent() {
     );
 }
 
-/// Record-level idempotence. smysl 1.3 re-appends every Attestation and the SchemaDecl on each merge of
-/// a store that already holds them, so the log grows without bound while units, edges and labels do
-/// not change (docs/smysl-requests-1.4.md, R10). Un-ignore when the pinned smysl fixes it.
+/// Record-level idempotence. smysl 1.3 (and dev/1.4.0 at 09271ab) re-appends every LabelBinding and
+/// SchemaDecl on each merge of a store that already holds them: `Store::contains` has no arm for either,
+/// so the log grows without bound while units, edges and labels do not change
+/// (docs/smysl-requests-1.4.md, R10). Un-ignore when the pinned smysl fixes it.
 #[test]
-#[ignore = "smysl 1.3: merge re-appends Attestation and SchemaDecl records (1.4.0 request R10)"]
+#[ignore = "smysl 1.3: merge re-appends LabelBinding and SchemaDecl records (1.4.0 request R10)"]
 fn merging_a_store_into_itself_adds_no_records() {
     let a = store(&staged(&extraction("90ec2f7"), "90ec2f7", 0));
     let mut aa = a.clone();

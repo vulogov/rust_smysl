@@ -6,7 +6,7 @@ adopts these once 1.4.0 is released.
 
 | # | Request | Kind | Priority | Affects cargo-smysl |
 |---|---|---|---|---|
-| R10 | Merge re-appends attestations and schema declarations | Bug (rule U) | High | yes: the corpus log grows on every merge |
+| R10 | Merge re-appends label bindings and schema declarations | Bug (rule U) | High | yes: the corpus log grows on every merge |
 | R11 | `smysl import` ignores `--format surface` | Bug | Low | no (library route) |
 | R12 | `smysl import` summaries exceed the 30-token limit and fail `check` | Bug | Medium | yes: `from_csv` readings for test evidence |
 | R13 | A configuration error exits 1 where the changelog says 6 | Bug | Low | no |
@@ -18,16 +18,15 @@ outside S2 first, S2 needs replacement tasks.
 
 ---
 
-## R10 — Merge re-appends attestations and schema declarations
+## R10 — Merge re-appends label bindings and schema declarations
 
 ### What happens
 
-Merging a store into a store that already holds all of its records appends every `Attestation` record
-and the `SchemaDecl` again. Units, relations and label bindings are recognised as present; these two
-are not.
+Merging a store into a store that already holds all of its records appends every `LabelBinding` and
+`SchemaDecl` again. Units, attestations and relations are recognised as present; these two are not.
 
-Measured with smysl 1.3.0 on one staged batch (41 units, 33 relations, 41 label bindings, 41
-attestations, 1 schema declaration, 157 records in all):
+Measured on one staged batch (41 units, 33 relations, 41 label bindings, 41 attestations, 1 schema
+declaration, 157 records in all), identically on 1.3.0 and on dev/1.4.0 at `09271ab`:
 
 | Operation | `MergeReport.added` | Records in the store |
 |---|---|---|
@@ -35,25 +34,26 @@ attestations, 1 schema declaration, 157 records in all):
 | `merge(A, A)` | 42 | 199 |
 | three more `merge(A, A)` | 42 each | 283 |
 
-The 42 re-added records are exactly the 41 attestations and the schema declaration; all are
-byte-identical to records already in the log.
+The 42 re-appended records, by kind: **41 `LabelBinding`, 1 `SchemaDecl`**. A batch without labels
+re-appends only its `SchemaDecl`. (An earlier version of this request blamed attestations. It was
+wrong: all 41 attestation records are recognised as present.)
 
 ### Where
 
-`smysl-graph` `src/store/mod.rs`, `Store::contains` (used by `append`):
+`smysl-graph` `src/store/mod.rs`, `Store::contains`, which `append` (and so `merge`) uses to skip
+records already present. It has arms for `Unit`, `Attestation`, `Relation`, `Thread`, `View`,
+`Contention`, and on 1.4.0 `Withdrawal` and `Resolution`. **`SchemaDecl`, `LabelBinding`, `PackInfo`
+and unknown records fall through to `_ => false`**, so they are never recognised as present.
 
-- `Record::SchemaDecl` falls through to `_ => false`, so a declaration is never recognised as present.
-- `Record::Attestation` is checked as `units.get(&a.uid).is_some_and(|u| u.attestations.contains(a))`.
-  The units do carry these attestations (41 attached), yet `contains` returns false for them. The cause
-  is not yet isolated; a mismatch between the attached form and the record form (fields normalised on
-  attach, or the uid an attestation names) is the likely place to look.
+Likely the same gap in 1.4.0's own addition: an attestation whose uid is a relation id is checked with
+`units.get(&a.uid)`, which finds no unit, so re-merging an edge attestation would append it again.
 
 ### Why it matters
 
 Rule U promises merge is idempotent. Semantically it still is, because nothing new is reachable. But
 the append-only log, and a store file on disk (`Store::path`), grows on every merge, so a corpus merged
-on every commit or every CI run grows without bound. Detection is invisible from inside one store, as
-the specification says of rule U.
+on every commit or every CI run grows without bound. A label binding merged twice is also twice the
+input for label-collision detection.
 
 ### Reproduction
 
@@ -63,8 +63,11 @@ the specification says of rule U.
 
 ### Acceptance
 
-- `merge(A, A)` reports `added == 0` and leaves the record count unchanged, for a store holding
-  attestations and schema declarations.
+- `merge(A, A)` reports `added == 0` and leaves the record count unchanged, for a store holding every
+  record type: units, attestations on units and on relations, relations, threads, views, contentions,
+  pack info, schema declarations, label bindings, withdrawals, resolutions, and an unknown record.
+- A label bound to a *different* uid is still appended (it is a distinct record, and label-collision
+  detection needs it).
 - The same holds for a store built by `Store::open` from a file and merged with its own contents.
 
 ---

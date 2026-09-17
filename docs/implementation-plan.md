@@ -1,6 +1,6 @@
 # rust_smysl — implementation plan (draft)
 
-**Status:** draft, 2026-09-16. Written from the research experiments in this repository's history;
+**Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle). Written from the research experiments in this repository's history;
 every "settled" item below cites the experiment that settled it.
 
 **What the tool is:** a cargo subcommand that records *why* Rust code changed — the decisions a
@@ -20,10 +20,16 @@ prerequisite true on a model's say-so.
 |---|---|---|
 | `smysl` | `1.3` (crates.io, published 2026-09-17) with `default-features = false, features = ["stage"]` | The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, `EdgeSet::premises`, `from_csv`, label bindings in staged records) first exists in 1.3; 1.2 does not have it. |
 | `syn` | `3` (`full`, `visit`, `extra-traits`, `printing`), `proc-macro2` with `span-locations` | Parses both test workspaces with no errors in ~0.3 s |
+| `gix` | `0.87`, `default-features = false, features = ["sha1", "revision"]` | Commit message and changed-file text read in-process (`cargo-smysl-git`); no `git` binary |
 
 **Pin rule:** always the latest published smysl release from crates.io, never a git dependency. A
 git dependency would block `cargo publish` and `cargo install cargo-smysl`. Verified at `013cc20`
 (pre-release): no `smysl-provider`, `ureq`, `tokio` or `rustls` in the `stage` tree.
+
+**Next pin: smysl 1.4.0,** published once its tests are green. rust_smysl's whole workspace already
+passes against dev/1.4.0 (`09271ab`). 1.4.0 brings the edge lifecycle this plan uses from Phase 3 on
+(D15): relation identity, withdrawal (record 11), attestations on edges, live rebuttals, and resolution
+(record 12). Until 1.4.0 adds surface syntax for records 11 and 12, stores holding them are CBOR.
 
 **Distribution:** `cargo-smysl` is an external cargo subcommand. It installs with
 `cargo install cargo-smysl`, runs as `cargo smysl …`, and is self-contained: smysl and syn are linked
@@ -47,9 +53,10 @@ it starts is the `cargo` that invoked it (`$CARGO`).
 | D9 | **Facts are deterministic and live in a regenerable cache, not the corpus.** Scope: items the diff touches, code identifiers named in the message or prerequisite, one call hop outward, reverse "called by" edges, manifest / CI-matrix / git facts | ~7 MB of facts per commit; rounds 1–6 |
 | D10 | **Author text is prose and never verifies:** doc comments (current and parent), string literals, string-valued consts, commit subjects | rounds 3–6: every one of these laundered support until tagged |
 | D11 | **Fact matching retrieves per prerequisite** (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time | round 5: 16 correct, 0 false contradictions |
-| D12 | **Verdict policy:** a single run never raises a status. `SUPPORTED` requires model coverage "full" **and** every part covered by a structural fact, **and** two independent runs agreeing (or a person). `PARTIAL` / `PROSE_ONLY` / `IMPLEMENTED_BY` attach evidence only; `CONTRADICTED` goes to review. Normative prerequisites can reach `IMPLEMENTED_BY` at most | round 6: part-based coverage alone overclaimed 4 times; two-run agreement had 1 wrong of 7 |
-| D13 | **Test evidence:** link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with `--locked`, the features its `cfg` requires, and `--exact`; import results with `from_csv` as `measured` `data` units; `backs` / `rebuts` for verifies, `x.code/exercises` for exercises. Prerequisite statuses never change from test results alone | test-evidence run: 53 tests, 50 passed, attested stores |
+| D12 | **Verdict policy:** a single run never raises a status. `SUPPORTED` requires model coverage "full" **and** every part covered by a structural fact, **and** two independent runs agreeing (or a person). `PARTIAL` / `PROSE_ONLY` / `IMPLEMENTED_BY` attach evidence only; `CONTRADICTED` goes to review. Normative prerequisites can reach `IMPLEMENTED_BY` at most. With smysl 1.4.0, the outcomes of review are records (D15), never a status rewritten in place | round 6: part-based coverage alone overclaimed 4 times; two-run agreement had 1 wrong of 7 |
+| D13 | **Test evidence:** link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with `--locked`, the features its `cfg` requires, and `--exact`; import results with `from_csv` as `measured` `data` units; `backs` / `rebuts` for verifies, `x.code/exercises` for exercises. Prerequisite statuses never change from test results alone. Every link edge carries an attestation naming who asserted it (the linking model, or a person), and a `backs` edge is pending until a person confirms it (D15) | test-evidence run: 53 tests, 50 passed, attested stores; S1: 3 of 17 "verifies" links wrong, 1 vacuous test |
 | D14 | **Candidate tests are deterministic** (BM25 over test name, calls, assertions and doc; bonus for touched files and claim-named items); the model only classifies | test-linking run: 17 verifies / 42 exercises across 60 prerequisites |
+| D15 | **Review is recorded with smysl 1.4.0's edge lifecycle, never by deleting or rewriting.** Each edge has an identity (rid). **Confirm:** a person's attestation on the edge (`human:<name>`). **Reject:** a `Withdrawal`, whose reason unit says why; the edge stays in the log and is no longer followed, packed or counted. **Close a disagreement:** a `Resolution` naming the contention or the unthreaded `rebuts` edge, with a note unit; it records that review happened and decides nothing. **Queue:** open contentions, unresolved `rebuts` edges, and `backs` / `x.code/exercises` edges with no person's attestation and no withdrawal. Two-run agreement (D12) counts attestations from independent runs on the same rid wherever both endpoints are stable units (test readings, decisions, anchors); for model-worded prerequisites, whose uids differ between runs, agreement stays at the verdict level | smysl dev/1.4.0 `09271ab` (spec draft 1.4); S1 outcome; stability experiment |
 
 ---
 
@@ -188,18 +195,22 @@ the later phases, and whether there is a v1 at all, depends on these gates.
   - per-prerequisite retrieval (D11);
   - matching with parts, coverage and normative flag;
   - the D12 policy including two-run agreement;
-  - a review queue (a surface document of pending CONTRADICTED / REVIEW items that a person resolves).
+  - a review queue built from the store (D15): open contentions, unresolved `rebuts` edges, and
+    `backs` / `x.code/exercises` edges with no person's attestation and no withdrawal;
+  - `cargo smysl review` writes the outcome as records: an attestation to confirm, a `Withdrawal` to
+    reject, a `Resolution` to close a disagreement, each with a unit saying why.
 - `evidence` crate:
   - test candidates (D14) and linking;
   - the cargo test runner (`--locked`, `cfg` features, bin-only crates, ignored tests recorded as
     readings);
   - `from_csv` import;
-  - edges per D13;
+  - edges per D13, each attested by who asserted it (the linking model's agent id and recipe);
   - the mutation gate as S1 decided;
   - the static vacuity check.
 - **Done when:**
   - on the S0 set, no single-run status raise;
-  - wrong `backs` edges are either removed by the mutation gate or sitting in review;
+  - wrong `backs` edges are withdrawn (by review or the mutation gate) or pending in the queue, never
+    followed by packing or `why`;
   - every reading traces to `tool:smysl-import`.
 
 ---
@@ -210,7 +221,7 @@ the later phases, and whether there is a v1 at all, depends on these gates.
 |---|---|---|---|
 | 10 | **UX and integration:** `cargo smysl record / why / check / stale / review`, Claude Code hooks (pack before edit, record at stop), git hook or merge driver, PR rendering | **Phase 4** | Phase 6 |
 | 4 | **Input sources for ordinary repositories:** PR descriptions, review threads, agent transcripts (Entire checkpoints, Agent Note), diff-only extraction | Phase 6 | **Phase 4** |
-| 5 | **Staleness:** item-hash invalidation of facts, cascaded through `dependents_via` to decisions; "stale" report per commit range | Phase 5 | Phase 5 |
+| 5 | **Staleness:** item-hash invalidation of facts, cascaded through `dependents_via` to decisions; an `x.code/touches` edge whose anchor moved is withdrawn with a reason naming the commit, not rewritten; "stale" report per commit range | Phase 5 | Phase 5 |
 | 6 | **Storage:** `.smysl/` layout, surface vs CBOR in git, merge driver using smysl merge, growth over hundreds of commits, compaction | Phase 5 | Phase 5 |
 | 8 | **Cost and privacy:** per-commit token budget and price; model routing (small model for decisions/alternatives, pro for prerequisites); quota handling; local model viability | Phase 6 | **Phase 4** |
 | 9 | **Evaluation:** grow S0 into a regression suite run on every prompt or model change | continuous | continuous |
@@ -245,8 +256,9 @@ crates.io. It never uses a git dependency.
 The requests, with reproductions and acceptance tests, are in
 [`docs/smysl-requests-1.4.md`](smysl-requests-1.4.md):
 
-- **R10 (high):** merge re-appends attestations and schema declarations, so the log grows on every
-  merge (found by the Phase 1 merge guarantees).
+- **R10 (high):** merge re-appends label bindings and schema declarations (`Store::contains` has no
+  arm for either), so the log grows on every merge. Found by the Phase 1 merge guarantees; reproduced
+  on 1.3.0 and dev/1.4.0.
 - **R11–R15:** `import` ignores `--format`; `import` summaries fail `check`; configuration error exit
   code; unknown provider kind message; summary bound mismatch.
 - **Not filed:** `--granularity` does not choose the profile units are checked under; smysl deferred
