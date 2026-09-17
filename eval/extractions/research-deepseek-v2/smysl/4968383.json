@@ -1,0 +1,817 @@
+{
+  "decisions": [
+    {
+      "decision": "Upgrade nodejs conformance target from C-Read to C-Produce.",
+      "kind": "act",
+      "rationale": "To provide a fourth independent derivation of uids and a third witness for §2.3 beyond the Rust, strengthening the evidence that the specification is sufficient.",
+      "quote": "Conformance target: C-Produce — structural + epistemic + shape (§7).",
+      "hunks": [
+        "H25",
+        "H26",
+        "H27",
+        "H28",
+        "H31"
+      ]
+    },
+    {
+      "decision": "Hand-roll BLAKE3-256 in nodejs instead of binding to C library.",
+      "kind": "act",
+      "rationale": "A binding to the same C library the Rust calls would test two callers of one implementation, not whether the specification is enough to derive a uid from.",
+      "quote": "a binding to the same C library the Rust calls would test two callers of one implementation",
+      "hunks": [
+        "H29",
+        "H33"
+      ]
+    },
+    {
+      "decision": "Implement uid derivation in nodejs reproducing all sixteen fixture uids.",
+      "kind": "act",
+      "rationale": "Reaching C-Produce requires deriving uids; reproducing the fixtures proves the implementation matches the reference bytes.",
+      "quote": "`uid.js` reproduces all sixteen canonical encodings and uids",
+      "hunks": [
+        "H32",
+        "H34"
+      ]
+    },
+    {
+      "decision": "Run shape clause validation before uid() in nodejs.",
+      "kind": "act",
+      "rationale": "The shape clause must be enforced on the emission path; a malformed unit must not be able to obtain an identity from the package.",
+      "quote": "`uid()` running it first, so a malformed unit cannot obtain an identity from the package",
+      "hunks": [
+        "H32",
+        "H34"
+      ]
+    },
+    {
+      "decision": "NFC-normalise text in nodejs CBOR encoder.",
+      "kind": "act",
+      "rationale": "§3 constraint 6 asks for normalisation at the encoder; previously a no-op for re-encode but needed for authored text.",
+      "quote": "the CBOR encoder now NFC-normalises text, which §3 constraint 6 asks for by name",
+      "hunks": [
+        "H30"
+      ]
+    },
+    {
+      "decision": "Add missing normative facts to spec: status integers, source layout, kind enum, base32 alphabet.",
+      "kind": "act",
+      "rationale": "The spec did not contain these facts; they were recoverable only by decoding a fixture. Adding them makes the spec sufficient for a C-Produce implementer.",
+      "quote": "The reading found four facts a C-Produce implementer cannot proceed without, none of them in the spec, all recoverable only by decoding a fixture",
+      "hunks": [
+        "H13",
+        "H14"
+      ]
+    },
+    {
+      "decision": "Declare empty deps/grounds are omitted, not encoded as empty.",
+      "kind": "act",
+      "rationale": "The spec previously said 'required, MAY be empty', which read literally gives a five-key map where the reference emits three, producing wrong uids.",
+      "quote": "An empty `deps` or `grounds` is omitted, exactly as an absent optional is.",
+      "hunks": [
+        "H14",
+        "H32"
+      ]
+    },
+    {
+      "decision": "Mark spec-derived constants with SPEC: in nodejs src/uid.js.",
+      "kind": "act",
+      "rationale": "To record that these values were previously guessed from fixtures, making the method explicit.",
+      "quote": "Marked `SPEC:` at the point of use",
+      "hunks": [
+        "H32"
+      ]
+    },
+    {
+      "decision": "Add spec-tables gate and make target parsing spec tables.",
+      "kind": "act",
+      "rationale": "Previous checks only asserted the spec contained the string 'Deterministic CBOR', not the actual tables. Parsing tables ties implementations to the document.",
+      "quote": "Parses the spec's tables rather than quoting them",
+      "hunks": [
+        "H1",
+        "H15",
+        "H16",
+        "H17",
+        "H45"
+      ]
+    },
+    {
+      "decision": "Correct go and python citations from §1.1 to §2.2 key 7.",
+      "kind": "act",
+      "rationale": "The cited section §1.1 does not exist; a citation to a nonexistent section reads as a clause settling the question. Correct source sub-map is §2.2 key 7.",
+      "quote": "go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had.",
+      "hunks": [
+        "H23",
+        "H24",
+        "H35"
+      ]
+    },
+    {
+      "decision": "Update masthead format version to smysl/1.0.",
+      "kind": "act",
+      "rationale": "The masthead had gone stale; §8.6 says smysl/1.0 arrived and is what new documents declare.",
+      "quote": "the masthead read `smysl/0.1` while §8.6 of the same document says `smysl/1.0`",
+      "hunks": [
+        "H11"
+      ]
+    },
+    {
+      "decision": "Correct README claims that tables were asserted against document.",
+      "kind": "act",
+      "rationale": "The tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document.",
+      "quote": "READINESS and `nodejs/README.md` both described this as the tables being \"asserted against the document.\" They now say what it is",
+      "hunks": [
+        "H26",
+        "H36"
+      ]
+    },
+    {
+      "decision": "Rework doc-output replay to scratch copy and derive states via edits.json.",
+      "kind": "act",
+      "rationale": "Previous fixtures keyed by filename failed when a chapter's state is keyed by position. Replaying as a chapter with a scratch copy and derived states is stronger.",
+      "quote": "So the script now replays a chapter **as a chapter**: a scratch copy of its committed files, walked in document order, with `fmt --write` allowed to actually write.",
+      "hunks": [
+        "H19",
+        "H20",
+        "H21",
+        "H37",
+        "H38",
+        "H39",
+        "H40",
+        "H41",
+        "H42",
+        "H43",
+        "H44"
+      ]
+    },
+    {
+      "decision": "Anchor reader edits by prose, never by content, in edits.json.",
+      "kind": "act",
+      "rationale": "Anchoring by prose prevents staleness and ambiguity; the edit body is read from the chapter at run time.",
+      "quote": "Anchored by prose, never by content: the edit body is the fenced block that follows the anchor, read out of the chapter at run time.",
+      "hunks": [
+        "H19",
+        "H21",
+        "H38"
+      ]
+    },
+    {
+      "decision": "Revise gate 7 blocked command explanation, no longer 'decision about book'.",
+      "kind": "act",
+      "rationale": "The block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision.",
+      "quote": "It was not a decision about the book; see 1.2 below.",
+      "hunks": [
+        "H9",
+        "H10",
+        "H18"
+      ]
+    },
+    {
+      "decision": "Hold beta.smy repair rather than guess missing stanza.",
+      "kind": "decline",
+      "rationale": "The missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair.",
+      "quote": "Held back rather than repaired — the missing stanza cannot be reconstructed from the page.",
+      "hunks": []
+    },
+    {
+      "decision": "Do not implement rule M in outside readers.",
+      "kind": "decline",
+      "rationale": "Rule M is checkable against a store, not against a unit; a validate claiming to enforce it would be a check that cannot fail.",
+      "quote": "Rule M is implemented by none of the three outside readers, deliberately.",
+      "hunks": []
+    },
+    {
+      "decision": "Update gate 7 replayed count from 78 to 85, skipped 116 to 108.",
+      "kind": "act",
+      "rationale": "The new chapter replay method increased the number of replayed transcripts.",
+      "quote": "`make doc-output` replays **85 of 194** documented command blocks",
+      "hunks": [
+        "H3",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Measure mutation survivors on store/mod.rs under both per-package and workspace tests.",
+      "kind": "act",
+      "rationale": "To compare weak per-package claim with stronger workspace claim and quantify artefact rate.",
+      "quote": "Measured, on `crates/smysl-graph/src/store/mod.rs` — 152 mutants, 137 viable",
+      "hunks": [
+        "H7"
+      ]
+    },
+    {
+      "decision": "Record that --test-workspace needs explicit --timeout.",
+      "kind": "act",
+      "rationale": "Default timeout caused a run that was mostly timeouts, misleadingly reading as artefacts.",
+      "quote": "`--test-workspace` needs an explicit `--timeout`",
+      "hunks": [
+        "H7"
+      ]
+    },
+    {
+      "decision": "Do not apply 22% artefact fraction to other modules.",
+      "kind": "decline",
+      "rationale": "One module evidence is not generalizable; applying the fraction would repeat the error of quoting a number without its configuration.",
+      "quote": "applying 22% to them would be the same error this file records twice already",
+      "hunks": []
+    },
+    {
+      "decision": "Add BLAKE3 test vectors for chunk boundary lengths.",
+      "kind": "act",
+      "rationale": "Vectors straddling the 1024-byte boundary catch a hasher that handles only one chunk.",
+      "quote": "The vectors that matter are the ones straddling the 1024-byte chunk boundary.",
+      "hunks": [
+        "H33"
+      ]
+    },
+    {
+      "decision": "Implement status integers and source/kind enums as constants in nodejs.",
+      "kind": "act",
+      "rationale": "These values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures.",
+      "quote": "SPEC: gap 2. The six statuses of §6/§7, and the integers they are on the wire.",
+      "hunks": [
+        "H32"
+      ]
+    },
+    {
+      "decision": "Implement RFC 4648 base32 alphabet in nodejs.",
+      "kind": "act",
+      "rationale": "The spec lacked an alphabet; base32hex was equally faithful but would produce mutually unreadable names.",
+      "quote": "RFC 4648, lowercased, unpadded",
+      "hunks": [
+        "H32"
+      ]
+    },
+    {
+      "decision": "Omit empty deps/grounds sets in nodejs canonical encoding.",
+      "kind": "act",
+      "rationale": "The spec said 'MAY be empty' but the encoder omits empty sets; implementing omission matches fixtures and avoids wrong uids.",
+      "quote": "omitted when empty, which §2.2 does not say and its presence column contradicts.",
+      "hunks": [
+        "H32"
+      ]
+    },
+    {
+      "decision": "Sort and deduplicate deps/grounds in nodejs.",
+      "kind": "act",
+      "rationale": "Deps and grounds are sets: deduplicated and sorted by uid bytes, per spec.",
+      "quote": "deduplicated, sorted by uid bytes",
+      "hunks": [
+        "H32"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "C-Produce is the lowest class that touches §2.3 status identity.",
+      "kind": "existing-behaviour",
+      "quote": "C-Produce is the lowest class that touches it."
+    },
+    {
+      "decision": 1,
+      "text": "nodejs already implemented C-Read decoding and encoding.",
+      "kind": "existing-behaviour",
+      "quote": "**Conformance target: C-Read** — decode, re-encode byte-identically, preserve what is not"
+    },
+    {
+      "decision": 2,
+      "text": "Binding to same C library as Rust would test two callers of one implementation.",
+      "kind": "existing-behaviour",
+      "quote": "a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 2,
+      "text": "Python and Go already hand-rolled BLAKE3 implementations for independence.",
+      "kind": "prior-change",
+      "quote": "for the reason the other two are"
+    },
+    {
+      "decision": 3,
+      "text": "Fixture file contains sixteen cases with canonical bytes and uid hex produced by Rust.",
+      "kind": "existing-behaviour",
+      "quote": "The fixtures were produced by the Rust. Reproducing them is the whole claim"
+    },
+    {
+      "decision": 3,
+      "text": "Hand-rolled BLAKE3 implementation passes published vectors.",
+      "kind": "prior-change",
+      "quote": "the published vectors including 1023/1024/1025/2048/3072"
+    },
+    {
+      "decision": 4,
+      "text": "Spec §7 defines shape clause requiring gist, grounds, source for C-Produce.",
+      "kind": "existing-behaviour",
+      "quote": "// > **C-Produce** — structural + epistemic + *shape*: emit well-formed units: a gist present,"
+    },
+    {
+      "decision": 5,
+      "text": "Spec §3 constraint 6 requires normalisation at encoder.",
+      "kind": "existing-behaviour",
+      "quote": "§3, constraint 6, and it says where:"
+    },
+    {
+      "decision": 5,
+      "text": "Re-encode path sees only decoder-rejected NFC text, so encoder normalization was no-op.",
+      "kind": "existing-behaviour",
+      "quote": "This was a no-op until C-Produce arrived, which is why it was not here: a re-encode"
+    },
+    {
+      "decision": 6,
+      "text": "Missing facts were recoverable only by decoding core_bytes_hex in uid fixtures.",
+      "kind": "existing-behaviour",
+      "quote": "four facts a C-Produce implementer cannot proceed without, none of them in the spec, all recoverable only by decoding a fixture"
+    },
+    {
+      "decision": 7,
+      "text": "Reference encoder emits three-key map for minimal unit, omitting empty sets.",
+      "kind": "existing-behaviour",
+      "quote": "The `minimal` case in `fixtures/wire/uid/cases.json` is a three-key map over 0, 1"
+    },
+    {
+      "decision": 8,
+      "text": "The CBOR reader already marks spec-derived constants with SPEC:.",
+      "kind": "existing-behaviour",
+      "quote": "Marked `SPEC:` in `src/uid.js`, as the CBOR reader marks its own"
+    },
+    {
+      "decision": 9,
+      "text": "The spec contains normative tables in SMYSL_FORMAT_SPEC.md that can be parsed.",
+      "kind": "existing-behaviour",
+      "quote": "This parses the spec's tables rather than quoting them."
+    },
+    {
+      "decision": 10,
+      "text": "Source sub-map is described at §2.2 key 7, and §1.1 does not exist.",
+      "kind": "existing-behaviour",
+      "quote": "The source sub-map, §2.2 key 7."
+    },
+    {
+      "decision": 11,
+      "text": "§8.6 says smysl/1.0 is what new documents declare.",
+      "kind": "existing-behaviour",
+      "quote": "`smysl/1.0` arrived in 0.15 and is what new documents declare"
+    },
+    {
+      "decision": 12,
+      "text": "Previous tests used hand-typed table copies, not assertions against document.",
+      "kind": "existing-behaviour",
+      "quote": "Those two tables are checked against a **hand-typed copy** of the document"
+    },
+    {
+      "decision": 13,
+      "text": "Chapter state is keyed by position, but fixtures were keyed by filename.",
+      "kind": "existing-behaviour",
+      "quote": "The 57 commands were blocked on fixtures being keyed by **filename** when a chapter's state is"
+    },
+    {
+      "decision": 13,
+      "text": "Commands used to run in fixture folder and could rewrite tracked files.",
+      "kind": "existing-behaviour",
+      "quote": "commands used to run in the fixture folder itself, so one replayed `fmt --write` would have"
+    },
+    {
+      "decision": 14,
+      "text": "edits.json already introduced to declare reader edits, needing anchor scheme.",
+      "kind": "prior-change",
+      "quote": "A hand edit is the one thing replaying a chapter cannot produce"
+    },
+    {
+      "decision": 15,
+      "text": "Two of chapter 1 states are printed as fragment and diff, cannot be committed.",
+      "kind": "existing-behaviour",
+      "quote": "state 2 is printed as a *fragment* the reader pastes in, state 3 as a *diff*."
+    },
+    {
+      "decision": 16,
+      "text": "Missing stanza cannot be reconstructed from page; guessing is not repair.",
+      "kind": "assumption",
+      "quote": "the missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair."
+    },
+    {
+      "decision": 17,
+      "text": "Unit core carries grounds as uids, not statuses; rule M requires store.",
+      "kind": "existing-behaviour",
+      "quote": "M is checkable against a store and not against a unit"
+    },
+    {
+      "decision": 18,
+      "text": "The script now replays chapters as chapters with scratch copy.",
+      "kind": "prior-change",
+      "quote": "Since 1.2.0 the script replays a chapter *as a chapter*"
+    },
+    {
+      "decision": 19,
+      "text": "store/mod.rs holds Store::matching_prefix, a known survivor for validation.",
+      "kind": "existing-behaviour",
+      "quote": "picked because it holds `Store::matching_prefix`, the one instance already named, so the run could be checked against a known answer"
+    },
+    {
+      "decision": 19,
+      "text": "cargo-mutants supports per-package and workspace test modes.",
+      "kind": "tool-setting",
+      "quote": "`cargo mutants -p smysl-graph` — the weak claim, how every figure above was produced"
+    },
+    {
+      "decision": 20,
+      "text": "cargo-mutants auto-set timeout based on baseline, causing timeouts on workspace suite.",
+      "kind": "tool-setting",
+      "quote": "cargo-mutants measured its baseline at *1s of tests*, auto-set the timeout to 20s, and then ran each mutant against the 109-second workspace suite."
+    },
+    {
+      "decision": 21,
+      "text": "One module evidence is not generalizable to other 357 survivors.",
+      "kind": "assumption",
+      "quote": "**One module of one crate.** Whatever this says about the other 357 survivors, it is evidence"
+    },
+    {
+      "decision": 22,
+      "text": "BLAKE3 chunk boundary is 1024 bytes; short vectors miss multi-chunk hasher bugs.",
+      "kind": "existing-behaviour",
+      "quote": "The chunk boundary is 1024 bytes. A hasher that only ever compresses a single chunk passes"
+    },
+    {
+      "decision": 23,
+      "text": "Spec now contains normative status integers and source/kind enum tables.",
+      "kind": "prior-change",
+      "quote": "`status` is one of six values, and the integers are **normative**"
+    },
+    {
+      "decision": 24,
+      "text": "Spec now names base32 alphabet as RFC 4648 lowercased unpadded.",
+      "kind": "prior-change",
+      "quote": "The base32 is **RFC 4648, lowercased, unpadded**"
+    },
+    {
+      "decision": 25,
+      "text": "Spec now declares empty deps/grounds omitted, as in prior decision.",
+      "kind": "prior-change",
+      "quote": "**An empty `deps` or `grounds` is omitted, exactly as an absent optional is.**"
+    },
+    {
+      "decision": 26,
+      "text": "Spec says deps/grounds are sets, deduplicated and sorted by uid bytes.",
+      "kind": "existing-behaviour",
+      "quote": "`deps` and `grounds`: deduplicated, sorted by uid bytes"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Leave nodejs at C-Read as a scope decision rather than a gap.",
+      "reason": "The new reading strengthened the evidence, so remaining C-Read was rejected.",
+      "quote": "`nodejs/` remains C-Read, which is a scope decision rather than a gap"
+    },
+    {
+      "decision": 2,
+      "alternative": "Bind to the same C library the Rust calls.",
+      "reason": "That would test two callers of one implementation, not whether the specification is enough.",
+      "quote": "a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 3,
+      "alternative": "Check only the uid, not canonical bytes separately.",
+      "reason": "A mismatch has two possible causes and they need different fixes.",
+      "quote": "Canonical bytes are checked *before* the hash, and separately"
+    },
+    {
+      "decision": 4,
+      "alternative": "Validate on request while uid() derives anyway.",
+      "reason": "The class is about emitting, so the failure must be on the path that hands out a uid.",
+      "quote": "validating on request while `uid()` derived anyway would not be it"
+    },
+    {
+      "decision": 5,
+      "alternative": "Leave text normalization as a no-op.",
+      "reason": "It was not needed for re-encode, but authored text requires it.",
+      "quote": "This was a no-op until C-Produce arrived, which is why it was not here"
+    },
+    {
+      "decision": 6,
+      "alternative": "Leave these facts recoverable only by decoding fixtures.",
+      "reason": "The spec did not admit it carried normative content.",
+      "quote": "all four previously recoverable only by decoding a fixture"
+    },
+    {
+      "decision": 7,
+      "alternative": "Encode empty deps/grounds as empty arrays.",
+      "reason": "A literal reading would produce a different uid for every unit with neither.",
+      "quote": "A literal reading emits a five-key map where the reference emits three"
+    },
+    {
+      "decision": 8,
+      "alternative": "Leave gaps unmarked, as python and go did.",
+      "reason": "Without a SPEC mark there is no evidence a reader guessed.",
+      "quote": "neither recorded that it had to guess"
+    },
+    {
+      "decision": 9,
+      "alternative": "Keep hand-typed table copies asserted against the document.",
+      "reason": "Nothing parsed the spec, so editing spec and test were separate acts.",
+      "quote": "every implementation read SMYSL_FORMAT_SPEC.md only to assert it contained the string \"Deterministic CBOR\""
+    },
+    {
+      "decision": 10,
+      "alternative": "Keep citations to the nonexistent §1.1.",
+      "reason": "A citation to a section that does not exist reads as a clause settling the question.",
+      "quote": "A citation to a section that does not exist reads as a clause settling the question"
+    },
+    {
+      "decision": 11,
+      "alternative": "Leave the masthead at smysl/0.1.",
+      "reason": "It had gone stale while §8.6 says smysl/1.0 is what new documents declare.",
+      "quote": "the masthead had gone stale"
+    },
+    {
+      "decision": 12,
+      "alternative": "Continue to claim tables were asserted against document.",
+      "reason": "They were hand-typed copies, not assertions against the document.",
+      "quote": "described this as the tables being \"asserted against the document.\""
+    },
+    {
+      "decision": 13,
+      "alternative": "Keep filename-keyed fixtures.",
+      "reason": "A chapter's state is keyed by position, and two states cannot be committed at all.",
+      "quote": "fixtures being keyed by filename when a chapter's state is keyed by position"
+    },
+    {
+      "decision": 14,
+      "alternative": "Anchor edits by content, duplicating the body.",
+      "reason": "Duplication would go stale; reading from the chapter prevents that.",
+      "quote": "anchored by prose and never by content, so the body is read out of the chapter at run time and nothing can go stale"
+    },
+    {
+      "decision": 15,
+      "alternative": "Keep describing the block as a decision about the book.",
+      "reason": "It was actually the fixtures being keyed by filename, not a book decision.",
+      "quote": "~~still a decision about the book~~. **It was not a decision about the book; see 1.2 below.**"
+    },
+    {
+      "decision": 16,
+      "alternative": "Guess the missing stanza into the published chapter.",
+      "reason": "The missing stanza cannot be reconstructed from the page, and guessing is not repair.",
+      "quote": "the missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair"
+    },
+    {
+      "decision": 17,
+      "alternative": "Implement rule M in outside reader validate.",
+      "reason": "It would be a check that cannot fail because a unit does not carry ground statuses.",
+      "quote": "a `validate` claiming to enforce it would be a check that cannot fail"
+    },
+    {
+      "decision": 18,
+      "alternative": "Leave the counted 78 and 116 unchanged.",
+      "reason": "The new chapter replay method increased the number of replayed transcripts.",
+      "quote": "`make doc-output` replays **78 of 194** documented command blocks and gates on them; 116 are skipped"
+    },
+    {
+      "decision": 19,
+      "alternative": "Keep using only per-package mutation figures.",
+      "reason": "Nobody had measured the difference, so the stronger claim was unknown.",
+      "quote": "Nobody had measured the difference"
+    },
+    {
+      "decision": 20,
+      "alternative": "Rely on cargo-mutants auto-set timeout.",
+      "reason": "The default produced mostly timeouts, which looked like artefacts.",
+      "quote": "--test-workspace needs an explicit `--timeout`"
+    },
+    {
+      "decision": 21,
+      "alternative": "Apply the 22% artefact fraction to other modules.",
+      "reason": "One module evidence is not generalizable and would repeat quoting a number without configuration.",
+      "quote": "applying the fraction to the other 357 would be the error this repository keeps making"
+    },
+    {
+      "decision": 22,
+      "alternative": "Test only short inputs that fit one chunk.",
+      "reason": "A hasher that only compresses one chunk passes every short vector.",
+      "quote": "A hasher that only ever compresses a single chunk passes every vector above"
+    },
+    {
+      "decision": 23,
+      "alternative": "Leave status and source/kind values recoverable only from fixtures.",
+      "reason": "These were needed for uid derivation and rule M comparisons.",
+      "quote": "The status integers appeared nowhere, though rule M compares them as integers"
+    },
+    {
+      "decision": 24,
+      "alternative": "Use the equally faithful base32hex alphabet.",
+      "reason": "It would produce mutually unreadable names for the same unit.",
+      "quote": "base32hex was an equally faithful reading of the sentence"
+    },
+    {
+      "decision": 25,
+      "alternative": "Encode empty deps/grounds as empty arrays.",
+      "reason": "The spec says 'MAY be empty', but the encoder omits empty sets.",
+      "quote": "omitted when empty, which §2.2 does not say and its presence column contradicts"
+    },
+    {
+      "decision": 26,
+      "alternative": "Treat deps/grounds as ordered lists with duplicates.",
+      "reason": "The spec defines them as sets, so order and repetition are not content.",
+      "quote": "deps and grounds are sets: deduplicated, sorted by uid bytes"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Provides fourth independent derivation of uids and third witness for §2.3 beyond Rust.",
+      "quote": "§2.1 now has **four independent derivations** — the Rust, `python/`, `go/` and `nodejs/` — and §2.3, *status is part of identity*, has three witnesses beyond the reference.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Hand-rolled BLAKE3 tests specification sufficiency instead of two callers of one C implementation.",
+      "quote": "a binding to the same C library the Rust calls would test two callers of one implementation",
+      "verified": true,
+      "verification_quote": "passes the published vectors including 1023/1024/1025/2048/3072"
+    },
+    {
+      "decision": 3,
+      "text": "Nodejs uid derivation reproduces all sixteen fixture uids and canonical encodings.",
+      "quote": "`nodejs/src/uid.js` reproduces all sixteen canonical encodings and all sixteen uids in `fixtures/wire/uid/cases.json`",
+      "verified": true,
+      "verification_quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": 4,
+      "text": "Malformed unit cannot obtain identity because uid() runs shape validation first.",
+      "quote": "implements §7's shape clause with `uid()` running it first — a malformed unit cannot obtain an identity from the package",
+      "verified": true,
+      "verification_quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": 5,
+      "text": "NFC normalization at encoder makes unicode-decomposed reproducible.",
+      "quote": "`unicode-decomposed` in fixtures/wire/uid/cases.json is the case that fails without this line",
+      "verified": true,
+      "verification_quote": "assert.equal(toHex(uid(fromFixture(decomposed))), toHex(uid(fromFixture(composed))));"
+    },
+    {
+      "decision": 6,
+      "text": "Spec now contains status integers, source layout, kind enum, base32 alphabet.",
+      "quote": "The reading found four facts a C-Produce implementer cannot proceed without, none of them in the spec, all recoverable only by decoding a fixture",
+      "verified": true,
+      "verification_quote": "spec-tables 0 mismatched"
+    },
+    {
+      "decision": 7,
+      "text": "Empty deps/grounds omitted, avoiding wrong five-key map uid.",
+      "quote": "**An empty `deps` or `grounds` is omitted, exactly as an absent optional is.**",
+      "verified": true,
+      "verification_quote": "assert.equal(bytes[0], 0xa3, \"a three-key map: schema, gist, status\");"
+    },
+    {
+      "decision": 8,
+      "text": "Spec-derived constants marked SPEC: record that values were guessed from fixtures.",
+      "quote": "Marked `SPEC:` at the point of use, as the CBOR reader marks its own.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Spec-tables gate parses tables and compares implementations against them, 38 comparisons.",
+      "quote": "Parses the spec's tables rather than quoting them, and compares all four implementations against them in both directions. 38 comparisons",
+      "verified": true,
+      "verification_quote": "spec-tables 0 mismatched"
+    },
+    {
+      "decision": 10,
+      "text": "Citations corrected to existing §2.2 key 7, eliminating phantom section references.",
+      "quote": "The source sub-map, §2.2 key 7. Undocumented until 1.2.0",
+      "verified": true,
+      "verification_quote": "spec-tables 0 mismatched"
+    },
+    {
+      "decision": 11,
+      "text": "Masthead format version updated to smysl/1.0, matching §8.6.",
+      "quote": "**Format version:** `smysl/1.0` — `smysl/0.1` is also accepted and always will be (§8.6).",
+      "verified": true,
+      "verification_quote": "spec-tables 0 mismatched"
+    },
+    {
+      "decision": 12,
+      "text": "README corrected to say tests use hand-typed copy, not asserted against document.",
+      "quote": "Those two tables are checked against a **hand-typed copy** of the document, and this README used to say \"against the document\"",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "Doc-output replays chapters in scratch copy, deriving later states from commands.",
+      "quote": "The chapter is replayed as a chapter: a scratch copy of the committed files, walked in document order",
+      "verified": true,
+      "verification_quote": "doc-output 85/0"
+    },
+    {
+      "decision": 14,
+      "text": "Reader edits anchored by prose prevent staleness and duplicates.",
+      "quote": "by **prose anchor, never by content**, so the edit body is read out of the chapter at run time and nothing can go stale",
+      "verified": true,
+      "verification_quote": "Three breakages verified: an anchor that stops resolving, a stanza match that finds nothing, and a base fixture edited away from its chapter."
+    },
+    {
+      "decision": 15,
+      "text": "Gate 7 block explanation revised from book decision to filename vs position keying.",
+      "quote": "The 57 commands were blocked on fixtures being keyed by **filename** when a chapter's state is keyed by **position**.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "beta.smy repair declined; missing stanza cannot be reconstructed from page.",
+      "quote": "the missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "Rule M not implemented; validate claiming it would be check that cannot fail.",
+      "quote": "a `validate` claiming to enforce it would be a check that cannot fail",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "Replayed transcript count increased from 78 to 85, skipped from 116 to 108.",
+      "quote": "78 → 85 replayed",
+      "verified": true,
+      "verification_quote": "doc-output 85/0"
+    },
+    {
+      "decision": 19,
+      "text": "Mutation measurement gives 23 survivors per-package vs 18 workspace, 16.8% vs 13.1%.",
+      "quote": "| per-package, as every published figure was measured | 23 | 16.8% |\n| the same mutants, `--test-workspace` | **18** | **13.1%** |",
+      "verified": true,
+      "verification_quote": "Measured, on `crates/smysl-graph/src/store/mod.rs` — 152 mutants, 137 viable"
+    },
+    {
+      "decision": 20,
+      "text": "--test-workspace requires explicit --timeout; default gave 15 timeouts.",
+      "quote": "`--test-workspace` needs an explicit `--timeout`",
+      "verified": true,
+      "verification_quote": "Re-run with `--timeout 400` it is 0 timeouts"
+    },
+    {
+      "decision": 21,
+      "text": "Decline applying 22% artefact fraction to other modules; one module not generalizable.",
+      "quote": "applying 22% to them would be the same error this file records twice already: a number quoted without its configuration",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "BLAKE3 vectors straddling chunk boundary catch single-chunk shortcut.",
+      "quote": "The vectors that matter are the ones straddling the 1024-byte chunk boundary. A hasher that only ever compresses one chunk passes every short vector and produces garbage the moment the tree has two leaves",
+      "verified": true,
+      "verification_quote": "passes the published vectors including 1023/1024/1025/2048/3072"
+    },
+    {
+      "decision": 23,
+      "text": "Status and source/kind constants implemented in nodejs for uid and rule M comparisons.",
+      "quote": "SPEC: gap 2. The six statuses of §6/§7, and the integers they are on the wire.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "RFC 4648 base32 alphabet implemented, avoiding mutually unreadable names.",
+      "quote": "base32hex was an equally faithful reading that would produce mutually unreadable names for the same unit.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "Empty deps/grounds omitted in nodejs encoder, matching fixtures.",
+      "quote": "**An empty `deps` or `grounds` is omitted, exactly as an absent optional is.**",
+      "verified": true,
+      "verification_quote": "assert.equal(bytes[0], 0xa3, \"a three-key map: schema, gist, status\");"
+    },
+    {
+      "decision": 26,
+      "text": "Deps and grounds sorted and deduplicated in nodejs per spec.",
+      "quote": "deps and grounds: deduplicated, sorted by uid bytes",
+      "verified": true,
+      "verification_quote": "assert.equal(toHex(shuffled), toHex(sorted), \"order and repetition are not content\");"
+    }
+  ],
+  "tokens": [
+    [
+      29057,
+      13415
+    ],
+    [
+      30180,
+      19582
+    ],
+    [
+      30122,
+      8951
+    ],
+    [
+      30138,
+      14286
+    ]
+  ]
+}

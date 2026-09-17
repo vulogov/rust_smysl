@@ -1,0 +1,120 @@
+{
+  "decisions": [
+    {
+      "decision": "Display word 'alias' as singular when unique",
+      "kind": "act",
+      "rationale": "The author changed the label to use singular 'alias' when there is exactly one alias, making the help output grammatically correct.",
+      "quote": "Display word alias as singular when unique",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Add pluralize helper function",
+      "kind": "act",
+      "rationale": "The author added a reusable helper function to determine singular or plural form based on count, avoiding duplication of the conditional logic.",
+      "quote": "fn pluralize<'s>(values: usize, single: &'s str, plural: &'s str) -> &'s str {",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Update test fixtures for new singular alias format",
+      "kind": "act",
+      "rationale": "The author updated test expectations to reflect the changed output format.",
+      "quote": "  -o, --opt <opt>  [alias: --visible]",
+      "hunks": [
+        "H4",
+        "H5",
+        "H6",
+        "H7",
+        "H8",
+        "H9",
+        "H10",
+        "H11",
+        "H12",
+        "H13",
+        "H14",
+        "H15",
+        "H16"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The `pluralize` helper is defined and callable from the functions that format spec values.",
+      "kind": "prior-change",
+      "quote": "fn pluralize<'s>(values: usize, single: &'s str, plural: &'s str) -> &'s str {"
+    },
+    {
+      "decision": 3,
+      "text": "The production output format was changed to use 'alias' for a single alias, so test fixtures must be updated.",
+      "kind": "prior-change",
+      "quote": "spec_vals.push(format!(\"{ctx}[alias{plural}: {ctx:#}{als}{ctx}]{ctx:#}\"));"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Always output the label as 'aliases' regardless of the number of aliases.",
+      "reason": "Using 'aliases' for a single alias is grammatically incorrect.",
+      "quote": "            spec_vals.push(format!(\"{ctx}[aliases: {ctx:#}{als}{ctx}]{ctx:#}\"));"
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep the test fixtures expecting the old plural '[aliases: ...]' output.",
+      "reason": "Test fixtures would fail if left unchanged because the output now uses singular 'alias'.",
+      "quote": "  -o, --opt <opt>  [aliases: --visible]"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Help output now shows singular 'alias' when there is exactly one alias for arguments.",
+      "quote": "  -o, --opt <opt>  [alias: --visible]",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Subcommand singular/plural decision uses short_als.len(), not total aliases, risking incorrect label when long aliases exist.",
+      "quote": "let plural = pluralize(short_als.len(), \"\", \"es\");",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Adds pluralize helper returning singular when count is one, plural otherwise.",
+      "quote": "    if values == 1 { single } else { plural }",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Test fixtures updated to expect singular '[alias: ...]' for unique aliases, keeping plural for multiple.",
+      "quote": "  reticulate  Reticulate the splines [alias: ret]",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      2807,
+      5759
+    ],
+    [
+      2864,
+      10220
+    ],
+    [
+      2806,
+      5659
+    ],
+    [
+      2822,
+      7180
+    ]
+  ]
+}

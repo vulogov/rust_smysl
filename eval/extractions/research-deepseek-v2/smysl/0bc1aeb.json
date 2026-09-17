@@ -1,0 +1,109 @@
+{
+  "decisions": [
+    {
+      "decision": "Gate `report_against` and its tests on `gemini` or `anthropic` features",
+      "kind": "act",
+      "rationale": "The function is only reached from the feature-gated `gemini` and `anthropic` mappers, so builds without those features had an unused function and CI's `-D warnings` failed.",
+      "quote": "It is only reached from `gemini` and `anthropic`, both feature-gated, so any build without them had an unused function — and CI sets `-D warnings`.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Leave the `jitter` unused failure in `--no-default-features` unrepaired",
+      "kind": "decline",
+      "rationale": "It is pre-existing, fails the same way on the previous commit, is outside CI's matrix, and should not be folded into this repair.",
+      "quote": "Pre-existing, outside CI's matrix, and not something to fold into a repair.",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`report_against` is only reached from the `gemini` and `anthropic` mappers, both feature-gated",
+      "kind": "existing-behaviour",
+      "quote": "It is only reached from `gemini` and `anthropic`, both feature-gated"
+    },
+    {
+      "decision": 1,
+      "text": "CI sets `-D warnings`, which refuses an unused function",
+      "kind": "tool-setting",
+      "quote": "CI sets `-D warnings`"
+    },
+    {
+      "decision": 2,
+      "text": "`cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused the same way on the previous commit",
+      "kind": "existing-behaviour",
+      "quote": "fails the same way on the previous commit"
+    },
+    {
+      "decision": 2,
+      "text": "The `jitter` unused failure is outside CI's matrix",
+      "kind": "tool-setting",
+      "quote": "outside CI's matrix"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Leave `report_against` ungated for builds without `gemini` or `anthropic`.",
+      "reason": "Any build without them had an unused function and CI sets -D warnings.",
+      "quote": "It is only reached from `gemini` and `anthropic`, both feature-gated, so any build without them had an unused function — and CI sets `-D warnings`."
+    },
+    {
+      "decision": 2,
+      "alternative": "Fix the `jitter` unused warning in `--no-default-features` as part of this commit.",
+      "reason": "It fails the same way on the previous commit, is pre-existing, outside CI's matrix, and not something to fold into a repair.",
+      "quote": "Noted and deliberately not fixed here"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Builds without those features no longer fail on unused function under `-D warnings`.",
+      "quote": "so any build without them had an unused function — and CI sets `-D warnings`.",
+      "verified": true,
+      "verification_quote": "Verified against both failing CI commands and each provider feature on its own."
+    },
+    {
+      "decision": 1,
+      "text": "`report_against` compiles only when `gemini` or `anthropic` feature is enabled.",
+      "quote": "#[cfg(any(feature = \"gemini\", feature = \"anthropic\"))]",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "The `cap_tests` module compiles only when tests and relevant features are enabled.",
+      "quote": "#[cfg(all(test, any(feature = \"gemini\", feature = \"anthropic\")))]",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The no-default-features `jitter` unused failure remains unfixed and pre-existing.",
+      "quote": "Noted and deliberately not fixed here: `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused, and fails the same way on the previous commit.",
+      "verified": true,
+      "verification_quote": "fails the same way on the previous commit"
+    }
+  ],
+  "tokens": [
+    [
+      1051,
+      4824
+    ],
+    [
+      1127,
+      3418
+    ],
+    [
+      1069,
+      4612
+    ],
+    [
+      1085,
+      10326
+    ]
+  ]
+}

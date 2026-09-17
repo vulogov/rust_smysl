@@ -1,0 +1,106 @@
+{
+  "decisions": [
+    {
+      "decision": "Require literal string values for attributes that expect string literals",
+      "kind": "act",
+      "rationale": "The commit fixes a bug where non-literal expressions were accepted or misparsed. Requiring literals ensures attributes that need static strings get them.",
+      "quote": "Require literal attribute values",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H6"
+      ]
+    },
+    {
+      "decision": "Add regression test for default_value_t string expressions",
+      "kind": "act",
+      "rationale": "The parser change could break attributes that legitimately take expressions. The added test ensures default_value_t still accepts string expressions.",
+      "quote": "fn default_value_t_string_expr()",
+      "hunks": [
+        "H5"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`lit_str_or_abort` is the method used for attributes that require string literals.",
+      "kind": "existing-behaviour",
+      "quote": "pub(crate) fn lit_str_or_abort(&self) -> Result<&LitStr, syn::Error> {"
+    },
+    {
+      "decision": 1,
+      "text": "A string literal token parsed as Expr yields `Expr::Lit` containing `syn::Lit::Str`.",
+      "kind": "assumption",
+      "quote": "syn::Lit::Str(lit) => Ok(lit),"
+    },
+    {
+      "decision": 2,
+      "text": "The parser now parses expressions after `=` for attributes, including `default_value_t`.",
+      "kind": "prior-change",
+      "quote": "            match input.parse::<Expr>() {"
+    },
+    {
+      "decision": 2,
+      "text": "`Args::try_parse_from` with no arguments returns default values from `default_value_t` expressions.",
+      "kind": "existing-behaviour",
+      "quote": "        Args::try_parse_from([\"test\"]).unwrap()"
+    },
+    {
+      "decision": 2,
+      "text": "`utils::get_long_help` includes `[default: ...]` markers for `default_value_t` fields.",
+      "kind": "existing-behaviour",
+      "quote": "    assert!(help.contains(\"[default: ./tests/cube/main.kda]\"));"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep special-case LitStr parsing and AttrValue::LitStr variant",
+      "reason": "It consumed only the string literal, leaving trailing tokens like .to_owned() to cause `expected ','` errors.",
+      "quote": "            if input.peek(LitStr) {"
+    },
+    {
+      "decision": 2,
+      "alternative": "Rejecting expressions for default_value_t too",
+      "reason": "default_value_t legitimately accepts expressions to compute default strings.",
+      "quote": "default_value_t = \"./tests/cube/main.kda\".to_string()"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Non-literal string expressions for literal-only attributes are rejected with a compile error.",
+      "quote": "error: attribute `rename_all` can only accept string literals",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "default_value_t still accepts string expressions.",
+      "quote": "default_value_t = \"output.obj\".to_string()",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      1739,
+      5481
+    ],
+    [
+      1781,
+      5854
+    ],
+    [
+      1723,
+      3534
+    ],
+    [
+      1739,
+      3850
+    ]
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "decisions": [
+    {
+      "decision": "Replace interpolated event id with literal in event error message.",
+      "kind": "act",
+      "rationale": "The interpolated id required body_file::leak, which is gated behind `body` while the arm is gated behind `events`, causing a feature-gating miss; the caller already typed the id.",
+      "quote": "The message is a literal now; the id it would have interpolated is one the caller just typed.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Accept broken pipe as non-fatal when writing test stdin.",
+      "kind": "act",
+      "rationale": "The child can exit while the harness writes because `between - -` refuses before reading stdin; the behavior is correct and the assertions on status and output survive the error.",
+      "quote": "A broken pipe is now an accepted outcome, since the assertions are on the status and the output and both survive it.",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Do not alter G7's refusal-before-reading behavior for `between - -`.",
+      "kind": "decline",
+      "rationale": "G7's early refusal is the program behaving exactly as intended; the harness assumption was the problem.",
+      "quote": "That is the program behaving exactly as intended and the harness assuming otherwise",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`body_file::leak` is gated behind `body`; the arm is gated behind `events`.",
+      "kind": "existing-behaviour",
+      "quote": "G10's event message used body_file::leak, which is gated behind `body`, from an arm gated behind `events`"
+    },
+    {
+      "decision": 1,
+      "text": "Features workflow builds `events` without `body`.",
+      "kind": "tool-setting",
+      "quote": "`--no-default-features --features u512,std,events` is one of the twenty-two combinations that workflow builds."
+    },
+    {
+      "decision": 1,
+      "text": "The caller already typed the event id, so omitting it is acceptable.",
+      "kind": "assumption",
+      "quote": "the id it would have interpolated is one the caller just typed."
+    },
+    {
+      "decision": 2,
+      "text": "`between - -` is refused before any byte of stdin is read.",
+      "kind": "existing-behaviour",
+      "quote": "`between - -` is refused before a byte of stdin is read"
+    },
+    {
+      "decision": 2,
+      "text": "Child can exit while harness writes, producing EPIPE.",
+      "kind": "assumption",
+      "quote": "so the child can exit while the harness is still writing and the write gets EPIPE."
+    },
+    {
+      "decision": 2,
+      "text": "Assertions are on status and output, which survive EPIPE.",
+      "kind": "invariant",
+      "quote": "the assertions are on the status and the output and both survive it"
+    },
+    {
+      "decision": 2,
+      "text": "`std::io::ErrorKind::BrokenPipe` represents EPIPE write errors.",
+      "kind": "assumption",
+      "quote": "Err(e) if e.kind() == std::io::ErrorKind::BrokenPipe => {}"
+    },
+    {
+      "decision": 3,
+      "text": "`between - -` is refused before stdin is read.",
+      "kind": "existing-behaviour",
+      "quote": "`between - -` is refused before a byte of stdin is read"
+    },
+    {
+      "decision": 3,
+      "text": "G7's early refusal is intended program behavior, not a bug.",
+      "kind": "invariant",
+      "quote": "That is the program behaving exactly as intended"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Interpolate the event id using body_file::leak(format!(...)).",
+      "reason": "It caused a feature-gating miss because body_file::leak is gated behind body while the arm is gated behind events, so builds with events but not body fail.",
+      "quote": "The message is a literal now; the id it would have interpolated is one the caller just typed."
+    },
+    {
+      "decision": 2,
+      "alternative": "Treat any write error to child stdin as fatal using expect(\"write\").",
+      "reason": "A broken pipe can occur when the child exits before finishing the write, and that is the program behaving correctly, so the test should not fail.",
+      "quote": "A broken pipe is now an accepted outcome, since the assertions are on the status and the output and both survive it."
+    },
+    {
+      "decision": 3,
+      "alternative": "Change G7's `between - -` behavior to read stdin before refusing or otherwise avoid early refusal.",
+      "reason": "The early refusal is the program behaving exactly as intended, so the harness needed to accept the broken pipe instead.",
+      "quote": "That is the program behaving exactly as intended and the harness assuming otherwise"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Event error arm no longer calls body_file::leak, so it compiles without the `body` feature.",
+      "quote": "the interning `leak` that would make an owned string `&'static str` lives in `body_file`, which is gated behind `body`, and this arm is gated behind `events`.",
+      "verified": true,
+      "verification_quote": "A build with `events` and without `body` is one of the twenty-two the features workflow compiles, and it caught this — the fifth feature-gating miss that workflow has found by building a combination nobody would type."
+    },
+    {
+      "decision": 1,
+      "text": "Error message no longer interpolates the id, so the test assertion drops `recombination` and only checks `events show`.",
+      "quote": "The message is a literal now; the id it would have interpolated is one the caller just typed.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "BrokenPipe on stdin write is treated as success, preventing EPIPE race from failing the test.",
+      "quote": "A broken pipe is not a test failure.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Status and output assertions still execute after an EPIPE, so test validity remains.",
+      "quote": "The assertions are on the status and the output, both of which survive it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "G7 keeps refusing `between - -` before reading stdin, so early child exit and EPIPE can still happen.",
+      "quote": "`between - -` is refused before a byte of stdin is read, so the child can exit while the harness is still writing and the write gets EPIPE.",
+      "verified": true,
+      "verification_quote": "which is why it passed here and failed on CI's bigint job."
+    }
+  ],
+  "tokens": [
+    [
+      1651,
+      3855
+    ],
+    [
+      1763,
+      9119
+    ],
+    [
+      1705,
+      4812
+    ],
+    [
+      1721,
+      6502
+    ]
+  ]
+}

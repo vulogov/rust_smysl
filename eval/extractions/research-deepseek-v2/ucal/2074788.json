@@ -1,0 +1,414 @@
+{
+  "decisions": [
+    {
+      "decision": "Route all time readings through a process-wide session clock.",
+      "kind": "act",
+      "rationale": "The system clock can step backwards due to NTP, VM resume, or operator; a continuously running wallclock would show time going backward. The session clock ensures one monotonic reading order.",
+      "quote": "Every reading comes from it now, and it exists for monotonicity rather than precision",
+      "hunks": [
+        "H3",
+        "H4",
+        "H6",
+        "H7"
+      ]
+    },
+    {
+      "decision": "Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.",
+      "kind": "act",
+      "rationale": "Backward steps lose to monotonic branch to keep advancing; forward steps win to track system corrections.",
+      "quote": "reading = max(wall_now, anchor + monotonic_elapsed)",
+      "hunks": [
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Do not interpolate wall-clock ticks for precision.",
+      "kind": "decline",
+      "rationale": "Interpolating between wall ticks is worth 24/3125 of a rung, which is nothing. Session clock exists for monotonicity, not precision.",
+      "quote": "interpolating between wall ticks is worth 24/3125 of a rung, which is nothing",
+      "hunks": []
+    },
+    {
+      "decision": "Make Session::reading a pure function of its inputs.",
+      "kind": "act",
+      "rationale": "Pure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence.",
+      "quote": "Pure: no clock is read here, which is what lets a test drive a wall clock backwards and check that the answer does not follow it.",
+      "hunks": [
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Track the last reading to enforce monotonicity against smaller elapsed inputs.",
+      "kind": "act",
+      "rationale": "The first two branches cannot go backwards on their own, but a caller could pass a smaller elapsed. `last` is belt and braces because the type sells monotonicity.",
+      "quote": "`last` is belt and braces: the first two cannot go backwards on their own, and a caller handing back a smaller elapsed would make them, and this type sells monotonicity.",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Store session state as Option and anchor lazily inside session_now, avoiding .expect.",
+      "kind": "act",
+      "rationale": "OnceLock's initializer cannot return a Result; no-panic-in-cli lint refused .expect. Option allows anchoring where a failure can be returned.",
+      "quote": "the state is an Option now, anchored where a failure can be returned",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Split wall_instant out of now_instant to expose a raw system clock reading.",
+      "kind": "act",
+      "rationale": "now_instant goes through session clock; doctor --clock and measurements need the raw reading. Splitting also exposed the feature gate issue.",
+      "quote": "splitting wall_instant out of now_instant dropped its `civil` gate",
+      "hunks": [
+        "H7"
+      ]
+    },
+    {
+      "decision": "Gate wall_instant (and session clock) under the civil feature.",
+      "kind": "act",
+      "rationale": "Converting a clock reading is a leap-table lookup, because Unix time is a UTC label. The feature workflow caught the missing gate when building with u512,std.",
+      "quote": "converting a clock reading is a leap-table lookup, because Unix time is a UTC label",
+      "hunks": [
+        "H7"
+      ]
+    },
+    {
+      "decision": "Document the session clock and its rule in CLI.md and release notes.",
+      "kind": "act",
+      "rationale": "Record one process, one clock and the max rule for users.",
+      "quote": "One process, one clock",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Add tests for backward steps, forward steps, monotonic sequence, and no-finer property.",
+      "kind": "act",
+      "rationale": "The commit says tests drive wall clock backwards and assert monotone; another test asserts session reading no finer than raw.",
+      "quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does.",
+      "hunks": [
+        "H5"
+      ]
+    },
+    {
+      "decision": "Ignore poison on the session mutex and take the inner value.",
+      "kind": "act",
+      "rationale": "A poisoned lock means another thread panicked holding it; state is a pair of tick counts and cannot be torn, so taking inner value is correct.",
+      "quote": "The state is a pair of tick counts and cannot be torn, so taking the inner value is correct rather than merely convenient",
+      "hunks": [
+        "H4"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`now_instant` is the single route shared by `ucal wallclock` and `ucal now`.",
+      "kind": "existing-behaviour",
+      "quote": "Extracted so `ucal wallclock` reads *now* by the same route `ucal now` does."
+    },
+    {
+      "decision": 1,
+      "text": "`ucal wallclock` reads the clock repeatedly as a long-running process.",
+      "kind": "existing-behaviour",
+      "quote": "wallclock reads the clock twenty times a second for as long as it is left running"
+    },
+    {
+      "decision": 2,
+      "text": "Ticks has `try_add` to compute anchor plus monotonic elapsed.",
+      "kind": "existing-behaviour",
+      "quote": "self.anchor.try_add(monotonic_elapsed)"
+    },
+    {
+      "decision": 2,
+      "text": "`std::time::Instant::elapsed()` gives monotonic duration from the session base.",
+      "kind": "assumption",
+      "quote": "base.elapsed().as_nanos()"
+    },
+    {
+      "decision": 3,
+      "text": "Existing `--clock` reports 1000 ns to 41 ns factor 24 and rung 3125.",
+      "kind": "existing-behaviour",
+      "quote": "`--clock` reports it: 1000 ns to 41 ns is a factor of 24, and a rung is 3125"
+    },
+    {
+      "decision": 5,
+      "text": "The first two branches cannot go backwards on their own.",
+      "kind": "invariant",
+      "quote": "cannot go backwards on their own"
+    },
+    {
+      "decision": 5,
+      "text": "The type sells monotonicity, requiring protection against smaller elapsed inputs.",
+      "kind": "invariant",
+      "quote": "this type sells monotonicity"
+    },
+    {
+      "decision": 6,
+      "text": "`OnceLock`'s initialiser cannot return a `Result`.",
+      "kind": "existing-behaviour",
+      "quote": "OnceLock's initialiser cannot return a `Result`"
+    },
+    {
+      "decision": 6,
+      "text": "The `no-panic-in-cli` lint refused an `.expect`.",
+      "kind": "tool-setting",
+      "quote": "the `no-panic-in-cli` lint refused it"
+    },
+    {
+      "decision": 6,
+      "text": "§19.5 requires failures leave through a code and exit status.",
+      "kind": "invariant",
+      "quote": "§19.5 says a failure in this crate leaves through a code and an exit status."
+    },
+    {
+      "decision": 7,
+      "text": "`doctor --clock` samples raw reading because session clock measuring itself is circular.",
+      "kind": "existing-behaviour",
+      "quote": "a session clock that measured itself would be measuring its own output"
+    },
+    {
+      "decision": 7,
+      "text": "`now_instant` goes through session clock, so raw reading needs a separate function.",
+      "kind": "prior-change",
+      "quote": "`now_instant` goes through the session clock so that two readings in one process cannot go backwards past each other."
+    },
+    {
+      "decision": 7,
+      "text": "Raw `SystemTime` reading code already exists to move into `wall_instant`.",
+      "kind": "existing-behaviour",
+      "quote": "use std::time::{SystemTime, UNIX_EPOCH};"
+    },
+    {
+      "decision": 8,
+      "text": "Converting a clock reading is a leap-table lookup because Unix time is a UTC label.",
+      "kind": "invariant",
+      "quote": "converting a clock reading is a leap-table lookup, because Unix time is a UTC label"
+    },
+    {
+      "decision": 8,
+      "text": "Feature workflow builds `--no-default-features --features u512,std` and caught the missing gate.",
+      "kind": "tool-setting",
+      "quote": "`--no-default-features --features u512,std` — one of the twenty-two the features workflow builds — caught it"
+    },
+    {
+      "decision": 8,
+      "text": "`now_instant` is gated under the `civil` feature.",
+      "kind": "existing-behaviour",
+      "quote": "Gated the same way [`now_instant`] is."
+    },
+    {
+      "decision": 9,
+      "text": "Session clock with `max` rule exists to document.",
+      "kind": "prior-change",
+      "quote": "reading = max(wall_now, anchor + monotonic_elapsed)"
+    },
+    {
+      "decision": 10,
+      "text": "`Session::reading` is pure, allowing tests to drive wall clock backwards.",
+      "kind": "prior-change",
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly"
+    },
+    {
+      "decision": 10,
+      "text": "`finest_tier_for` exists to compare a session reading's tier to raw.",
+      "kind": "existing-behaviour",
+      "quote": "let raw = finest_tier_for(&q).expect(\"a tier\");"
+    },
+    {
+      "decision": 11,
+      "text": "State is a pair of tick counts and cannot be torn.",
+      "kind": "invariant",
+      "quote": "The state is a pair of tick counts and cannot be torn"
+    },
+    {
+      "decision": 11,
+      "text": "`body_file::leak` makes the same judgment about its intern pool.",
+      "kind": "existing-behaviour",
+      "quote": "the same judgement `body_file::leak` makes about its intern pool"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Let each wallclock tick read the raw system clock directly.",
+      "reason": "A backward step would produce a face that goes back in time.",
+      "quote": "wallclock reads the clock twenty times a second for as long as it is left running, and a backward step there is a face that goes back in time."
+    },
+    {
+      "decision": 2,
+      "alternative": "Freeze the clock until the wall clock catches up after a backward step.",
+      "reason": "The monotonic branch keeps advancing at the oscillator's rate instead.",
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up."
+    },
+    {
+      "decision": 2,
+      "alternative": "Refuse a forward jump because it disagrees with the monotonic projection.",
+      "reason": "A forward jump is a correction arriving; refusing would prefer this process's opinion to the system's.",
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": 3,
+      "alternative": "Interpolate between wall ticks using the monotonic clock for precision.",
+      "reason": "It is worth 24/3125 of a rung, which is nothing.",
+      "quote": "Interpolating between wall ticks is worth 24/3125 of a rung, which is nothing."
+    },
+    {
+      "decision": 4,
+      "alternative": "Have Session::reading read the wall clock itself.",
+      "reason": "A pure function lets tests drive a wall clock backwards and assert the answer does not follow.",
+      "quote": "    /// Pure: no clock is read here, which is what lets a test drive a wall clock"
+    },
+    {
+      "decision": 5,
+      "alternative": "Trust callers to supply non-decreasing elapsed; omit `last`.",
+      "reason": "A caller could pass a smaller elapsed, making the first two branches go backwards.",
+      "quote": "        // `last` is belt and braces: the first two"
+    },
+    {
+      "decision": 6,
+      "alternative": "Use `.expect()` inside the OnceLock initializer to handle anchoring failure.",
+      "reason": "The no-panic-in-cli lint refused it because the initializer cannot return a Result.",
+      "quote": "no-panic-in-cli refused an .expect() used to fill the gap where OnceLock's initialiser cannot return a Result"
+    },
+    {
+      "decision": 6,
+      "alternative": "Anchor the session at process start-up.",
+      "reason": "A command that never asks the time should not read a clock, and most do not.",
+      "quote": "    /// Anchored on first use rather than at start-up: a command that never asks"
+    },
+    {
+      "decision": 7,
+      "alternative": "Sample the session clock for `doctor --clock`.",
+      "reason": "A session clock measuring itself would be measuring its own output.",
+      "quote": "/// is built from, and the one `doctor --clock` samples: a session clock that"
+    },
+    {
+      "decision": 8,
+      "alternative": "Leave `wall_instant` ungated after the split.",
+      "reason": "Converting a clock reading is a leap-table lookup because Unix time is a UTC label.",
+      "quote": "splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup, because Unix time is a UTC label."
+    },
+    {
+      "decision": 11,
+      "alternative": "Propagate the poison error from `session().lock()`.",
+      "reason": "The state is a pair of tick counts and cannot be torn, so taking the inner value is correct.",
+      "quote": "    // pair of tick counts and cannot be torn, so taking the inner value is"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "All time readings go through session clock, preventing wallclock face from going back in time.",
+      "quote": "Every reading comes from it now",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Backward step loses to monotonic branch, keeps advancing at oscillator's rate.",
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up.",
+      "verified": true,
+      "verification_quote": "Verified strict by disabling the monotonic branch and watching the reading stall."
+    },
+    {
+      "decision": 2,
+      "text": "Forward step wins, tracks system corrections arriving.",
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Session clock exists for monotonicity, not precision; interpolation worth 24/3125 rung.",
+      "quote": "it exists for monotonicity rather than precision — interpolating between wall ticks is worth 24/3125 of a rung, which is nothing.",
+      "verified": true,
+      "verification_quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does."
+    },
+    {
+      "decision": 4,
+      "text": "Pure function lets tests drive wall clock backwards and assert monotonic sequence.",
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "last prevents smaller elapsed inputs from making reading go backwards.",
+      "quote": "`last` is belt and braces: the first two cannot go backwards on their own, and a caller handing back a smaller elapsed would make them, and this type sells monotonicity.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Option avoids .expect, allows anchoring where failure can be returned.",
+      "quote": "the state is an Option now, anchored where a failure can be returned.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "wall_instant exposes raw system clock for doctor --clock and measurements.",
+      "quote": "This is the reading that clock is built from, and the one `doctor --clock` samples: a session clock that measured itself would be measuring its own output.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Civil feature gate ensures leap-table lookup; u512,std build caught missing gate.",
+      "quote": "And splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup, because Unix time is a UTC label.",
+      "verified": true,
+      "verification_quote": "And splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup, because Unix time is a UTC label."
+    },
+    {
+      "decision": 9,
+      "text": "Documents one process, one clock and max rule in CLI.md and release notes.",
+      "quote": "**A session clock: one process, one reading order.**",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Tests verify monotonic sequence over backward steps.",
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "verified": true,
+      "verification_quote": "Verified strict by disabling the monotonic branch and watching the reading stall."
+    },
+    {
+      "decision": 10,
+      "text": "Test asserts session reading no finer than raw.",
+      "quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does.",
+      "verified": true,
+      "verification_quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does."
+    },
+    {
+      "decision": 11,
+      "text": "Taking inner value on poisoned mutex is correct because state cannot be torn.",
+      "quote": "The state is a pair of tick counts and cannot be torn, so taking the inner value is correct rather than merely convenient — the same judgement `body_file::leak` makes about its intern pool.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      5969,
+      9557
+    ],
+    [
+      6449,
+      15109
+    ],
+    [
+      6391,
+      13476
+    ],
+    [
+      6407,
+      9240
+    ]
+  ]
+}

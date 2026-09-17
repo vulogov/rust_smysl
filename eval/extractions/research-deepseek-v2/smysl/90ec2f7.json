@@ -1,0 +1,391 @@
+{
+  "decisions": [
+    {
+      "decision": "Add tests/dispatch.rs that invokes every command and fails if unrouted.",
+      "kind": "act",
+      "rationale": "Fourteen mutants survived across cli() and main; seven commands had no test invoking them, so seven of twenty-two could stop working with suite green.",
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted",
+      "hunks": [
+        "H11"
+      ]
+    },
+    {
+      "decision": "Compare all 380 arguments against a golden CLI surface inside cargo test.",
+      "kind": "act",
+      "rationale": "Deleting a cli() arm strips arguments only; no-argument invocation cannot see it. Golden must be compared inside cargo test because a Makefile gate is invisible to coverage.",
+      "quote": "It needs a golden file, compared inside cargo test rather than by a Makefile target: a Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13.",
+      "hunks": [
+        "H10",
+        "H11",
+        "H7",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Hardcode command names in tests and Makefile instead of deriving from --help.",
+      "kind": "act",
+      "rationale": "A list derived from the binary shrinks silently when the binary does; regenerated golden would record absence as intent.",
+      "quote": "Written out rather than read from `--help`, for the same reason `tests/dispatch.rs` writes them out: a list derived from the binary shrinks silently when the binary does, and the regenerated golden would then record the absence as if it were the intent.",
+      "hunks": [
+        "H7",
+        "H8",
+        "H11"
+      ]
+    },
+    {
+      "decision": "Run each command in a scratch directory of its own.",
+      "kind": "act",
+      "rationale": "Probing by hand dirtied checkout with .smysl files; usage read ledger ingest wrote. Test should not dirty tree.",
+      "quote": "Every command in the test now runs from a scratch directory of its own.",
+      "hunks": [
+        "H11"
+      ]
+    },
+    {
+      "decision": "Supply minimal_args for required-argument commands and treat clap refusal as failure.",
+      "kind": "act",
+      "rationale": "Seven commands require arguments; bare name rejected before router. import not covered elsewhere and mutant survived. Treating refusal as failure prevents future coverage drop.",
+      "quote": "Treating it as a failure rather than silently accepting it is what stops the hole reopening: add a required argument to a command tomorrow and this test says so, instead of quietly ceasing to cover it.",
+      "hunks": [
+        "H11"
+      ]
+    },
+    {
+      "decision": "Set stdin to /dev/null for dispatch test commands.",
+      "kind": "act",
+      "rationale": "fmt and check read stdin when no path; inherited terminal would hang instead of failing.",
+      "quote": "Stdin is `/dev/null` rather than inherited: `fmt` and `check` read stdin when given no path, and a test harness that hands them a terminal would hang instead of failing.",
+      "hunks": [
+        "H11"
+      ]
+    },
+    {
+      "decision": "Document the `==` to `!=` mutation of COMMANDS.iter().find as equivalent.",
+      "kind": "act",
+      "rationale": "Flipping comparison selects wrong Cmd but only field read is in unreachable _ arm; record like prior equivalents.",
+      "quote": "`==` here survives being mutated to `!=`, and that is *equivalent* rather than untested.",
+      "hunks": [
+        "H9"
+      ]
+    },
+    {
+      "decision": "Do not add a test to distinguish the equivalent `!=` mutation.",
+      "kind": "decline",
+      "rationale": "The mutation is unreachable; a test cannot distinguish the two programs, so record rather than chase.",
+      "quote": "rather than answered with a test that cannot distinguish the two programs.",
+      "hunks": []
+    },
+    {
+      "decision": "Do not assert exit code in every_command_dispatches.",
+      "kind": "decline",
+      "rationale": "Most commands fail without a store; how they fail is rest of suite's job. Claim only that failure came from command not router.",
+      "quote": "The exit code is not asserted. Most of these fail without a store, and *how* they fail is what the rest of the suite is for; the claim here is only that the failure came from the command rather than from the router.",
+      "hunks": []
+    },
+    {
+      "decision": "Update CHANGELOG, READINESS, and ROAD_TO_1.0 to record dispatch pass findings.",
+      "kind": "act",
+      "rationale": "Document the 15->1 survivor reduction, the seven untested commands, and that dispatch pass is worth stating as finding.",
+      "quote": "The dispatch pass is worth stating as a finding rather than a count.",
+      "hunks": [
+        "H1",
+        "H3",
+        "H5",
+        "H6"
+      ]
+    },
+    {
+      "decision": "Correct documentation that doc-output coverage is feature-dependent and unexplained.",
+      "kind": "act",
+      "rationale": "tests/doc_output.rs header explains gating; at all-features test does not exist, not skipped. Prior claim 'nothing states it' was wrong.",
+      "quote": "**Nothing states it is wrong.** `tests/doc_output.rs` is gated to compile in exactly one of the nine matrix configurations — the plain `cargo test --workspace` — and the header of that file explains why at length: the manual documents a default-features build, and `exact-pack` compiled in makes a correct `SMY-W202` claim read as drift.",
+      "hunks": [
+        "H2",
+        "H4"
+      ]
+    },
+    {
+      "decision": "Do not change tests/doc_output.rs gating to run under --all-features.",
+      "kind": "decline",
+      "rationale": "Design is deliberate; manual documents default build and exact-pack makes correct claim read as drift, so gating is correct.",
+      "quote": "the design is deliberate, and the only thing that was missing is this paragraph.",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Cargo provides the binary path via CARGO_BIN_EXE_smysl for integration tests.",
+      "kind": "tool-setting",
+      "quote": "const BIN: &str = env!(\"CARGO_BIN_EXE_smysl\");"
+    },
+    {
+      "decision": 1,
+      "text": "Clap's answer for an unregistered subcommand is 'unrecognized subcommand'.",
+      "kind": "existing-behaviour",
+      "quote": "const NOT_REGISTERED: &str = \"unrecognized subcommand\";"
+    },
+    {
+      "decision": 1,
+      "text": "The router's answer for a table entry missing from main is 'not wired in this build'.",
+      "kind": "existing-behaviour",
+      "quote": "const NOT_WIRED: &str = \"not wired in this build\";"
+    },
+    {
+      "decision": 2,
+      "text": "cli() registers all twenty-two subcommands unconditionally, so an arm deletion strips arguments only.",
+      "kind": "existing-behaviour",
+      "quote": "cli() registers all twenty-two subcommands from the `COMMANDS` table unconditionally"
+    },
+    {
+      "decision": 2,
+      "text": "Coverage tools cannot see Makefile gates, so golden comparison must be inside cargo test.",
+      "kind": "assumption",
+      "quote": "a Makefile gate is invisible to anything that counts coverage"
+    },
+    {
+      "decision": 3,
+      "text": "The hardcoded command list matches the actual twenty-two commands.",
+      "kind": "assumption",
+      "quote": "const COMMANDS: [&str; 22] = ["
+    },
+    {
+      "decision": 4,
+      "text": "ingest and usage write to .smysl in the working directory, so a shared checkout would be dirtied.",
+      "kind": "existing-behaviour",
+      "quote": "ingest appends to `.smysl/staged.smy` and `usage` to `.smysl/usage.log`, both resolved against the working directory."
+    },
+    {
+      "decision": 5,
+      "text": "Seven commands require an argument, so clap rejects bare names before the router runs.",
+      "kind": "existing-behaviour",
+      "quote": "Seven commands take a required argument, so clap rejects the bare name before the router runs."
+    },
+    {
+      "decision": 6,
+      "text": "fmt and check read stdin when given no path, so inherited terminal would hang.",
+      "kind": "existing-behaviour",
+      "quote": "`fmt` and `check` read stdin when given no path"
+    },
+    {
+      "decision": 7,
+      "text": "Every command in COMMANDS has an arm above the `_` arm, so no input reaches it.",
+      "kind": "invariant",
+      "quote": "no input reaches while every command in `COMMANDS` has an arm above it."
+    },
+    {
+      "decision": 7,
+      "text": "clap only yields subcommand names that cli() registered, and cli() registers exactly COMMANDS.",
+      "kind": "invariant",
+      "quote": "clap only yields subcommand names that `cli()` registered, and `cli()` registers exactly `COMMANDS`."
+    },
+    {
+      "decision": 8,
+      "text": "The `_` arm is unreachable, so no test can distinguish the `!=` mutant.",
+      "kind": "invariant",
+      "quote": "no input reaches while every command in `COMMANDS` has an arm above it."
+    },
+    {
+      "decision": 9,
+      "text": "Most commands fail without a store, so exit code would only reflect command failure.",
+      "kind": "existing-behaviour",
+      "quote": "Most of these fail without a store"
+    },
+    {
+      "decision": 10,
+      "text": "cli+main survivors went from 15 to 1.",
+      "kind": "prior-change",
+      "quote": "cli + main  15 -> 1"
+    },
+    {
+      "decision": 10,
+      "text": "Seven of twenty-two commands were untested.",
+      "kind": "prior-change",
+      "quote": "seven of twenty-two commands that could have stopped working"
+    },
+    {
+      "decision": 11,
+      "text": "tests/doc_output.rs is gated to compile in exactly one matrix configuration.",
+      "kind": "existing-behaviour",
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations"
+    },
+    {
+      "decision": 11,
+      "text": "With --all-features, doc_output test runs 0 tests; it does not exist.",
+      "kind": "existing-behaviour",
+      "quote": "cargo test --test doc_output runs 1 test, with --all-features it runs 0."
+    },
+    {
+      "decision": 12,
+      "text": "The manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift.",
+      "kind": "existing-behaviour",
+      "quote": "the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 2,
+      "alternative": "first version of tests/dispatch.rs assumed the two arms were the same mutation; only invoked commands with no arguments",
+      "reason": "It missed that deleting a cli() arm strips arguments, which a no-argument invocation cannot see.",
+      "quote": "The two arms are not the same mutation, and the first version of this file assumed they were."
+    },
+    {
+      "decision": 2,
+      "alternative": "compare the golden CLI surface via a Makefile target instead of inside cargo test",
+      "reason": "A Makefile gate is invisible to anything that counts coverage.",
+      "quote": "compared inside cargo test rather than by a Makefile target"
+    },
+    {
+      "decision": 3,
+      "alternative": "derive command names from `--help` output in tests and Makefile",
+      "reason": "A list derived from the binary shrinks silently when the binary does, and the regenerated golden would record absence as intent.",
+      "quote": "Written out rather than read from `--help`"
+    },
+    {
+      "decision": 4,
+      "alternative": "run each command in the repository root",
+      "reason": "It left .smysl/staged.smy and .smysl/usage.log behind, and usage read a ledger ingest had just written.",
+      "quote": "running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind"
+    },
+    {
+      "decision": 5,
+      "alternative": "accept clap's refusal for required-argument commands as a skipped test",
+      "reason": "That would quietly drop coverage; treating refusal as failure stops the hole reopening.",
+      "quote": "Treating it as a failure rather than silently accepting it is what stops the hole reopening"
+    },
+    {
+      "decision": 6,
+      "alternative": "inherit stdin from the terminal for dispatch test commands",
+      "reason": "fmt and check read stdin when given no path; inherited terminal would hang instead of failing.",
+      "quote": "Stdin is `/dev/null` rather than inherited"
+    },
+    {
+      "decision": 8,
+      "alternative": "add a test to distinguish the `!=` mutation of COMMANDS.iter().find",
+      "reason": "The mutation is unreachable; a test cannot distinguish the two programs.",
+      "quote": "rather than answered with a test that cannot distinguish the two programs"
+    },
+    {
+      "decision": 9,
+      "alternative": "assert exit code in every_command_dispatches",
+      "reason": "Most commands fail without a store; how they fail is the rest of the suite's job.",
+      "quote": "The exit code is not asserted."
+    },
+    {
+      "decision": 11,
+      "alternative": "retain the claim that doc-output's feature-dependent coverage is unexplained",
+      "reason": "It was wrong; tests/doc_output.rs header explains the gating.",
+      "quote": "**Nothing states it is wrong.**"
+    },
+    {
+      "decision": 12,
+      "alternative": "change tests/doc_output.rs gating to run under --all-features",
+      "reason": "The design is deliberate; exact-pack makes a correct SMY-W202 claim read as drift.",
+      "quote": "the manual documents a default build, and `exact-pack` makes a correct `SMY-W202` claim read as drift."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Mutants in cli and main reduced from 15 to 1; all commands now invoked.",
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt.",
+      "verified": true,
+      "verification_quote": "cli + main  15 -> 1"
+    },
+    {
+      "decision": 2,
+      "text": "Golden comparison inside cargo test detects cli() argument stripping; coverage sees the gate.",
+      "quote": "It needs a golden file, compared inside cargo test rather than by a Makefile target",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Command list cannot shrink silently; golden regeneration won't record absence as intent.",
+      "quote": "a list derived from the binary shrinks silently when the binary does, and the regenerated golden would then record the absence as if it were the intent.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Test no longer dirties checkout; each command runs in isolated scratch directory.",
+      "quote": "Every command in the test now runs from a scratch directory of its own.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Required-argument commands reach router; import mutant killed and future coverage preserved.",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure, so adding a required argument tomorrow says so rather than quietly dropping coverage.",
+      "verified": true,
+      "verification_quote": "cli + main  15 -> 1"
+    },
+    {
+      "decision": 6,
+      "text": "Dispatch test cannot hang on stdin-reading commands; /dev/null prevents inherited terminal.",
+      "quote": "Stdin is `/dev/null` rather than inherited: `fmt` and `check` read stdin when given no path, and a test harness that hands them a terminal would hang instead of failing.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Equivalent `!=` mutant documented instead of chased; records unreachability.",
+      "quote": "`==` here survives being mutated to `!=`, and that is *equivalent* rather than untested.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "No pointless test added for unreachable mutation; recorded rather than chased.",
+      "quote": "rather than answered with a test that cannot distinguish the two programs",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Test only asserts routing reached, not command-specific exit codes; avoids duplicating suite.",
+      "quote": "The exit code is not asserted. Most of these fail without a store, and *how* they fail is what the rest of the suite is for; the claim here is only that the failure came from the command rather than from the router.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Findings documented: seven untested commands and 15->1 survivor reduction are recorded.",
+      "quote": "Seven of twenty-two commands could have stopped working with the suite still green.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "Doc-output gating explanation corrected; all-features test does not exist, not skipped.",
+      "quote": "At `--all-features` the test does not exist rather than being skipped",
+      "verified": true,
+      "verification_quote": "`cargo test --test doc_output` runs 1 test, `cargo test --all-features --test doc_output` runs 0."
+    },
+    {
+      "decision": 12,
+      "text": "Doc-output gating remains unchanged; design deliberate.",
+      "quote": "the design is deliberate, and the only thing that was missing is this paragraph.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      8471,
+      10500
+    ],
+    [
+      8995,
+      11199
+    ],
+    [
+      8937,
+      8401
+    ],
+    [
+      8953,
+      9490
+    ]
+  ]
+}

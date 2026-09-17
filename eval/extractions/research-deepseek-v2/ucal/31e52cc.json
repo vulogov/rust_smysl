@@ -1,0 +1,312 @@
+{
+  "decisions": [
+    {
+      "decision": "Add a clock section to doctor and now output.",
+      "kind": "act",
+      "rationale": "The precision field invited an accuracy claim; a clock section states what a reading can actually fill.",
+      "quote": "So doctor and now grow a clock section",
+      "hunks": [
+        "H1",
+        "H3",
+        "H5",
+        "H6",
+        "H8",
+        "H11",
+        "H15",
+        "H16",
+        "H17",
+        "H18",
+        "H19"
+      ]
+    },
+    {
+      "decision": "Add doctor --clock flag to sample and report machine resolution.",
+      "kind": "act",
+      "rationale": "Resolution is measured and varies by machine; it must be behind a flag because doctor's ordinary output is compared against a committed example.",
+      "quote": "resolution is measured and is behind a flag, since doctor's ordinary output is compared against a committed example",
+      "hunks": [
+        "H3",
+        "H4",
+        "H5",
+        "H7",
+        "H9",
+        "H13",
+        "H14"
+      ]
+    },
+    {
+      "decision": "Keep precision field name and value unchanged.",
+      "kind": "decline",
+      "rationale": "It is a path in ucal-json/1; repurposing one is breaking.",
+      "quote": "The name and value stay, because it is a path in ucal-json/1 and repurposing one is breaking.",
+      "hunks": []
+    },
+    {
+      "decision": "Do not measure accuracy.",
+      "kind": "decline",
+      "rationale": "Operation is offline per §8.4, so no reference exists; a rate error from a short baseline reports quantisation as drift.",
+      "quote": "accuracy is not measured and will not be guessed, because §8.4 makes operation offline and a rate error from a short baseline reports quantisation as drift",
+      "hunks": []
+    },
+    {
+      "decision": "Keep granularity, resolution, and accuracy as separate numbers.",
+      "kind": "act",
+      "rationale": "Conflating them is the defect; separation makes clear what each number represents.",
+      "quote": "Three numbers kept apart because conflating them is the defect",
+      "hunks": [
+        "H1",
+        "H3",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Report which error terms cancel in a difference.",
+      "kind": "act",
+      "rationale": "Knowing which terms cancel helps interpret differences; constant offset cancels, rate error does not.",
+      "quote": "It reports which terms cancel",
+      "hunks": [
+        "H1",
+        "H3",
+        "H4",
+        "H5",
+        "H15",
+        "H16"
+      ]
+    },
+    {
+      "decision": "Report interpolation cost as a fraction, not a decimal.",
+      "kind": "act",
+      "rationale": "Rule E forbids a float in a shipped crate; the lint caught the first draft using one.",
+      "quote": "Reported as a fraction rather than a decimal, because Rule E forbids a float anywhere in a shipped crate and the lint caught the first draft using one.",
+      "hunks": [
+        "H3",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Add note that precision is tier rendered to, not accuracy.",
+      "kind": "act",
+      "rationale": "The same field name means something else in explain; clarify meaning to prevent conflation.",
+      "quote": "**`precision` is the tier the reading was rendered to, not how well the instant is known.**",
+      "hunks": [
+        "H2",
+        "H10",
+        "H11"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The program reads the system clock to nanoseconds (nine decimal places).",
+      "kind": "existing-behaviour",
+      "quote": "this program reads the clock to nine decimal places"
+    },
+    {
+      "decision": 1,
+      "text": "ucal now renders by default to T-12, ten rungs below the fillable tier.",
+      "kind": "existing-behaviour",
+      "quote": "T-12 — where `ucal now` renders by default, 10 rungs below"
+    },
+    {
+      "decision": 2,
+      "text": "doctor's ordinary output is compared byte-for-byte against a committed example.",
+      "kind": "existing-behaviour",
+      "quote": "doctor's ordinary output is compared against a committed example"
+    },
+    {
+      "decision": 2,
+      "text": "Resolution measurements vary by machine and by run.",
+      "kind": "assumption",
+      "quote": "it varies by machine and by run"
+    },
+    {
+      "decision": 3,
+      "text": "The precision field is a path in ucal-json/1.",
+      "kind": "existing-behaviour",
+      "quote": "it is a path in ucal-json/1"
+    },
+    {
+      "decision": 3,
+      "text": "ucal-json/1 promises existing fields never change name, shape or meaning.",
+      "kind": "existing-behaviour",
+      "quote": "existing ones never change name, shape or meaning"
+    },
+    {
+      "decision": 4,
+      "text": "Operation is offline per §8.4, so no reference exists for accuracy comparison.",
+      "kind": "existing-behaviour",
+      "quote": "§8.4 makes operation offline"
+    },
+    {
+      "decision": 4,
+      "text": "A rate error from a short baseline reports quantisation as drift.",
+      "kind": "assumption",
+      "quote": "a rate error from a short baseline reports quantisation as drift"
+    },
+    {
+      "decision": 5,
+      "text": "Granularity is structural and fills T-2.",
+      "kind": "existing-behaviour",
+      "quote": "granularity is structural and fills T-2"
+    },
+    {
+      "decision": 6,
+      "text": "Constant offset cancels between two readings, rate error does not, quantisation bounds difference twice.",
+      "kind": "assumption",
+      "quote": "a constant offset cancels between two readings and a rate error does not; quantisation bounds each reading and so bounds their difference twice over"
+    },
+    {
+      "decision": 6,
+      "text": "ucal datum already states the frame term cancels.",
+      "kind": "existing-behaviour",
+      "quote": "the frame term cancels as `datum` already says."
+    },
+    {
+      "decision": 7,
+      "text": "Rule E forbids a float in a shipped crate.",
+      "kind": "tool-setting",
+      "quote": "Rule E forbids a float in a shipped crate"
+    },
+    {
+      "decision": 8,
+      "text": "`--precision` is documented as tier to render to.",
+      "kind": "existing-behaviour",
+      "quote": "`--precision` is documented as *tier to render to*"
+    },
+    {
+      "decision": 8,
+      "text": "The same field name means something else in `ucal explain`.",
+      "kind": "existing-behaviour",
+      "quote": "the same field name means something else in `ucal explain`"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Leave the precision implication unstated and inferred by users.",
+      "reason": "Clarifying beside it prevents the field being read as accuracy.",
+      "quote": "So the reading it invites is answered beside it rather than left to be inferred."
+    },
+    {
+      "decision": 2,
+      "alternative": "Include sampled resolution in `doctor`'s ordinary output.",
+      "reason": "Ordinary output is compared byte for byte against a committed example, so measurement not reproducible.",
+      "quote": "which is why it is behind a flag rather than in `doctor`'s ordinary output, whose every line is compared against a committed example."
+    },
+    {
+      "decision": 3,
+      "alternative": "Change the existing `precision` field name or repurpose its value.",
+      "reason": "It is a path in ucal-json/1 and changing it is breaking.",
+      "quote": "The name and value stay, because it is a path in ucal-json/1 and repurposing one is breaking."
+    },
+    {
+      "decision": 4,
+      "alternative": "Attempt to measure or estimate clock accuracy.",
+      "reason": "Offline operation provides no reference, and short-baseline rate error reports quantisation as drift.",
+      "quote": "Accuracy is not measured and will not be guessed, because §8.4 makes operation offline and a rate error from a short baseline reports quantisation as drift."
+    },
+    {
+      "decision": 5,
+      "alternative": "Conflate granularity, resolution, and accuracy into one number.",
+      "reason": "Conflation is the defect; separate numbers show what each represents.",
+      "quote": "Three numbers kept apart because conflating them is the defect"
+    },
+    {
+      "decision": 6,
+      "alternative": "Report only that differences have error without distinguishing cancelling terms.",
+      "reason": "Distinguishing which terms cancel and which do not helps interpret differences.",
+      "quote": "Which error terms cancel between two readings and which do not."
+    },
+    {
+      "decision": 7,
+      "alternative": "Report interpolation cost as a decimal fraction (float).",
+      "reason": "Rule E forbids a float in a shipped crate, and the lint caught the first draft.",
+      "quote": "As a fraction, not a decimal — Rule E forbids a float in a shipped crate and the lint caught the first draft using one."
+    },
+    {
+      "decision": 8,
+      "alternative": "Treat `precision` as an accuracy claim like `explain` does.",
+      "reason": "It is the tier rendered to, not how well the instant is known.",
+      "quote": "`precision` is the tier the reading was rendered to, not how well the instant is known."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Adding the clock section states what a reading can actually fill, answering the precision field's accuracy claim.",
+      "quote": "a `clock` section stating what a reading can actually fill",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Doctor --clock must be behind a flag because resolution varies by machine and ordinary output is compared against committed examples.",
+      "quote": "resolution is measured and is behind a flag, since doctor's ordinary output is compared against a committed example",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Keeping precision unchanged avoids breaking ucal-json/1 paths.",
+      "quote": "it is a path in ucal-json/1 and repurposing one is breaking",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Not measuring accuracy avoids reporting quantisation as drift; operation is offline so no reference exists.",
+      "quote": "because §8.4 makes operation offline and a rate error from a short baseline reports quantisation as drift",
+      "verified": true,
+      "verification_quote": "which a throwaway probe duly did, at 1.2e-5"
+    },
+    {
+      "decision": 5,
+      "text": "Separation makes clear what each number represents; conflating them is the defect.",
+      "quote": "Three numbers kept apart because conflating them is the defect",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Reporting cancellations helps interpret differences: constant offset cancels, rate error does not.",
+      "quote": "a constant offset cancels between two readings and a rate error does not",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Reporting as fraction avoids Rule E violation; lint caught first decimal draft.",
+      "quote": "Rule E forbids a float in a shipped crate and the lint caught the first draft using one",
+      "verified": true,
+      "verification_quote": "the lint caught the first draft using one"
+    },
+    {
+      "decision": 8,
+      "text": "Note clarifies precision means tier rendered to, not accuracy, preventing conflation with explain's precision.",
+      "quote": "`precision` is the tier the reading was rendered to, not how well the instant is known.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      7819,
+      6850
+    ],
+    [
+      8065,
+      11521
+    ],
+    [
+      8007,
+      5502
+    ],
+    [
+      8023,
+      3933
+    ]
+  ]
+}

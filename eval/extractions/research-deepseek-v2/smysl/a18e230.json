@@ -1,0 +1,196 @@
+{
+  "decisions": [
+    {
+      "decision": "Remove the local-improvement pass (§18.3 step 3).",
+      "kind": "act",
+      "rationale": "It was making packs worse; across 28,000 generated packs it changed 26 and 22 were worse by the value function it exists to maximise.",
+      "quote": "it was making packs worse",
+      "hunks": [
+        "H6",
+        "H7"
+      ]
+    },
+    {
+      "decision": "Remove `IMPROVEMENT_PASSES` constant and `PackRequest::improvement_passes` field.",
+      "kind": "act",
+      "rationale": "A knob for a pass that no longer exists is worse than no knob.",
+      "quote": "A knob for a pass that no longer exists is worse than no knob.",
+      "hunks": [
+        "H2",
+        "H3",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Decline to keep the search that measured the pass.",
+      "kind": "decline",
+      "rationale": "With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.",
+      "quote": "With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.",
+      "hunks": []
+    },
+    {
+      "decision": "Decline to update the golden file.",
+      "kind": "decline",
+      "rationale": "The golden file is byte-identical after the removal; no selections moved, so there is nothing to record.",
+      "quote": "The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection moved.",
+      "hunks": []
+    },
+    {
+      "decision": "Add a comment explaining the removal in place of the loop.",
+      "kind": "act",
+      "rationale": "To document why the pass was removed, including the measurements that justified it.",
+      "quote": "Removed in 0.8.0 because it was measured and it lost: over 28 000 generated packs it changed 26, and 22 of those 26 were *worse* by the value function it exists to maximise.",
+      "hunks": [
+        "H6"
+      ]
+    },
+    {
+      "decision": "Document the removal in the changelog.",
+      "kind": "act",
+      "rationale": "To record the removal and its justification for the 0.8.0 release notes.",
+      "quote": "The local-improvement pass. Step 3 of §18.3 downgraded the least valuable depth and spent what that freed on breadth. It was measured and it lost: across 28 000 generated packs it changed 26, and **22 of those 26 were worse** by the value function it exists to maximise. Four were better.",
+      "hunks": [
+        "H1"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The existing corpus never triggers the local-improvement pass, so removal does not change recorded selections.",
+      "kind": "existing-behaviour",
+      "quote": "The corpus never reaches a case where the pass fired, which is exactly why it survived eight releases unexamined."
+    },
+    {
+      "decision": 2,
+      "text": "The local-improvement pass no longer exists after removal, leaving the constant and field unused.",
+      "kind": "prior-change",
+      "quote": "A knob for a pass that no longer exists is worse than no knob."
+    },
+    {
+      "decision": 3,
+      "text": "The local-improvement pass has been removed, so the search would compare identical configurations.",
+      "kind": "prior-change",
+      "quote": "With the pass gone it would compare two identical configurations"
+    },
+    {
+      "decision": 4,
+      "text": "The golden file content is unchanged after the removal, so there is nothing to record.",
+      "kind": "existing-behaviour",
+      "quote": "The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection moved."
+    },
+    {
+      "decision": 5,
+      "text": "The measurements showing the pass was harmful are accurate, as documented in the changelog.",
+      "kind": "existing-behaviour",
+      "quote": "Across 28 000 generated packs it changed 26, and 22 of those 26 were *worse* by the value function it exists to maximise."
+    },
+    {
+      "decision": 6,
+      "text": "The changelog has an Unreleased — 0.8.0 section where the removal can be recorded.",
+      "kind": "existing-behaviour",
+      "quote": "## Unreleased — 0.8.0"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the local-improvement pass",
+      "reason": "It was making packs worse; across 28,000 packs, 22 of 26 changes were worse.",
+      "quote": "Remove the local-improvement pass: it was making packs worse"
+    },
+    {
+      "decision": 2,
+      "alternative": "Keep the IMPROVEMENT_PASSES constant and field",
+      "reason": "A knob for a pass that no longer exists is worse than no knob.",
+      "quote": "`IMPROVEMENT_PASSES` and `PackRequest::improvement_passes` went with it. A knob for a pass that no longer exists is worse than no knob."
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep the search that measured the pass",
+      "reason": "With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.",
+      "quote": "The search that found this went too. With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting."
+    },
+    {
+      "decision": 4,
+      "alternative": "Update the golden file to reflect removal",
+      "reason": "The golden file is byte-identical after the removal; no selections moved, so there is nothing to record.",
+      "quote": "The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection moved."
+    },
+    {
+      "decision": 5,
+      "alternative": "Remove the loop without adding an explanatory comment",
+      "reason": "To document why the pass was removed, including the measurements that justified it.",
+      "quote": "    // spend what that frees on breadth. Removed in 0.8.0 because it was measured and it"
+    },
+    {
+      "decision": 6,
+      "alternative": "Leave the changelog entry as 'Nothing yet.'",
+      "reason": "To record the removal and its justification for the 0.8.0 release notes.",
+      "quote": "- **The local-improvement pass.** Step 3 of §18.3 downgraded the least valuable depth and"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The local-improvement pass is removed because it made packs worse.",
+      "quote": "Remove the local-improvement pass: it was making packs worse",
+      "verified": true,
+      "verification_quote": "Across 28 000 generated packs it changed 26, and 22 of those 26 were *worse* by the value function it exists to maximise."
+    },
+    {
+      "decision": 2,
+      "text": "IMPROVEMENT_PASSES constant and PackRequest::improvement_passes field removed from the public API.",
+      "quote": "`IMPROVEMENT_PASSES` and `PackRequest::improvement_passes` went with it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The search test is removed; keeping it would compare two identical configurations.",
+      "quote": "With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Golden file remains unchanged because no recorded selection moved.",
+      "quote": "The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection moved.",
+      "verified": true,
+      "verification_quote": "The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection moved."
+    },
+    {
+      "decision": 5,
+      "text": "A comment in solve.rs documents the removal rationale and measurements.",
+      "quote": "    // spend what that frees on breadth. Removed in 0.8.0 because it was measured and it",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Changelog records the removal under Unreleased 0.8.0.",
+      "quote": "- **The local-improvement pass.** Step 3 of §18.3 downgraded the least valuable depth and",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      3497,
+      10555
+    ],
+    [
+      3691,
+      9177
+    ],
+    [
+      3633,
+      7233
+    ],
+    [
+      3649,
+      10862
+    ]
+  ]
+}

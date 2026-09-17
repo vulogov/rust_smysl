@@ -1,0 +1,498 @@
+{
+  "decisions": [
+    {
+      "decision": "Accept smysl/1.0 in FORMAT_VERSIONS_SUPPORTED while keeping smysl/0.1.",
+      "kind": "act",
+      "rationale": "The first migration step requires readers to accept both before the writer flips, so old documents keep working and the new version is not refused.",
+      "quote": "FORMAT_VERSIONS_SUPPORTED is [\"smysl/0.1\", \"smysl/1.0\"] and nothing writes the second yet.",
+      "hunks": [
+        "H3",
+        "H4",
+        "H13"
+      ]
+    },
+    {
+      "decision": "Add FORMAT_VERSION_DEFAULT, separate from FORMAT_VERSIONS_SUPPORTED[0], and export it from the facade.",
+      "kind": "act",
+      "rationale": "The two constants stopped meaning the same thing once the supported list grew: one governs what is emitted, the other what is accepted. Embedders need to know the default version to declare.",
+      "quote": "FORMAT_VERSION_DEFAULT is new and separate from FORMAT_VERSIONS_SUPPORTED[0], because the two stopped meaning the same thing the moment the list grew: one is what we emit, the other is what we accept.",
+      "hunks": [
+        "H3",
+        "H4",
+        "H13",
+        "H15",
+        "H16",
+        "H19",
+        "H20"
+      ]
+    },
+    {
+      "decision": "Add a format_version field to ParseOutcome and populate it from the parsed @doc header.",
+      "kind": "act",
+      "rationale": "The parser previously validated and discarded the declared version, so a writer could not preserve it. Storing the version lets a round trip emit what was read.",
+      "quote": "ParseOutcome carries the version the document declared;",
+      "hunks": [
+        "H5",
+        "H7"
+      ]
+    },
+    {
+      "decision": "Implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.",
+      "kind": "act",
+      "rationale": "A derived Default would produce an empty version, which would become an invalid empty @doc header. The CBOR path has no wire version, so the honest default is the current emit version.",
+      "quote": "Derived `Default` would give `format_version: \"\"`, which is not a version and would reach `write_doc` as an empty `@doc` header. The CBOR path builds a `ParseOutcome` this way — the wire has no version to carry — so the honest default is the one this build emits, not the absence of one.",
+      "hunks": [
+        "H6"
+      ]
+    },
+    {
+      "decision": "Add format_version to WriteContext and make write_surface emit it instead of FORMAT_VERSIONS_SUPPORTED[0].",
+      "kind": "act",
+      "rationale": "The writer should rebuild the header from what the parsed document carried, not from a build-time constant that relabels documents when more than one version is supported.",
+      "quote": "WriteContext carries what the header will say; write_surface emits that instead of a build-time constant.",
+      "hunks": [
+        "H8",
+        "H9",
+        "H10"
+      ]
+    },
+    {
+      "decision": "Pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.",
+      "kind": "act",
+      "rationale": "`fmt` is the round trip a user runs on purpose and would have been the first place the relabelling bit. Using the declared version preserves the document's self-description.",
+      "quote": "`smysl fmt` — the round trip a user runs on purpose — passes one to the other.",
+      "hunks": [
+        "H17"
+      ]
+    },
+    {
+      "decision": "Replace the versioning tripwire count assertion with a round-trip property test for every supported version.",
+      "kind": "act",
+      "rationale": "The tripwire fired as intended when the list grew. The property it was standing in for is that a document declaring either supported version comes back declaring the one it declared, which a count cannot say.",
+      "quote": "What stands in versioning.rs now is the property the count was standing in for: a document declaring either supported version comes back declaring the one it declared.",
+      "hunks": [
+        "H11",
+        "H12",
+        "H13",
+        "H14"
+      ]
+    },
+    {
+      "decision": "Update smysl-core unit tests to loop over FORMAT_VERSIONS_SUPPORTED and reject non-listed near misses (e.g. smysl/2.0).",
+      "kind": "act",
+      "rationale": "The old test asserted a literal list and used smysl/1.0 as an unknown version. Driving it from the actual list makes it grow with the list instead of failing or silently passing on new versions.",
+      "quote": "All four are now driven by the list rather than by a literal, so they grow with it instead of failing on it.",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Strengthen the facade re-export test to check every supported version is accepted and FORMAT_VERSION_DEFAULT is in the supported list.",
+      "kind": "act",
+      "rationale": "The previous test only checked the first entry, which would have kept passing while a second supported version went unchecked.",
+      "quote": "Every declared version must be accepted, not merely the first. The list grew to two in 0.14 and an assertion about `[0]` would have kept passing while the second went unchecked — which is the shape of gap this repository keeps finding.",
+      "hunks": [
+        "H16"
+      ]
+    },
+    {
+      "decision": "Update public API snapshots to include FORMAT_VERSION_DEFAULT and the new smysl-core count.",
+      "kind": "act",
+      "rationale": "api-check detected the surface growth as intended; adding an export is not a breaking change, so the snapshot must be regenerated.",
+      "quote": "api-check caught the surface growing, which is the gate S5 added doing exactly its job: an addition is nobody's break, so semver would not have said a word.",
+      "hunks": [
+        "H18",
+        "H19",
+        "H20"
+      ]
+    },
+    {
+      "decision": "Update ROAD_TO_1.0.md to mark steps 1 and 2 done, step 3 deferred, and correct the assumption that python/, nodejs/, go/ have version lists.",
+      "kind": "act",
+      "rationale": "The plan was wrong about the other three implementations because they only read CBOR and never see a @doc header; the migration is Rust-only and smaller than it looked.",
+      "quote": "The plan was wrong about the other three implementations.",
+      "hunks": [
+        "H1"
+      ]
+    },
+    {
+      "decision": "Update format spec §8.5 to record the version-trap defect as fixed in 0.14.",
+      "kind": "act",
+      "rationale": "The trap was invisible until it bit; the spec should now state the fix so the historical warning is replaced with the actual current behavior.",
+      "quote": "§8.5 and §8.6 of the format spec updated: the trap is recorded as fixed",
+      "hunks": [
+        "H2"
+      ]
+    },
+    {
+      "decision": "Update format spec §8.6 to say smysl/1.0 is not a break and means the format is settled rather than changed.",
+      "kind": "act",
+      "rationale": "The version bump signals visibility, not a format change; readers learned the new string quietly, so the compatibility event is the readers' acceptance.",
+      "quote": "8.6 now says what smysl/1.0 will mean, which is that the format is settled rather than changed.",
+      "hunks": [
+        "H2"
+      ]
+    },
+    {
+      "decision": "Defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "kind": "decline",
+      "rationale": "§8.2 requires readers to refuse a version absent from their list. Flipping the writer before 0.14 is in the field would make every other implementation reject the output.",
+      "quote": "Step 3 — making smysl/1.0 what new documents declare — waits for 0.14 to be published, because §8.2 requires a reader to refuse a version absent from its list: flip the writer before the field has a reader for it and every other implementation rejects the output.",
+      "hunks": []
+    },
+    {
+      "decision": "Do not add version lists to python/, nodejs/, go/ implementations.",
+      "kind": "decline",
+      "rationale": "All three read CBOR only and the wire carries no version string, so no surface parser ever sees a @doc header there. The migration plan's assumption was wrong.",
+      "quote": "There is no such list: all three read CBOR only, the wire carries no version string, and go/conformance_test.go says so outright — \"surface syntax is not decoded here\".",
+      "hunks": []
+    },
+    {
+      "decision": "Do not treat this as a breaking change or require a major version bump.",
+      "kind": "decline",
+      "rationale": "ParseOutcome and WriteContext are #[non_exhaustive], so adding fields does not break embedders, and write_surface's signature never changed. semver remains clean.",
+      "quote": "And it is not a breaking change, which is §1.1 paying out: ParseOutcome and WriteContext are both #[non_exhaustive], so each could gain a field without a major bump and write_surface's signature never moved.",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Readers accept only versions listed in FORMAT_VERSIONS_SUPPORTED.",
+      "kind": "existing-behaviour",
+      "quote": "Format versions this implementation accepts in a `@doc` header (§11)."
+    },
+    {
+      "decision": 2,
+      "text": "Embedders writing surface documents need to know what version to declare.",
+      "kind": "assumption",
+      "quote": "FORMAT_VERSION_DEFAULT is exported from the facade too — an embedder writing surface documents needs to know what to declare."
+    },
+    {
+      "decision": 3,
+      "text": "ParseOutcome is #[non_exhaustive], so adding a public field is non-breaking.",
+      "kind": "existing-behaviour",
+      "quote": "both `ParseOutcome` and `WriteContext` are `#[non_exhaustive]`"
+    },
+    {
+      "decision": 3,
+      "text": "Parser validated and discarded declared version; writer reconstructed header from first supported version.",
+      "kind": "existing-behaviour",
+      "quote": "the wire carries no version, a parser validated the declared one and dropped it, and `write_surface` reconstructed the header from the first supported version."
+    },
+    {
+      "decision": 4,
+      "text": "CBOR path builds ParseOutcome via Default; wire carries no version.",
+      "kind": "existing-behaviour",
+      "quote": "The CBOR path builds a `ParseOutcome` this way — the wire has no version to carry"
+    },
+    {
+      "decision": 5,
+      "text": "WriteContext and ParseOutcome are #[non_exhaustive], so adding a field is non-breaking.",
+      "kind": "existing-behaviour",
+      "quote": "both `ParseOutcome` and `WriteContext` are `#[non_exhaustive]`"
+    },
+    {
+      "decision": 5,
+      "text": "write_doc previously emitted FORMAT_VERSIONS_SUPPORTED[0].",
+      "kind": "existing-behaviour",
+      "quote": "out.push_str(crate::FORMAT_VERSIONS_SUPPORTED[0]);"
+    },
+    {
+      "decision": 6,
+      "text": "WriteContext now has with_format_version method from decision 5.",
+      "kind": "prior-change",
+      "quote": "pub fn with_format_version(mut self, version: impl Into<String>) -> WriteContext"
+    },
+    {
+      "decision": 7,
+      "text": "Writer now preserves declared version, enabling round-trip property test.",
+      "kind": "prior-change",
+      "quote": "ParseOutcome carries the version the document declared; WriteContext carries what the header will say; write_surface emits that instead of a build-time constant."
+    },
+    {
+      "decision": 8,
+      "text": "Old unit test asserted smysl/1.0 as unknown version.",
+      "kind": "existing-behaviour",
+      "quote": "assert!(!format_version_supported(\"smysl/1.0\"));"
+    },
+    {
+      "decision": 9,
+      "text": "Facade test previously checked only FORMAT_VERSIONS_SUPPORTED[0].",
+      "kind": "existing-behaviour",
+      "quote": "assert!(format_version_supported(FORMAT_VERSIONS_SUPPORTED[0]));"
+    },
+    {
+      "decision": 10,
+      "text": "API snapshots are regenerated with make api and checked by make api-check.",
+      "kind": "tool-setting",
+      "quote": "Regenerate with `make api`. Check with `make api-check`."
+    },
+    {
+      "decision": 11,
+      "text": "python/, nodejs/, go/ read CBOR only; no surface parser sees @doc header.",
+      "kind": "existing-behaviour",
+      "quote": "all three read CBOR only, the wire carries no version string"
+    },
+    {
+      "decision": 12,
+      "text": "Version trap existed: parser discarded declared version; writer used own FORMAT_VERSIONS_SUPPORTED[0].",
+      "kind": "existing-behaviour",
+      "quote": "A surface parser validates the declared version and then discards it"
+    },
+    {
+      "decision": 13,
+      "text": "As of 0.14 readers accept both format strings and nothing writes smysl/1.0.",
+      "kind": "existing-behaviour",
+      "quote": "As of 0.14 readers accept both strings and nothing writes the new one."
+    },
+    {
+      "decision": 14,
+      "text": "§8.2 requires a reader to reject a version absent from its list.",
+      "kind": "invariant",
+      "quote": "§8.2 requires a reader to reject a version absent from its list rather than guess."
+    },
+    {
+      "decision": 15,
+      "text": "All three implementations read CBOR only; wire carries no version string.",
+      "kind": "existing-behaviour",
+      "quote": "all three read CBOR only, the wire carries no version string"
+    },
+    {
+      "decision": 16,
+      "text": "ParseOutcome and WriteContext are #[non_exhaustive]; write_surface signature unchanged.",
+      "kind": "existing-behaviour",
+      "quote": "both `ParseOutcome` and `WriteContext` are `#[non_exhaustive]`, so each could gain a field without a major bump, and `write_surface`'s signature never moved."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the supported list as only 'smysl/0.1' until the writer default flips.",
+      "reason": "Readers must accept both before the writer flips so old documents keep working and the new version is not refused.",
+      "quote": "FORMAT_VERSIONS_SUPPORTED is [\"smysl/0.1\", \"smysl/1.0\"] and nothing writes the\nsecond yet."
+    },
+    {
+      "decision": 2,
+      "alternative": "Use FORMAT_VERSIONS_SUPPORTED[0] as the default version rather than a separate constant.",
+      "reason": "The two constants stopped meaning the same thing once the supported list grew.",
+      "quote": "FORMAT_VERSION_DEFAULT is new and separate from\nFORMAT_VERSIONS_SUPPORTED[0], because the two stopped meaning the same thing the\nmoment the list grew: one is what we emit, the other is what we accept."
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep discarding the declared version after validation.",
+      "reason": "A writer could not preserve the version without storing it.",
+      "quote": "Kept rather than discarded as of 0.14."
+    },
+    {
+      "decision": 4,
+      "alternative": "Derive Default for ParseOutcome.",
+      "reason": "A derived Default would produce an empty version that becomes an invalid empty @doc header.",
+      "quote": "Derived `Default` would give `format_version: \"\"`, which is not a version and would\nreach `write_doc` as an empty `@doc` header."
+    },
+    {
+      "decision": 5,
+      "alternative": "Emit FORMAT_VERSIONS_SUPPORTED[0] in write_surface.",
+      "reason": "The writer would relabel documents when more than one version is supported.",
+      "quote": "write_surface emits that instead of a build-time constant."
+    },
+    {
+      "decision": 6,
+      "alternative": "Let fmt use the default WriteContext version.",
+      "reason": "fmt is the round trip a user runs on purpose and would have been first to relabel.",
+      "quote": "`fmt` is the round trip a user runs on purpose, so it is the\ncommand where that would have bitten first."
+    },
+    {
+      "decision": 7,
+      "alternative": "Keep the tripwire count assertion but update it to 2.",
+      "reason": "A count cannot verify that a document declaring either supported version comes back declaring the one it declared.",
+      "quote": "A count cannot say that; a round trip can."
+    },
+    {
+      "decision": 8,
+      "alternative": "Assert a literal list and keep using smysl/1.0 as an unknown version.",
+      "reason": "The old test would fail on new versions or silently pass on unlisted additions.",
+      "quote": "Driving it from the list itself makes it grow with the list."
+    },
+    {
+      "decision": 9,
+      "alternative": "Only check FORMAT_VERSIONS_SUPPORTED[0] in the facade test.",
+      "reason": "The second supported version would go unchecked.",
+      "quote": "an assertion about `[0]` would have kept passing while the second went\nunchecked — which is the shape of gap this repository keeps finding."
+    },
+    {
+      "decision": 10,
+      "alternative": "Leave public API snapshots unchanged and fail api-check.",
+      "reason": "An addition is not a breaking change, so the snapshot must be regenerated to reflect the intended surface growth.",
+      "quote": "api-check caught the surface growing, which is the gate S5 added doing exactly\nits job: an addition is nobody's break, so semver would not have said a word."
+    },
+    {
+      "decision": 11,
+      "alternative": "Keep the migration plan unchanged with version lists in python/, nodejs/, go/.",
+      "reason": "The plan was wrong because those implementations read CBOR only and never see a @doc header.",
+      "quote": "There is no such list: all three read CBOR only, the wire\ncarries no version string (§8.5), and `go/conformance_test.go` says so outright — *\"surface\nsyntax is not decoded here\"*."
+    },
+    {
+      "decision": 12,
+      "alternative": "Leave the version-trap defect as a future warning in §8.5.",
+      "reason": "The trap was invisible until it bit; the spec should now state the fix.",
+      "quote": "**Fixed in 0.14, before the list grew rather than after.**"
+    },
+    {
+      "decision": 13,
+      "alternative": "Treat smysl/1.0 as a format change or break.",
+      "reason": "The version bump signals visibility, not a format change; readers accepted the new string quietly.",
+      "quote": "**`smysl/1.0` is coming, and is not a break.**"
+    },
+    {
+      "decision": 14,
+      "alternative": "Flip the writer default to smysl/1.0 immediately.",
+      "reason": "§8.2 requires readers to refuse a version absent from their list, so the output would be rejected by other implementations.",
+      "quote": "Step 3 — making\nsmysl/1.0 what new documents declare — waits for 0.14 to be published, because\n§8.2 requires a reader to refuse a version absent from its list: flip the writer\nbefore the field has a reader for it and every other implementation rejects the\noutput."
+    },
+    {
+      "decision": 15,
+      "alternative": "Add version lists to python/, nodejs/, go/.",
+      "reason": "All three read CBOR only and the wire carries no version string, so no surface parser sees a @doc header there.",
+      "quote": "There is no such list: all three read CBOR only, the wire\ncarries no version string (§8.5), and `go/conformance_test.go` says so outright — *\"surface\nsyntax is not decoded here\"*."
+    },
+    {
+      "decision": 16,
+      "alternative": "Treat the public type changes as breaking and bump major.",
+      "reason": "ParseOutcome and WriteContext are #[non_exhaustive], so adding fields does not break embedders and write_surface's signature never changed.",
+      "quote": "ParseOutcome and\nWriteContext are both #[non_exhaustive], so each could gain a field without a\nmajor bump and write_surface's signature never moved."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Readers accept smysl/0.1 and smysl/1.0, keeping old documents working until writer flips.",
+      "quote": "pub const FORMAT_VERSIONS_SUPPORTED: &[&str] = &[\"smysl/0.1\", \"smysl/1.0\"];",
+      "verified": true,
+      "verification_quote": "assert_eq!(FORMAT_VERSIONS_SUPPORTED, &[\"smysl/0.1\", \"smysl/1.0\"]);"
+    },
+    {
+      "decision": 2,
+      "text": "FORMAT_VERSION_DEFAULT added and exported separately from supported list; what we emit versus accept.",
+      "quote": "FORMAT_VERSION_DEFAULT is exported from the facade too — an embedder writing surface documents needs to know what to declare.",
+      "verified": true,
+      "verification_quote": "api-check caught the surface growing, which is the gate S5 added doing exactly its job"
+    },
+    {
+      "decision": 3,
+      "text": "ParseOutcome stores parsed @doc version so writers can emit what was read.",
+      "quote": "self.out.format_version = version.to_string();",
+      "verified": true,
+      "verification_quote": "make ci green"
+    },
+    {
+      "decision": 4,
+      "text": "Default ParseOutcome sets format_version to FORMAT_VERSION_DEFAULT, avoiding empty @doc header on CBOR path.",
+      "quote": "format_version: crate::FORMAT_VERSION_DEFAULT.to_string(),",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "WriteContext carries format_version; write_surface emits it instead of FORMAT_VERSIONS_SUPPORTED[0].",
+      "quote": "out.push_str(&ctx.format_version);",
+      "verified": true,
+      "verification_quote": "make ci green"
+    },
+    {
+      "decision": 6,
+      "text": "`smysl fmt` passes parsed format_version to WriteContext, preserving document self-description.",
+      "quote": ".with_format_version(out.format_version.clone())",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Round-trip property test replaces count tripwire, verifying each supported version comes back declared.",
+      "quote": "The tripwire fired in 0.14, which is what it was for. What replaced it is the property it was guarding: a document declaring either supported version must come back declaring the one it declared.",
+      "verified": true,
+      "verification_quote": "make ci green"
+    },
+    {
+      "decision": 8,
+      "text": "Unit tests loop over supported versions and reject near misses like smysl/2.0.",
+      "quote": "for v in FORMAT_VERSIONS_SUPPORTED {",
+      "verified": true,
+      "verification_quote": "make ci green"
+    },
+    {
+      "decision": 9,
+      "text": "Facade test checks every supported version accepted and default version in supported list.",
+      "quote": "for v in FORMAT_VERSIONS_SUPPORTED {",
+      "verified": true,
+      "verification_quote": "make ci green"
+    },
+    {
+      "decision": 10,
+      "text": "Public API snapshots updated with FORMAT_VERSION_DEFAULT and new smysl-core count.",
+      "quote": "pub use smysl::FORMAT_VERSION_DEFAULT",
+      "verified": true,
+      "verification_quote": "api-check caught the surface growing, which is the gate S5 added doing exactly its job"
+    },
+    {
+      "decision": 11,
+      "text": "ROAD_TO_1.0 updated: steps 1-2 done, step 3 deferred; python/nodejs/go have no version lists.",
+      "quote": "**The plan was wrong about the other three implementations.**",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Format spec §8.5 records version-trap defect fixed in 0.14.",
+      "quote": "**Fixed in 0.14, before the list grew rather than after.**",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "Format spec §8.6 says smysl/1.0 is not a break; format settled rather than changed.",
+      "quote": "**`smysl/1.0` is coming, and is not a break.**",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "Writer default deferred to smysl/1.0 until 0.14 published; avoids other implementations rejecting output.",
+      "quote": "Step 3 — making smysl/1.0 what new documents declare — waits for 0.14 to be published",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "No version lists added to python/nodejs/go; they read CBOR only and never see @doc header.",
+      "quote": "There is no such list: all three read CBOR only, the wire carries no version string",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "Not a breaking change: non_exhaustive types permit added fields; write_surface signature unchanged.",
+      "quote": "ParseOutcome and WriteContext are both #[non_exhaustive], so each could gain a field without a major bump and write_surface's signature never moved.",
+      "verified": true,
+      "verification_quote": "make semver is 12/12 clean"
+    }
+  ],
+  "tokens": [
+    [
+      8120,
+      14638
+    ],
+    [
+      9090,
+      8695
+    ],
+    [
+      9032,
+      8436
+    ],
+    [
+      9048,
+      10885
+    ]
+  ]
+}

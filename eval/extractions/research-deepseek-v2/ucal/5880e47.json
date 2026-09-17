@@ -1,0 +1,234 @@
+{
+  "decisions": [
+    {
+      "decision": "Read notes for version being built rather than newest sorted file",
+      "kind": "act",
+      "rationale": "Sorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing.",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package].",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Error naming the version when current release notes missing",
+      "kind": "act",
+      "rationale": "The old sort silently read the previous cycle's file and passed when notes were never written. Now a missing notes file for the current version is an explicit error.",
+      "quote": "That is an error naming the version now.",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Replace old version-sort tests with current-version and missing-notes tests",
+      "kind": "act",
+      "rationale": "Old tests checked that sorting by version picks 1.10.0 and that stray files sort first. New tests assert the current version's notes file exists and that a missing file is refused.",
+      "quote": "fn the_procedure_check_reads_the_current_version_s_notes()",
+      "hunks": [
+        "H2"
+      ]
+    },
+    {
+      "decision": "Make missing-notes test strict about the diagnostic",
+      "kind": "act",
+      "rationale": "Asserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic.",
+      "quote": "A test that cannot tell the two branches apart is not testing the branch it claims to.",
+      "hunks": [
+        "H2"
+      ]
+    },
+    {
+      "decision": "Restore doc comment for check_ci_covers_the_procedure",
+      "kind": "act",
+      "rationale": "The new workspace_version doc comment had swallowed the check's documentation, leaving that function undocumented. The doc comment is restored before the function.",
+      "quote": "The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Update release notes with the fix rationale and sweep findings",
+      "kind": "act",
+      "rationale": "Record the change, why it is not a better sort, the missing-notes behavior, and the version-ordering sweep result for 1.10.0.",
+      "quote": "**The fix is not a better sort.** Sorting numerically repairs that one bug and leaves the guess in place.",
+      "hunks": [
+        "H1"
+      ]
+    },
+    {
+      "decision": "Leave other version-ordering sites unchanged",
+      "kind": "decline",
+      "rationale": "The sweep found no other version-ordering assumptions; every other site treats a version as an opaque string, so no changes were needed there.",
+      "quote": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The workspace version is declared under [workspace.package] in Cargo.toml.",
+      "kind": "assumption",
+      "quote": "derived from [workspace.package]"
+    },
+    {
+      "decision": 1,
+      "text": "Release notes are stored as {version}.md files under Documentation/Release_Notes.",
+      "kind": "existing-behaviour",
+      "quote": "format!(\"{version}.md\")"
+    },
+    {
+      "decision": 2,
+      "text": "check_ci_covers_the_procedure returns Result<usize, Vec<String>>, so an Err is a failed check.",
+      "kind": "existing-behaviour",
+      "quote": "pub fn check_ci_covers_the_procedure(root: &Path) -> Result<usize, Vec<String>> {"
+    },
+    {
+      "decision": 2,
+      "text": "The current version is already derived from [workspace.package] by decision 1.",
+      "kind": "prior-change",
+      "quote": "let Some(version) = workspace_version(root) else {"
+    },
+    {
+      "decision": 3,
+      "text": "The test can get the workspace root via crate::workspace_root().",
+      "kind": "existing-behaviour",
+      "quote": "let v = super::workspace_version(&crate::workspace_root())"
+    },
+    {
+      "decision": 4,
+      "text": "std::fs::read_to_string on a missing file returns an error message containing the path and version.",
+      "kind": "existing-behaviour",
+      "quote": "read_to_string fails too, and its message contains the path, and the path contains the version"
+    },
+    {
+      "decision": 4,
+      "text": "The missing-notes diagnostic produced by decision 2 contains the phrase a cycle's notes.",
+      "kind": "prior-change",
+      "quote": "a cycle's notes"
+    },
+    {
+      "decision": 5,
+      "text": "A Rust doc comment applies to the next item, so inserting an item above steals the comment.",
+      "kind": "invariant",
+      "quote": "inserting an item above another has taken its doc comment"
+    },
+    {
+      "decision": 6,
+      "text": "Release notes for the current 1.10.0 cycle are kept in Documentation/Release_Notes/1.10.0.md.",
+      "kind": "existing-behaviour",
+      "quote": "Documentation/Release_Notes/1.10.0.md"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "sort filenames numerically / by version to pick the newest",
+      "reason": "Sorting numerically would fix only the one exposed bug and would leave the guess in place.",
+      "quote": "The first fix sorted numerically, which\nrepairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 2,
+      "alternative": "silently fall back to the previous cycle's notes file",
+      "reason": "This fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file.",
+      "quote": "a version bumped and its\nnotes never written silently read the previous cycle's file and passed."
+    },
+    {
+      "decision": 3,
+      "alternative": "keep the two old tests for version-sort behavior",
+      "reason": "The old tests exercised sorting behavior that no longer exists after replacing the sort with current-version lookup.",
+      "quote": "fn release_notes_sort_by_version_and_not_by_filename()"
+    },
+    {
+      "decision": 4,
+      "alternative": "assert only that some error came back and the message named the version",
+      "reason": "The loose assertion passed even with the check disabled because read_to_string also fails and names the path containing the version.",
+      "quote": "that *some* error came back passed even with that check disabled"
+    },
+    {
+      "decision": 5,
+      "alternative": "not restore the check's doc comment",
+      "reason": "Leaving it there made check_ci_covers_the_procedure undocumented.",
+      "quote": "The new function's documentation\nswallowed check_ci_covers_the_procedure's, leaving that function\nundocumented"
+    },
+    {
+      "decision": 6,
+      "alternative": "keep the old release-notes text describing the numeric sort",
+      "reason": "That text described the abandoned numeric sort and omitted the adjacent failure and sweep findings.",
+      "quote": "Sorted by parsed version now, with an unparseable name sorting *first*"
+    },
+    {
+      "decision": 7,
+      "alternative": "change other sites that might assume version ordering",
+      "reason": "The sweep found no other version-ordering assumptions; every other site treats a version as an opaque string.",
+      "quote": "Nothing else in the tree assumes version ordering"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Check reads current version's notes from [workspace.package], removing ordering guess.",
+      "quote": "It now reads the notes for the version being built, derived from\n[workspace.package]. There is no ordering left to get wrong",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Missing current-version notes now error naming version, not silent previous-cycle fallback.",
+      "quote": "That is an error naming the version now.",
+      "verified": true,
+      "verification_quote": "e.iter().any(|m| m.contains(\"9.9.9\"))"
+    },
+    {
+      "decision": 3,
+      "text": "Old version-sort tests replaced with current-version and missing-notes tests.",
+      "quote": "Two tests, and the first draft of the second one was not strict.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Missing-notes test now requires specific diagnostic, so disabled check cannot pass.",
+      "quote": "A test that cannot tell the two branches apart is not testing the branch it claims to.",
+      "verified": true,
+      "verification_quote": "e.iter().any(|m| m.contains(\"a cycle's notes\"))"
+    },
+    {
+      "decision": 5,
+      "text": "Doc comment restored for check_ci_covers_the_procedure, leaving function documented.",
+      "quote": "/// The CI workflow must run every command the release procedure lists.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Release notes updated with fix rationale, missing-notes behavior, and sweep findings.",
+      "quote": "**The fix is not a better sort.** Sorting numerically repairs that one bug and",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "No other version-ordering sites changed; all other sites treat version as opaque string.",
+      "quote": "Nothing else in the tree assumes version ordering — every other site\ntreats a version as an opaque string, `format!(\"v{version}\")` or an\nexact manifest match.",
+      "verified": true,
+      "verification_quote": "A sweep for the same class found no other version-ordering assumption in the tree: everything else treats a version as an opaque string."
+    }
+  ],
+  "tokens": [
+    [
+      4419,
+      9619
+    ],
+    [
+      4732,
+      8320
+    ],
+    [
+      4674,
+      10354
+    ],
+    [
+      4690,
+      11193
+    ]
+  ]
+}

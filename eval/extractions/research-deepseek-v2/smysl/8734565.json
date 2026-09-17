@@ -1,0 +1,362 @@
+{
+  "decisions": [
+    {
+      "decision": "Build Constraints via default and field assignment instead of struct literal",
+      "kind": "act",
+      "rationale": "Constraints became #[non_exhaustive] in 0.13, so struct literals no longer compile; using default then setting budget matches other call sites and keeps future fields additive.",
+      "quote": "`Constraints` is `#[non_exhaustive]` as of 0.13, so it is built from its default and adjusted.",
+      "hunks": [
+        "H5"
+      ]
+    },
+    {
+      "decision": "Remove unused BTreeSet import from pack_exact.rs",
+      "kind": "act",
+      "rationale": "The BTreeSet import became unused after replacing the struct literal with default construction.",
+      "quote": "use std::collections::{BTreeMap, BTreeSet};",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Add a fuzz-build Makefile target to compile fuzz targets without running them",
+      "kind": "act",
+      "rationale": "The fuzz workspace is separate and was never compiled by root workspace checks; compiling is cheap and catches breakages.",
+      "quote": "`make fuzz-build` compiles the fuzz targets without running them and is now part of `make ci`.",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Make `make ci` depend on fuzz-build",
+      "kind": "act",
+      "rationale": "CI must see fuzz compilation because local checks passed while the break existed; this makes the gate structural.",
+      "quote": "That is the same defect shape as the rest of this cycle — a check that passes without covering what it claims — so the fix is a gate, not just a patch.",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Do not pipe fuzz-build's cargo check through tail",
+      "kind": "decline",
+      "rationale": "A pipeline's exit status is the last command's, so piping through tail would print errors but return 0; the gate must return non-zero on failure.",
+      "quote": "Not piped through `tail`. A pipeline's exit status is the last command's, so `cargo check ... | tail -5` prints the error and returns 0 — a gate that reports a failure and passes anyway",
+      "hunks": [
+        "H2"
+      ]
+    },
+    {
+      "decision": "Do not run fuzzers as part of make ci; only compile them",
+      "kind": "decline",
+      "rationale": "Running fuzzers requires nightly and a minute per target, so it remains a separate job; compilation catches the break in seconds.",
+      "quote": "Compiling costs a second; *running* the fuzzers needs nightly and a minute per target, which is why that stays its own job.",
+      "hunks": [
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "decision": "Make verify-doc-output.py binary path overridable via SMYSL_BIN",
+      "kind": "act",
+      "rationale": "This lets the new cargo test pass the binary cargo built for it, so mutation testing exercises the mutated binary rather than a stale one.",
+      "quote": "The binary under test. Overridable so `tests/doc_output.rs` can point this at the binary cargo just built for it — `CARGO_BIN_EXE_smysl` — rather than at whatever happens to be in target/debug.",
+      "hunks": [
+        "H6"
+      ]
+    },
+    {
+      "decision": "Fix path extraction in verify-doc-output.py to skip token 0",
+      "kind": "act",
+      "rationale": "Token 0 is the binary name, not a manual input; if the binary path is absolute, the absolute-path rule would otherwise skip all commands.",
+      "quote": "`i` starts at 1: token 0 is the binary this script was told to run, not an input the manual named.",
+      "hunks": [
+        "H7"
+      ]
+    },
+    {
+      "decision": "Add tests/doc_output.rs so cargo test runs the doc output replay",
+      "kind": "act",
+      "rationale": "The replay script existed but was invisible to cargo test and coverage tools; adding it as an integration test makes it measurable.",
+      "quote": "But nothing in `cargo test` invoked it, so nothing that *counts* coverage could see it either.",
+      "hunks": [
+        "H8"
+      ]
+    },
+    {
+      "decision": "Assert on transcript count rather than just MISMATCHED presence in doc output test",
+      "kind": "act",
+      "rationale": "The first version asserted only that MISMATCHED appeared, which ran 0 transcripts satisfied; the count assertion ensures a gate that cannot confuse nothing wrong with nothing checked.",
+      "quote": "So the assertion is on the count. A gate that cannot tell \"nothing was wrong\" from \"nothing was checked\" is the failure this repository keeps rediscovering.",
+      "hunks": [
+        "H8"
+      ]
+    },
+    {
+      "decision": "Compile out the doc output test outside the default-ish feature set",
+      "kind": "decline",
+      "rationale": "The script compares against a default-features build; running under other features caused false drift, and a compiled-out test is better than a runtime skip.",
+      "quote": "So this runs in exactly one of the eight matrix configurations — the plain `cargo test --workspace` — and is compiled out of the rest.",
+      "hunks": [
+        "H8"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Constraints became #[non_exhaustive] in 0.13, making struct literals invalid.",
+      "kind": "prior-change",
+      "quote": "`Constraints` is `#[non_exhaustive]` as of 0.13"
+    },
+    {
+      "decision": 1,
+      "text": "Constraints implements Default and exposes a public budget field.",
+      "kind": "existing-behaviour",
+      "quote": "constraints.budget = budget;"
+    },
+    {
+      "decision": 2,
+      "text": "The only BTreeSet use was in the removed struct literal.",
+      "kind": "existing-behaviour",
+      "quote": "pinned: BTreeSet::new(),"
+    },
+    {
+      "decision": 3,
+      "text": "The fuzz directory is a separate workspace not compiled by root workspace checks.",
+      "kind": "existing-behaviour",
+      "quote": "`fuzz/` is its own workspace, so `cargo check --workspace` from the root never compiles it"
+    },
+    {
+      "decision": 4,
+      "text": "The fuzz-build target compiles fuzz targets and reports failure.",
+      "kind": "prior-change",
+      "quote": "cd fuzz && $(CARGO) check --all-targets"
+    },
+    {
+      "decision": 4,
+      "text": "make ci is the target that CI runs locally and remotely.",
+      "kind": "existing-behaviour",
+      "quote": "Everything CI runs, bar the jobs needing a server"
+    },
+    {
+      "decision": 5,
+      "text": "Shell pipeline exit status is the last command's, so tail masks failure.",
+      "kind": "assumption",
+      "quote": "A pipeline's exit status is the last command's, so `cargo check ... | tail -5` prints the error and returns 0"
+    },
+    {
+      "decision": 6,
+      "text": "Running fuzzers requires nightly and about a minute per target.",
+      "kind": "assumption",
+      "quote": "*Running* the fuzzers needs nightly and a minute per target"
+    },
+    {
+      "decision": 7,
+      "text": "cargo sets CARGO_BIN_EXE_smysl to the binary built for the integration test.",
+      "kind": "tool-setting",
+      "quote": "`CARGO_BIN_EXE_smysl` is the binary cargo built *for this test*."
+    },
+    {
+      "decision": 8,
+      "text": "Token 0 is the binary path, and the absolute-path rule skips tokens containing '/'.",
+      "kind": "existing-behaviour",
+      "quote": "the absolute-path rule below would then match the program itself and skip every command"
+    },
+    {
+      "decision": 8,
+      "text": "SMYSL_BIN may be absolute because CARGO_BIN_EXE_smysl always is.",
+      "kind": "existing-behaviour",
+      "quote": "`SMYSL_BIN` may be absolute — `tests/doc_output.rs` passes `CARGO_BIN_EXE_smysl`, which always is"
+    },
+    {
+      "decision": 9,
+      "text": "The replay script exists and works.",
+      "kind": "existing-behaviour",
+      "quote": "`scripts/verify-doc-output.py` has replayed ~190 documented command outputs since 0.3 and"
+    },
+    {
+      "decision": 9,
+      "text": "cargo test runs #[test] functions in files under tests/.",
+      "kind": "tool-setting",
+      "quote": "#[test]"
+    },
+    {
+      "decision": 10,
+      "text": "The script prints a summary line with a parseable ran count.",
+      "kind": "existing-behaviour",
+      "quote": "The script prints `ran N, skipped N, excerpt-matched N, MISMATCHED N`."
+    },
+    {
+      "decision": 11,
+      "text": "The script expects default-features build output; other features cause drift.",
+      "kind": "existing-behaviour",
+      "quote": "The script compares against output the manual claims, and the manual documents a **default-features** build."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Use a struct literal for Constraints",
+      "reason": "Struct literals no longer compile because Constraints became #[non_exhaustive] in 0.13.",
+      "quote": "builds a `Constraints` literal, and §1.1 made that type `#[non_exhaustive]`."
+    },
+    {
+      "decision": 2,
+      "alternative": "Keep the unused BTreeSet import",
+      "reason": "The BTreeSet import became unused after replacing the struct literal with default construction.",
+      "quote": "use std::collections::{BTreeMap, BTreeSet};"
+    },
+    {
+      "decision": 3,
+      "alternative": "Rely on root cargo check --workspace to compile fuzz targets",
+      "reason": "The fuzz workspace is separate and was never compiled by root workspace checks.",
+      "quote": "`fuzz/` is its own workspace, so `cargo check --workspace` from the root never compiles it"
+    },
+    {
+      "decision": 4,
+      "alternative": "Leave make ci without fuzz-build dependency",
+      "reason": "Local checks passed while the break existed, so CI needed a structural gate.",
+      "quote": "`make fuzz-build` compiles the fuzz targets without running them and is now part of `make ci`."
+    },
+    {
+      "decision": 5,
+      "alternative": "Pipe cargo check output through tail -5",
+      "reason": "A pipeline's exit status is the last command's, so tail would return 0 despite errors.",
+      "quote": "the recipe piped cargo through `tail -5`, and a pipeline's exit status is the last command's, so it printed the error and returned 0."
+    },
+    {
+      "decision": 6,
+      "alternative": "Run fuzzers as part of make ci",
+      "reason": "Running fuzzers requires nightly and a minute per target, so compilation catches breaks faster.",
+      "quote": "*running* the fuzzers needs nightly and a minute per target, which is why that stays its own job."
+    },
+    {
+      "decision": 7,
+      "alternative": "Hardcode the binary path as './target/debug/smysl'",
+      "reason": "A stale binary would report every mutant as caught while testing none of them.",
+      "quote": "# Overridable so `tests/doc_output.rs` can point this at the binary"
+    },
+    {
+      "decision": 8,
+      "alternative": "Include token 0 in the path filter",
+      "reason": "If the binary path is absolute, the absolute-path rule would match the program and skip all commands.",
+      "quote": "if i and '/' in t and not t.startswith('-') and not t.startswith('b3:')"
+    },
+    {
+      "decision": 9,
+      "alternative": "Keep replay only as a script, not a cargo test",
+      "reason": "The script was invisible to cargo test and coverage tools, making it unmeasurable.",
+      "quote": "//! what it reports. But nothing in `cargo test` invoked it, so nothing that *counts* coverage"
+    },
+    {
+      "decision": 10,
+      "alternative": "Assert only that MISMATCHED appears",
+      "reason": "That assertion is satisfied by ran 0, skipped 168, MISMATCHED 0, meaning nothing was replayed.",
+      "quote": "`ran 0, skipped 168, MISMATCHED 0` — a script that replayed nothing at all."
+    },
+    {
+      "decision": 11,
+      "alternative": "Skip the doc output test at runtime outside default feature set",
+      "reason": "Running under other features caused false drift; a compiled-out test is better than a silently passing skip.",
+      "quote": "Compiled out rather than"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Constraints built via default and field assignment compiles despite non_exhaustive; future fields stay additive.",
+      "quote": "Built from its default and adjusted now, like the other four call sites.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Remove unused BTreeSet import after replacing struct literal with default construction.",
+      "quote": "use std::collections::{BTreeMap, BTreeSet};",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "fuzz-build target compiles fuzz targets without running, catching breakages cheaply.",
+      "quote": "fuzz-build: ## Compile the fuzz targets without running them",
+      "verified": true,
+      "verification_quote": "Unpiped, it exits 2 with the break present and 0 without."
+    },
+    {
+      "decision": 4,
+      "text": "make ci depends on fuzz-build, so CI gates on fuzz compilation.",
+      "quote": "ci: lint doc-gate api-check test-matrix gates conformance fuzz-build",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Not piping through tail gives cargo check's exit status, so gate returns non-zero on failure.",
+      "quote": "a pipeline's exit status is the last command's, so it printed the error and returned 0.",
+      "verified": true,
+      "verification_quote": "Unpiped, it exits 2 with the break present and 0 without."
+    },
+    {
+      "decision": 6,
+      "text": "Only compile fuzzers in CI; running remains separate due to nightly and time.",
+      "quote": "Compiling costs a second; *running* the fuzzers needs nightly and a minute per target, which is why that stays its own job.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "SMYSL_BIN override lets cargo test use freshly built binary, so mutation tests exercise mutated code.",
+      "quote": "# The binary under test. Overridable so `tests/doc_output.rs` can point this at the binary cargo just built for it",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Skip token 0 in path extraction to avoid absolute binary path skipping every command.",
+      "quote": "`i` starts at 1: token 0 is the binary this script was told to run, not an input the manual named.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.",
+      "quote": "The manual's transcripts, replayed against the binary, as something `cargo test` can see.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Count assertion prevents gate from confusing nothing wrong with nothing checked.",
+      "quote": "So the assertion is on the count. A gate that cannot tell \"nothing was wrong\" from \"nothing was checked\" is the failure this repository keeps rediscovering.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "Compile out doc output test outside default feature set to avoid false drift.",
+      "quote": "So this runs in exactly one of the eight matrix configurations — the plain `cargo test --workspace` — and is compiled out of the rest.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      3818,
+      7676
+    ],
+    [
+      4289,
+      12042
+    ],
+    [
+      4231,
+      8610
+    ],
+    [
+      4247,
+      12694
+    ]
+  ]
+}

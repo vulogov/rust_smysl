@@ -1,0 +1,223 @@
+{
+  "decisions": [
+    {
+      "decision": "Add six binary tests for cmd_fmt covering listed fmt decisions.",
+      "kind": "act",
+      "rationale": "Twelve mutants survived in cmd_fmt because nothing reached the command through the binary. The tests drive the binary as a user would, killing mutants in those decisions and reducing survivors from 12 to 2.",
+      "quote": "Six tests driving the binary, aimed at decisions rather than at mutants:",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Do not write a test for the round-trip guard; record it as a known survivor.",
+      "kind": "decline",
+      "rationale": "The guard fires only when write_surface produces something the parser reads back differently, and no user input can reach it. A test cannot distinguish a guard that checks from one that does not, so the author records it like previous untestable cases with a pointer to the tests covering the property it protects.",
+      "quote": "No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not.",
+      "hunks": []
+    },
+    {
+      "decision": "Make each test write its own document with the needed property instead of using repository fixtures.",
+      "kind": "act",
+      "rationale": "The first version depended on repository fixtures like F1 not canonical and F9 having comments. cargo-mutants reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten, causing spurious failures counted as catches. The rule is that a test must not depend on the state of the tree, just as it must not depend on the state of the machine.",
+      "quote": "Every test that needs a document with a *property* — not canonical, has comments — builds it here rather than relying on a repository fixture having that property.",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Update READINESS with corrected CLI mutant rate of 40.0% and re-measurement details.",
+      "kind": "act",
+      "rationale": "A full sharded re-measurement reproduced the survivor count of 110 but showed the rate is 40.0% of 275 viable, not the previously implied 64.2%. The author updates the record to correct a claim made in the file's own voice and notes the distribution unchanged.",
+      "quote": "**The rate is a different story, and it corrects a claim made in this file's own voice.**",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Leave cmd_providers and cmd_merge survivor counts untouched.",
+      "kind": "decline",
+      "rationale": "The commit focuses on cmd_fmt. After the harness fix, a correct measurement shows cmd_providers at 12 and cmd_merge at 11, and the author leaves them as they are, indicating no effort to address those commands in this change.",
+      "quote": "cmd_providers and cmd_merge are untouched at 12 and 11, which is what a correct measurement of this change looks like.",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The binary under test only exists when the `cli` feature is enabled.",
+      "kind": "assumption",
+      "quote": "// The binary only exists with `cli`, and a test that cannot find its subject is worse than one"
+    },
+    {
+      "decision": 1,
+      "text": "Cargo provides the compiled binary path as `CARGO_BIN_EXE_smysl` for integration tests.",
+      "kind": "tool-setting",
+      "quote": "const BIN: &str = env!(\"CARGO_BIN_EXE_smysl\");"
+    },
+    {
+      "decision": 1,
+      "text": "The `smysl fmt` command uses exit codes 0, 2, and 3 as defined by the specification.",
+      "kind": "invariant",
+      "quote": "// Exit codes, by the names the specification gives them."
+    },
+    {
+      "decision": 2,
+      "text": "The round-trip guard only fires when write_surface and the parser disagree, and no user input reaches it.",
+      "kind": "existing-behaviour",
+      "quote": "The two that remain are the round-trip guard, which fires only when write_surface produces something the parser reads back differently. No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not."
+    },
+    {
+      "decision": 2,
+      "text": "Earlier untestable survivors were recorded the same way, so this decline follows precedent.",
+      "kind": "prior-change",
+      "quote": "Recorded the way 0.13 recorded worse's >= and 1.1 recorded Lineage::is_empty -> false, with a pointer to the tests that cover the property it protects."
+    },
+    {
+      "decision": 3,
+      "text": "cargo-mutants reuses build directories across mutants, so mutant-induced fixture rewrites persist and affect later tests.",
+      "kind": "tool-setting",
+      "quote": "cargo-mutants reuses build directories, so a mutant that misroutes a write leaves a fixture rewritten"
+    },
+    {
+      "decision": 3,
+      "text": "Tests must not depend on the state of the tree, just as they must not depend on the state of the machine.",
+      "kind": "invariant",
+      "quote": "The rule is one level up from 0.13's TMPDIR lesson, which was that a test must not depend on the state of the machine: a test must not depend on the state of the tree either."
+    },
+    {
+      "decision": 4,
+      "text": "A full sharded re-measurement confirmed 110 survivors and reproduced the per-file distribution.",
+      "kind": "prior-change",
+      "quote": "**Confirmed by re-measurement in 1.1: 110 survivors, 109 of them in `src/main.rs` and one in `src/progress.rs`** — the per-file figures from 2.2, reproduced exactly by a full sharded run."
+    },
+    {
+      "decision": 4,
+      "text": "The corrected mutant rate is 40.0% of 275 viable mutants.",
+      "kind": "prior-change",
+      "quote": "It is **40.0% of 275 viable**."
+    },
+    {
+      "decision": 5,
+      "text": "A correct post-fix measurement shows cmd_providers at 12 survivors and cmd_merge at 11.",
+      "kind": "prior-change",
+      "quote": "cmd_providers and cmd_merge are untouched at 12 and 11, which is what a correct measurement of this change looks like."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Writing unit tests that call cmd_fmt functions directly instead of running the binary",
+      "reason": "The command reads the filesystem, parses, writes, and prints with no seam to call, so only running the binary reaches these decisions.",
+      "quote": "there is no seam to call, so the only way in is to run the binary"
+    },
+    {
+      "decision": 2,
+      "alternative": "Writing a test for the round-trip guard",
+      "reason": "No user-supplied input reaches the guard, so a test cannot distinguish a guard that checks from one that does not.",
+      "quote": "No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not."
+    },
+    {
+      "decision": 3,
+      "alternative": "Using repository fixtures F1 and F9 with known properties",
+      "reason": "cargo-mutants reuses build directories, letting a mutant misroute a write to rewrite a fixture and cause spurious catches.",
+      "quote": "They depended on repository fixtures having properties — F1 not being canonical, F9 having comments."
+    },
+    {
+      "decision": 4,
+      "alternative": "Leaving READINESS rate at 64.2% unchanged",
+      "reason": "Quoting the old rate with the new survivor count implied both described the present and was wrong by a whole phase.",
+      "quote": "Quoting them together read as though both described the present, and the conclusion drawn from that pairing — that the CLI's rate was probably still near 64% — was wrong by a whole phase."
+    },
+    {
+      "decision": 5,
+      "alternative": "Also writing tests for cmd_providers and cmd_merge",
+      "reason": "The change focuses on cmd_fmt, and a correct measurement leaves those commands untouched at 12 and 11.",
+      "quote": "cmd_providers and cmd_merge are untouched at 12 and 11, which is what a correct measurement of this change looks like."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Reduces cmd_fmt mutant survivors from 12 to 2.",
+      "quote": "cmd_fmt   12 -> 2",
+      "verified": true,
+      "verification_quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 1,
+      "text": "Reduces main.rs mutant survivors from 109 to 99.",
+      "quote": "main.rs  109 -> 99",
+      "verified": true,
+      "verification_quote": "main.rs  109 -> 99"
+    },
+    {
+      "decision": 2,
+      "text": "Round-trip guard remains one of two survivors.",
+      "quote": "The two that remain are the round-trip guard",
+      "verified": true,
+      "verification_quote": "The two that remain are the round-trip guard"
+    },
+    {
+      "decision": 3,
+      "text": "Removes tests' dependency on repository fixtures F1 and F9.",
+      "quote": "They depended on repository fixtures having properties — F1 not being canonical,",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Eliminates 97 spurious mutants counted as catches.",
+      "quote": "The first version of these tests inflated the score by 97 mutants",
+      "verified": true,
+      "verification_quote": "The first version of these tests inflated the score by 97 mutants"
+    },
+    {
+      "decision": 4,
+      "text": "Corrects CLI mutant rate from implied 64.2% to 40.0% of 275 viable.",
+      "quote": "**40.0% of 275 viable**",
+      "verified": true,
+      "verification_quote": "| `smysl`, the CLI (1.1, re-measured, default features) | 275 | **40.0%** |"
+    },
+    {
+      "decision": 4,
+      "text": "Reproduces survivor count of 110 by full sharded re-measurement.",
+      "quote": "Confirmed by re-measurement in 1.1: 110 survivors, 109 of them in `src/main.rs` and one in",
+      "verified": true,
+      "verification_quote": "Confirmed by re-measurement in 1.1: 110 survivors, 109 of them in `src/main.rs` and one in"
+    },
+    {
+      "decision": 4,
+      "text": "Confirms distribution unchanged: cmd_providers 12, cmd_fmt 12, cmd_merge 11, main 9.",
+      "quote": "The distribution is unchanged too: `cmd_providers` 12, `cmd_fmt` 12, `cmd_merge` 11, `main` 9,",
+      "verified": true,
+      "verification_quote": "The distribution is unchanged too: `cmd_providers` 12, `cmd_fmt` 12, `cmd_merge` 11, `main` 9,"
+    },
+    {
+      "decision": 5,
+      "text": "Leaves cmd_providers at 12 and cmd_merge at 11 survivors.",
+      "quote": "cmd_providers and cmd_merge are untouched at 12 and 11",
+      "verified": true,
+      "verification_quote": "cmd_providers and cmd_merge are untouched at 12 and 11"
+    }
+  ],
+  "tokens": [
+    [
+      3512,
+      6495
+    ],
+    [
+      3875,
+      9495
+    ],
+    [
+      3817,
+      5484
+    ],
+    [
+      3833,
+      18003
+    ]
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "decisions": [
+    {
+      "decision": "Replace test-written temp fixture with committed observations file.",
+      "kind": "act",
+      "rationale": "Two test binaries wrote the same temp path concurrently causing a race; a committed file cannot race and a reader can open it.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents:",
+      "hunks": [
+        "H3",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "decision": "Create observations as four synthetic instants with known shifts.",
+      "kind": "act",
+      "rationale": "So residuals are known in advance and can be checked by eye; three inside window and +41 outside demonstrates width property.",
+      "quote": "four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Add residuals command as worked example in manual.",
+      "kind": "act",
+      "rationale": "Fixture is a demonstrable example and generated into manual alongside rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "hunks": [
+        "H1",
+        "H6"
+      ]
+    },
+    {
+      "decision": "Add release note documenting flaky test and repair.",
+      "kind": "act",
+      "rationale": "Record that CI found flaky test and how it was fixed.",
+      "quote": "**CI found a flaky test the cut commit shipped, and I had not.**",
+      "hunks": [
+        "H2"
+      ]
+    },
+    {
+      "decision": "Keep 'no observations read' as error rather than agreement.",
+      "kind": "decline",
+      "rationale": "Comparing nothing should not be a report of agreement.",
+      "quote": "correctly, because \"no observations were read\" is an error rather than a report of agreement having compared nothing.",
+      "hunks": []
+    },
+    {
+      "decision": "Do not fit or extract quadratic trend (Ṗ) from residuals.",
+      "kind": "decline",
+      "rationale": "Least squares fitting needs to know which code produced the number, so it is not produced.",
+      "quote": "**This reports and does not fit.**",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Two test binaries previously wrote the same fixed-name temp path and ran concurrently",
+      "kind": "existing-behaviour",
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir()\nunder the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 1,
+      "text": "The committed observations file exists at Documentation/examples/observations.txt with synthetic observations",
+      "kind": "prior-change",
+      "quote": "four synthetic instants that are the predicted centres\nof four cycles moved by 0, +3, -7 and +41 seconds"
+    },
+    {
+      "decision": 1,
+      "text": "The residuals command accepts a file path argument to read observations",
+      "kind": "existing-behaviour",
+      "quote": "ucal::cmd_ephem_residuals(EPH, obs.to_str().unwrap(), 1).unwrap()"
+    },
+    {
+      "decision": 2,
+      "text": "The ephemeris file at Documentation/examples/ephemeris.hjson exists with predictable cycle centres",
+      "kind": "existing-behaviour",
+      "quote": "args: &[\"ephem\", \"residuals\", \"Documentation/examples/ephemeris.hjson\","
+    },
+    {
+      "decision": 2,
+      "text": "Residuals command uses window widths that grow with cycle so +41 outside demonstrates property",
+      "kind": "existing-behaviour",
+      "quote": "Three fall inside their own windows and the +41 does not, which is the property the width exists to carry."
+    },
+    {
+      "decision": 2,
+      "text": "Observations parser skips blank lines and lines starting with #",
+      "kind": "existing-behaviour",
+      "quote": "Blank lines and lines starting with `#` are skipped."
+    },
+    {
+      "decision": 3,
+      "text": "Manual examples are generated from xtask/src/examples.rs entries",
+      "kind": "tool-setting",
+      "quote": "is generated into the manual alongside the rest"
+    },
+    {
+      "decision": 3,
+      "text": "The committed observations file contains four synthetic instants and is valid",
+      "kind": "prior-change",
+      "quote": "four synthetic instants that are the predicted centres\nof four cycles moved by 0, +3, -7 and +41 seconds"
+    },
+    {
+      "decision": 4,
+      "text": "The flaky test occurred on the cut commit and was found by CI",
+      "kind": "existing-behaviour",
+      "quote": "The cut shipped a flaky test, and CI found it"
+    },
+    {
+      "decision": 4,
+      "text": "The repair uses a committed observations file",
+      "kind": "prior-change",
+      "quote": "The repair is that the observations are now a **committed** file,"
+    },
+    {
+      "decision": 5,
+      "text": "The residuals command currently returns error when no observations are read",
+      "kind": "existing-behaviour",
+      "quote": "\"no observations were read\" is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 6,
+      "text": "The residuals command reports residuals but does not fit a quadratic trend",
+      "kind": "existing-behaviour",
+      "quote": "**This reports and does not fit.** A quadratic trend in these residuals is `Ṗ`,\nand extracting it is least squares — which is where a reader most needs to know\nwhich code produced the number, so it is not produced here."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Write temp fixture into std::env::temp_dir() under fixed name.",
+      "reason": "Race condition: one test truncated the file while the other read it.",
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 2,
+      "alternative": "Have the test invent observations without known shifts.",
+      "reason": "Residuals would not be known in advance, so cannot be checked by eye.",
+      "quote": "rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye."
+    },
+    {
+      "decision": 3,
+      "alternative": "Not include residuals command in the manual as a worked example.",
+      "reason": "The fixture is a demonstrable example and should be generated into the manual.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": 4,
+      "alternative": "Do not add a release note documenting the flaky test.",
+      "reason": "Record that CI found flaky test and how it was fixed.",
+      "quote": "**CI found a flaky test the cut commit shipped, and I had not.**"
+    },
+    {
+      "decision": 5,
+      "alternative": "Treat no observations read as agreement (compare nothing).",
+      "reason": "Comparing nothing should not be a report of agreement.",
+      "quote": "\"no observations were read\" is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 6,
+      "alternative": "Fit or extract quadratic trend (Ṗ) from residuals.",
+      "reason": "Least squares fitting needs to know which code produced the number, so it is not produced.",
+      "quote": "**This reports and does not fit.** A quadratic trend in these residuals is `Ṗ`, and extracting it is least squares — which is where a reader most needs to know which code produced the number, so it is not produced here."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Committed fixture cannot race and a reader can open it.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Residuals are known in advance and can be checked by eye.",
+      "quote": "so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Three residuals inside own windows, +41 outside, demonstrating width property.",
+      "quote": "Three fall inside their own windows and the +41 does not, which is the property the width exists to carry.",
+      "verified": true,
+      "verification_quote": "outside_the_window  1"
+    },
+    {
+      "decision": 3,
+      "text": "Manual works count becomes 37 and includes the residuals example.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": true,
+      "verification_quote": "37 worked examples now"
+    },
+    {
+      "decision": 4,
+      "text": "Release note records CI found the flaky test and the repair.",
+      "quote": "CI found a flaky test the cut commit shipped, and I had not.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "No observations read remains an error, not a report of agreement.",
+      "quote": "Reading none at all is an error rather than a report of agreement having compared nothing.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Residuals command does not fit or extract quadratic trend (Ṗ).",
+      "quote": "This reports and does not fit.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      3617,
+      8417
+    ],
+    [
+      3781,
+      10681
+    ],
+    [
+      3723,
+      8350
+    ],
+    [
+      3739,
+      6456
+    ]
+  ]
+}

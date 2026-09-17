@@ -1,0 +1,406 @@
+{
+  "decisions": [
+    {
+      "decision": "Add `ucal cal from` as inverse of `cal show`",
+      "kind": "act",
+      "rationale": "Earth's legacy calendars had both directions since 0.1.0, but the fifteen derived calendars only went one way, contradicting §15.4's claim that Earth has no special code path.",
+      "quote": "The inverse of cal show, and the asymmetry it closes was real.",
+      "hunks": [
+        "H4",
+        "H5",
+        "H6",
+        "H7"
+      ]
+    },
+    {
+      "decision": "Return a Window from the inverse",
+      "kind": "act",
+      "rationale": "A local day is a span, and the anchor's uncertainty propagates, so the result must be an interval, not a point.",
+      "quote": "The answer is a Window and would be wrong not to be.",
+      "hunks": [
+        "H4",
+        "H5",
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "decision": "Parse the exact form `cal show` prints",
+      "kind": "act",
+      "rationale": "So the two commands read each other's output, making the round trip something a person runs.",
+      "quote": "It reads the form cal show prints, so the two commands read each other's output and the round trip is something a person runs.",
+      "hunks": [
+        "H5",
+        "H2",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Take window endpoints outward, never inward",
+      "kind": "act",
+      "rationale": "A local day boundary almost never lands on a tick boundary, and narrowing to fit would be narrowing by assumption.",
+      "quote": "Endpoints are taken outward, never inward: a local day boundary almost never lands on a tick boundary, and narrowing to fit would be narrowing by assumption.",
+      "hunks": [
+        "H4",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Do not use search to find the year",
+      "kind": "decline",
+      "rationale": "D-A21 fixed the placement, so the inverse evaluates it directly; the forward split_year corrects an estimate in a loop, but the inverse needs no estimate.",
+      "quote": "No search. D-A21 fixed the placement, so the inverse evaluates it rather than hunting for it — the forward split_year corrects an estimate in a loop and this needs no estimate.",
+      "hunks": [
+        "H4"
+      ]
+    },
+    {
+      "decision": "Refuse year 0",
+      "kind": "act",
+      "rationale": "Local years are 1-based from the anchor; year 1 is the year that began there, and there is no year 0.",
+      "quote": "local years are 1-based from the anchor: year 1 is the year that began at it, and there is no year 0",
+      "hunks": [
+        "H4",
+        "H2",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Refuse day 0",
+      "kind": "act",
+      "rationale": "Local days of the year are 1-based too.",
+      "quote": "local days of the year are 1-based",
+      "hunks": [
+        "H4",
+        "H2",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Refuse a day past the year's end, not roll it forward",
+      "kind": "act",
+      "rationale": "The length of a local year is set by the leap rule and varies between them, so a day beyond it is invalid.",
+      "quote": "refused, not rolled forward — the length of a local year is set by the leap rule and varies between them",
+      "hunks": [
+        "H4",
+        "H2",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Refuse a fraction of 1 or more",
+      "kind": "act",
+      "rationale": "A fraction through a day lies in [0, 1); 1 is the next day, not the end of this one.",
+      "quote": "a fraction *through* a day lies in `[0, 1)`; 1 is the next day",
+      "hunks": [
+        "H4",
+        "H2",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Refuse calendars with no anchor",
+      "kind": "act",
+      "rationale": "The same error as the forward direction, UCAL-E0062; thirteen of fifteen derived calendars are in this state.",
+      "quote": "a calendar with no anchor | `UCAL-E0062`, the same as the forward direction. Thirteen of fifteen are in this state (Rule J.3)",
+      "hunks": [
+        "H2",
+        "H8"
+      ]
+    },
+    {
+      "decision": "Add property test recovering every instant",
+      "kind": "act",
+      "rationale": "Verify strictness by shifting the inverse one day and watching it fail, ensuring the window contains the original instant.",
+      "quote": "The property is the point: for every anchored calendar and a spread of offsets, the window for fields(t) contains t. Verified strict by shifting the inverse one day and watching it fail.",
+      "hunks": [
+        "H8"
+      ]
+    },
+    {
+      "decision": "Assert consecutive local days leave no gap",
+      "kind": "act",
+      "rationale": "Ensures outward endpoints never create a gap no instant belongs to.",
+      "quote": "A test asserts consecutive local days leave no gap.",
+      "hunks": [
+        "H8"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`ucal_body::calendar::by_id` resolves a calendar id to a calendar object.",
+      "kind": "existing-behaviour",
+      "quote": "let cal = ucal_body::calendar::by_id(id)?;"
+    },
+    {
+      "decision": 1,
+      "text": "The CLI dispatch already has `CalCommand` enum and `pick` helper.",
+      "kind": "existing-behaviour",
+      "quote": "CalCommand::From { id, local } => { ucal::cmd_cal_from(id, pick(replacement, local)) }"
+    },
+    {
+      "decision": 2,
+      "text": "The codebase has a `Window` type with `new` and `widen` methods.",
+      "kind": "existing-behaviour",
+      "quote": "let (w, _clamped) = w.widen(&half)?;"
+    },
+    {
+      "decision": 2,
+      "text": "Anchor exposes `uncertainty`; `Delta::from_u64` and `divmod` exist.",
+      "kind": "existing-behaviour",
+      "quote": "self.anchor.uncertainty().divmod(&Delta::from_u64(2))?"
+    },
+    {
+      "decision": 3,
+      "text": "`cal show` prints dates in `YEAR-DAY` with optional fraction, zero-padded.",
+      "kind": "existing-behaviour",
+      "quote": "It accepts the form `cal show` prints — `82-83`, `0082-083`, or `0082-083.442043`"
+    },
+    {
+      "decision": 4,
+      "text": "`Ratio` supports `floor` and `ceil`; `Instant::from_ticks` takes integer ticks.",
+      "kind": "existing-behaviour",
+      "quote": "let hi = Instant::from_ticks(anchor.add(&hi_r)?.ceil())?;"
+    },
+    {
+      "decision": 5,
+      "text": "D-A21 already provides `days_before_year(y) = y × whole + floor(y × p / q)`.",
+      "kind": "prior-change",
+      "quote": "D-A21 fixed the placement — `days_before_year(y) = y × whole + floor(y × p / q)`"
+    },
+    {
+      "decision": 5,
+      "text": "`days_per_cycle()` and `leap_rule.chosen.value.denom()` exist on self.",
+      "kind": "existing-behaviour",
+      "quote": "let per_cycle = self.days_per_cycle()?;"
+    },
+    {
+      "decision": 6,
+      "text": "Local years are 1-based from anchor; year 1 is the year that began there.",
+      "kind": "invariant",
+      "quote": "| year 0 | local years are 1-based from the anchor; year 1 is the year that began there |"
+    },
+    {
+      "decision": 7,
+      "text": "Local days of the year are 1-based, matching forward rendering.",
+      "kind": "invariant",
+      "quote": "| day 0 | days of the local year are 1-based too |"
+    },
+    {
+      "decision": 8,
+      "text": "`days_before_year` is monotone; year length from consecutive starts.",
+      "kind": "existing-behaviour",
+      "quote": "// `days_before_year` is monotone, so the length of year `y` is the difference between consecutive starts."
+    },
+    {
+      "decision": 9,
+      "text": "`Ratio` provides `cmp_exact` and `Ratio::one` for exact comparison.",
+      "kind": "existing-behaviour",
+      "quote": "if f.cmp_exact(&Ratio::one()) != core::cmp::Ordering::Less {"
+    },
+    {
+      "decision": 10,
+      "text": "Forward direction already returns `UCAL-E0062` for unanchored calendars.",
+      "kind": "existing-behaviour",
+      "quote": "| a calendar with no anchor | `UCAL-E0062`, the same as the forward direction. Thirteen of fifteen are in this state (Rule J.3) |"
+    },
+    {
+      "decision": 11,
+      "text": "`registered()` lists calendars; `by_id` retrieves them for testing.",
+      "kind": "existing-behaviour",
+      "quote": "for (id, _, _) in ucal_body::calendar::registered() {"
+    },
+    {
+      "decision": 11,
+      "text": "`cal.fields(&t)` returns local year/day for an instant.",
+      "kind": "existing-behaviour",
+      "quote": "let f = cal.fields(&t).expect(\"fields\");"
+    },
+    {
+      "decision": 12,
+      "text": "`earth-d` is an anchored calendar retrievable by id.",
+      "kind": "existing-behaviour",
+      "quote": "let cal = ucal_body::calendar::by_id(\"earth-d\").expect(\"earth-d is anchored\");"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Leave derived calendars one-way, with only Earth's legacy calendars reversible.",
+      "reason": "It would contradict §15.4's claim that Earth has no special code path and no compile-time distinction.",
+      "quote": "Earth's entry has no special code path and no compile-time distinction from Mars's"
+    },
+    {
+      "decision": 2,
+      "alternative": "Return an exact instant rather than a Window.",
+      "reason": "A local day is a span and the anchor's uncertainty propagates, so the answer must be an interval.",
+      "quote": "The answer is a Window and would be wrong not to be."
+    },
+    {
+      "decision": 3,
+      "alternative": "Define a separate input syntax instead of reading cal show's exact form.",
+      "reason": "The two commands must read each other's output so the round trip is something a person runs, not only a test.",
+      "quote": "It reads the form cal show prints, so the two commands read each other's output and the round trip is something a person runs."
+    },
+    {
+      "decision": 4,
+      "alternative": "Round window endpoints inward to the nearest tick boundaries.",
+      "reason": "Narrowing to fit would be narrowing by assumption, which GE-3 forbids.",
+      "quote": "narrowing to fit would be narrowing by assumption"
+    },
+    {
+      "decision": 5,
+      "alternative": "Use a search loop to find the year, like the forward split_year.",
+      "reason": "D-A21 fixed the placement, so the inverse evaluates it directly and needs no estimate.",
+      "quote": "No search. D-A21 fixed the placement, so the inverse evaluates it rather than hunting for it"
+    },
+    {
+      "decision": 6,
+      "alternative": "Accept year 0 as the year before the anchor's year 1.",
+      "reason": "Local years are 1-based from the anchor, and year 1 is the year that began there.",
+      "quote": "local years are 1-based from the anchor: year 1 is the year that began at it, and there is no year 0"
+    },
+    {
+      "decision": 7,
+      "alternative": "Accept day 0 as the day before the first day of the local year.",
+      "reason": "Local days of the year are 1-based too.",
+      "quote": "local days of the year are 1-based"
+    },
+    {
+      "decision": 8,
+      "alternative": "Roll a day past the year's end forward into the next year.",
+      "reason": "The length of a local year is set by the leap rule and varies between them, so such a day is invalid.",
+      "quote": "A day that does not exist in that year is refused rather than rolled into the next one."
+    },
+    {
+      "decision": 9,
+      "alternative": "Treat fraction 1 as the end of the current day.",
+      "reason": "A fraction through a day lies in [0, 1), and 1 is the next day rather than the end of this one.",
+      "quote": "a fraction *through* a day lies in `[0, 1)`, and 1 is the next day rather than the end of this one"
+    },
+    {
+      "decision": 10,
+      "alternative": "Allow the inverse for calendars with no anchor.",
+      "reason": "The same error as the forward direction, UCAL-E0062, applies; thirteen of fifteen derived calendars are in this state.",
+      "quote": "`UCAL-E0062`, the same as the forward direction. Thirteen of fifteen are in this state (Rule J.3)"
+    },
+    {
+      "decision": 11,
+      "alternative": "Only test that the inverse returns a window, without verifying it fails when wrong.",
+      "reason": "Strictness is verified by shifting the inverse one day and watching it fail, ensuring the window contains the original instant.",
+      "quote": "Verified strict by shifting the inverse one day and watching it fail."
+    },
+    {
+      "decision": 12,
+      "alternative": "Allow a gap between consecutive local days.",
+      "reason": "Outward endpoints must never create a gap no instant belongs to.",
+      "quote": "A test asserts consecutive local days leave no gap."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The fifteen derived calendars now have an inverse, closing the asymmetry with Earth's legacy calendars.",
+      "quote": "The inverse of cal show, and the asymmetry it closes was real.",
+      "verified": true,
+      "verification_quote": "assert!(checked >= 20, \"only {checked} instants were checked\");"
+    },
+    {
+      "decision": 2,
+      "text": "The inverse returns a Window, an interval, not a point.",
+      "quote": "The answer is a Window and would be wrong not to be.",
+      "verified": true,
+      "verification_quote": "assert!(!moment.width().ticks().is_zero_ticks(), \"the anchor's uncertainty vanished\");"
+    },
+    {
+      "decision": 3,
+      "text": "The command accepts the exact format cal show prints, enabling manual round trips.",
+      "quote": "the round trip is something a person runs",
+      "verified": true,
+      "verification_quote": "ucal::cmd_cal_from(\"mars-d\", local).unwrap_or_else(|e| panic!(\"`{local}` was refused: {e}\"))"
+    },
+    {
+      "decision": 4,
+      "text": "Endpoints are taken outward, never inward, so the window contains the interval.",
+      "quote": "The endpoints are taken outward, never inward: a local day boundary almost never lands on a tick boundary, and narrowing to fit would be narrowing by assumption.",
+      "verified": true,
+      "verification_quote": "assert!(b.lo().ticks() <= a.hi().ticks(), \"consecutive local days left a gap no instant belongs to\");"
+    },
+    {
+      "decision": 5,
+      "text": "The inverse evaluates directly without iterative search.",
+      "quote": "No search. D-A21 fixed the placement, so the inverse evaluates it rather than hunting for it — the forward split_year corrects an estimate in a loop and this needs no estimate.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Year 0 is refused with error E0020.",
+      "quote": "year 0 | local years are 1-based from the anchor; year 1 is the year that began there",
+      "verified": true,
+      "verification_quote": "assert_eq!(cal.instant_of(0, 1, None).expect_err(\"no year 0\").code, ucal_core::Code::E0020);"
+    },
+    {
+      "decision": 7,
+      "text": "Day 0 is refused with error E0018.",
+      "quote": "day 0 | days of the local year are 1-based too",
+      "verified": true,
+      "verification_quote": "assert_eq!(cal.instant_of(1, 0, None).expect_err(\"no day 0\").code, ucal_core::Code::E0018);"
+    },
+    {
+      "decision": 8,
+      "text": "Days beyond the year's end are refused, not rolled forward.",
+      "quote": "a day past the year's end | refused, not rolled forward — the length of a local year is set by the leap rule and varies between them",
+      "verified": true,
+      "verification_quote": "assert_eq!(cal.instant_of(1, 9_999, None).expect_err(\"no such day\").code, ucal_core::Code::E0018);"
+    },
+    {
+      "decision": 9,
+      "text": "Fractions of 1 or more are refused.",
+      "quote": "a fraction of 1 or more | a fraction *through* a day lies in `[0, 1)`; 1 is the next day",
+      "verified": true,
+      "verification_quote": "assert_eq!(cal.instant_of(1, 1, Some(&ucal_core::num::Ratio::one())).expect_err(\"1 is not inside the day\").code, ucal_core::Code::E0018);"
+    },
+    {
+      "decision": 10,
+      "text": "Unanchored calendars refuse with UCAL-E0062.",
+      "quote": "a calendar with no anchor | `UCAL-E0062`, the same as the forward direction. Thirteen of fifteen are in this state (Rule J.3)",
+      "verified": true,
+      "verification_quote": "assert!(ucal::cmd_cal_from(\"titan-d\", \"1-1\").is_err());"
+    },
+    {
+      "decision": 11,
+      "text": "Property test ensures inverse window contains the original instant for every anchored calendar.",
+      "quote": "The property is the point: for every anchored calendar and a spread of offsets, the window for fields(t) contains t.",
+      "verified": true,
+      "verification_quote": "assert!(w.lo().ticks() <= t.ticks() && t.ticks() <= w.hi().ticks(), \"{id}: +{offset} local days is year {} day {}, and the inverse window does not contain the instant it came from\", f.year, f.day);"
+    },
+    {
+      "decision": 12,
+      "text": "Consecutive local days leave no gap.",
+      "quote": "A test asserts consecutive local days leave no gap.",
+      "verified": true,
+      "verification_quote": "assert!(b.lo().ticks() <= a.hi().ticks(), \"consecutive local days left a gap no instant belongs to\");"
+    }
+  ],
+  "tokens": [
+    [
+      10129,
+      8918
+    ],
+    [
+      10545,
+      11749
+    ],
+    [
+      10487,
+      6773
+    ],
+    [
+      10503,
+      10656
+    ]
+  ]
+}

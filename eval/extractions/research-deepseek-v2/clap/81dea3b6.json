@@ -1,0 +1,95 @@
+{
+  "decisions": [
+    {
+      "decision": "Use longer explicit lifetime 's for ParsedArg methods to return references tied to the original data.",
+      "kind": "act",
+      "rationale": "The commit is a fix; the new lifetime allows zero-copy parsing where returned references outlive the immediate borrow.",
+      "quote": "fix: Use longer lifetime in clap_lex ParsedArg",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6"
+      ]
+    },
+    {
+      "decision": "Add a zero-copy parsing regression test.",
+      "kind": "act",
+      "rationale": "To verify that the longer lifetimes enable zero-copy parsing and to prevent regressions.",
+      "quote": "fn zero_copy_parsing() {",
+      "hunks": [
+        "H7"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "ParsedArg contains an inner reference field with lifetime 's, so methods can return references tied to it.",
+      "kind": "existing-behaviour",
+      "quote": "        let raw = self.inner;"
+    },
+    {
+      "decision": 1,
+      "text": "RawArgs owns its items, so references obtained from self.items remain valid for the lifetime of &self.",
+      "kind": "existing-behaviour",
+      "quote": "        let next = self.items.get(cursor.cursor).map(|s| s.as_os_str());"
+    },
+    {
+      "decision": 2,
+      "text": "The lifetime changes from decision 1 are applied, so to_value_os returns &'s OsStr tied to the data, not the method borrow.",
+      "kind": "prior-change",
+      "quote": "    pub fn to_value_os(&self) -> &'s OsStr {"
+    },
+    {
+      "decision": 2,
+      "text": "RawArgs::new accepts an array of string literals and stores them as owned OsStrings, enabling stable references.",
+      "kind": "existing-behaviour",
+      "quote": "    let raw1 = RawArgs::new([\"bin\", \"--verbose\", \"a\", \"b\", \"c\"]);"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the returned lifetimes inferred from `&self` instead of the explicit `'s` parameter.",
+      "reason": "It prevented zero-copy parsing because references could not outlive the temporary borrow.",
+      "quote": "    pub fn next(&self, cursor: &mut ArgCursor) -> Option<ParsedArg<'_>>"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Returned references are tied to the original data via explicit 's lifetime, enabling zero-copy parsing.",
+      "quote": "    pub fn next<'s>(&'s self, cursor: &mut ArgCursor) -> Option<ParsedArg<'s>> {",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The added zero-copy parsing regression test verifies that the longer lifetimes work.",
+      "quote": "fn zero_copy_parsing() {",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      2267,
+      5132
+    ],
+    [
+      2303,
+      8493
+    ],
+    [
+      2245,
+      2934
+    ],
+    [
+      2261,
+      6172
+    ]
+  ]
+}

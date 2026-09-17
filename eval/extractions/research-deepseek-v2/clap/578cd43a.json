@@ -1,0 +1,155 @@
+{
+  "decisions": [
+    {
+      "decision": "Stop reporting conflicting arguments in usage",
+      "kind": "act",
+      "rationale": "The author fixes issue #6236 by no longer including conflicting arguments in the usage error.",
+      "quote": "Don't report conflicting arguments in usage",
+      "hunks": [
+        "H1",
+        "H2",
+        "H4"
+      ]
+    },
+    {
+      "decision": "Deduplicate conflict IDs before converting them to argument names",
+      "kind": "act",
+      "rationale": "The author chose to deduplicate at the ID level using FlatSet instead of tracking seen strings during mapping.",
+      "quote": ".collect::<FlatSet<_>>()",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "decision": "Expose FlatSet inner vector via into_vec method",
+      "kind": "act",
+      "rationale": "The method is needed to obtain a Vec from FlatSet for subsequent mapping.",
+      "quote": "pub(crate) fn into_vec(self) -> Vec<T> {",
+      "hunks": [
+        "H3"
+      ]
+    },
+    {
+      "decision": "Update conflict usage test expectation to omit conflicting arguments",
+      "kind": "act",
+      "rationale": "The test expectation is updated to match the new output.",
+      "quote": "Usage: prog --conflict",
+      "hunks": [
+        "H4"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "build_conflict_err_usage generates usage from the conflict IDs passed to it.",
+      "kind": "existing-behaviour",
+      "quote": "        let usg = self.build_conflict_err_usage(matcher, &conflict_ids);"
+    },
+    {
+      "decision": 1,
+      "text": "conflict_ids has been deduplicated and converted into a Vec before use.",
+      "kind": "prior-change",
+      "quote": "            .into_vec();"
+    },
+    {
+      "decision": 2,
+      "text": "FlatSet's collect implementation deduplicates entries.",
+      "kind": "existing-behaviour",
+      "quote": "            .collect::<FlatSet<_>>()"
+    },
+    {
+      "decision": 2,
+      "text": "FlatSet exposes into_vec to obtain a Vec from the set.",
+      "kind": "prior-change",
+      "quote": "    pub(crate) fn into_vec(self) -> Vec<T> {"
+    },
+    {
+      "decision": 3,
+      "text": "FlatSet has a private inner field of type Vec<T>.",
+      "kind": "existing-behaviour",
+      "quote": "        self.inner"
+    },
+    {
+      "decision": 4,
+      "text": "The parser no longer reports conflicting arguments in usage.",
+      "kind": "prior-change",
+      "quote": "Don't report conflicting arguments in usage"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep reporting conflicting arguments in usage",
+      "reason": "The new behavior intentionally omits them, as shown by the updated test output.",
+      "quote": "Usage: prog --a --conflict"
+    },
+    {
+      "decision": 2,
+      "alternative": "Deduplicate conflict IDs inside the existing filter_map using a seen FlatSet",
+      "reason": "That approach did not make the deduplicated IDs available for usage reporting, so the code now collects them first.",
+      "quote": "        let mut seen = FlatSet::new();"
+    },
+    {
+      "decision": 3,
+      "alternative": "Use an iterator or existing collection method to obtain a Vec from FlatSet",
+      "reason": "A dedicated into_vec method avoids an extra allocation and gives direct access to the inner vector.",
+      "quote": "    pub(crate) fn into_vec(self) -> Vec<T> {"
+    },
+    {
+      "decision": 4,
+      "alternative": "Leave the test expectation as `Usage: prog --a --conflict`",
+      "reason": "The expectation must match the new usage output without conflicting arguments.",
+      "quote": "Usage: prog --a --conflict"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Fixes issue #6236 by no longer including conflicting arguments in usage error.",
+      "quote": "Fixes #6236",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Conflict IDs are deduplicated at ID level before mapping to argument names.",
+      "quote": ".collect::<FlatSet<_>>()",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "FlatSet can be converted into a Vec via into_vec for subsequent mapping.",
+      "quote": "pub(crate) fn into_vec(self) -> Vec<T> {",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Test expectation updated to omit conflicting argument --a from usage.",
+      "quote": "Usage: prog --conflict",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      1027,
+      5913
+    ],
+    [
+      1108,
+      8863
+    ],
+    [
+      1050,
+      9355
+    ],
+    [
+      1066,
+      4022
+    ]
+  ]
+}

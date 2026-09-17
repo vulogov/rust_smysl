@@ -1,0 +1,57 @@
+{
+  "decisions": [
+    {
+      "decision": "Skip group IDs when building conflicting subcommand list to avoid panic.",
+      "kind": "act",
+      "rationale": "The parser previously called `unwrap()` on `self.cmd.find(id)`, which returns `None` for group IDs, causing a panic. Filtering them out prevents the panic and still reports the conflict.",
+      "quote": "Don't panic when subcommands conflict with groups",
+      "hunks": [
+        "H1",
+        "H2"
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`self.cmd.find(id)` returns `None` for group IDs.",
+      "kind": "existing-behaviour",
+      "quote": "// skip groups"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Call `unwrap()` on `self.cmd.find(id)` to get the argument name.",
+      "reason": "It panics when `self.cmd.find(id)` returns `None` for group IDs.",
+      "quote": "self.cmd.find(id).unwrap().to_string()"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Filtering out group IDs prevents the unwrap panic while still reporting the conflict.",
+      "quote": "Don't panic when subcommands conflict with groups",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      707,
+      1819
+    ],
+    [
+      723,
+      8757
+    ],
+    [
+      665,
+      1354
+    ],
+    [
+      681,
+      927
+    ]
+  ]
+}

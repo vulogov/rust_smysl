@@ -1,0 +1,91 @@
+{
+  "decisions": [
+    {
+      "decision": "Move shell detection to Shells",
+      "kind": "act",
+      "rationale": "The author refactored to move shell detection logic from Env to Shells, centralizing the responsibility for finding a shell completer.",
+      "quote": "Move shell detection to Shells",
+      "hunks": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "decision": "Add tests for powershell variants",
+      "kind": "act",
+      "rationale": "The author added tests to cover powershell variants as part of this commit.",
+      "quote": "Also adds tests for powershell variants.",
+      "hunks": []
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The `Shells` type already has a `completer(&str)` method returning an optional `EnvCompleter`.",
+      "kind": "existing-behaviour",
+      "quote": "pub fn completer(&self, name: &str) -> Option<&dyn EnvCompleter> {"
+    },
+    {
+      "decision": 1,
+      "text": "The `Shells` type has a `names()` iterator used to list supported shell names.",
+      "kind": "existing-behaviour",
+      "quote": "pub fn names(&self) -> impl Iterator<Item = &'static str> + 's {"
+    },
+    {
+      "decision": 1,
+      "text": "The `Env` struct already contains a `shells` field of type `Shells`.",
+      "kind": "existing-behaviour",
+      "quote": "        let shell = self.shells.completer(&name).ok_or_else(|| {"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the shell method on Env instead of moving it to Shells.",
+      "reason": "It was rejected to centralize finding a shell completer in Shells.",
+      "quote": "fn shell(&self, name: &std::path::Path) -> Result<&dyn EnvCompleter, std::io::Error> {"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Shell detection logic moves into Shells::completer_for_path, centralizing path lookup.",
+      "quote": "Move shell detection to Shells",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Env no longer implements shell lookup; callers use Shells directly.",
+      "quote": "let shell = self.shells.completer_for_path(std::path::Path::new(&name))?;",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Tests cover powershell variants.",
+      "quote": "Also adds tests for powershell variants.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ],
+  "tokens": [
+    [
+      1344,
+      4497
+    ],
+    [
+      1366,
+      5117
+    ],
+    [
+      1308,
+      1701
+    ],
+    [
+      1324,
+      1764
+    ]
+  ]
+}
