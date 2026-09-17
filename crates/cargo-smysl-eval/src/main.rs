@@ -10,6 +10,7 @@ use cargo_smysl_eval::{
 use clap::{Parser, Subcommand};
 
 mod s3;
+mod s4;
 
 #[derive(Parser)]
 #[command(
@@ -40,6 +41,39 @@ enum Cmd {
     /// that are ancestors of the task base) and write a packed context per task and per question to
     /// eval/s3/context/.
     S3Context,
+    /// S4 detector (eval/s4-protocol.md): check each diff of a set against the corpus of its base's
+    /// ancestors, writing eval/s4/results/RUN/ID.json. Existing results are kept (resume).
+    S4Check(S4Args),
+}
+
+#[derive(clap::Args)]
+struct S4Args {
+    /// dev or heldout.
+    #[arg(long)]
+    set: String,
+    /// Results go to eval/s4/results/RUN.
+    #[arg(long)]
+    run: String,
+    /// Only these case ids.
+    #[arg(long)]
+    id: Vec<String>,
+    #[arg(long, default_value_t = 6)]
+    jobs: usize,
+    /// Steps 1, 2 and the fingerprint only: no model call (the determinism check).
+    #[arg(long)]
+    no_model: bool,
+    #[arg(long, default_value_t = 12)]
+    candidates: usize,
+    #[arg(long, default_value_t = 3000)]
+    budget: u64,
+    #[arg(long, default_value_t = 400)]
+    diff_lines: usize,
+    #[arg(long, default_value_t = 150)]
+    file_lines: usize,
+    #[arg(long, default_value_t = 80)]
+    query_terms: usize,
+    #[arg(long, default_value = "deepseek-v4-pro")]
+    model: String,
 }
 
 fn default_eval_dir() -> PathBuf {
@@ -54,6 +88,7 @@ fn main() -> ExitCode {
         Cmd::Score { system } => score_system(&cli.eval_dir, system),
         Cmd::Stage { system } => stage_system(&cli.eval_dir, system),
         Cmd::S3Context => s3_context(&cli.eval_dir),
+        Cmd::S4Check(args) => s4_check(&cli.eval_dir, args),
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,
@@ -527,6 +562,196 @@ fn s3_context(eval: &Path) -> Result<(), String> {
             p.used,
             corpus.commits.join(" ")
         );
+    }
+    Ok(())
+}
+
+#[derive(serde::Deserialize, Clone)]
+struct S4Case {
+    set: String,
+    id: String,
+    repo: String,
+    kind: String,
+    base: String,
+    source: String,
+    task: Option<u32>,
+    contradicting: Option<bool>,
+}
+
+fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
+    #[derive(serde::Deserialize)]
+    struct Sets {
+        case: Vec<S4Case>,
+    }
+    let sets: Sets = toml::from_str(&read(&eval.join("s4/sets.toml"))?)
+        .map_err(|e| format!("sets.toml: {e}"))?;
+    let cases: Vec<S4Case> = sets
+        .case
+        .into_iter()
+        .filter(|c| c.set == a.set && (a.id.is_empty() || a.id.contains(&c.id)))
+        .collect();
+    let params = s4::Params {
+        candidates: a.candidates,
+        budget: a.budget,
+        diff_lines: a.diff_lines,
+        file_lines: a.file_lines,
+        query_terms: a.query_terms,
+        model: a.model.clone(),
+    };
+    let reg = s3::read_registry(&eval.join("s3/tasks.toml"))?;
+    let set = commits(eval)?;
+    let out = eval.join("s4/results").join(&a.run);
+    std::fs::create_dir_all(&out).map_err(|e| e.to_string())?;
+    let head = git(&eval.join(".."), &["rev-parse", "HEAD"]).unwrap_or_default();
+    std::fs::write(
+        out.join("params.json"),
+        serde_json::to_string_pretty(&serde_json::json!({"params": params, "tool_commit": head.trim(), "set": a.set, "no_model": a.no_model}))
+            .unwrap(),
+    )
+    .map_err(|e| e.to_string())?;
+
+    // Extracted S0 commits per repository, and a corpus per distinct set of ancestors.
+    let mut dirs: BTreeMap<String, PathBuf> = BTreeMap::new();
+    let mut extracted: BTreeMap<String, Vec<(String, cargo_smysl_corpus::Extraction)>> =
+        BTreeMap::new();
+    for c in &set.commits {
+        let ex_path = extraction_path(eval, &reg.system, c);
+        if !ex_path.exists() {
+            continue;
+        }
+        let repo = set
+            .repos
+            .get(&c.repo)
+            .ok_or_else(|| format!("unknown repo {}", c.repo))?;
+        let dir = repo_dir(eval, &c.repo, &repo.url)?;
+        dirs.insert(c.repo.clone(), dir);
+        let ex = serde_json::from_str(&read(&ex_path)?)
+            .map_err(|e| format!("{}: {e}", ex_path.display()))?;
+        extracted
+            .entry(c.repo.clone())
+            .or_default()
+            .push((c.sha.clone(), ex));
+    }
+    let mut corpora: BTreeMap<(String, Vec<String>), s3::Corpus> = BTreeMap::new();
+    let mut key_of: BTreeMap<String, (String, Vec<String>)> = BTreeMap::new();
+    let mut texts: BTreeMap<String, String> = BTreeMap::new();
+    for c in &cases {
+        let dir = dirs
+            .get(&c.repo)
+            .ok_or_else(|| format!("no clone for {}", c.repo))?;
+        let text = if c.kind == "commit" {
+            git(
+                dir,
+                &[
+                    "show",
+                    "--format=",
+                    "--no-color",
+                    "--no-ext-diff",
+                    "-U3",
+                    &c.source,
+                ],
+            )?
+        } else {
+            let p = eval.join(&c.source);
+            if !p.exists() {
+                println!("{}: {} does not exist yet, skipped", c.id, c.source);
+                continue;
+            }
+            read(&p)?
+        };
+        let shas: Vec<String> = extracted
+            .get(&c.repo)
+            .into_iter()
+            .flatten()
+            .filter(|(sha, _)| git(dir, &["merge-base", "--is-ancestor", sha, &c.base]).is_ok())
+            .map(|(sha, _)| sha.clone())
+            .collect();
+        let key = (c.repo.clone(), shas);
+        if !corpora.contains_key(&key) {
+            let mut corpus = s3::Corpus::new();
+            for (sha, ex) in extracted.get(&c.repo).into_iter().flatten() {
+                if key.1.contains(sha) {
+                    corpus.add(sha, commit_batch(dir, sha, ex)?)?;
+                }
+            }
+            corpora.insert(key.clone(), corpus);
+        }
+        key_of.insert(c.id.clone(), key);
+        texts.insert(c.id.clone(), text);
+    }
+    println!(
+        "s4-check {}: {} case(s), {} corpus variant(s), results in {}",
+        a.set,
+        texts.len(),
+        corpora.len(),
+        out.display()
+    );
+
+    let queue = std::sync::Mutex::new(
+        cases
+            .iter()
+            .filter(|c| texts.contains_key(&c.id))
+            .collect::<Vec<_>>(),
+    );
+    let failures = std::sync::atomic::AtomicUsize::new(0);
+    std::thread::scope(|scope| {
+        for _ in 0..a.jobs.max(1) {
+            scope.spawn(|| loop {
+                let Some(c) = queue.lock().unwrap().pop() else { break };
+                let path = out.join(format!("{}.json", c.id));
+                if path.exists() && !a.no_model {
+                    continue;
+                }
+                let key = &key_of[&c.id];
+                let corpus = &corpora[key];
+                let diff = s4::parse_diff(&texts[&c.id], &params);
+                let ranked = s4::candidates(corpus, &diff, &params);
+                let ctx = s4::context(corpus, ranked, &params);
+                let mut result = serde_json::json!({
+                    "id": c.id, "set": c.set, "repo": c.repo, "kind": c.kind, "task": c.task,
+                    "contradicting": c.contradicting, "corpus_commits": key.1,
+                    "files": diff.files, "diff_lines_shown": diff.shown.lines().count(), "diff_truncated": diff.truncated,
+                    "candidates": ctx.as_ref().map(|x| &x.candidates),
+                    "pack_units": ctx.as_ref().map(|x| x.labels.len()), "pack_tokens": ctx.as_ref().map(|x| x.tokens),
+                    "pack_text": ctx.as_ref().map(|x| &x.text),
+                    "fingerprint": s4::fingerprint(ctx.as_ref(), &diff),
+                });
+                if !a.no_model {
+                    match &ctx {
+                        None => {
+                            result["findings"] = serde_json::json!([]);
+                            result["note"] = "no candidate: no model call".into();
+                        }
+                        Some(x) => match s4::judge(x, &diff, &params) {
+                            Ok((verdicts, usage)) => {
+                                let (findings, dropped) = s4::validate(corpus, x, &diff, &verdicts);
+                                result["verdicts"] = serde_json::to_value(&verdicts).unwrap();
+                                result["findings"] = serde_json::to_value(&findings).unwrap();
+                                result["dropped"] = serde_json::to_value(&dropped).unwrap();
+                                result["usage"] = serde_json::to_value(&usage).unwrap();
+                            }
+                            Err(e) => {
+                                eprintln!("{}: {e}", c.id);
+                                failures.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                                continue;
+                            }
+                        },
+                    }
+                }
+                let findings = result["findings"].as_array().map(|f| f.len());
+                std::fs::write(&path, serde_json::to_string_pretty(&result).unwrap() + "\n").unwrap();
+                println!(
+                    "{:<44} candidates {:>2}  findings {}",
+                    c.id,
+                    ctx.as_ref().map(|x| x.candidates.len()).unwrap_or(0),
+                    findings.map(|n| n.to_string()).unwrap_or_else(|| "-".into())
+                );
+            });
+        }
+    });
+    let failed = failures.into_inner();
+    if failed > 0 {
+        return Err(format!("{failed} case(s) failed; rerun to resume"));
     }
     Ok(())
 }

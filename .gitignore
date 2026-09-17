@@ -26,3 +26,4 @@ eval/.repos/
 # S3 work trees and target directories
 eval/.s3work/
 __pycache__/
+eval/.s4work/

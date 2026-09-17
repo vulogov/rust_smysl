@@ -95,7 +95,7 @@ impl Corpus {
             .collect()
     }
 
-    fn name(&self, uid: &Uid) -> String {
+    pub(crate) fn name(&self, uid: &Uid) -> String {
         self.labels
             .get(uid)
             .map(|l| l.as_str().to_string())
@@ -159,7 +159,7 @@ pub fn pack(corpus: &Corpus, query: &str, files: &[String], budget: u64) -> Resu
 
 /// Plain text for an agent: each selected unit with its kind, status, source commit, text at its packed
 /// level of detail, and its edges to other selected units.
-fn render(corpus: &Corpus, selection: &BTreeMap<Uid, Lod>) -> String {
+pub(crate) fn render(corpus: &Corpus, selection: &BTreeMap<Uid, Lod>) -> String {
     let selected: BTreeSet<&Uid> = selection.keys().collect();
     let mut edges: BTreeMap<Uid, Vec<String>> = BTreeMap::new();
     for r in corpus.store.relations() {
