@@ -1,7 +1,7 @@
 # rust_smysl — implementation plan (draft)
 
 **Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle
-and acceptance, S3 result, acceptance reframed, S4). Written from the research experiments in this
+and acceptance, S3 result, acceptance reframed, S4, pin to smysl 1.4.0). Written from the research experiments in this
 repository's history; every "settled" item below cites the experiment that settled it.
 
 > **Where the project stands (2026-09-17).**
@@ -36,7 +36,7 @@ prerequisite true on a model's say-so.
 
 | Dependency | Pin | Why |
 |---|---|---|
-| `smysl` | `1.3` (crates.io, published 2026-09-17) with `default-features = false, features = ["stage"]` | The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, `EdgeSet::premises`, `from_csv`, label bindings in staged records) first exists in 1.3; 1.2 does not have it. |
+| `smysl` | `1.4` (crates.io, published 2026-09-17) with `default-features = false, features = ["stage"]` | The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, `EdgeSet::premises`, `from_csv`, label bindings in staged records) first exists in 1.3. 1.4 adds record-level merge idempotence (R10), imported readings that check clean (R12), and the edge lifecycle (D15). |
 | `syn` | `3` (`full`, `visit`, `extra-traits`, `printing`), `proc-macro2` with `span-locations` | Parses both test workspaces with no errors in ~0.3 s |
 | `gix` | `0.87`, `default-features = false, features = ["sha1", "revision"]` | Commit message and changed-file text read in-process (`cargo-smysl-git`); no `git` binary |
 
@@ -44,15 +44,15 @@ prerequisite true on a model's say-so.
 git dependency would block `cargo publish` and `cargo install cargo-smysl`. Verified at `013cc20`
 (pre-release): no `smysl-provider`, `ureq`, `tokio` or `rustls` in the `stage` tree.
 
-**Next pin: smysl 1.4.0,** published once its tests are green. Acceptance from rust_smysl passed twice
-before publish (`docs/smysl-1.4.0-acceptance.md`):
-- R10 (merge idempotence) and R12 (imported readings check clean) pass their acceptance tests, which fail
-  on 1.3;
-- staging and S3 packs are identical to 1.3.
+**Pinned to smysl 1.4.0 on 2026-09-17,** the day it was published. Acceptance from rust_smysl passed
+twice before publish (`docs/smysl-1.4.0-acceptance.md`). On the published crate:
+- the workspace tests pass with nothing ignored, including the R10 and R12 acceptance tests and the merge
+  guarantee that was ignored under 1.3;
+- clippy is clean, the workspace builds on Rust 1.86, and the dependency tree stays model-free;
+- S3 packs regenerate byte-identically.
 
 1.4.0 brings the edge lifecycle this plan uses from Phase 3 on (D15): relation identity, withdrawal
 (record 11, `@withdraw`), attestations on edges, live rebuttals, and resolution (record 12, `@resolve`).
-When it is on crates.io: move the pin, un-ignore `tests/acceptance_1_4.rs` and the R10 guarantee test.
 
 **Distribution:** `cargo-smysl` is an external cargo subcommand. It installs with
 `cargo install cargo-smysl`, runs as `cargo smysl …`, and is self-contained: smysl and syn are linked
@@ -119,6 +119,8 @@ information for design.
 4. S2 and S0: after S4, as tuning instruments.
 
 ### Feasibility — can smysl track a Rust codebase? (met)
+
+Checked on smysl 1.3.0, and again on 1.4.0 after the pin.
 
 | Needed | Evidence |
 |---|---|

@@ -52,7 +52,12 @@ own `crates/smysl-graph/tests/merge_idempotence.rs`, not repeated here.
 
 `ingest.path: 42`, reported in run 1 as "`ingest.path` is ``", now reads "`ingest.path` is an integer".
 
-## When 1.4.0 is on crates.io
+## After publish (2026-09-17): pinned
+
+smysl 1.4.0 was published the same day, and rust_smysl is pinned to it. The steps below were done;
+the workspace passes on the published crate with nothing ignored.
+
+### Steps
 
 1. Set the workspace dependency to `smysl = { version = "1.4", … }` and update `Cargo.lock`.
 2. Remove the `#[ignore]` from `tests/guarantees.rs` and `tests/acceptance_1_4.rs`.

@@ -22,7 +22,7 @@ cargo-smysl-git      = { path = "crates/cargo-smysl-git",      version = "0.1.0"
 # smysl is a library dependency, never the smysl CLI. The model-free `stage` feature is the whole
 # route this tool needs: unit staging, quote checks, label resolution, dependents, CSV import.
 # Pinned to the latest published release; 1.2 and earlier lack `stage`.
-smysl = { version = "1.3", default-features = false, features = ["stage"] }
+smysl = { version = "1.4", default-features = false, features = ["stage"] }
 
 syn            = { version = "3", features = ["full", "visit", "extra-traits", "printing", "parsing"] }
 proc-macro2    = { version = "1", features = ["span-locations"] }

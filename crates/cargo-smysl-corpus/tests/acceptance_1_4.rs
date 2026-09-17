@@ -1,5 +1,5 @@
 //! smysl 1.4.0 acceptance for requests R10 and R12 (docs/smysl-requests-1.4.md), on real staged batches and
-//! test-result rows. Passed against dev/1.4.0 (docs/smysl-1.4.0-acceptance.md). Ignored while the pin is 1.3.
+//! test-result rows. Accepted against dev/1.4.0 before publish (docs/smysl-1.4.0-acceptance.md); held against the pin since.
 
 use std::path::Path;
 
@@ -27,7 +27,6 @@ fn staged_store(sha: &str) -> Store {
 }
 
 #[test]
-#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
 fn r10_repeated_self_merge_appends_nothing() {
     let a = staged_store("90ec2f7");
     let n = a.iter().count();
@@ -56,7 +55,6 @@ fn r10_repeated_self_merge_appends_nothing() {
 }
 
 #[test]
-#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
 fn r10_two_commits_merged_both_ways_then_again_are_stable() {
     let a = staged_store("90ec2f7");
     let b = staged_store("532e4d2");
@@ -74,7 +72,6 @@ fn r10_two_commits_merged_both_ways_then_again_are_stable() {
 }
 
 #[test]
-#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
 fn r10_a_label_bound_to_a_different_uid_is_still_appended() {
     let a = staged_store("90ec2f7");
     let (label, other) = {
@@ -106,7 +103,6 @@ fn r10_a_label_bound_to_a_different_uid_is_still_appended() {
 }
 
 #[test]
-#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
 fn r10_a_store_opened_from_a_file_merged_with_its_own_contents_appends_nothing() {
     let a = staged_store("532e4d2");
     let records: Vec<Record> = a.iter().cloned().collect();
@@ -125,7 +121,6 @@ fn r10_a_store_opened_from_a_file_merged_with_its_own_contents_appends_nothing()
 
 /// R12: test evidence imported with `from_csv` must check clean, with every cell kept.
 #[test]
-#[ignore = "needs smysl 1.4.0; un-ignore with the pin"]
 fn r12_an_imported_reading_with_a_long_key_checks_clean_and_keeps_every_cell() {
     use smysl::{check, from_csv, AgentId, CheckOptions, Hlc, ImportOptions, Severity};
     let long_test = format!("tests::a_very_long_test_name_{}", "x".repeat(72));
