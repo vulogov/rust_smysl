@@ -214,7 +214,10 @@ alternatives (options the project decided against). For each label listed under 
 rejected alternative is what the change does;\n\
 - consistent: the change bears on the unit and keeps it true;\n\
 - unrelated: the change does not bear on it.\n\
-Judge what the change does, not what its comments or changelog say about it. Return verdicts only for \
+Judge what the change does, not what its comments or changelog say about it. Two kinds of unit describe \
+one past commit rather than a lasting rule, and later work moving on from them is not a contradiction: \
+a statement of the repository's state at that time (a version number, a changelog section, a count), and a \
+decision about that commit's own scope (leaving other sites unchanged, deferring something). Return verdicts only for \
 units that are contradicted or consistent; leave unrelated units out. For each verdict give the label \
 exactly as written, one line copied verbatim from the diff (without its leading + or -) that shows it, and \
 one sentence of reason.\n\

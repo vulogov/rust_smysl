@@ -1,0 +1,178 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 127.53315734863281
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-1-1",
+      "score": 112.5955581665039
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-1-3",
+      "score": 94.88047790527344
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-2",
+      "score": 82.74574279785156
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-1",
+      "score": 75.97447204589844
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-3",
+      "score": 69.56144714355469
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-3-1",
+      "score": 58.4990119934082
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-1",
+      "score": 54.206993103027344
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-2-1",
+      "score": 48.4255485534668
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-2",
+      "score": 46.44961929321289
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-3",
+      "score": 36.548828125
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-3-2",
+      "score": 35.43296432495117
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 268,
+  "diff_truncated": false,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "deleted file mode 100644",
+        "label": "p/gcc3aafefb1da-1-2",
+        "reason": "The committed observations file no longer exists at Documentation/examples/observations.txt; it is deleted and generated instead.",
+        "verdict": "contradicts"
+      },
+      "why": "quote is not a line of the diff"
+    }
+  ],
+  "files": [
+    ".gitignore",
+    "Documentation/examples/observations.txt",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "let obs = observations::write();",
+      "kind": "decision",
+      "label": "d/gcc3aafefb1da-1",
+      "reason": "The test no longer reads a committed fixture; it writes its own temp file, reversing the decision.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "Replace test-written temp fixture with committed observations file.\nTwo test binaries wrote the same temp path concurrently causing a race; a committed file cannot race and a reader can open it."
+    },
+    {
+      "diff_line": "Documentation/examples/observations.txt",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-4-2",
+      "reason": "The fixture is now listed in .gitignore, so it is generated and not committed, contradicting the prerequisite that the repair uses a committed file.",
+      "source": "Documentation/Release_Notes/1.12.0.md@cc3aafefb1da",
+      "text": "The repair uses a committed observations file"
+    },
+    {
+      "diff_line": "std::fs::write(&path, FIXTURE).expect(\"write observations fixture\");",
+      "kind": "decision",
+      "label": "d/gcc3aafefb1da-4",
+      "reason": "The release note documented the repair as using a committed observations file; this change replaces that repair with unique temp files, so the documented how-to-fix is stale/inaccurate.",
+      "source": "Documentation/Release_Notes/1.12.0.md@cc3aafefb1da",
+      "text": "Add release note documenting flaky test and repair.\nRecord that CI found flaky test and how it was fixed."
+    }
+  ],
+  "fingerprint": "8b8d315d03fbe4b09886f3f56f5131ded28236724e1fec2906b2fba6c0b08e77",
+  "id": "run1-task-11-control",
+  "kind": "agent",
+  "pack_text": "[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Route all time readings through a process-wide session clock.\n  -> causes q/g2074788f713e-1-1\n\n[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ignore poison on the session mutex and take the inner value.\n  -> causes q/g2074788f713e-11-1\n\n[d/g2074788f713e-2] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.\n  -> causes q/g2074788f713e-2-1\n  -> causes q/g2074788f713e-2-2\n\n[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Make Session::reading a pure function of its inputs.\n  Pure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence.\n  -> causes q/g2074788f713e-4-1\n\n[d/g2074788f713e-5] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Track the last reading to enforce monotonicity against smaller elapsed inputs.\n  -> causes q/g2074788f713e-5-1\n\n[d/g2074788f713e-6] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Store session state as Option and anchor lazily inside session_now, avoiding .expect.\n  -> causes q/g2074788f713e-6-1\n\n[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Split wall_instant out of now_instant to expose a raw system clock reading.\n  -> causes q/g2074788f713e-7-1\n\n[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)\n  Document the session clock and its rule in CLI.md and release notes.\n  Record one process, one clock and the max rule for users.\n  -> causes q/g2074788f713e-9-1\n\n[d/g21665b3aac9b-1] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Set RUSTFLAGS=-D warnings in features.yml workflow\n  -> causes q/g21665b3aac9b-1-1\n\n[d/g21665b3aac9b-2] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Fix the six items with cfg attributes rather than warning suppressions\n  The author chose attributes over suppressions for the six items.\n  -> causes q/g21665b3aac9b-2-1\n\n[d/g21665b3aac9b-3] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate RatInterval import behind feature cosmo\n  RatInterval is only parse_redshift's return type and nothing else's, so it arrives with cosmo or not at all.\n  -> causes q/g21665b3aac9b-3-1\n\n[d/g21665b3aac9b-4] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate qualified::Kind import behind feature civil\n  It is read once, by to-civil.\n  -> causes q/g21665b3aac9b-4-1\n\n[d/g21665b3aac9b-5] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate Rounding import behind feature civil\n  Rounding is to-civil's default when --round is absent.\n  -> causes q/g21665b3aac9b-5-1\n\n[d/g21665b3aac9b-6] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate parse_form and codec::Form behind all(civil, std)\n  They belong to run_now, which needs both civil and std features.\n  -> causes q/g21665b3aac9b-6-1\n\n[d/g21665b3aac9b-7] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate years_quantity behind any(events, cosmo)\n  -> causes q/g21665b3aac9b-7-1\n\n[d/g21665b3aac9b-8] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Do not exclude the refused job from -D warnings\n\n[d/g21665b3aac9b-9] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Split sign-release error message into two messages based on gh auth status\n  -> causes q/g21665b3aac9b-9-1\n\n[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add a clock section to doctor and now output.\n  The precision field invited an accuracy claim; a clock section states what a reading can actually fill.\n  -> causes q/g31e52cc10b1f-1-1\n\n[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add doctor --clock flag to sample and report machine resolution.\n  -> causes q/g31e52cc10b1f-2-1\n\n[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep precision field name and value unchanged.\n  It is a path in ucal-json/1; repurposing one is breaking.\n  -> causes q/g31e52cc10b1f-3-1\n\n[d/g31e52cc10b1f-4] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Do not measure accuracy.\n\n[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep granularity, resolution, and accuracy as separate numbers.\n  Conflating them is the defect; separation makes clear what each number represents.\n  -> causes q/g31e52cc10b1f-5-1\n\n[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Report which error terms cancel in a difference.\n  Knowing which terms cancel helps interpret differences; constant offset cancels, rate error does not.\n  -> causes q/g31e52cc10b1f-6-1\n\n[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)\n  Add note that precision is tier rendered to, not accuracy.\n  The same field name means something else in explain; clarify meaning to prevent conflation.\n  -> causes q/g31e52cc10b1f-8-1\n\n[d/g449b762e3cca-1] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Add `ucal cal from` as inverse of `cal show`\n\n[d/g449b762e3cca-10] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse calendars with no anchor\n  -> causes q/g449b762e3cca-10-1\n\n[d/g449b762e3cca-11] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Add property test recovering every instant\n  Verify strictness by shifting the inverse one day and watching it fail, ensuring the window contains the original instant.\n  -> causes q/g449b762e3cca-11-1\n\n[d/g449b762e3cca-12] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Assert consecutive local days leave no gap\n  Ensures outward endpoints never create a gap no instant belongs to.\n  -> causes q/g449b762e3cca-12-1\n\n[d/g449b762e3cca-2] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Return a Window from the inverse\n  A local day is a span, and the anchor's uncertainty propagates, so the result must be an interval, not a point.\n  -> causes q/g449b762e3cca-2-1\n\n[d/g449b762e3cca-3] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Parse the exact form `cal show` prints\n  So the two commands read each other's output, making the round trip something a person runs.\n  -> causes q/g449b762e3cca-3-1\n\n[d/g449b762e3cca-4] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Take window endpoints outward, never inward\n  A local day boundary almost never lands on a tick boundary, and narrowing to fit would be narrowing by assumption.\n  -> causes q/g449b762e3cca-4-1\n\n[d/g449b762e3cca-5] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Do not use search to find the year\n  -> causes q/g449b762e3cca-5-1\n\n[d/g449b762e3cca-6] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse year 0\n  Local years are 1-based from the anchor; year 1 is the year that began there, and there is no year 0.\n  -> causes q/g449b762e3cca-6-1\n\n[d/g449b762e3cca-7] decision (cited, source crates/ucal-body/src/calendar.rs@449b762e3cca)\n  Refuse day 0\n  Local days of the year are 1-based too.\n  -> causes q/g449b762e3cca-7-1\n\n[d/g449b762e3cca-8] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a day past the year's end, not roll it forward\n  The length of a local year is set by the leap rule and varies between them, so a day beyond it is invalid.\n  -> causes q/g449b762e3cca-8-1\n\n[d/g449b762e3cca-9] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a fraction of 1 or more\n  A fraction through a day lies in [0, 1); 1 is the next day, not the end of this one.\n  -> causes q/g449b762e3cca-9-1\n\n[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Read notes for version being built rather than newest sorted file\n  -> causes q/g5880e472260e-1-1\n\n[d/g5880e472260e-3] decision (cited, source xtask/src/citations.rs@5880e472260e)\n  Replace old version-sort tests with current-version and missing-notes tests\n  Old tests checked that sorting by version picks 1.10.0 and that stray files sort first. New tests assert the current version's notes file exists and that a missing file is refused.\n  -> causes q/g5880e472260e-3-1\n\n[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Restore doc comment for check_ci_covers_the_procedure\n  -> causes q/g5880e472260e-5-1\n\n[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Update release notes with the fix rationale and sweep findings\n  Record the change, why it is not a better sort, the missing-notes behavior, and the version-ordering sweep result for 1.10.0.\n  -> causes q/g5880e472260e-6-1\n\n[d/g5880e472260e-7] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Leave other version-ordering sites unchanged\n\n[d/g8fdb9b3edb7c-1] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Replace interpolated event id with literal in event error message.\n\n[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Accept broken pipe as non-fatal when writing test stdin.\n  The child can exit while the harness writes because `between - -` refuses before reading stdin; the behavior is correct and the assertions on status and output survive the error.\n  -> causes q/g8fdb9b3edb7c-2-2\n  -> causes q/g8fdb9b3edb7c-2-1\n\n[d/gcc3aafefb1da-1] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Replace test-written temp fixture with committed observations file.\n  Two test binaries wrote the same temp path concurrently causing a race; a committed file cannot race and a reader can open it.\n  -> causes q/gcc3aafefb1da-1-1\n\n[d/gcc3aafefb1da-2] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Create observations as four synthetic instants with known shifts.\n  So residuals are known in advance and can be checked by eye; three inside window and +41 outside demonstrates width property.\n  -> causes q/gcc3aafefb1da-2-2\n  -> causes q/gcc3aafefb1da-2-1\n\n[d/gcc3aafefb1da-4] decision (cited, source Documentation/Release_Notes/1.12.0.md@cc3aafefb1da)\n  Add release note documenting flaky test and repair.\n  Record that CI found flaky test and how it was fixed.\n  -> causes q/gcc3aafefb1da-4-1\n\n[d/gcc3aafefb1da-5] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Keep 'no observations read' as error rather than agreement.\n  Comparing nothing should not be a report of agreement.\n  -> causes q/gcc3aafefb1da-5-1\n\n[d/gcc3aafefb1da-6] decision (cited, source Documentation/CLI-EXAMPLES.md@cc3aafefb1da)\n  Do not fit or extract quadratic trend (Ṗ) from residuals.\n  Least squares fitting needs to know which code produced the number, so it is not produced.\n  -> causes q/gcc3aafefb1da-6-1\n\n[e/g31e52cc10b1f-7-1] evidence (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Check: the lint caught the first draft using one\n\n[e/g5880e472260e-2-1] evidence (cited, source xtask/src/citations.rs@5880e472260e)\n  Check: e.iter().any(|m| m.contains(\"9.9.9\"))\n\n[e/gcc3aafefb1da-2-2] evidence (cited, source Documentation/CLI-EXAMPLES.md@cc3aafefb1da)\n  Check: outside_the_window 1 …\n  Check: outside_the_window  1\n  -> backs q/gcc3aafefb1da-2-2\n\n[e/gcc3aafefb1da-3-1] evidence (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Check: 37 worked examples now\n  -> backs q/gcc3aafefb1da-3-1\n\n[p/g2074788f713e-6-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  The `no-panic-in-cli` lint refused an `.expect`.\n  -> conditions d/g2074788f713e-6\n\n[p/g2074788f713e-9-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Session clock with `max` rule exists to document.\n  -> conditions d/g2074788f713e-9\n\n[p/g31e52cc10b1f-3-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  The precision field is a path in ucal-json/1.\n  -> conditions d/g31e52cc10b1f-3\n\n[p/g31e52cc10b1f-3-2] constraint (cited, source fixtures/ucal-json-1.schema.json@31e52cc10b1f)\n  ucal-json/1 promises existing fields never change name, shape or meaning.\n  -> conditions d/g31e52cc10b1f-3\n\n[p/g31e52cc10b1f-5-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Granularity is structural and fills T-2.\n  -> conditions d/g31e52cc10b1f-5\n\n[p/g31e52cc10b1f-6-2] constraint (cited, source Documentation/Release_Notes/1.9.0.md@31e52cc10b1f)\n  ucal datum already states the frame term cancels.\n  -> conditions d/g31e52cc10b1f-6\n\n[p/g31e52cc10b1f-7-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Rule E forbids a float in a shipped crate.\n\n[p/g31e52cc10b1f-8-1] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)\n  `--precision` is documented as tier to render to.\n  -> conditions d/g31e52cc10b1f-8\n\n[p/g449b762e3cca-12-1] constraint (cited, source crates/ucal/tests/cal_from.rs@449b762e3cca)\n  `earth-d` is an anchored calendar retrievable by id.\n  -> conditions d/g449b762e3cca-12\n\n[p/g8fdb9b3edb7c-1-2] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Features workflow builds `events` without `body`.\n  -> conditions d/g8fdb9b3edb7c-1\n\n[p/g8fdb9b3edb7c-3-1] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  `between - -` is refused before stdin is read.\n\n[p/gcc3aafefb1da-1-1] constraint (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Two test binaries previously wrote the same fixed-name temp path and ran concurrently\n  -> conditions d/gcc3aafefb1da-1\n\n[p/gcc3aafefb1da-1-2] constraint (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  The committed observations file exists at Documentation/examples/observations.txt with synthetic observations\n  -> conditions d/gcc3aafefb1da-1\n\n[p/gcc3aafefb1da-1-3] constraint (cited, source crates/ucal/tests/json_surface.rs@cc3aafefb1da)\n  The residuals command accepts a file path argument to read observations\n  -> conditions d/gcc3aafefb1da-1\n\n[p/gcc3aafefb1da-2-1] constraint (cited, source xtask/src/examples.rs@cc3aafefb1da)\n  The ephemeris file at Documentation/examples/ephemeris.hjson exists with predictable cycle centres\n  -> conditions d/gcc3aafefb1da-2\n\n[p/gcc3aafefb1da-2-3] constraint (cited, source Documentation/examples/observations.txt@cc3aafefb1da)\n  Observations parser skips blank lines and lines starting with #\n  -> conditions d/gcc3aafefb1da-2\n\n[p/gcc3aafefb1da-3-1] constraint (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Manual examples are generated from xtask/src/examples.rs entries\n\n[p/gcc3aafefb1da-4-2] constraint (cited, source Documentation/Release_Notes/1.12.0.md@cc3aafefb1da)\n  The repair uses a committed observations file\n  -> conditions d/gcc3aafefb1da-4\n\n[q/g2074788f713e-1-1] claim (inferred)\n  All time readings go through session clock, preventing wallclock face from going back in time.\n\n[q/g2074788f713e-10-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Tests verify monotonic sequence over backward steps.\n\n[q/g2074788f713e-10-2] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Test asserts session reading no finer than raw.\n\n[q/g2074788f713e-11-1] claim (inferred)\n  Taking inner value on poisoned mutex is correct because state cannot be torn.\n\n[q/g2074788f713e-2-1] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Backward step loses to monotonic branch, keeps advancing at oscillator's rate.\n\n[q/g2074788f713e-2-2] claim (inferred)\n  Forward step wins, tracks system corrections arriving.\n\n[q/g2074788f713e-4-1] claim (inferred)\n  Pure function lets tests drive wall clock backwards and assert monotonic sequence.\n\n[q/g2074788f713e-5-1] claim (inferred)\n  last prevents smaller elapsed inputs from making reading go backwards.\n\n[q/g2074788f713e-6-1] claim (inferred)\n  Option avoids .expect, allows anchoring where failure can be returned.\n\n[q/g2074788f713e-7-1] claim (inferred)\n  wall_instant exposes raw system clock for doctor --clock and measurements.\n\n[q/g2074788f713e-9-1] claim (inferred)\n  Documents one process, one clock and max rule in CLI.md and release notes.\n\n[q/g21665b3aac9b-1-1] claim (inferred)\n  Feature workflow now applies -D warnings to twenty-three combinations, catching cfg mismatch defects.\n\n[q/g21665b3aac9b-2-1] claim (inferred)\n  Six items fixed with cfg attributes, not warning suppressions.\n\n[q/g21665b3aac9b-3-1] claim (inferred)\n  RatInterval import is gated to cosmo because only parse_redshift uses it.\n\n[q/g21665b3aac9b-4-1] claim (inferred)\n  qualified::Kind import is gated to civil because to-civil reads it.\n\n[q/g21665b3aac9b-5-1] claim (inferred)\n  Rounding import is gated to civil because to-civil uses it when --round absent.\n\n[q/g21665b3aac9b-6-1] claim (inferred)\n  parse_form and codec::Form gated behind all(civil, std) because run_now needs both.\n\n[q/g21665b3aac9b-7-1] claim (inferred)\n  years_quantity gated behind any(events, cosmo) because both features call it.\n\n[q/g21665b3aac9b-9-1] claim (inferred)\n  Sign-release splits error into separate messages for unauthenticated versus missing release conditions.\n\n[q/g31e52cc10b1f-1-1] claim (inferred)\n  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy …\n  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy claim.\n\n[q/g31e52cc10b1f-2-1] claim (inferred)\n  Doctor --clock must be behind a flag because resolution varies by machine and ordinary output is compared …\n\n[q/g31e52cc10b1f-3-1] claim (inferred)\n  Keeping precision unchanged avoids breaking ucal-json/1 paths.\n\n[q/g31e52cc10b1f-5-1] claim (inferred)\n  Separation makes clear what each number represents; conflating them is the defect.\n\n[q/g31e52cc10b1f-6-1] claim (inferred)\n  Reporting cancellations helps interpret differences: constant offset cancels, rate error does not.\n\n[q/g31e52cc10b1f-8-1] claim (inferred)\n  Note clarifies precision means tier rendered to, not accuracy, preventing conflation with explain's precision.\n\n[q/g449b762e3cca-10-1] finding (cited, source Documentation/CLI.md@449b762e3cca)\n  Unanchored calendars refuse with UCAL-E0062.\n\n[q/g449b762e3cca-11-1] claim (inferred)\n  Property test ensures inverse window contains the original instant for every anchored calendar.\n\n[q/g449b762e3cca-12-1] claim (inferred)\n  Consecutive local days leave no gap.\n\n[q/g449b762e3cca-2-1] claim (inferred)\n  The inverse returns a Window, an interval, not a point.\n\n[q/g449b762e3cca-3-1] claim (inferred)\n  The command accepts the exact format cal show prints, enabling manual round trips.\n\n[q/g449b762e3cca-4-1] claim (inferred)\n  Endpoints are taken outward, never inward, so the window contains the interval.\n\n[q/g449b762e3cca-5-1] claim (inferred)\n  The inverse evaluates directly without iterative search.\n\n[q/g449b762e3cca-6-1] claim (inferred)\n  Year 0 is refused with error E0020.\n\n[q/g449b762e3cca-7-1] claim (inferred)\n  Day 0 is refused with error E0018.\n\n[q/g449b762e3cca-8-1] claim (inferred)\n  Days beyond the year's end are refused, not rolled forward.\n\n[q/g449b762e3cca-9-1] claim (inferred)\n  Fractions of 1 or more are refused.\n\n[q/g5880e472260e-1-1] claim (inferred)\n  Check reads current version's notes from [workspace.package], removing ordering guess.\n\n[q/g5880e472260e-3-1] claim (inferred)\n  Old version-sort tests replaced with current-version and missing-notes tests.\n\n[q/g5880e472260e-5-1] claim (inferred)\n  Doc comment restored for check_ci_covers_the_procedure, leaving function documented.\n\n[q/g5880e472260e-6-1] claim (inferred)\n  Release notes updated with fix rationale, missing-notes behavior, and sweep findings.\n\n[q/g8fdb9b3edb7c-2-1] claim (inferred)\n  BrokenPipe on stdin write is treated as success, preventing EPIPE race from failing the test.\n\n[q/g8fdb9b3edb7c-2-2] claim (inferred)\n  Status and output assertions still execute after an EPIPE, so test validity remains.\n\n[q/gcc3aafefb1da-1-1] claim (inferred)\n  Committed fixture cannot race and a reader can open it.\n\n[q/gcc3aafefb1da-2-1] claim (inferred)\n  Residuals are known in advance and can be checked by eye.\n\n[q/gcc3aafefb1da-2-2] finding (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Three residuals inside own windows, +41 outside, demonstrating width property.\n\n[q/gcc3aafefb1da-3-1] finding (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Manual works count becomes 37 and includes the residuals example.\n\n[q/gcc3aafefb1da-4-1] claim (inferred)\n  Release note records CI found the flaky test and the repair.\n\n[q/gcc3aafefb1da-5-1] claim (inferred)\n  No observations read remains an error, not a report of agreement.\n\n[q/gcc3aafefb1da-6-1] claim (inferred)\n  Residuals command does not fit or extract quadratic trend (Ṗ).\n\n[r/g2074788f713e-6-2] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Rejected: Anchor the session at process start-up.\n  -> contrasts d/g2074788f713e-6\n\n[r/g5880e472260e-5-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Rejected: not restore the check's doc comment\n  -> contrasts d/g5880e472260e-5\n\n[r/gcc3aafefb1da-1-1] claim (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Rejected: Write temp fixture into std::env::temp_dir() under fixed name.\n  Race condition: one test truncated the file while the other read it.\n  -> contrasts d/gcc3aafefb1da-1\n\n[r/gcc3aafefb1da-2-1] claim (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Rejected: Have the test invent observations without known shifts.\n  Residuals would not be known in advance, so cannot be checked by eye.\n  -> contrasts d/gcc3aafefb1da-2\n\n",
+  "pack_tokens": 2991,
+  "pack_units": 123,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 11,
+  "usage": {
+    "completion_tokens": 12255,
+    "prompt_tokens": 12430,
+    "seconds": 136.50659875
+  },
+  "verdicts": [
+    {
+      "diff_line": "/// and 500 in `Documentation/examples/ephemeris.hjson`, moved by 0, +3, -7 and",
+      "label": "p/gcc3aafefb1da-2-1",
+      "reason": "The new fixture and generator still reference the predicted cycle centres from the unchanged ephemeris file, so the prerequisite remains true.",
+      "verdict": "consistent"
+    },
+    {
+      "diff_line": "8070205178448285611789196091997839880530466139316558837890624",
+      "label": "d/gcc3aafefb1da-2",
+      "reason": "The fixture remains four synthetic instants with known shifts (0, +3, -7, +41), so the decision holds.",
+      "verdict": "consistent"
+    },
+    {
+      "diff_line": "deleted file mode 100644",
+      "label": "p/gcc3aafefb1da-1-2",
+      "reason": "The committed observations file no longer exists at Documentation/examples/observations.txt; it is deleted and generated instead.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "        let obs = observations::write();",
+      "label": "d/gcc3aafefb1da-1",
+      "reason": "The test no longer reads a committed fixture; it writes its own temp file, reversing the decision.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Documentation/examples/observations.txt",
+      "label": "p/gcc3aafefb1da-4-2",
+      "reason": "The fixture is now listed in .gitignore, so it is generated and not committed, contradicting the prerequisite that the repair uses a committed file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "        std::fs::write(&path, FIXTURE).expect(\"write observations fixture\");",
+      "label": "d/gcc3aafefb1da-4",
+      "reason": "The release note documented the repair as using a committed observations file; this change replaces that repair with unique temp files, so the documented how-to-fix is stale/inaccurate.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "    std::fs::write(&obs_path, OBSERVATIONS)",
+      "label": "p/gcc3aafefb1da-3-1",
+      "reason": "The generator still lives in xtask/src/examples.rs and now also writes the fixture, keeping manual examples generated from that file.",
+      "verdict": "consistent"
+    }
+  ]
+}

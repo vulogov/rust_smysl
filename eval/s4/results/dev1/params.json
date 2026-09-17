@@ -1,0 +1,13 @@
+{
+  "no_model": false,
+  "params": {
+    "budget": 3000,
+    "candidates": 12,
+    "diff_lines": 400,
+    "file_lines": 150,
+    "model": "deepseek-v4-pro",
+    "query_terms": 80
+  },
+  "set": "dev",
+  "tool_commit": "c09ee24954dce9888a0a6561ee18e330a0bafa61"
+}

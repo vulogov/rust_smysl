@@ -1,0 +1,9 @@
+cases scored: 69
+recall by pattern (prerequisite in corpus): 29/39 = 0.74
+  by task: 1:5/5 2:5/7 3:5/5 4:1/1 5:0/5 6:0/3 7:4/4 8:3/3 9:1/1 11:5/5
+  misses with other findings (owner may count a hit): ['run1-task-5-control', 'run1-task-5-corpus', 'run2-task-2-corpus-r1', 'run2-task-5-control-r1']
+tasks 10 and 12 (not in corpus), pattern hits: 1/6
+agent diffs that kept the prerequisite: 5/14 flagged, 7 flag(s)
+real commits: 2/10 flagged, 2 flag(s)
+flags 88; contradicts verdicts dropped by validation 3
+tokens: prompt 680539, completion 679333; median seconds per diff 120
