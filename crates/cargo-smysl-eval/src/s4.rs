@@ -30,9 +30,17 @@ pub struct Params {
     pub key_var: String,
     /// Context window, where the provider must be asked for one (Ollama).
     pub num_ctx: u32,
-    /// Units judged per call. A small local model loses the thread over a long list, so the judgement
-    /// is split into chunks; 0 means one call for everything.
+    /// Units judged per call, as an upper bound. A small local model loses the thread over a long list;
+    /// 0 asks for one call and lets the context limit decide. Fitting the context can split further.
     pub chunk: usize,
+    /// Tokens the provider will take in one request, prompt and answer together. The judgement is fitted
+    /// to it, and a split is reported (D17).
+    pub context_limit: u32,
+    /// Tokens left for the answer when fitting a call to `context_limit`.
+    pub reserve_output: u32,
+    /// Rotates the order units are grouped in. Two runs at different seeds group differently, so a
+    /// verdict that survives both is not an artefact of one grouping.
+    pub order_seed: usize,
     /// The system prompt. `DEFAULT_SYSTEM` unless the operator supplies one: models differ in what they
     /// need told, so the shipped command reads it from a flag, the environment or a file, and says which
     /// it used.
@@ -257,14 +265,76 @@ Return one JSON object: {\"verdicts\": [{\"label\": string, \"verdict\": \"contr
 
 /// The labels the model judges: every decision, prerequisite and rejected alternative in the pack,
 /// the ranked candidates first.
-pub fn judged(ctx: &Context) -> Vec<String> {
+pub fn judged(ctx: &Context, order_seed: usize) -> Vec<String> {
     let mut out: Vec<String> = ctx.candidates.iter().map(|c| c.label.clone()).collect();
     for l in &ctx.labels {
         if candidate_kind(l).is_some() && !out.contains(l) {
             out.push(l.clone());
         }
     }
+    if order_seed > 0 && !out.is_empty() {
+        let by = order_seed % out.len();
+        out.rotate_left(by);
+    }
     out
+}
+
+/// What had to be given up to fit the model's limits, reported with the result and on stderr (D17).
+#[derive(Default, Serialize, Clone)]
+pub struct Fitting {
+    pub calls: usize,
+    pub warnings: Vec<String>,
+}
+
+/// Group the units to judge so each call fits `context_limit` with `reserve_output` left for the answer.
+/// A split is not free — a model judging six units sees less than one judging sixty — so it is reported.
+pub fn fit<'a>(
+    labels: &'a [String],
+    units: &BTreeMap<String, String>,
+    diff: &Diff,
+    p: &Params,
+) -> (Vec<Vec<&'a String>>, Fitting) {
+    let fixed = smysl::tokens(&p.system) + smysl::tokens(&diff.shown) + 64;
+    let room = p.context_limit.saturating_sub(p.reserve_output);
+    let mut warn = Fitting::default();
+    if fixed >= room {
+        warn.warnings.push(format!(
+            "the diff and the system prompt need about {fixed} tokens of the {room} this model leaves for input; \
+             the diff is already truncated, so the answer may be poor"
+        ));
+    }
+    let cap = if p.chunk == 0 {
+        labels.len().max(1)
+    } else {
+        p.chunk
+    };
+    let mut groups: Vec<Vec<&String>> = Vec::new();
+    let mut group: Vec<&String> = Vec::new();
+    let mut used = fixed;
+    for label in labels {
+        let cost = units.get(label).map(|u| smysl::tokens(u)).unwrap_or(0) + 8;
+        let full = group.len() >= cap || (!group.is_empty() && used + cost > room);
+        if full {
+            groups.push(std::mem::take(&mut group));
+            used = fixed;
+        }
+        group.push(label);
+        used += cost;
+    }
+    if !group.is_empty() {
+        groups.push(group);
+    }
+    warn.calls = groups.len();
+    if groups.len() > 1 {
+        warn.warnings.push(format!(
+            "{} recorded unit(s) judged in {} calls: this model takes about {} tokens, and each call sees only \
+             its own units",
+            labels.len(),
+            groups.len(),
+            p.context_limit
+        ));
+    }
+    (groups, warn)
 }
 
 /// The units of `ctx.text`, keyed by label, so a chunk can carry only the ones it asks about.
@@ -316,26 +386,33 @@ pub struct Usage {
     pub seconds: f64,
 }
 
-/// Step 3: the model's judgement, in one call per `chunk` units (a small model loses a long list).
-pub fn judge(ctx: &Context, diff: &Diff, p: &Params) -> Result<(Vec<Verdict>, Usage), String> {
-    let labels = judged(ctx);
+/// Step 3: the model's judgement, fitted to what the provider takes (D17).
+pub fn judge(
+    ctx: &Context,
+    diff: &Diff,
+    p: &Params,
+) -> Result<(Vec<Verdict>, Usage, Fitting), String> {
+    let labels = judged(ctx, p.order_seed);
     let units = blocks(&ctx.text);
-    let size = if p.chunk == 0 {
-        labels.len().max(1)
-    } else {
-        p.chunk
-    };
+    let (groups, fitting) = fit(&labels, &units, diff, p);
+    for w in &fitting.warnings {
+        eprintln!("check: {w}");
+    }
     let mut verdicts = Vec::new();
     let mut usage = Usage::default();
-    for group in labels.chunks(size) {
+    for group in groups {
         let text: String = group
             .iter()
-            .filter_map(|l| units.get(l).cloned())
+            .filter_map(|l| units.get(*l).cloned())
             .collect::<Vec<_>>()
             .join("\n\n");
         let user = format!(
             "RECORDED UNITS:\n\n{text}\n\nJUDGE: {}\n\nDIFF{}:\n{}\n",
-            group.join(", "),
+            group
+                .iter()
+                .map(|l| l.as_str())
+                .collect::<Vec<_>>()
+                .join(", "),
             if diff.truncated { " (truncated)" } else { "" },
             diff.shown
         );
@@ -345,7 +422,7 @@ pub fn judge(ctx: &Context, diff: &Diff, p: &Params) -> Result<(Vec<Verdict>, Us
         usage.completion_tokens += u.completion_tokens;
         usage.seconds += u.seconds;
     }
-    Ok((verdicts, usage))
+    Ok((verdicts, usage, fitting))
 }
 
 fn call(user: &str, p: &Params) -> Result<(Vec<Verdict>, Usage), String> {

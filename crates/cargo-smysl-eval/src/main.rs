@@ -95,9 +95,18 @@ struct S4Args {
     /// Context window asked of the provider, where it takes one.
     #[arg(long, env = "SMYSL_CHECK_NUM_CTX", default_value_t = 16384)]
     num_ctx: u32,
-    /// Units judged per call; 0 asks about all of them at once.
+    /// Units judged per call, an upper bound; 0 lets the context limit decide.
     #[arg(long, env = "SMYSL_CHECK_CHUNK", default_value_t = 6)]
     chunk: usize,
+    /// Tokens the model takes in one request; defaults to --num-ctx for a local model.
+    #[arg(long, env = "SMYSL_CHECK_CONTEXT_LIMIT")]
+    context_limit: Option<u32>,
+    /// Tokens left for the answer when fitting a call to the context limit.
+    #[arg(long, env = "SMYSL_CHECK_RESERVE_OUTPUT", default_value_t = 2048)]
+    reserve_output: u32,
+    /// Rotate the order units are grouped in, so a second run groups them differently.
+    #[arg(long, default_value_t = 0)]
+    order_seed: usize,
     /// A file holding the system prompt, or $SMYSL_CHECK_PROMPT_FILE; the built-in default otherwise.
     #[arg(long, env = "SMYSL_CHECK_PROMPT_FILE")]
     prompt_file: Option<PathBuf>,
@@ -629,6 +638,9 @@ fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
         key_var: a.key_var.clone(),
         num_ctx: a.num_ctx,
         chunk: a.chunk,
+        context_limit: a.context_limit.unwrap_or(a.num_ctx),
+        reserve_output: a.reserve_output,
+        order_seed: a.order_seed,
         system: match &a.prompt_file {
             Some(f) => read(f)?,
             None => s4::DEFAULT_SYSTEM.to_string(),
@@ -763,12 +775,13 @@ fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
                             result["note"] = "no candidate: no model call".into();
                         }
                         Some(x) => match s4::judge(x, &diff, &params) {
-                            Ok((verdicts, usage)) => {
+                            Ok((verdicts, usage, fitting)) => {
                                 let (findings, dropped) = s4::validate(corpus, x, &diff, &verdicts);
                                 result["verdicts"] = serde_json::to_value(&verdicts).unwrap();
                                 result["findings"] = serde_json::to_value(&findings).unwrap();
                                 result["dropped"] = serde_json::to_value(&dropped).unwrap();
                                 result["usage"] = serde_json::to_value(&usage).unwrap();
+                                result["fitting"] = serde_json::to_value(&fitting).unwrap();
                             }
                             Err(e) => {
                                 eprintln!("{}: {e}", c.id);

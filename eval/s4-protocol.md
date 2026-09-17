@@ -42,6 +42,10 @@ call (start: 6), provider and model, and the system prompt. Provider, endpoint, 
 context window and prompt are settings, not constants (D16): `--provider ollama|openai`, `--model`,
 `--endpoint`, `--key-var`, `--num-ctx`, `--prompt-file`, each with an `SMYSL_CHECK_*` variable.
 
+**Fitting (D17).** Each call is sized to the model's context limit less the tokens reserved for the
+answer. Units are judged in one call where they fit, and split only when they do not; a split, and a
+truncated diff, are reported in the result and on stderr, because a split changes what the model sees.
+
 **Which model.** The measured configuration is named in the result. **Local first** (`ollama`,
 `Qwen2.5-Coder:7B-Instruct`, the project's zero-budget default): the gate is attempted locally, and a
 hosted model is measured only after a local run shows the pipeline works. Diff lines are numbered and a

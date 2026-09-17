@@ -1,0 +1,414 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-9-1",
+      "score": 28.348560333251953
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 27.324045181274414
+    },
+    {
+      "anchored": true,
+      "label": "r/g69ea5c05d859-6-1",
+      "score": 25.93490982055664
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-9",
+      "score": 24.8443546295166
+    },
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-8-1",
+      "score": 23.93923568725586
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-7",
+      "score": 23.633419036865234
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-7-2",
+      "score": 22.227863311767578
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 21.89265251159668
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-7-1",
+      "score": 18.698352813720703
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-8",
+      "score": 18.593242645263672
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 17.15340805053711
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-2-2",
+      "score": 17.09038734436035
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 54,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "src/main.rs",
+    "tests/cli-surface.txt"
+  ],
+  "findings": [
+    {
+      "diff_line": "None => match smysl::view_roots(&store).into_iter().next() {",
+      "kind": "prerequisite",
+      "label": "p/g90ec2f781421-7-2",
+      "reason": "The change removes the requirement for a UID and defaults to the store's view roots if none is provided, contradicting the constraint that clap only yields subcommand names that cli() registered.",
+      "source": "src/main.rs@90ec2f781421",
+      "text": "clap only yields subcommand names that cli() registered, and cli() registers exactly COMMANDS."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g0bc1aeb96d6b-1",
+      "reason": "The change adds a help message that contradicts the decision to gate `report_against` and its tests on `gemini` or `anthropic` features.",
+      "source": "git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e",
+      "text": "Gate `report_against` and its tests on `gemini` or `anthropic` features\nThe function is only reached from the feature-gated `gemini` and `anthropic` mappers, so builds without those features had an unused function and CI's `-D warnings` failed."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g4968383dc452-1",
+      "reason": "The change adds a help message that contradicts the decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "source": "nodejs/README.md@4968383dc452",
+      "text": "Upgrade nodejs conformance target from C-Read to C-Produce.\nTo provide a fourth independent derivation of uids and a third witness for §2.3 beyond the Rust, strengthening the evidence that the specification is sufficient."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g4968383dc452-12",
+      "reason": "The change adds a help message that contradicts the decision to correct README claims that tables were asserted against document.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Correct README claims that tables were asserted against document.\nThe tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g4968383dc452-15",
+      "reason": "The change adds a help message that contradicts the decision to revise gate 7 blocked command explanation.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Revise gate 7 blocked command explanation, no longer 'decision about book'.\nThe block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g4968383dc452-16",
+      "reason": "The change adds a help message that contradicts the decision to hold beta.smy repair rather than guess missing stanza.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Hold beta.smy repair rather than guess missing stanza.\nThe missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g4968383dc452-17",
+      "reason": "The change adds a help message that contradicts the decision to do not implement rule M in outside readers.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Do not implement rule M in outside readers.\nRule M is checkable against a store, not against a unit; a validate claiming to enforce it would be a check that cannot fail."
+    },
+    {
+      "diff_line": ".arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "kind": "decision",
+      "label": "d/g4968383dc452-21",
+      "reason": "The change adds a default value for 'uid', which contradicts the decision not to apply an artefact fraction to other modules.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Do not apply 22% artefact fraction to other modules.\nOne module evidence is not generalizable; applying the fraction would repeat the error of quoting a number without its configuration."
+    },
+    {
+      "diff_line": ".arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "kind": "decision",
+      "label": "d/g4968383dc452-23",
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to implement status integers and source/kind enums as constants in nodejs.",
+      "source": "nodejs/src/uid.js@4968383dc452",
+      "text": "Implement status integers and source/kind enums as constants in nodejs.\nThese values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures."
+    },
+    {
+      "diff_line": ".arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "kind": "decision",
+      "label": "d/g4968383dc452-24",
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to implement RFC 4648 base32 alphabet in nodejs.",
+      "source": "Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452",
+      "text": "Implement RFC 4648 base32 alphabet in nodejs.\nThe spec lacked an alphabet; base32hex was equally faithful but would produce mutually unreadable names."
+    },
+    {
+      "diff_line": ".arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-11",
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to update ROAD_TO_1.0.md.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update ROAD_TO_1.0.md to mark steps 1 and 2 done, step 3 deferred, and correct the assumption that python/, …\nThe plan was wrong about the other three implementations because they only read CBOR and never see a @doc header; the migration is Rust-only and smaller than it looked."
+    },
+    {
+      "diff_line": ".arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-12",
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to update format spec §8.5.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\nThe trap was invisible until it bit; the spec should now state the fix so the historical warning is replaced with the actual current behavior."
+    },
+    {
+      "diff_line": ".arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-13",
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to update format spec §8.6.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update format spec §8.6 to say smysl/1.0 is not a break and means the format is settled rather than changed.\nThe version bump signals visibility, not a format change; readers learned the new string quietly, so the compatibility event is the readers' acceptance."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-14",
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n§8.2 requires readers to refuse a version absent from their list. Flipping the writer before 0.14 is in the field would make every other implementation reject the output."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-15",
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision not to add version lists to python/, nodejs/, go/ implementations.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Do not add version lists to python/, nodejs/, go/ implementations.\nAll three read CBOR only and the wire carries no version string, so no surface parser ever sees a @doc header there. The migration plan's assumption was wrong."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-4",
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.",
+      "source": "crates/smysl-core/src/surface/parse.rs@69ea5c05d859",
+      "text": "Implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.\nA derived Default would produce an empty version, which would become an invalid empty @doc header. The CBOR path has no wire version, so the honest default is the current emit version."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-6",
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.\n`fmt` is the round trip a user runs on purpose and would have been the first place the relabelling bit. Using the declared version preserves the document's self-description."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g87345653cdf3-1",
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to build Constraints via default and field assignment instead of struct literal.",
+      "source": "fuzz/fuzz_targets/pack_exact.rs@87345653cdf3",
+      "text": "Build Constraints via default and field assignment instead of struct literal\nConstraints became #[non_exhaustive] in 0.13, so struct literals no longer compile; using default then setting budget matches other call sites and keeps future fields additive."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "decision",
+      "label": "d/g87345653cdf3-10",
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to assert on transcript count rather than just MISMATCHED presence in doc output test.",
+      "source": "tests/doc_output.rs@87345653cdf3",
+      "text": "Assert on transcript count rather than just MISMATCHED presence in doc output test\nThe first version asserted only that MISMATCHED appeared, which ran 0 transcripts satisfied; the count assertion ensures a gate that cannot confuse nothing wrong with nothing checked."
+    },
+    {
+      "diff_line": ".arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "kind": "decision",
+      "label": "d/g90ec2f781421-3",
+      "reason": "The change introduces a new help message for the 'uid' argument, which contradicts the decision to hardcode command names in tests and Makefile instead of deriving from --help.",
+      "source": "Makefile@90ec2f781421",
+      "text": "Hardcode command names in tests and Makefile instead of deriving from --help.\nA list derived from the binary shrinks silently when the binary does; regenerated golden would record absence as intent."
+    },
+    {
+      "diff_line": "Err(e) => {",
+      "kind": "prerequisite",
+      "label": "p/g87345653cdf3-9-1",
+      "reason": "The change makes the 'uid' argument optional by removing the 'required(true)' constraint.",
+      "source": "tests/doc_output.rs@87345653cdf3",
+      "text": "The replay script exists and works."
+    }
+  ],
+  "fingerprint": "f4d586a645d8cf75630b648b55b1843ec5fb5680612cb473176b5b0c16001ba0",
+  "id": "naive-5",
+  "kind": "naive",
+  "pack_text": "[d/g0bc1aeb96d6b-1] decision (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Gate `report_against` and its tests on `gemini` or `anthropic` features\n  -> causes q/g0bc1aeb96d6b-1-1\n  -> causes q/g0bc1aeb96d6b-1-3\n  -> causes q/g0bc1aeb96d6b-1-2\n\n[d/g4968383dc452-1] decision (cited, source nodejs/README.md@4968383dc452)\n  Upgrade nodejs conformance target from C-Read to C-Produce.\n  -> causes q/g4968383dc452-1-1\n\n[d/g4968383dc452-12] decision (cited, source CHANGELOG.md@4968383dc452)\n  Correct README claims that tables were asserted against document.\n  The tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document.\n  -> causes q/g4968383dc452-12-1\n\n[d/g4968383dc452-15] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Revise gate 7 blocked command explanation, no longer 'decision about book'.\n  The block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision.\n  -> causes q/g4968383dc452-15-1\n\n[d/g4968383dc452-16] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Hold beta.smy repair rather than guess missing stanza.\n  The missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair.\n  -> causes q/g4968383dc452-16-1\n\n[d/g4968383dc452-17] decision (cited, source CHANGELOG.md@4968383dc452)\n  Do not implement rule M in outside readers.\n  -> causes q/g4968383dc452-17-1\n\n[d/g4968383dc452-21] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Do not apply 22% artefact fraction to other modules.\n  -> causes q/g4968383dc452-21-1\n\n[d/g4968383dc452-23] decision (cited, source nodejs/src/uid.js@4968383dc452)\n  Implement status integers and source/kind enums as constants in nodejs.\n  These values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures.\n  -> causes q/g4968383dc452-23-1\n\n[d/g4968383dc452-24] decision (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Implement RFC 4648 base32 alphabet in nodejs.\n  The spec lacked an alphabet; base32hex was equally faithful but would produce mutually unreadable names.\n  -> causes q/g4968383dc452-24-1\n\n[d/g4968383dc452-8] decision (cited, source CHANGELOG.md@4968383dc452)\n  Mark spec-derived constants with SPEC: in nodejs src/uid.js.\n  To record that these values were previously guessed from fixtures, making the method explicit.\n  -> causes q/g4968383dc452-8-1\n\n[d/g69ea5c05d859-11] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update ROAD_TO_1.0.md to mark steps 1 and 2 done, step 3 deferred, and correct the assumption that python/, …\n  -> causes q/g69ea5c05d859-11-1\n\n[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\n  -> causes q/g69ea5c05d859-12-1\n\n[d/g69ea5c05d859-13] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.6 to say smysl/1.0 is not a break and means the format is settled rather than changed.\n  -> causes q/g69ea5c05d859-13-1\n\n[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n  -> causes q/g69ea5c05d859-14-1\n\n[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not add version lists to python/, nodejs/, go/ implementations.\n  -> causes q/g69ea5c05d859-15-1\n\n[d/g69ea5c05d859-4] decision (cited, source crates/smysl-core/src/surface/parse.rs@69ea5c05d859)\n  Implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.\n  -> causes q/g69ea5c05d859-4-1\n\n[d/g69ea5c05d859-6] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.\n  -> causes q/g69ea5c05d859-6-1\n\n[d/g69ea5c05d859-8] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update smysl-core unit tests to loop over FORMAT_VERSIONS_SUPPORTED and reject non-listed near misses (e.g. …\n  The old test asserted a literal list and used smysl/1.0 as an unknown version. Driving it from the actual list makes it grow with the list instead of failing or silently passing on new versions.\n\n[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Build Constraints via default and field assignment instead of struct literal\n  -> causes q/g87345653cdf3-1-1\n\n[d/g87345653cdf3-10] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Assert on transcript count rather than just MISMATCHED presence in doc output test\n  -> causes q/g87345653cdf3-10-1\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n  -> causes q/g87345653cdf3-11-1\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n  The BTreeSet import became unused after replacing the struct literal with default construction.\n  -> causes q/g87345653cdf3-2-1\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  CI must see fuzz compilation because local checks passed while the break existed; this makes the gate structural.\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n  -> causes q/g87345653cdf3-6-1\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n  -> causes q/g87345653cdf3-7-1\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n  -> causes q/g87345653cdf3-8-1\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n  -> causes q/g87345653cdf3-9-1\n\n[d/g90ec2f781421-10] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Update CHANGELOG, READINESS, and ROAD_TO_1.0 to record dispatch pass findings.\n  Document the 15->1 survivor reduction, the seven untested commands, and that dispatch pass is worth stating as finding.\n  -> causes q/g90ec2f781421-10-1\n\n[d/g90ec2f781421-12] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Do not change tests/doc_output.rs gating to run under --all-features.\n  Design is deliberate; manual documents default build and exact-pack makes correct claim read as drift, so gating is correct.\n  -> causes q/g90ec2f781421-12-1\n\n[d/g90ec2f781421-2] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Compare all 380 arguments against a golden CLI surface inside cargo test.\n  -> causes q/g90ec2f781421-2-1\n\n[d/g90ec2f781421-3] decision (cited, source Makefile@90ec2f781421)\n  Hardcode command names in tests and Makefile instead of deriving from --help.\n  A list derived from the binary shrinks silently when the binary does; regenerated golden would record absence as intent.\n  -> causes q/g90ec2f781421-3-1\n\n[d/g90ec2f781421-4] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Run each command in a scratch directory of its own.\n  Probing by hand dirtied checkout with .smysl files; usage read ledger ingest wrote. Test should not dirty tree.\n  -> causes q/g90ec2f781421-4-1\n\n[d/g90ec2f781421-6] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Set stdin to /dev/null for dispatch test commands.\n  fmt and check read stdin when no path; inherited terminal would hang instead of failing.\n  -> causes q/g90ec2f781421-6-1\n\n[d/g90ec2f781421-7] decision (cited, source src/main.rs@90ec2f781421)\n  Document the `==` to `!=` mutation of COMMANDS.iter().find as equivalent.\n  Flipping comparison selects wrong Cmd but only field read is in unreachable _ arm; record like prior equivalents.\n  -> causes q/g90ec2f781421-7-1\n\n[d/g90ec2f781421-8] decision (cited, source src/main.rs@90ec2f781421)\n  Do not add a test to distinguish the equivalent `!=` mutation.\n  The mutation is unreachable; a test cannot distinguish the two programs, so record rather than chase.\n  -> causes q/g90ec2f781421-8-1\n\n[d/g90ec2f781421-9] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Do not assert exit code in every_command_dispatches.\n  Most commands fail without a store; how they fail is rest of suite's job. Claim only that failure came from command not router.\n  -> causes q/g90ec2f781421-9-1\n\n[d/ga18e230ae345-2] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Remove `IMPROVEMENT_PASSES` constant and `PackRequest::improvement_passes` field.\n  A knob for a pass that no longer exists is worse than no knob.\n  -> causes q/ga18e230ae345-2-1\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n  -> causes q/ga18e230ae345-3-1\n\n[d/ga18e230ae345-4] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to update the golden file.\n  -> causes q/ga18e230ae345-4-1\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  To document why the pass was removed, including the measurements that justified it.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  To record the removal and its justification for the 0.8.0 release notes.\n  -> causes q/ga18e230ae345-6-1\n\n[e/g4968383dc452-18-1] evidence (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Check: doc-output 85/0\n\n[e/g4968383dc452-9-1] evidence (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Check: spec-tables 0 mismatched\n  -> backs q/g4968383dc452-11-1\n\n[e/g532e4d229a6c-1-1] evidence (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Check: cmd_fmt 12 -> 2 …\n  -> backs q/g532e4d229a6c-1-1\n\n[e/g532e4d229a6c-1-2] evidence (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Check: main.rs 109 -> 99 …\n  -> backs q/g532e4d229a6c-1-2\n\n[e/g69ea5c05d859-16-1] evidence (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Check: make semver is 12/12 clean\n\n[e/g69ea5c05d859-9-1] evidence (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Check: make ci green\n\n[e/g90ec2f781421-5-1] evidence (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Check: cli + main 15 -> 1 …\n\n[p/g87345653cdf3-9-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  The replay script exists and works.\n  -> conditions d/g87345653cdf3-9\n\n[p/g90ec2f781421-10-1] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  cli+main survivors went from 15 to 1.\n  -> conditions d/g90ec2f781421-10\n\n[p/g90ec2f781421-7-2] constraint (cited, source src/main.rs@90ec2f781421)\n  clap only yields subcommand names that cli() registered, and cli() registers exactly COMMANDS.\n  -> conditions d/g90ec2f781421-7\n\n[p/g90ec2f781421-9-1] constraint (cited, source tests/dispatch.rs@90ec2f781421)\n  Most commands fail without a store, so exit code would only reflect command failure.\n  -> conditions d/g90ec2f781421-9\n\n[q/g0bc1aeb96d6b-1-1] finding (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Builds without those features no longer fail on unused function under `-D warnings`.\n\n[q/g0bc1aeb96d6b-1-2] claim (inferred)\n  `report_against` compiles only when `gemini` or `anthropic` feature is enabled.\n\n[q/g0bc1aeb96d6b-1-3] claim (inferred)\n  The `cap_tests` module compiles only when tests and relevant features are enabled.\n\n[q/g4968383dc452-1-1] claim (inferred)\n  Provides fourth independent derivation of uids and third witness for §2.3 beyond Rust.\n\n[q/g4968383dc452-11-1] finding (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Masthead format version updated to smysl/1.0, matching §8.6.\n\n[q/g4968383dc452-12-1] claim (inferred)\n  README corrected to say tests use hand-typed copy, not asserted against document.\n\n[q/g4968383dc452-14-1] finding (cited, source CHANGELOG.md@4968383dc452)\n  Reader edits anchored by prose prevent staleness and duplicates.\n\n[q/g4968383dc452-15-1] claim (inferred)\n  Gate 7 block explanation revised from book decision to filename vs position keying.\n\n[q/g4968383dc452-16-1] claim (inferred)\n  beta.smy repair declined; missing stanza cannot be reconstructed from page.\n\n[q/g4968383dc452-17-1] claim (inferred)\n  Rule M not implemented; validate claiming it would be check that cannot fail.\n\n[q/g4968383dc452-21-1] claim (inferred)\n  Decline applying 22% artefact fraction to other modules; one module not generalizable.\n\n[q/g4968383dc452-23-1] claim (inferred)\n  Status and source/kind constants implemented in nodejs for uid and rule M comparisons.\n\n[q/g4968383dc452-24-1] claim (inferred)\n  RFC 4648 base32 alphabet implemented, avoiding mutually unreadable names.\n\n[q/g4968383dc452-25-1] finding (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Empty deps/grounds omitted in nodejs encoder, matching fixtures.\n\n[q/g4968383dc452-26-1] finding (cited, source nodejs/src/uid.js@4968383dc452)\n  Deps and grounds sorted and deduplicated in nodejs per spec.\n\n[q/g4968383dc452-5-1] finding (cited, source CHANGELOG.md@4968383dc452)\n  NFC normalization at encoder makes unicode-decomposed reproducible.\n\n[q/g4968383dc452-7-1] finding (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Empty deps/grounds omitted, avoiding wrong five-key map uid.\n\n[q/g4968383dc452-8-1] claim (inferred)\n  Spec-derived constants marked SPEC: record that values were guessed from fixtures.\n\n[q/g532e4d229a6c-1-1] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Reduces cmd_fmt mutant survivors from 12 to 2.\n\n[q/g532e4d229a6c-1-2] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Reduces main.rs mutant survivors from 109 to 99.\n\n[q/g532e4d229a6c-2-1] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Round-trip guard remains one of two survivors.\n\n[q/g532e4d229a6c-3-1] claim (inferred)\n  Removes tests' dependency on repository fixtures F1 and F9.\n\n[q/g532e4d229a6c-3-2] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Eliminates 97 spurious mutants counted as catches.\n\n[q/g532e4d229a6c-5-1] finding (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Leaves cmd_providers at 12 and cmd_merge at 11 survivors.\n\n[q/g69ea5c05d859-11-1] claim (inferred)\n  ROAD_TO_1.0 updated: steps 1-2 done, step 3 deferred; python/nodejs/go have no version lists.\n\n[q/g69ea5c05d859-12-1] claim (inferred)\n  Format spec §8.5 records version-trap defect fixed in 0.14.\n\n[q/g69ea5c05d859-13-1] claim (inferred)\n  Format spec §8.6 says smysl/1.0 is not a break; format settled rather than changed.\n\n[q/g69ea5c05d859-14-1] claim (inferred)\n  Writer default deferred to smysl/1.0 until 0.14 published; avoids other implementations rejecting output.\n\n[q/g69ea5c05d859-15-1] claim (inferred)\n  No version lists added to python/nodejs/go; they read CBOR only and never see @doc header.\n\n[q/g69ea5c05d859-4-1] claim (inferred)\n  Default ParseOutcome sets format_version to FORMAT_VERSION_DEFAULT, avoiding empty @doc header on CBOR path.\n\n[q/g69ea5c05d859-6-1] claim (inferred)\n  `smysl fmt` passes parsed format_version to WriteContext, preserving document self-description.\n\n[q/g87345653cdf3-1-1] claim (inferred)\n  Constraints built via default and field assignment compiles despite non_exhaustive; future fields stay …\n  Constraints built via default and field assignment compiles despite non_exhaustive; future fields stay additive.\n\n[q/g87345653cdf3-10-1] claim (inferred)\n  Count assertion prevents gate from confusing nothing wrong with nothing checked.\n\n[q/g87345653cdf3-11-1] claim (inferred)\n  Compile out doc output test outside default feature set to avoid false drift.\n\n[q/g87345653cdf3-2-1] claim (inferred)\n  Remove unused BTreeSet import after replacing struct literal with default construction.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g87345653cdf3-6-1] claim (inferred)\n  Only compile fuzzers in CI; running remains separate due to nightly and time.\n\n[q/g87345653cdf3-7-1] claim (inferred)\n  SMYSL_BIN override lets cargo test use freshly built binary, so mutation tests exercise mutated code.\n\n[q/g87345653cdf3-8-1] claim (inferred)\n  Skip token 0 in path extraction to avoid absolute binary path skipping every command.\n\n[q/g87345653cdf3-9-1] claim (inferred)\n  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.\n\n[q/g90ec2f781421-10-1] claim (inferred)\n  Findings documented: seven untested commands and 15->1 survivor reduction are recorded.\n\n[q/g90ec2f781421-12-1] claim (inferred)\n  Doc-output gating remains unchanged; design deliberate.\n\n[q/g90ec2f781421-2-1] claim (inferred)\n  Golden comparison inside cargo test detects cli() argument stripping; coverage sees the gate.\n\n[q/g90ec2f781421-3-1] claim (inferred)\n  Command list cannot shrink silently; golden regeneration won't record absence as intent.\n\n[q/g90ec2f781421-4-1] claim (inferred)\n  Test no longer dirties checkout; each command runs in isolated scratch directory.\n\n[q/g90ec2f781421-6-1] claim (inferred)\n  Dispatch test cannot hang on stdin-reading commands; /dev/null prevents inherited terminal.\n\n[q/g90ec2f781421-7-1] claim (inferred)\n  Equivalent `!=` mutant documented instead of chased; records unreachability.\n\n[q/g90ec2f781421-8-1] claim (inferred)\n  No pointless test added for unreachable mutation; recorded rather than chased.\n\n[q/g90ec2f781421-9-1] claim (inferred)\n  Test only asserts routing reached, not command-specific exit codes; avoids duplicating suite.\n\n[q/ga18e230ae345-1-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass is removed because it made packs worse.\n\n[q/ga18e230ae345-2-1] claim (inferred)\n  IMPROVEMENT_PASSES constant and PackRequest::improvement_passes field removed from the public API.\n\n[q/ga18e230ae345-3-1] claim (inferred)\n  The search test is removed; keeping it would compare two identical configurations.\n\n[q/ga18e230ae345-4-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Golden file remains unchanged because no recorded selection moved.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g4968383dc452-13-1] claim (cited, source Documentation/READINESS.md@4968383dc452)\n  Rejected: Keep filename-keyed fixtures.\n\n[r/g69ea5c05d859-6-1] claim (cited, source src/main.rs@69ea5c05d859)\n  Rejected: Let fmt use the default WriteContext version.\n  fmt is the round trip a user runs on purpose and would have been first to relabel.\n  -> contrasts d/g69ea5c05d859-6\n\n[r/g87345653cdf3-2-1] claim (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Rejected: Keep the unused BTreeSet import\n  -> contrasts d/g87345653cdf3-2\n\n[r/g87345653cdf3-6-1] claim (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Rejected: Run fuzzers as part of make ci\n  -> contrasts d/g87345653cdf3-6\n\n[r/g87345653cdf3-7-1] claim (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Rejected: Hardcode the binary path as './target/debug/smysl'\n  A stale binary would report every mutant as caught while testing none of them.\n  -> contrasts d/g87345653cdf3-7\n\n[r/g90ec2f781421-2-2] claim (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Rejected: compare the golden CLI surface via a Makefile target instead of inside cargo test\n  A Makefile gate is invisible to anything that counts coverage.\n  -> contrasts d/g90ec2f781421-2\n\n[r/g90ec2f781421-4-1] claim (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Rejected: run each command in the repository root\n  It left .smysl/staged.smy and .smysl/usage.log behind, and usage read a ledger ingest had just written.\n  -> contrasts d/g90ec2f781421-4\n\n[r/g90ec2f781421-8-1] claim (cited, source src/main.rs@90ec2f781421)\n  Rejected: add a test to distinguish the `!=` mutation of COMMANDS.iter().find\n  The mutation is unreachable; a test cannot distinguish the two programs.\n  -> contrasts d/g90ec2f781421-8\n\n[r/g90ec2f781421-9-1] claim (cited, source tests/dispatch.rs@90ec2f781421)\n  Rejected: assert exit code in every_command_dispatches\n  Most commands fail without a store; how they fail is the rest of the suite's job.\n  -> contrasts d/g90ec2f781421-9\n\n",
+  "pack_tokens": 2994,
+  "pack_units": 116,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 5,
+  "usage": {
+    "completion_tokens": 2225,
+    "prompt_tokens": 16067,
+    "seconds": 248.19246375100002
+  },
+  "verdicts": [
+    {
+      "diff_line": "+            Some(root) => root,",
+      "label": "p/g90ec2f781421-7-2",
+      "line": 32,
+      "reason": "The change removes the requirement for a UID and defaults to the store's view roots if none is provided, contradicting the constraint that clap only yields subcommand names that cli() registered.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .help(\"Unit to trace; defaults to the store's view roots\")",
+      "label": "d/g0bc1aeb96d6b-1",
+      "line": 27,
+      "reason": "The change adds a help message that contradicts the decision to gate `report_against` and its tests on `gemini` or `anthropic` features.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .help(\"Unit to trace; defaults to the store's view roots\")",
+      "label": "d/g4968383dc452-1",
+      "line": 27,
+      "reason": "The change adds a help message that contradicts the decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .help(\"Unit to trace; defaults to the store's view roots\")",
+      "label": "d/g4968383dc452-12",
+      "line": 27,
+      "reason": "The change adds a help message that contradicts the decision to correct README claims that tables were asserted against document.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .help(\"Unit to trace; defaults to the store's view roots\")",
+      "label": "d/g4968383dc452-15",
+      "line": 27,
+      "reason": "The change adds a help message that contradicts the decision to revise gate 7 blocked command explanation.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .help(\"Unit to trace; defaults to the store's view roots\")",
+      "label": "d/g4968383dc452-16",
+      "line": 27,
+      "reason": "The change adds a help message that contradicts the decision to hold beta.smy repair rather than guess missing stanza.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .help(\"Unit to trace; defaults to the store's view roots\")",
+      "label": "d/g4968383dc452-17",
+      "line": 27,
+      "reason": "The change adds a help message that contradicts the decision to do not implement rule M in outside readers.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "label": "d/g4968383dc452-21",
+      "line": 10,
+      "reason": "The change adds a default value for 'uid', which contradicts the decision not to apply an artefact fraction to other modules.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "label": "d/g4968383dc452-23",
+      "line": 10,
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to implement status integers and source/kind enums as constants in nodejs.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "label": "d/g4968383dc452-24",
+      "line": 10,
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to implement RFC 4648 base32 alphabet in nodejs.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "label": "d/g69ea5c05d859-11",
+      "line": 10,
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to update ROAD_TO_1.0.md.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "label": "d/g69ea5c05d859-12",
+      "line": 10,
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to update format spec §8.5.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "label": "d/g69ea5c05d859-13",
+      "line": 10,
+      "reason": "The change adds a default value for 'uid', which contradicts the decision to update format spec §8.6.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+            None => match smysl::view_roots(&store).into_iter().next() {",
+      "label": "d/g69ea5c05d859-14",
+      "line": 27,
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+            None => match smysl::view_roots(&store).into_iter().next() {",
+      "label": "d/g69ea5c05d859-15",
+      "line": 27,
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision not to add version lists to python/, nodejs/, go/ implementations.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+            None => match smysl::view_roots(&store).into_iter().next() {",
+      "label": "d/g69ea5c05d859-4",
+      "line": 27,
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+            None => match smysl::view_roots(&store).into_iter().next() {",
+      "label": "d/g69ea5c05d859-6",
+      "line": 27,
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+            None => match smysl::view_roots(&store).into_iter().next() {",
+      "label": "d/g87345653cdf3-1",
+      "line": 27,
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to build Constraints via default and field assignment instead of struct literal.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+            None => match smysl::view_roots(&store).into_iter().next() {",
+      "label": "d/g87345653cdf3-10",
+      "line": 27,
+      "reason": "The change introduces a new default behavior for the 'uid' argument in the 'trace' command, which contradicts the decision to assert on transcript count rather than just MISMATCHED presence in doc output test.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+                .arg(Arg::new(\"uid\").value_name(\"UID\").help(\"Unit to trace; defaults to the store's view roots\"))",
+      "label": "d/g90ec2f781421-3",
+      "line": 10,
+      "reason": "The change introduces a new help message for the 'uid' argument, which contradicts the decision to hardcode command names in tests and Makefile instead of deriving from --help.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-                .arg(Arg::new(\"uid\").required(true).value_name(\"UID\"))",
+      "label": "p/g87345653cdf3-9-1",
+      "line": 20,
+      "reason": "The change makes the 'uid' argument optional by removing the 'required(true)' constraint.",
+      "verdict": "contradicts"
+    }
+  ]
+}
