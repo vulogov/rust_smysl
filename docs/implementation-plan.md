@@ -460,6 +460,10 @@ goes.
 
 ## 10. smysl requests (not blocking)
 
+**1.7.0** (`docs/smysl-requests-1.7.md`): R24, export `ExternalCost` and `CostModel` from the facade so
+1.6's `counting_with` can be called by a consumer that depends on `smysl` alone. Found when a pack sized
+in smysl's bytes/4 units came to 9 400 model tokens and the provider truncated the prompt unseen.
+
 **1.6.0** (`docs/smysl-requests-1.6.md`): R21 a pack that fits the caller's whole prompt budget (D17's
 fitting lives outside smysl today), R22 which query terms a hit matched (task 5's miss was invisible),
 R23 retrieval filtered by an extension schema's own kind (`code:kind`, which `KernelType` cannot express).
