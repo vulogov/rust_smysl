@@ -1,0 +1,4 @@
+recall    0.65 (13/20)  bound ≥ 0.7
+precision 0.29 (22/76; arguable 6)  bound ≥ 0.8
+real commits wrongly flagged 0.00 (0/11)  bound ≤ 0.1
+check ships as: advisory (a bound missed)
