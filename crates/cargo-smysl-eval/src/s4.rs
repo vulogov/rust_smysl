@@ -8,7 +8,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::time::{Duration, Instant};
 
 use serde::{Deserialize, Serialize};
-use smysl::{Bm25, Lod, PackRequest, Query, Retriever as _, SalienceRequest, Uid};
+use smysl::{
+    Bm25, EdgeSet, Lod, PackRequest, Query, Retriever as _, SalienceRequest, Tokenizer, Uid,
+};
 
 use crate::s3::{render, Corpus};
 
@@ -38,6 +40,9 @@ pub struct Params {
     pub context_limit: u32,
     /// Tokens left for the answer when fitting a call to `context_limit`.
     pub reserve_output: u32,
+    /// Most units judged for one diff, ranked candidates first; 0 judges every decision, prerequisite
+    /// and rejected alternative in the pack. A slower model needs a smaller number to stay usable.
+    pub judge_limit: usize,
     /// Rotates the order units are grouped in. Two runs at different seeds group differently, so a
     /// verdict that survives both is not an artefact of one grouping.
     pub order_seed: usize,
@@ -177,11 +182,27 @@ fn candidate_kind(label: &str) -> Option<&'static str> {
 /// anchored to a touched file lifted by half the best score.
 pub fn candidates(corpus: &Corpus, diff: &Diff, p: &Params) -> Vec<(Uid, Candidate)> {
     let q = query(diff, p.query_terms);
+    // R20 (smysl 1.5): the store's index answers which units are anchored to a file this diff touches.
+    let anchored: BTreeSet<Uid> = diff
+        .files
+        .iter()
+        .flat_map(|f| corpus.store.units_with_source_prefix(&format!("{f}@")))
+        .collect();
+    // R16 (1.5): retrieval restricted to what this command can act on. `kinds` cannot express it — a
+    // rejected alternative and a consequence are both `Claim` — so the eligible set is given by uid.
+    let eligible: Vec<Uid> = corpus
+        .store
+        .units()
+        .filter(|(uid, _)| candidate_kind(&corpus.name(uid)).is_some())
+        .map(|(uid, _)| *uid)
+        .collect();
     let hits: BTreeMap<Uid, f32> = if q.is_empty() {
         BTreeMap::new()
     } else {
-        Bm25::index(&corpus.store)
-            .search(&Query::new(q, 200))
+        // R19 (1.5): folding, so a diff saying `required` reaches a unit saying `require`. Measured:
+        // task 5's prerequisite was unreachable at any budget without it.
+        Bm25::index_with(&corpus.store, Tokenizer::folding())
+            .search(&Query::new(q, p.candidates).within(eligible))
             .into_iter()
             .map(|h| (h.uid, h.score))
             .collect()
@@ -190,22 +211,18 @@ pub fn candidates(corpus: &Corpus, diff: &Diff, p: &Params) -> Vec<(Uid, Candida
     let mut ranked: Vec<(Uid, Candidate)> = corpus
         .store
         .units()
-        .filter_map(|(uid, u)| {
+        .filter_map(|(uid, _)| {
             let label = corpus.name(uid);
             candidate_kind(&label)?;
-            let anchored = u.core.source.as_ref().is_some_and(|s| {
-                diff.files
-                    .iter()
-                    .any(|f| s.reference.starts_with(&format!("{f}@")))
-            });
+            let is_anchored = anchored.contains(uid);
             let score =
-                hits.get(uid).copied().unwrap_or(0.0) + if anchored { best / 2.0 } else { 0.0 };
+                hits.get(uid).copied().unwrap_or(0.0) + if is_anchored { best / 2.0 } else { 0.0 };
             (score > 0.0).then_some((
                 *uid,
                 Candidate {
                     label,
                     score,
-                    anchored,
+                    anchored: is_anchored,
                 },
             ))
         })
@@ -231,7 +248,11 @@ pub struct Context {
 pub fn context(corpus: &Corpus, mut ranked: Vec<(Uid, Candidate)>, p: &Params) -> Option<Context> {
     let sal = smysl::salience(&corpus.store, &SalienceRequest::default());
     while !ranked.is_empty() {
-        let req = PackRequest::budget(p.budget).focusing(ranked.iter().map(|(u, _)| *u));
+        // C8 (1.5): a packed decision carries the prerequisites it rests on, which D3's `conditions`
+        // edges keep outside its uid. Measured: decisions arriving with their prerequisites, 21% to 54%.
+        let req = PackRequest::budget(p.budget)
+            .focusing(ranked.iter().map(|(u, _)| *u))
+            .resting_on(EdgeSet::premises());
         if let Ok(pack) = smysl::pack(&corpus.store, &sal, &req) {
             let selection: BTreeMap<Uid, Lod> = pack.selection.clone();
             return Some(Context {
@@ -265,12 +286,15 @@ Return one JSON object: {\"verdicts\": [{\"label\": string, \"verdict\": \"contr
 
 /// The labels the model judges: every decision, prerequisite and rejected alternative in the pack,
 /// the ranked candidates first.
-pub fn judged(ctx: &Context, order_seed: usize) -> Vec<String> {
+pub fn judged(ctx: &Context, order_seed: usize, limit: usize) -> Vec<String> {
     let mut out: Vec<String> = ctx.candidates.iter().map(|c| c.label.clone()).collect();
     for l in &ctx.labels {
         if candidate_kind(l).is_some() && !out.contains(l) {
             out.push(l.clone());
         }
+    }
+    if limit > 0 && out.len() > limit {
+        out.truncate(limit);
     }
     if order_seed > 0 && !out.is_empty() {
         let by = order_seed % out.len();
@@ -392,7 +416,7 @@ pub fn judge(
     diff: &Diff,
     p: &Params,
 ) -> Result<(Vec<Verdict>, Usage, Fitting), String> {
-    let labels = judged(ctx, p.order_seed);
+    let labels = judged(ctx, p.order_seed, p.judge_limit);
     let units = blocks(&ctx.text);
     let (groups, fitting) = fit(&labels, &units, diff, p);
     for w in &fitting.warnings {

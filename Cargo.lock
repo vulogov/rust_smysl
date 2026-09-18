@@ -1825,9 +1825,9 @@ checksum = "ba467056f1b547ed52077911161fc86985becbc60e8e1857c8a144dab0def891"
 
 [[package]]
 name = "smysl"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d17c3abb0ff177bcc9eb50f9ff82998313567dd7388aa28055486e648d029e7"
+checksum = "58b8ee1fe1c2b01552bcd7d8416e2322dcf0517ebbe26bee31d26d6025c51001"
 dependencies = [
  "smysl-check",
  "smysl-core",
@@ -1841,9 +1841,9 @@ dependencies = [
 
 [[package]]
 name = "smysl-check"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "604e6432058f86c49c314db3d7c493e674f2cd5b7a0608f2de8f7f592d199879"
+checksum = "50eb76860f8455c4b736023e6b4e4a0634dc420db281f4fcb83f789c1eb76b44"
 dependencies = [
  "smysl-core",
  "smysl-graph",
@@ -1851,9 +1851,9 @@ dependencies = [
 
 [[package]]
 name = "smysl-core"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b7414fa080b4fdd2bce9826e61c1449cfd65787e5ca3559d340116ed45d0f64"
+checksum = "2af2bcf55c267cd506224897d1624fb332c72314d660ff636b1ba7b07e6e2880"
 dependencies = [
  "blake3",
  "unicode-normalization",
@@ -1861,18 +1861,18 @@ dependencies = [
 
 [[package]]
 name = "smysl-graph"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1eb31ec6af4c1549f70c6e1f412d01debd58a2cb403218ed1736cbad17ec651"
+checksum = "176c7bea9b1ed6187d8cc955c8bcd7da1d1713571e918c22b50ed497b80d452a"
 dependencies = [
  "smysl-core",
 ]
 
 [[package]]
 name = "smysl-ingest"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "377bfcee1947db86f9ba29ca949fdc232fec7e6aca14ef7d640838231ece1a81"
+checksum = "838041b1bcb3ac67e04bee337be4d34862c5151de802c62ad725106042760afc"
 dependencies = [
  "smysl-check",
  "smysl-core",
@@ -1881,9 +1881,9 @@ dependencies = [
 
 [[package]]
 name = "smysl-pack"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20ac63aa5a198ef644bad1cb0ab6f2b95f98303197c63f6a1a4072cbdf0b1931"
+checksum = "7356b758201597ef5940fb2f602e5e122fd603c3be9787014aaa0b4419901a96"
 dependencies = [
  "smysl-core",
  "smysl-graph",
@@ -1891,9 +1891,9 @@ dependencies = [
 
 [[package]]
 name = "smysl-render"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "132eea548406b825fe7661b94b5b9c76998c75efe47f0bfea4a720249d1eda94"
+checksum = "99cc18f7544a6770013cbe333172680ffc0f6b7274b0dd797de2792357cd990d"
 dependencies = [
  "smysl-core",
  "smysl-graph",
@@ -1902,9 +1902,9 @@ dependencies = [
 
 [[package]]
 name = "smysl-retrieve"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c3380ee2e64e3eb6aeb0841c226220caa7acd0641c6e3d6fdf5c8cf69e107fc"
+checksum = "369c562201896dd205f8796439d2135ba6db18c73746d23ead0b92442814247e"
 dependencies = [
  "bm25",
  "smysl-core",
@@ -1913,9 +1913,9 @@ dependencies = [
 
 [[package]]
 name = "smysl-thread"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9da5ac767b6c27331a179a12615e93dd1c29710bc01ee17961ba4c4148d19ca6"
+checksum = "347a36ee8a925de3c9b21ecab19df73499c5cdf1520655a2954fddda12101741"
 dependencies = [
  "smysl-core",
  "smysl-graph",

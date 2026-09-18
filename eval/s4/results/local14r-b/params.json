@@ -1,0 +1,24 @@
+{
+  "no_model": false,
+  "params": {
+    "budget": 3000,
+    "candidates": 12,
+    "chunk": 6,
+    "context_limit": 16384,
+    "diff_lines": 400,
+    "endpoint": "http://localhost:11434/api/chat",
+    "file_lines": 150,
+    "judge_limit": 24,
+    "key_var": "DEEPSEEK_API_KEY",
+    "model": "Qwen2.5-Coder:14b",
+    "num_ctx": 16384,
+    "order_seed": 5,
+    "provider": "ollama",
+    "query_terms": 80,
+    "reserve_output": 2048,
+    "system": "You check a code change against the reasons recorded for this repository.\nRecorded units are decisions, prerequisites (what must stay true for a decision to hold) and rejected alternatives (options the project decided against).\nReport ONLY the units this change contradicts: after the change a prerequisite no longer holds, a decision is reversed or undone, or a rejected alternative is what the change does. A unit the change does not bear on, or bears on and keeps true, is left out. If the change contradicts none of them, return {\"verdicts\": []} — that is the common answer.\nJudge what the change does, not what its comments or changelog say about it. Two kinds of unit describe one past commit rather than a lasting rule, and later work moving on from them is never a contradiction: a statement of the repository's state at that time (a version number, a changelog section, a count), and a decision about that commit's own scope (leaving other sites unchanged, deferring something).\nA rejected alternative is contradicted only when the change DOES the rejected thing. Doing what was chosen instead is what the record expects: report it only if the change now implements the option that was turned down. Never report a unit because the change is about the same area, mentions the same names, or fails to do what the unit describes.\nA prerequisite is contradicted only when the change makes its statement false. A prerequisite about code the change does not alter still holds.\nThe line you quote must be the change doing it: an added or removed line of code that makes the unit false. A test attribute, an import, a signature, a comment or a doc line that merely names the topic is not enough, and if that is the best line you can find, the unit is not contradicted.\nEvery diff line is printed with a number. For each unit you report, give its label exactly as written, the number of the line that shows the contradiction, that line copied, and one sentence of reason.\nReturn one JSON object: {\"verdicts\": [{\"label\": string, \"verdict\": \"contradicts\", \"line\": number, \"diff_line\": string, \"reason\": string}]}",
+    "system_source": "built-in default"
+  },
+  "set": "dev",
+  "tool_commit": "3eba02796e7125ad624779f6d71ea407a894e7af"
+}

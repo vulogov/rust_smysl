@@ -164,7 +164,8 @@ def diff_text(r):
 
 def gate(runs):
     pats = patterns()
-    rows = load(runs)
+    # Two runs are the two passes of one measurement: the gate scores what they agree on.
+    rows = agree(runs[0], runs[1]) if len(runs) == 2 else load(runs)
     run = runs[0]
     key = json.loads((KEYS / f"{run}.json").read_text())
     text = (RESULTS / run / "adjudication.md").read_text()

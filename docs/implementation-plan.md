@@ -36,7 +36,7 @@ prerequisite true on a model's say-so.
 
 | Dependency | Pin | Why |
 |---|---|---|
-| `smysl` | `1.4` (crates.io, published 2026-09-17) with `default-features = false, features = ["stage"]` | The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, `EdgeSet::premises`, `from_csv`, label bindings in staged records) first exists in 1.3. 1.4 adds record-level merge idempotence (R10), imported readings that check clean (R12), and the edge lifecycle (D15). |
+| `smysl` | `1.5` (crates.io, published 2026-09-17) with `default-features = false, features = ["stage"]` | The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, `EdgeSet::premises`, `from_csv`, label bindings in staged records) first exists in 1.3. 1.4 added record-level merge idempotence (R10), imported readings that check clean (R12) and the edge lifecycle (D15); 1.5 adds R16–R20 and C8 packing, all of which `check` uses. |
 | `syn` | `3` (`full`, `visit`, `extra-traits`, `printing`), `proc-macro2` with `span-locations` | Parses both test workspaces with no errors in ~0.3 s |
 | `gix` | `0.87`, `default-features = false, features = ["sha1", "revision"]` | Commit message and changed-file text read in-process (`cargo-smysl-git`); no `git` binary |
 
@@ -44,7 +44,18 @@ prerequisite true on a model's say-so.
 git dependency would block `cargo publish` and `cargo install cargo-smysl`. Verified at `013cc20`
 (pre-release): no `smysl-provider`, `ureq`, `tokio` or `rustls` in the `stage` tree.
 
-**Pinned to smysl 1.4.0 on 2026-09-17,** the day it was published. Acceptance from rust_smysl passed
+**Pinned to smysl 1.5.0 on 2026-09-17,** the day it was published. `check` adopts all five of its
+requests: `Query::within` (R16) restricts retrieval to decisions, prerequisites and rejected
+alternatives; `Tokenizer::folding()` (R19) reaches a unit saying "require" from a diff saying
+"required"; `units_with_source_prefix` (R20) replaces a full scan per diff; `labels_of` (R17) and
+`support_span` (R18) are adopted as the corpus and validation are simplified; and
+`PackRequest::resting_on` (C8) carries a decision's prerequisites, measured at 21% → 54%.
+
+**MSRV:** the shipped crates build on 1.86. `cargo-smysl-eval` does not: its model client (`ureq`)
+pulls an `icu`/`yoke` chain needing a newer rustc. It is development tooling and never published, so the
+CI floor covers the four shipped crates.
+
+**Previously pinned to smysl 1.4.0,** the day it was published. Acceptance from rust_smysl passed
 twice before publish (`docs/smysl-1.4.0-acceptance.md`). On the published crate:
 - the workspace tests pass with nothing ignored, including the R10 and R12 acceptance tests and the merge
   guarantee that was ignored under 1.3;

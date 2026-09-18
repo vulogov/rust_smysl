@@ -104,6 +104,9 @@ struct S4Args {
     /// Tokens left for the answer when fitting a call to the context limit.
     #[arg(long, env = "SMYSL_CHECK_RESERVE_OUTPUT", default_value_t = 2048)]
     reserve_output: u32,
+    /// Most units judged for one diff; 0 judges every one in the pack.
+    #[arg(long, env = "SMYSL_CHECK_JUDGE_LIMIT", default_value_t = 0)]
+    judge_limit: usize,
     /// Rotate the order units are grouped in, so a second run groups them differently.
     #[arg(long, default_value_t = 0)]
     order_seed: usize,
@@ -640,6 +643,7 @@ fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
         chunk: a.chunk,
         context_limit: a.context_limit.unwrap_or(a.num_ctx),
         reserve_output: a.reserve_output,
+        judge_limit: a.judge_limit,
         order_seed: a.order_seed,
         system: match &a.prompt_file {
             Some(f) => read(f)?,

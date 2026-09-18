@@ -30,7 +30,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@1.86
       - uses: Swatinem/rust-cache@v2
-      - run: cargo build --workspace --locked
+      # The shipped crates only: cargo-smysl-eval is development tooling (publish = false), and its
+      # model client (ureq) pulls an icu/yoke chain that needs a newer rustc than this floor.
+      - run: cargo build -p cargo-smysl -p cargo-smysl-corpus -p cargo-smysl-facts -p cargo-smysl-git --locked
 
   # The objective: an external cargo subcommand, installed by `cargo install`, working under cargo.
   install:
