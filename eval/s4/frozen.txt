@@ -1,29 +1,30 @@
-# S4 frozen configuration (eval/s4-protocol.md, "Freezing"), 2026-09-17.
-# Frozen at the owner's instruction after the development runs. A change to anything below
-# invalidates a held-out measurement made with it.
+# S4 frozen configuration (eval/s4-protocol.md, "Freezing"), re-frozen 2026-09-18 before the held-out run.
+# A change to anything below invalidates a held-out measurement made with it.
 
-detector commit   5c342d9 (crates/cargo-smysl-eval/src/s4.rs; steps 1, 2 and 4 deterministic)
-smysl             1.4.0 (crates.io pin). The 1.5.0 variant (Query::within, Tokenizer::folding,
-                  units_with_source_prefix, PackRequest::resting_on) is measured separately against the
-                  working tree and needs its own freeze once 1.5.0 publishes.
+smysl             1.6.0 (crates.io pin). `check` uses R16 within, R19 folding, R20 source prefix,
+                  R21 reserving, R22 hit terms, R23 payload filter, and C8 resting_on.
+detector          crates/cargo-smysl-eval/src/s4.rs at the commit recording this file
 
-provider          ollama (local, no API spend)
+provider          ollama (local; no API spend — the owner's budget decision, 2026-09-17)
 model             Qwen2.5-Coder:14b
-num_ctx           16384
-context_limit     16384, reserve_output 2048
-jobs              1 (a second 16k context does not fit beside the model on 24 GB)
+num_ctx           16384, context_limit 16384, reserve_output 2048 (also the generation cap)
+jobs              1
+client            7-minute timeout, 3 attempts (a 30-minute timeout wasted hours when the model
+                  failed to load under memory pressure)
 
-candidates        12
-budget            3000 tokens
+candidates        12, retrieved with the payload filter on code:kind
+budget            3000 tokens of pack, plus `reserving` what the prompt, diff and answer occupy
 diff_lines        400, file_lines 150
 query_terms       80
+min_term_weight   0 (off). Measured on the owner's 76 verdicts: correct and wrong flags have
+                  overlapping term profiles (median 14.7 vs 11.7), so a threshold removes at best
+                  4 of 32 wrong flags before it starts costing correct ones.
 judge_limit       24 units per diff, chunk 6 per call
-system prompt     the built-in default (s4::DEFAULT_SYSTEM)
+system prompt     the built-in default (s4::DEFAULT_SYSTEM). The reworked stricter prompt was
+                  measured and rejected: recall 0.30, and it dropped 10 of 22 correct flags.
 
-passes            two: order_seed 0 and order_seed 5
-finding           a flag counts only if both passes report it (agreement), which on the development
-                  sample removed 44% of flags and every false flag on a real commit
+passes            two: order_seed 0 and order_seed 5; a finding counts only if both report it
 
-# Development results with this configuration: eval/s4/results/local14-a, local14-b.
-# Recall by pattern 13/20 agreed (14/20 and 13/20 per pass); 76 agreed flags over 35 diffs;
-# 0 of 11 real commits flagged.
+# Development results, this configuration (local 14B): eval/s4/results/dev16-a and dev16-b.
+# Earlier: local14 (smysl 1.4) recall 0.65, precision 0.29 on the owner's adjudication;
+# hosted deepseek-v4-pro on the same diffs: recall 0.75, precision ~0.89, $2.02 per pass.

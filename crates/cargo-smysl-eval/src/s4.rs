@@ -7,6 +7,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::time::{Duration, Instant};
 
+use cargo_smysl_corpus::KIND_KEY;
 use serde::{Deserialize, Serialize};
 use smysl::{
     Bm25, EdgeSet, Lod, PackRequest, Query, Retriever as _, SalienceRequest, Tokenizer, Uid,
@@ -40,6 +41,10 @@ pub struct Params {
     pub context_limit: u32,
     /// Tokens left for the answer when fitting a call to `context_limit`.
     pub reserve_output: u32,
+    /// Smallest contribution a matched term must make for a retrieved unit to count as retrieved on
+    /// merit (smysl 1.6, R22). A unit whose only matches are near-zero-IDF words — `with`, `two`, `the`
+    /// — is about the same prose, not the same code. 0 keeps every hit.
+    pub min_term_weight: f32,
     /// Most units judged for one diff, ranked candidates first; 0 judges every decision, prerequisite
     /// and rejected alternative in the pack. A slower model needs a smaller number to stay usable.
     pub judge_limit: usize,
@@ -167,6 +172,8 @@ pub struct Candidate {
     pub label: String,
     pub score: f32,
     pub anchored: bool,
+    /// The query terms this unit matched, strongest first (smysl 1.6, R22).
+    pub terms: Vec<String>,
 }
 
 fn candidate_kind(label: &str) -> Option<&'static str> {
@@ -188,26 +195,38 @@ pub fn candidates(corpus: &Corpus, diff: &Diff, p: &Params) -> Vec<(Uid, Candida
         .iter()
         .flat_map(|f| corpus.store.units_with_source_prefix(&format!("{f}@")))
         .collect();
-    // R16 (1.5): retrieval restricted to what this command can act on. `kinds` cannot express it — a
-    // rejected alternative and a consequence are both `Claim` — so the eligible set is given by uid.
-    let eligible: Vec<Uid> = corpus
-        .store
-        .units()
-        .filter(|(uid, _)| candidate_kind(&corpus.name(uid)).is_some())
-        .map(|(uid, _)| *uid)
-        .collect();
-    let hits: BTreeMap<Uid, f32> = if q.is_empty() {
+    let hits: BTreeMap<Uid, (f32, Vec<(String, f32)>)> = if q.is_empty() {
         BTreeMap::new()
     } else {
         // R19 (1.5): folding, so a diff saying `required` reaches a unit saying `require`. Measured:
         // task 5's prerequisite was unreachable at any budget without it.
         Bm25::index_with(&corpus.store, Tokenizer::folding())
-            .search(&Query::new(q, p.candidates).within(eligible))
+            // R23 (1.6): the schema's own kind, indexed once with the store, rather than the
+            // eligible set rebuilt per diff. `kinds` cannot express it: a rejected alternative and a
+            // consequence are both `Claim`.
+            .search(
+                &Query::new(q, p.candidates)
+                    // The values the corpus actually writes (cargo-smysl-corpus build.rs): a decision's
+                    // own kind, a prerequisite's kind, and a rejected alternative.
+                    .with_payload(
+                        KIND_KEY,
+                        [
+                            "act",
+                            "decline",
+                            "existing-behaviour",
+                            "invariant",
+                            "tool-setting",
+                            "prior-change",
+                            "assumption",
+                            "rejected-alternative",
+                        ],
+                    ),
+            )
             .into_iter()
-            .map(|h| (h.uid, h.score))
+            .map(|h| (h.uid, (h.score, h.terms.clone())))
             .collect()
     };
-    let best = hits.values().copied().fold(1.0f32, f32::max);
+    let best = hits.values().map(|(s, _)| *s).fold(1.0f32, f32::max);
     let mut ranked: Vec<(Uid, Candidate)> = corpus
         .store
         .units()
@@ -215,14 +234,27 @@ pub fn candidates(corpus: &Corpus, diff: &Diff, p: &Params) -> Vec<(Uid, Candida
             let label = corpus.name(uid);
             candidate_kind(&label)?;
             let is_anchored = anchored.contains(uid);
+            let hit = hits.get(uid).filter(|(_, terms)| {
+                p.min_term_weight <= 0.0 || terms.iter().any(|(_, c)| *c >= p.min_term_weight)
+            });
             let score =
-                hits.get(uid).copied().unwrap_or(0.0) + if is_anchored { best / 2.0 } else { 0.0 };
+                hit.map(|(s, _)| *s).unwrap_or(0.0) + if is_anchored { best / 2.0 } else { 0.0 };
+            // R22 (1.6): why this unit was retrieved, so a miss is visible without reading packs.
+            let terms: Vec<String> = hit
+                .map(|(_, t)| {
+                    t.iter()
+                        .take(5)
+                        .map(|(w, c)| format!("{w}:{c:.2}"))
+                        .collect()
+                })
+                .unwrap_or_default();
             (score > 0.0).then_some((
                 *uid,
                 Candidate {
                     label,
                     score,
                     anchored: is_anchored,
+                    terms,
                 },
             ))
         })
@@ -245,12 +277,23 @@ pub struct Context {
 }
 
 /// Step 2: the candidates as the focus of a pack, dropping the lowest-ranked until they fit.
-pub fn context(corpus: &Corpus, mut ranked: Vec<(Uid, Candidate)>, p: &Params) -> Option<Context> {
+pub fn context(
+    corpus: &Corpus,
+    mut ranked: Vec<(Uid, Candidate)>,
+    p: &Params,
+    reserve: u64,
+) -> Option<Context> {
     let sal = smysl::salience(&corpus.store, &SalienceRequest::default());
     while !ranked.is_empty() {
         // C8 (1.5): a packed decision carries the prerequisites it rests on, which D3's `conditions`
         // edges keep outside its uid. Measured: decisions arriving with their prerequisites, 21% to 54%.
-        let req = PackRequest::budget(p.budget)
+        // R21 (1.6): the budget is the model's, less what the rest of the prompt occupies, so packing
+        // and fitting are one decision instead of the caller dropping units the solver chose whole.
+        // The budget is what the model takes; `reserving` keeps room for the prompt, diff and answer,
+        // and the pack itself is still capped at `budget` so runs stay comparable.
+        let ceiling = u64::from(p.context_limit).max(reserve + 512);
+        let req = PackRequest::budget((reserve + p.budget).min(ceiling))
+            .reserving(reserve)
             .focusing(ranked.iter().map(|(u, _)| *u))
             .resting_on(EdgeSet::premises());
         if let Ok(pack) = smysl::pack(&corpus.store, &sal, &req) {
@@ -457,7 +500,10 @@ fn call(user: &str, p: &Params) -> Result<(Vec<Verdict>, Usage), String> {
             "messages": [{"role": "system", "content": &p.system}, {"role": "user", "content": user}],
             "format": "json",
             "stream": false,
-            "options": {"temperature": 0, "num_ctx": p.num_ctx},
+            // A local model in JSON mode can generate until something gives up: measured, four
+            // requests in a row ending at the client's 30-minute timeout with nothing to show. The
+            // answer this asks for is short, so cap it and fail fast instead.
+            "options": {"temperature": 0, "num_ctx": p.num_ctx, "num_predict": p.reserve_output},
         })
     } else {
         serde_json::json!({
@@ -469,10 +515,11 @@ fn call(user: &str, p: &Params) -> Result<(Vec<Verdict>, Usage), String> {
     };
     let started = Instant::now();
     let agent = ureq::AgentBuilder::new()
-        .timeout(Duration::from_secs(1800))
+        .timeout(Duration::from_secs(if local { 420 } else { 1800 }))
         .build();
     let mut last = String::new();
-    for attempt in 0..6 {
+    let attempts = if local { 3 } else { 6 };
+    for attempt in 0..attempts {
         if attempt > 0 {
             std::thread::sleep(Duration::from_secs(if local { 5 } else { 20 }));
         }
