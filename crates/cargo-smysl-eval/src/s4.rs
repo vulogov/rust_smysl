@@ -48,6 +48,9 @@ pub struct Params {
     /// Most units judged for one diff, ranked candidates first; 0 judges every decision, prerequisite
     /// and rejected alternative in the pack. A slower model needs a smaller number to stay usable.
     pub judge_limit: usize,
+    /// Characters per token for this provider's tokenizer. A run reports the error against what the
+    /// provider charged, so an operator can correct it for their model.
+    pub chars_per_token: f32,
     /// Rotates the order units are grouped in. Two runs at different seeds group differently, so a
     /// verdict that survives both is not an artefact of one grouping.
     pub order_seed: usize,
@@ -62,6 +65,18 @@ pub struct Params {
 impl Params {
     pub fn is_ollama(&self) -> bool {
         self.provider.eq_ignore_ascii_case("ollama")
+    }
+
+    /// Tokens this provider's model will charge for `text`.
+    ///
+    /// Tokenizers differ — code and diffs run about 2.5 characters per token on Qwen, prose about 4 —
+    /// so this is a setting, not a constant: the operator names their model's rate and every run records
+    /// what the provider actually charged beside what was predicted (`Usage::predicted_tokens`), which is
+    /// how a wrong rate shows up. smysl's own `bytes / 4` estimate is right for prose and wrong for a diff:
+    /// measured against Qwen2.5-Coder, a prompt it called 9k was 31k, and Ollama silently kept the last
+    /// `num_ctx` tokens, dropping the system prompt and the units to judge.
+    pub fn model_tokens(&self, text: &str) -> u32 {
+        (text.len() as f32 / self.chars_per_token).ceil() as u32
     }
 }
 
@@ -86,6 +101,7 @@ pub fn parse_diff(text: &str, p: &Params) -> Diff {
     let mut shown = Vec::new();
     let mut shown_lines = BTreeSet::new();
     let mut numbered = BTreeMap::new();
+    let mut shown_tokens = 0u32;
     let mut truncated = false;
     let mut in_file = 0usize;
     let mut started = false;
@@ -120,6 +136,13 @@ pub fn parse_diff(text: &str, p: &Params) -> Diff {
             truncated = true;
             continue;
         }
+        // Half the window, at most, goes to the diff: the units to judge and the answer need the rest,
+        // and a model that truncates drops the units first.
+        if shown_tokens + p.model_tokens(line) > p.context_limit / 2 {
+            truncated = true;
+            continue;
+        }
+        shown_tokens += p.model_tokens(line) + 1;
         let n = shown.len() as u32 + 1;
         shown.push(format!("{n:>4}| {line}"));
         if let Some(c) = content {
@@ -291,11 +314,15 @@ pub fn context(
         // and fitting are one decision instead of the caller dropping units the solver chose whole.
         // The budget is what the model takes; `reserving` keeps room for the prompt, diff and answer,
         // and the pack itself is still capped at `budget` so runs stay comparable.
+        // Both numbers are model tokens; the solver counts in smysl's, so convert (R24).
         let ceiling = u64::from(p.context_limit).max(reserve + 512);
-        let req = PackRequest::budget((reserve + p.budget).min(ceiling))
-            .reserving(reserve)
-            .focusing(ranked.iter().map(|(u, _)| *u))
-            .resting_on(EdgeSet::premises());
+        let req = PackRequest::budget(smysl_budget(
+            (reserve + p.budget).min(ceiling),
+            p.chars_per_token,
+        ))
+        .reserving(smysl_budget(reserve, p.chars_per_token))
+        .focusing(ranked.iter().map(|(u, _)| *u))
+        .resting_on(EdgeSet::premises());
         if let Ok(pack) = smysl::pack(&corpus.store, &sal, &req) {
             let selection: BTreeMap<Uid, Lod> = pack.selection.clone();
             return Some(Context {
@@ -346,6 +373,13 @@ pub fn judged(ctx: &Context, order_seed: usize, limit: usize) -> Vec<String> {
     out
 }
 
+/// smysl counts `bytes / 4`; a model charges `bytes / chars_per_token`. A budget in model tokens is this
+/// many smysl tokens (1.6's `counting_with` would do this properly, but its facade does not export
+/// `ExternalCost`; docs/smysl-requests-1.7.md, R24).
+pub fn smysl_budget(model_tokens: u64, chars_per_token: f32) -> u64 {
+    (model_tokens as f64 * f64::from(chars_per_token) / 4.0).ceil() as u64
+}
+
 /// What had to be given up to fit the model's limits, reported with the result and on stderr (D17).
 #[derive(Default, Serialize, Clone)]
 pub struct Fitting {
@@ -361,7 +395,7 @@ pub fn fit<'a>(
     diff: &Diff,
     p: &Params,
 ) -> (Vec<Vec<&'a String>>, Fitting) {
-    let fixed = smysl::tokens(&p.system) + smysl::tokens(&diff.shown) + 64;
+    let fixed = p.model_tokens(&p.system) + p.model_tokens(&diff.shown) + 64;
     let room = p.context_limit.saturating_sub(p.reserve_output);
     let mut warn = Fitting::default();
     if fixed >= room {
@@ -379,7 +413,7 @@ pub fn fit<'a>(
     let mut group: Vec<&String> = Vec::new();
     let mut used = fixed;
     for label in labels {
-        let cost = units.get(label).map(|u| smysl::tokens(u)).unwrap_or(0) + 8;
+        let cost = units.get(label).map(|u| p.model_tokens(u)).unwrap_or(0) + 8;
         let full = group.len() >= cap || (!group.is_empty() && used + cost > room);
         if full {
             groups.push(std::mem::take(&mut group));
@@ -448,6 +482,8 @@ pub struct Dropped {
 
 #[derive(Default, Serialize)]
 pub struct Usage {
+    /// What this run predicted the prompt would cost, at `chars_per_token`.
+    pub predicted_tokens: u64,
     pub prompt_tokens: u64,
     pub completion_tokens: u64,
     pub seconds: f64,
@@ -484,6 +520,7 @@ pub fn judge(
             diff.shown
         );
         let (mut v, u) = call(&user, p)?;
+        usage.predicted_tokens += u64::from(p.model_tokens(&user) + p.model_tokens(&p.system));
         verdicts.append(&mut v);
         usage.prompt_tokens += u.prompt_tokens;
         usage.completion_tokens += u.completion_tokens;
@@ -552,6 +589,7 @@ fn call(user: &str, p: &Params) -> Result<(Vec<Verdict>, Usage), String> {
             (
                 v["message"]["content"].as_str().unwrap_or("").to_string(),
                 Usage {
+                    predicted_tokens: 0,
                     prompt_tokens: v["prompt_eval_count"].as_u64().unwrap_or(0),
                     completion_tokens: v["eval_count"].as_u64().unwrap_or(0),
                     seconds: started.elapsed().as_secs_f64(),
@@ -564,6 +602,7 @@ fn call(user: &str, p: &Params) -> Result<(Vec<Verdict>, Usage), String> {
                     .unwrap_or("")
                     .to_string(),
                 Usage {
+                    predicted_tokens: 0,
                     prompt_tokens: v["usage"]["prompt_tokens"].as_u64().unwrap_or(0),
                     completion_tokens: v["usage"]["completion_tokens"].as_u64().unwrap_or(0),
                     seconds: started.elapsed().as_secs_f64(),
@@ -590,6 +629,14 @@ fn call(user: &str, p: &Params) -> Result<(Vec<Verdict>, Usage), String> {
                 },
             },
         };
+        if local && usage.prompt_tokens >= u64::from(p.num_ctx) {
+            // The provider read exactly its window: it truncated, and what it dropped is the head —
+            // the system prompt and the units. A verdict from that is not a verdict on this input.
+            return Err(format!(
+                "the model truncated the prompt ({} tokens at a {} window): the units to judge were cut",
+                usage.prompt_tokens, p.num_ctx
+            ));
+        }
         return Ok((verdicts, usage));
     }
     Err(format!("model call failed: {last}"))

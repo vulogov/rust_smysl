@@ -7,13 +7,20 @@ detector          crates/cargo-smysl-eval/src/s4.rs at the commit recording this
 
 provider          ollama (local; no API spend — the owner's budget decision, 2026-09-17)
 model             Qwen2.5-Coder:14b
-num_ctx           16384, context_limit 16384, reserve_output 2048 (also the generation cap)
+num_ctx           32768, context_limit 32768, reserve_output 2048 (also the generation cap).
+                  16384 was too small and the failure was silent: Ollama kept the last 16 384 tokens and
+                  dropped the system prompt and the units to judge, saying so only in its own log.
+chars_per_token   2.0 (a setting, not a constant: a provider's tokenizer is its own). Every call records
+                  predicted against charged tokens, and a call the provider truncated is now an error.
 jobs              1
 client            7-minute timeout, 3 attempts (a 30-minute timeout wasted hours when the model
                   failed to load under memory pressure)
 
 candidates        12, retrieved with the payload filter on code:kind
-budget            3000 tokens of pack, plus `reserving` what the prompt, diff and answer occupy
+budget            3000 model tokens of pack, plus `reserving` what the prompt, diff and answer occupy,
+                  converted to smysl's bytes/4 units by hand (1.6's facade does not export ExternalCost:
+                  docs/smysl-requests-1.7.md, R24)
+diff cap          at most half the window goes to the diff
 diff_lines        400, file_lines 150
 query_terms       80
 min_term_weight   0 (off). Measured on the owner's 76 verdicts: correct and wrong flags have

@@ -107,6 +107,9 @@ struct S4Args {
     /// Most units judged for one diff; 0 judges every one in the pack.
     #[arg(long, env = "SMYSL_CHECK_JUDGE_LIMIT", default_value_t = 0)]
     judge_limit: usize,
+    /// Characters per token for the chosen model's tokenizer (measured: Qwen2.5-Coder charges ~2.05 on diffs; prose ≈ 4).
+    #[arg(long, env = "SMYSL_CHECK_CHARS_PER_TOKEN", default_value_t = 2.0)]
+    chars_per_token: f32,
     /// Smallest term contribution for a retrieved unit to count (smysl 1.6 R22); 0 keeps every hit.
     #[arg(long, env = "SMYSL_CHECK_MIN_TERM_WEIGHT", default_value_t = 0.0)]
     min_term_weight: f32,
@@ -646,6 +649,7 @@ fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
         chunk: a.chunk,
         context_limit: a.context_limit.unwrap_or(a.num_ctx),
         reserve_output: a.reserve_output,
+        chars_per_token: a.chars_per_token,
         min_term_weight: a.min_term_weight,
         judge_limit: a.judge_limit,
         order_seed: a.order_seed,
@@ -767,8 +771,9 @@ fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
                 let diff = s4::parse_diff(&texts[&c.id], &params);
                 let ranked = s4::candidates(corpus, &diff, &params);
                 // What the pack must leave room for: the system prompt, the diff, and the answer.
-                let reserve = u64::from(smysl::tokens(&params.system) + smysl::tokens(&diff.shown))
-                    + u64::from(params.reserve_output);
+                let reserve = u64::from(
+                    params.model_tokens(&params.system) + params.model_tokens(&diff.shown),
+                ) + u64::from(params.reserve_output);
                 let ctx = s4::context(corpus, ranked, &params, reserve);
                 let mut result = serde_json::json!({
                     "id": c.id, "set": c.set, "repo": c.repo, "kind": c.kind, "task": c.task,
