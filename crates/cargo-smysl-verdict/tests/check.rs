@@ -29,7 +29,8 @@ impl Judge for Scripted {
     fn describe(&self) -> String {
         "scripted".into()
     }
-    fn ask(&self, _system: &str, user: &str) -> Result<(Vec<RawVerdict>, Charged), JudgeError> {
+    // The trait's primitive is the model's text, so a scripted judge answers as a model would.
+    fn ask_text(&self, _system: &str, user: &str) -> Result<(String, Charged), JudgeError> {
         self.asked.borrow_mut().push(user.to_string());
         let mut answers = self.answers.borrow_mut();
         let next = if answers.is_empty() {
@@ -37,7 +38,11 @@ impl Judge for Scripted {
         } else {
             answers.remove(0)
         };
-        Ok((next, Charged::default()))
+        let json = serde_json::json!({"verdicts": next.iter().map(|v: &RawVerdict| serde_json::json!({
+            "label": v.label, "verdict": v.verdict, "line": v.line,
+            "diff_line": v.diff_line, "reason": v.reason,
+        })).collect::<Vec<_>>()});
+        Ok((json.to_string(), Charged::default()))
     }
 }
 
@@ -196,7 +201,7 @@ fn an_unreadable_answer_is_reported_not_swallowed() {
         fn describe(&self) -> String {
             "broken".into()
         }
-        fn ask(&self, _s: &str, _u: &str) -> Result<(Vec<RawVerdict>, Charged), JudgeError> {
+        fn ask_text(&self, _s: &str, _u: &str) -> Result<(String, Charged), JudgeError> {
             Err(JudgeError::Shape("expected struct Verdict".into()))
         }
     }

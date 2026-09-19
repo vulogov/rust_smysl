@@ -7,7 +7,7 @@
 
 use std::collections::BTreeMap;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use smysl::surface::hjson::{HObject, HValue, Spanned};
 use smysl::surface::payload::object_to_payload;
 use smysl::{
@@ -22,7 +22,7 @@ use crate::{Labels, CODE_SCHEMA_ID, REL_EXERCISES, REL_TOUCHES};
 pub const KIND_KEY: &str = "code:kind";
 
 /// An extraction in the research shape (see `eval/extractions/`).
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Extraction {
     #[serde(default)]
     pub decisions: Vec<ExDecision>,
@@ -34,7 +34,7 @@ pub struct Extraction {
     pub consequences: Vec<ExConsequence>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExDecision {
     pub decision: String,
     #[serde(default)]
@@ -45,17 +45,21 @@ pub struct ExDecision {
     pub quote: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExPrerequisite {
     pub decision: usize,
     pub text: String,
     #[serde(default)]
     pub kind: String,
+    /// A rule the project states, rather than a fact about the code. D12 caps what a normative
+    /// prerequisite may claim, so it is carried from extraction rather than guessed at later.
+    #[serde(default)]
+    pub normative: bool,
     #[serde(default)]
     pub quote: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExAlternative {
     pub decision: usize,
     pub alternative: String,
@@ -65,7 +69,7 @@ pub struct ExAlternative {
     pub quote: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExConsequence {
     pub decision: usize,
     pub text: String,

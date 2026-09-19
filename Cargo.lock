@@ -216,6 +216,14 @@ version = "0.1.0"
 [[package]]
 name = "cargo-smysl-extract"
 version = "0.1.0"
+dependencies = [
+ "cargo-smysl-corpus",
+ "serde",
+ "serde_json",
+ "smysl",
+ "thiserror",
+ "ureq",
+]
 
 [[package]]
 name = "cargo-smysl-facts"
@@ -243,12 +251,12 @@ name = "cargo-smysl-verdict"
 version = "0.1.0"
 dependencies = [
  "cargo-smysl-corpus",
+ "cargo-smysl-extract",
  "imara-diff",
  "serde",
  "serde_json",
  "smysl",
  "thiserror",
- "ureq",
 ]
 
 [[package]]

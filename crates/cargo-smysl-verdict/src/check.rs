@@ -24,7 +24,7 @@ use smysl::{
     SalienceRequest, Store, Tokenizer, Uid,
 };
 
-use crate::judge::{Judge, JudgeError, RawVerdict};
+use cargo_smysl_extract::{Judge, JudgeError, RawVerdict};
 
 /// The kinds a change can contradict, as the corpus writes them (`code:kind`).
 const JUDGED_KINDS: [&str; 8] = [

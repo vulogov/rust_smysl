@@ -93,12 +93,22 @@ impl Provider {
     }
 }
 
-/// Anything that can answer the judgement. A trait so the pipeline is testable without a model, and so
-/// a caller may supply its own client.
+/// Anything that can answer a question. A trait so a pipeline is testable without a model, and so a
+/// caller may supply its own client.
+///
+/// The primitive is the model's text, because the two callers want different shapes from it: `extract`
+/// reads its own JSON, `check` reads verdicts. Parsing verdicts is provided here so both agree on what a
+/// malformed answer is.
 pub trait Judge {
-    fn ask(&self, system: &str, user: &str) -> Result<(Vec<RawVerdict>, Charged), JudgeError>;
+    fn ask_text(&self, system: &str, user: &str) -> Result<(String, Charged), JudgeError>;
+
     /// What the answers are attributed to, for the record.
     fn describe(&self) -> String;
+
+    fn ask(&self, system: &str, user: &str) -> Result<(Vec<RawVerdict>, Charged), JudgeError> {
+        let (text, charged) = self.ask_text(system, user)?;
+        Ok((parse_answer(&text)?, charged))
+    }
 }
 
 /// The shipped client.
@@ -111,7 +121,7 @@ impl Judge for ProviderJudge {
         format!("{}:{}", self.provider.kind, self.provider.model)
     }
 
-    fn ask(&self, system: &str, user: &str) -> Result<(Vec<RawVerdict>, Charged), JudgeError> {
+    fn ask_text(&self, system: &str, user: &str) -> Result<(String, Charged), JudgeError> {
         let p = &self.provider;
         let body = if p.is_local() {
             serde_json::json!({
@@ -161,7 +171,7 @@ impl Judge for ProviderJudge {
                 window: p.window,
             });
         }
-        Ok((parse_answer(&content)?, charged))
+        Ok((content, charged))
     }
 }
 

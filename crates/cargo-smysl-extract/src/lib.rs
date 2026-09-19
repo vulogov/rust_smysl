@@ -4,4 +4,12 @@
 //! The model proposes content only; this crate hands units to `cargo-smysl-corpus`, which assigns
 //! labels, sources and statuses. Extraction runs once per commit and recipe (D7).
 //!
-//! Open at phase start (plan item 7): an own model client, or smysl's `model` feature.
+//! Item 7 is settled (D18): the client is our own and lives here, so `check` and `extract` reach a model
+//! the same way. The default build speaks plain HTTP to a local provider and carries no TLS stack; the
+//! `hosted` feature adds one for a paid provider.
+
+pub mod judge;
+pub mod pass;
+
+pub use judge::{Charged, Judge, JudgeError, Provider, ProviderJudge, RawVerdict};
+pub use pass::{extract, Cache, Recipe, Report};

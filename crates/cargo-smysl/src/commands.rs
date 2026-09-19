@@ -2,6 +2,7 @@ use std::path::Path;
 
 use cargo_smysl_corpus::query::dependents_of;
 use cargo_smysl_corpus::store::Corpus;
+use cargo_smysl_extract::{Cache as ExtractionCache, Recipe};
 use cargo_smysl_facts::Cache;
 use cargo_smysl_verdict::{Change, Provider, ProviderJudge, Settings};
 
@@ -12,7 +13,30 @@ pub fn run(args: SmyslArgs) -> u8 {
     match &args.command {
         Command::Doctor => doctor(&args),
         Command::Facts { rev, file, json } => facts(&args, rev.as_deref(), file, *json),
-        Command::Extract { .. } => not_yet("extract", "Phase 2 — facts and extraction"),
+        Command::Extract {
+            rev,
+            force,
+            dry_run,
+            recipe,
+            provider,
+            model,
+            endpoint,
+            key_var,
+            window,
+        } => extract(
+            &args,
+            rev.as_deref(),
+            *force,
+            *dry_run,
+            ExtractHow {
+                recipe,
+                provider,
+                model,
+                endpoint,
+                key_var,
+                window: *window,
+            },
+        ),
         Command::Why { item } => why(&args, item),
         Command::Check {
             rev,
@@ -234,6 +258,178 @@ fn walk(root: &Path, dir: &Path, out: &mut Vec<(String, String)>) {
                 Ok(text) => out.push((rel, text)),
                 Err(e) => eprintln!("cargo smysl facts: {rel}: {e} (skipped)"),
             }
+        }
+    }
+}
+
+struct ExtractHow<'a> {
+    recipe: &'a str,
+    provider: &'a str,
+    model: &'a str,
+    endpoint: &'a str,
+    key_var: &'a str,
+    window: u32,
+}
+
+/// `extract <rev>`: read the commit, ask the model, record what it said.
+///
+/// The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content
+/// only, and every quote it gives is checked against the commit (D8). A commit is extracted once per
+/// recipe (D7) — `--force` is for a deliberate redo, not for a retry loop.
+fn extract(
+    args: &SmyslArgs,
+    rev: Option<&str>,
+    force: bool,
+    dry_run: bool,
+    how: ExtractHow<'_>,
+) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl extract: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let commit = match cargo_smysl_git::read_commit(&root, rev.unwrap_or("HEAD")) {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("cargo smysl extract: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let recipe = Recipe {
+        name: how.recipe.to_string(),
+        ..Recipe::default()
+    };
+    let cache = ExtractionCache::at(&root);
+
+    let kept = if force {
+        None
+    } else {
+        cache.read(&commit.sha, &recipe)
+    };
+    let extraction = match kept {
+        Some(extraction) => {
+            println!("{}: already extracted ({})", &commit.sha[..12], recipe.name);
+            extraction
+        }
+        None => {
+            // What the model sees: the commit as the tool read it, message then diff.
+            let mut input = commit.message.clone();
+            for file in &commit.files {
+                input.push_str(&format!("\n\n--- {} ---\n{}", file.path, file.text()));
+            }
+            let judge = ProviderJudge {
+                provider: Provider {
+                    kind: how.provider.to_string(),
+                    endpoint: how.endpoint.to_string(),
+                    model: how.model.to_string(),
+                    key_var: how.key_var.to_string(),
+                    window: how.window,
+                    ..Provider::local(how.model)
+                },
+            };
+            match cargo_smysl_extract::extract(&input, &judge, &recipe) {
+                Ok((extraction, report)) => {
+                    for w in &report.warnings {
+                        eprintln!("cargo smysl extract: {w}");
+                    }
+                    match cache.write(&commit.sha, &recipe, &extraction) {
+                        Ok(path) => {
+                            println!("{} call(s); kept in {}", report.calls, path.display())
+                        }
+                        Err(e) => {
+                            eprintln!("cargo smysl extract: {e}");
+                            return exit::FAILURE;
+                        }
+                    }
+                    extraction
+                }
+                Err(e) => {
+                    eprintln!("cargo smysl extract: {e}");
+                    return exit::FAILURE;
+                }
+            }
+        }
+    };
+    println!(
+        "{} decision(s), {} prerequisite(s), {} alternative(s), {} consequence(s)",
+        extraction.decisions.len(),
+        extraction.prerequisites.len(),
+        extraction.alternatives.len(),
+        extraction.consequences.len()
+    );
+    if dry_run {
+        return exit::OK;
+    }
+
+    // Build, stage and record: the corpus assigns labels and sources, checks every quote, and refuses a
+    // batch that breaks a smysl rule.
+    let texts: Vec<(String, String)> = commit
+        .files
+        .iter()
+        .map(|f| (f.path.clone(), f.text()))
+        .collect();
+    let text = cargo_smysl_corpus::CommitText {
+        sha: &commit.sha,
+        message: &commit.message,
+        files: texts
+            .iter()
+            .map(|(p, t)| (p.as_str(), t.as_str()))
+            .collect(),
+    };
+    let batch = match cargo_smysl_corpus::build(&extraction, &text, 0) {
+        Ok(b) => b,
+        Err(e) => {
+            eprintln!("cargo smysl extract: {e}");
+            return exit::FAILURE;
+        }
+    };
+    println!(
+        "quotes: {} present, {} loose, {} absent (capped at speculative){}",
+        batch.quotes.present,
+        batch.quotes.loose,
+        batch.quotes.absent,
+        if batch.dropped.is_empty() {
+            String::new()
+        } else {
+            format!("; {} item(s) dropped", batch.dropped.len())
+        }
+    );
+    let corpus = Corpus::at(&root);
+    let store = match corpus.load() {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("cargo smysl extract: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let staged = cargo_smysl_corpus::stage(&store, batch, 0);
+    let errors: Vec<String> = staged
+        .report
+        .iter()
+        .filter(|d| d.severity == smysl::Severity::Error)
+        .map(|d| d.to_string())
+        .collect();
+    if !errors.is_empty() {
+        for e in errors.iter().take(5) {
+            eprintln!("cargo smysl extract: {e}");
+        }
+        return exit::FAILURE;
+    }
+    match corpus.record(&commit.sha, &staged) {
+        Ok(r) => {
+            println!(
+                "recorded {} ({} record(s) added, {} in the corpus)",
+                r.document.display(),
+                r.added,
+                r.records
+            );
+            exit::OK
+        }
+        Err(e) => {
+            eprintln!("cargo smysl extract: {e}");
+            exit::FAILURE
         }
     }
 }

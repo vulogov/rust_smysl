@@ -414,11 +414,19 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
   over a commit or the working tree; the cache is keyed by each file's bytes and `EXTRACTOR_VERSION`, so
   a changed file cannot hit a stale entry and deleting it costs only a reparse.
   - Still open here: scope selection and fact templates per D9, and CI-matrix `cfg` evaluation.
-- `extract` crate:
-  - multi-pass prompts per D6;
-  - quote checking per D8;
-  - extract-once cache keyed by commit and recipe (D7);
-  - labels and sources per D5.
+- `extract` crate (**done, 2026-09-19**): decisions first, then each decision's prerequisites,
+  alternatives and consequences asked for on its own (D6, which the research measured: asked all at once
+  a model returns thin prerequisites). The model proposes content only — labels, sources and statuses are
+  assigned by the corpus from the commit the tool read (D5), and every quote is checked there (D8). The
+  extraction is kept per commit and recipe (D7); an improvement is a new recipe, never a re-extraction
+  merged into the old one. `cargo smysl extract [rev]` runs it and records the result, `--dry-run` stops
+  before recording, `--force` is a deliberate redo.
+  - The model client lives here (D18) and `check` uses it: the `Judge` trait's primitive is the model's
+    text, so `extract` reads its own JSON and `check` reads verdicts, and both agree on what a malformed
+    answer is.
+  - **Its quality is unmeasured.** On this repository's own commit a local 14B returned one decision with
+    one prerequisite; the research's pro-class runs returned eight. Measuring it is the S0 labelling work,
+    still deferred.
 - **Item 7, settled (D18):** our own client. The default build carries no network stack; `hosted` adds TLS
   for a paid provider. `extract` will use the same client.
 - **Done when:** on the S0 set, prerequisite precision is at least the research pro run's (~75%

@@ -40,10 +40,36 @@ pub enum Command {
         #[arg(long)]
         json: bool,
     },
-    /// Extract decisions, prerequisites, alternatives and consequences for a commit.
+    /// Extract decisions, prerequisites, alternatives and consequences for a commit, and record them.
+    ///
+    /// Once per commit and recipe (D7): a second run reads the kept extraction rather than asking again.
     Extract {
-        /// Commit or revision.
+        /// Commit or revision; defaults to `HEAD`.
         rev: Option<String>,
+        /// Extract again even if this commit and recipe are already recorded.
+        #[arg(long)]
+        force: bool,
+        /// Extract only: do not record into the corpus.
+        #[arg(long)]
+        dry_run: bool,
+        /// Names the way of extracting, in the cache and the record.
+        #[arg(long, env = "SMYSL_EXTRACT_RECIPE", default_value = "v1")]
+        recipe: String,
+        /// `ollama`, or `openai` for any OpenAI-compatible endpoint.
+        #[arg(long, env = "SMYSL_CHECK_PROVIDER", default_value = "ollama")]
+        provider: String,
+        #[arg(long, env = "SMYSL_CHECK_MODEL", default_value = "qwen2.5-coder:14b")]
+        model: String,
+        #[arg(
+            long,
+            env = "SMYSL_CHECK_ENDPOINT",
+            default_value = "http://localhost:11434/api/chat"
+        )]
+        endpoint: String,
+        #[arg(long, env = "SMYSL_CHECK_KEY_VAR", default_value = "")]
+        key_var: String,
+        #[arg(long, env = "SMYSL_CHECK_WINDOW", default_value_t = 32768)]
+        window: u32,
     },
     /// Explain why an item is the way it is, from the corpus.
     Why {
