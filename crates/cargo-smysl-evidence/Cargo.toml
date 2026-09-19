@@ -9,3 +9,11 @@ authors.workspace      = true
 repository.workspace   = true
 
 [dependencies]
+cargo-smysl-corpus = { workspace = true }
+cargo-smysl-facts  = { workspace = true }
+smysl              = { workspace = true }
+serde              = { workspace = true }
+thiserror          = { workspace = true }
+
+[dev-dependencies]
+serde_json         = { workspace = true }

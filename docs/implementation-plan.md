@@ -458,14 +458,21 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
     answer: an attestation to confirm, a `Withdrawal` with a unit saying why to reject, a `Resolution`
     with a note to close. Nothing is deleted or rewritten; a withdrawn edge stays in the log and stops
     being followed.
-- `evidence` crate:
-  - test candidates (D14) and linking;
-  - the cargo test runner (`--locked`, `cfg` features, bin-only crates, ignored tests recorded as
-    readings);
-  - `from_csv` import;
-  - edges per D13, each attested by who asserted it (the linking model's agent id and recipe);
-  - the mutation gate as S1 decided;
-  - the static vacuity check.
+- `evidence` crate (**candidates, runner, import and edges done 2026-09-19**):
+  - **candidates (D14):** a deterministic shortlist by lexical overlap between the claim and what a test
+    *is* — its name, calls, assertions, doc — rarer terms weighing more, with a bonus for a test in a
+    touched file. The model classifies the shortlist; it never goes looking, because a model asked to
+    find tests invents plausible ones.
+  - **runner:** `cargo test --locked --no-fail-fast --exact` through `$CARGO`, with the plan printable as
+    a command a person could paste. An ignored test gets a reading saying so; silence is not a reading.
+  - **import:** readings become `measured` units through `from_csv`, and every one traces to
+    `tool:smysl-import` — the attestation is the licence to say `measured`, not the caller's say-so.
+  - **edges (D13):** `verifies` + passing → `backs`; `verifies` + failing → `rebuts`, because a failure is
+    a disagreement rather than support; `exercises` → `x.code/exercises`, which is navigation; unrelated →
+    nothing. A reading never taken is not evidence either way. Every edge carries an attestation naming
+    the model that proposed it, so review can tell a proposal from a confirmation.
+  - Still open here: the mutation gate as S1 decided, the static vacuity check, and wiring
+    `cargo smysl evidence`.
 - `check` (done, 2026-09-19): the S4 detector is `cargo smysl check` in `cargo-smysl-verdict`, advisory
   with `--strict` to block, its measured figures in its help, and provider, model, endpoint, window,
   token cost and prompt as settings (D16, D17, D18). It reads a commit (`rev`), a patch (`--patch`) or

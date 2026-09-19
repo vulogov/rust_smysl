@@ -212,6 +212,14 @@ dependencies = [
 [[package]]
 name = "cargo-smysl-evidence"
 version = "0.1.0"
+dependencies = [
+ "cargo-smysl-corpus",
+ "cargo-smysl-facts",
+ "serde",
+ "serde_json",
+ "smysl",
+ "thiserror",
+]
 
 [[package]]
 name = "cargo-smysl-extract"
