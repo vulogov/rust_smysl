@@ -2,6 +2,7 @@ use std::path::Path;
 
 use cargo_smysl_corpus::query::dependents_of;
 use cargo_smysl_corpus::store::Corpus;
+use cargo_smysl_facts::Cache;
 use cargo_smysl_verdict::{Change, Provider, ProviderJudge, Settings};
 
 use crate::cli::{Command, SmyslArgs};
@@ -10,7 +11,7 @@ use crate::exit;
 pub fn run(args: SmyslArgs) -> u8 {
     match &args.command {
         Command::Doctor => doctor(&args),
-        Command::Facts { .. } => not_yet("facts", "Phase 2 — facts and extraction"),
+        Command::Facts { rev, file, json } => facts(&args, rev.as_deref(), file, *json),
         Command::Extract { .. } => not_yet("extract", "Phase 2 — facts and extraction"),
         Command::Why { item } => why(&args, item),
         Command::Check {
@@ -94,6 +95,145 @@ fn why(args: &SmyslArgs, item: &str) -> u8 {
                 println!("  {name}  {} ({})\n      {}", d.schema, d.status, d.gist);
             }
             exit::OK
+        }
+    }
+}
+
+/// `facts <rev>`: what the code says, deterministically (D9, D10).
+///
+/// The cache is keyed by each file's bytes and the extractor version, so a second run reparses nothing
+/// and a changed file cannot hit a stale entry.
+fn facts(args: &SmyslArgs, rev: Option<&str>, only: &[String], json: bool) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl facts: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let sources = match sources_at(&root, rev, only) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("cargo smysl facts: {e}");
+            return exit::FAILURE;
+        }
+    };
+    if sources.is_empty() {
+        eprintln!("cargo smysl facts: no Rust file in that change");
+        return exit::FAILURE;
+    }
+    let cache = Cache::at(&root);
+    let (mut all, mut failed) = (Vec::new(), 0);
+    for (path, source) in &sources {
+        match cache.facts_of(path, source) {
+            Ok(facts) => all.extend(facts),
+            Err(e) => {
+                // A file that does not parse is reported, never counted as having no facts (D9).
+                eprintln!("cargo smysl facts: {e}");
+                failed += 1;
+            }
+        }
+    }
+    if json {
+        println!("{}", serde_json::to_string_pretty(&all).unwrap_or_default());
+    } else {
+        let functions = all
+            .iter()
+            .filter(|f| matches!(f, cargo_smysl_facts::Fact::Function(_)))
+            .count();
+        let events: usize = all
+            .iter()
+            .map(|f| match f {
+                cargo_smysl_facts::Fact::Function(x) => x.events.len(),
+                _ => 0,
+            })
+            .sum();
+        println!(
+            "{} file(s), {functions} function(s), {events} event(s), {} other item(s)",
+            sources.len(),
+            all.len() - functions
+        );
+        println!("cache: {}", cache.dir().display());
+    }
+    if failed > 0 {
+        exit::FAILURE
+    } else {
+        exit::OK
+    }
+}
+
+/// The Rust files to read: those a commit touched, or the working tree's.
+fn sources_at(
+    root: &Path,
+    rev: Option<&str>,
+    only: &[String],
+) -> Result<Vec<(String, String)>, String> {
+    let wanted =
+        |path: &str| path.ends_with(".rs") && (only.is_empty() || only.iter().any(|f| f == path));
+    match rev {
+        Some(rev) => {
+            let commit = cargo_smysl_git::read_commit(root, rev).map_err(|e| e.to_string())?;
+            Ok(commit
+                .files
+                .into_iter()
+                .filter(|f| wanted(&f.path))
+                .filter_map(|f| f.after.map(|text| (f.path, text)))
+                .collect())
+        }
+        None if !only.is_empty() => only
+            .iter()
+            .map(|rel| {
+                std::fs::read_to_string(root.join(rel))
+                    .map(|text| (rel.clone(), text))
+                    .map_err(|e| format!("{rel}: {e}"))
+            })
+            .collect(),
+        None => {
+            let mut out = Vec::new();
+            walk(root, root, &mut out);
+            Ok(out.into_iter().filter(|(p, _)| wanted(p)).collect())
+        }
+    }
+}
+
+/// The workspace's own Rust files.
+///
+/// Symlinks are not followed: a link can leave the workspace entirely, and one did — a scratch `HOME`
+/// under `eval/` pointed at the real home directory, so the walk left the repository and then failed on
+/// a directory it had no business reading. A directory that cannot be read is skipped with a note, since
+/// one unreadable corner is not a reason to report no facts.
+fn walk(root: &Path, dir: &Path, out: &mut Vec<(String, String)>) {
+    let entries = match std::fs::read_dir(dir) {
+        Ok(e) => e,
+        Err(e) => {
+            eprintln!("cargo smysl facts: {}: {e} (skipped)", dir.display());
+            return;
+        }
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
+        if name.starts_with('.') || name == "target" {
+            continue;
+        }
+        let Ok(meta) = entry.file_type() else {
+            continue;
+        };
+        if meta.is_symlink() {
+            continue;
+        }
+        if meta.is_dir() {
+            walk(root, &path, out);
+        } else if path.extension().is_some_and(|e| e == "rs") {
+            let rel = path
+                .strip_prefix(root)
+                .unwrap_or(&path)
+                .to_string_lossy()
+                .to_string();
+            match std::fs::read_to_string(&path) {
+                Ok(text) => out.push((rel, text)),
+                Err(e) => eprintln!("cargo smysl facts: {rel}: {e} (skipped)"),
+            }
         }
     }
 }

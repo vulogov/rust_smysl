@@ -406,13 +406,14 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
 
 ## 6. Phase 2 — facts and extraction
 
-- `facts` crate:
-  - port the research extractor (`facts/src/main.rs`): function events with control context, macro
-    argument parsing, doc comments, consts with values, struct field types, `cfg` and file-level `cfg`;
-  - scope selection and fact templates per D9;
-  - prose tagging per D10;
-  - CI-matrix `cfg` evaluation;
-  - cache keyed by commit and extractor version.
+- `facts` crate (**done, 2026-09-19**): the research extractor is ported and typed — per-function events
+  (calls, methods, field reads, bindings, macros, string literals) each carrying the control context it
+  sits in, plus doc comments, consts with their array elements, struct fields, and `cfg` from the item,
+  its enclosing module and the file. Prose is tagged (D10): doc text, string literals and string-valued
+  constants are extracted and marked, so no verdict can rest on one. `cargo smysl facts [rev]` runs it
+  over a commit or the working tree; the cache is keyed by each file's bytes and `EXTRACTOR_VERSION`, so
+  a changed file cannot hit a stale entry and deleting it costs only a reparse.
+  - Still open here: scope selection and fact templates per D9, and CI-matrix `cfg` evaluation.
 - `extract` crate:
   - multi-pass prompts per D6;
   - quote checking per D8;

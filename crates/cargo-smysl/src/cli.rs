@@ -33,6 +33,12 @@ pub enum Command {
     Facts {
         /// Commit or revision; defaults to the working tree.
         rev: Option<String>,
+        /// Only these files (repository-relative). Every Rust file of the change otherwise.
+        #[arg(long)]
+        file: Vec<String>,
+        /// Print the facts rather than a summary.
+        #[arg(long)]
+        json: bool,
     },
     /// Extract decisions, prerequisites, alternatives and consequences for a commit.
     Extract {

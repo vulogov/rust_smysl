@@ -223,7 +223,11 @@ version = "0.1.0"
 dependencies = [
  "proc-macro2",
  "quote",
+ "serde",
+ "serde_json",
+ "smysl",
  "syn 3.0.6",
+ "thiserror",
 ]
 
 [[package]]

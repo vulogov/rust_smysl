@@ -1,9 +1,14 @@
 //! Deterministic facts about Rust code (plan D9–D10, Phase 2).
 //!
-//! This is the seed of the fact extractor: function items with their owner, visibility, test
-//! marker and line span. Phase 2 ports the research extractor on top of it — per-function events
-//! with control context, macro arguments, doc comments, const values, struct fields, cfg — and the
-//! regenerable fact cache.
+//! `item::facts` is the extractor: per-function events with their control context, macro arguments,
+//! doc comments, const values with array elements, struct fields and `cfg`. `functions` is the small
+//! view of the same parse, for a caller that only wants the items.
+
+pub mod cache;
+pub mod item;
+
+pub use cache::{Cache, CacheError};
+pub use item::{facts, Constant, Event, EventKind, Fact, Structure, TypeAlias, EXTRACTOR_VERSION};
 
 use quote::ToTokens;
 use syn::visit::{self, Visit};
