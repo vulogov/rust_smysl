@@ -3,7 +3,7 @@ use std::path::Path;
 use cargo_smysl_corpus::query::dependents_of;
 use cargo_smysl_corpus::store::Corpus;
 use cargo_smysl_extract::{Cache as ExtractionCache, Recipe};
-use cargo_smysl_facts::Cache;
+use cargo_smysl_facts::{render, select, Around, Cache};
 use cargo_smysl_verdict::{Change, Provider, ProviderJudge, Settings};
 
 use crate::cli::{Command, SmyslArgs};
@@ -12,7 +12,24 @@ use crate::exit;
 pub fn run(args: SmyslArgs) -> u8 {
     match &args.command {
         Command::Doctor => doctor(&args),
-        Command::Facts { rev, file, json } => facts(&args, rev.as_deref(), file, *json),
+        Command::Facts {
+            rev,
+            file,
+            json,
+            scope,
+            names,
+            hops,
+        } => facts(
+            &args,
+            rev.as_deref(),
+            file,
+            *json,
+            scope.then(|| Around {
+                files: file.clone(),
+                names: names.clone(),
+                hops: *hops,
+            }),
+        ),
         Command::Extract {
             rev,
             force,
@@ -127,7 +144,13 @@ fn why(args: &SmyslArgs, item: &str) -> u8 {
 ///
 /// The cache is keyed by each file's bytes and the extractor version, so a second run reparses nothing
 /// and a changed file cannot hit a stale entry.
-fn facts(args: &SmyslArgs, rev: Option<&str>, only: &[String], json: bool) -> u8 {
+fn facts(
+    args: &SmyslArgs,
+    rev: Option<&str>,
+    only: &[String],
+    json: bool,
+    scope: Option<Around>,
+) -> u8 {
     let root = match workspace_root(args) {
         Ok(root) => root,
         Err(e) => {
@@ -157,6 +180,31 @@ fn facts(args: &SmyslArgs, rev: Option<&str>, only: &[String], json: bool) -> u8
                 failed += 1;
             }
         }
+    }
+    if let Some(mut around) = scope {
+        // A commit's files are the change; the working tree's are not. Without a revision and without
+        // `--file`, the scope is what the names reach — otherwise every file counts as touched and the
+        // selection says nothing.
+        if around.files.is_empty() && rev.is_some() {
+            around.files = sources.iter().map(|(p, _)| p.clone()).collect();
+        }
+        if around.files.is_empty() && around.names.is_empty() {
+            eprintln!("cargo smysl facts: --scope needs a revision, --file, or --name");
+            return exit::FAILURE;
+        }
+        let picked = select(&all, &around);
+        println!(
+            "{} of {} fact(s) bear on this change ({} file(s), {} name(s), {} hop(s))\n",
+            picked.len(),
+            all.len(),
+            around.files.len(),
+            around.names.len(),
+            around.hops
+        );
+        for s in &picked {
+            println!("[{:?}] {}\n", s.reason, render(s.fact));
+        }
+        return exit::OK;
     }
     if json {
         println!("{}", serde_json::to_string_pretty(&all).unwrap_or_default());

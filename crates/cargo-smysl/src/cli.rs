@@ -39,6 +39,16 @@ pub enum Command {
         /// Print the facts rather than a summary.
         #[arg(long)]
         json: bool,
+        /// Select what bears on the change (D9) and print it as a model would read it: the touched
+        /// items, anything these names mention, and one hop along calls.
+        #[arg(long)]
+        scope: bool,
+        /// Identifiers to select around, with `--scope`.
+        #[arg(long = "name")]
+        names: Vec<String>,
+        /// Hops outward along calls, with `--scope`.
+        #[arg(long, default_value_t = 1)]
+        hops: usize,
     },
     /// Extract decisions, prerequisites, alternatives and consequences for a commit, and record them.
     ///

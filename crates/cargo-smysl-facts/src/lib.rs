@@ -6,9 +6,11 @@
 
 pub mod cache;
 pub mod item;
+pub mod scope;
 
 pub use cache::{Cache, CacheError};
 pub use item::{facts, Constant, Event, EventKind, Fact, Structure, TypeAlias, EXTRACTOR_VERSION};
+pub use scope::{render, select, Around, Reason, Selected};
 
 use quote::ToTokens;
 use syn::visit::{self, Visit};

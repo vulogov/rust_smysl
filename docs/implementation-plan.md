@@ -413,7 +413,12 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
   constants are extracted and marked, so no verdict can rest on one. `cargo smysl facts [rev]` runs it
   over a commit or the working tree; the cache is keyed by each file's bytes and `EXTRACTOR_VERSION`, so
   a changed file cannot hit a stale entry and deleting it costs only a reparse.
-  - Still open here: scope selection and fact templates per D9, and CI-matrix `cfg` evaluation.
+  - **Scope and templates (D9), done:** `select` takes the items a change touches, the items a claim
+    names, and one hop along calls — what they call and what calls them — and says why each was chosen
+    (touched, named, calls, called-by). One hop because two pulls in most of a crate. `render` writes a
+    fact as a line a model reads, with prose marked. `cargo smysl facts --scope [--name N] [--hops H]`
+    prints it: on this workspace, 9 of 395 facts for one named function.
+  - Still open here: CI-matrix `cfg` evaluation.
 - `extract` crate (**done, 2026-09-19**): decisions first, then each decision's prerequisites,
   alternatives and consequences asked for on its own (D6, which the research measured: asked all at once
   a model returns thin prerequisites). The model proposes content only — labels, sources and statuses are

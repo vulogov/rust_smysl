@@ -213,3 +213,165 @@ fn the_cache_returns_the_same_facts_and_regenerates_what_it_cannot_read() {
     assert!(!cache.entry(SOURCE).exists());
     std::fs::remove_dir_all(&root).ok();
 }
+
+/// D9: what bears on a change is stated, not guessed — the touched items, the named ones, and one hop.
+mod scope {
+    use cargo_smysl_facts::{facts, render, select, Around, Fact, Reason};
+
+    const CLOCK: &str = r#"
+pub fn session_now(wall: u64) -> u64 {
+    anchor_once(wall)
+}
+
+pub fn anchor_once(wall: u64) -> u64 {
+    store(wall)
+}
+
+pub fn store(v: u64) -> u64 { v }
+
+pub fn unrelated_helper() -> u64 { 0 }
+"#;
+
+    const OTHER: &str = r#"
+pub fn caller_elsewhere() -> u64 {
+    super::session_now(7)
+}
+
+pub fn far_away() -> u64 { 1 }
+"#;
+
+    fn corpus() -> Vec<Fact> {
+        let mut all = facts("src/clock.rs", CLOCK).unwrap();
+        all.extend(facts("src/other.rs", OTHER).unwrap());
+        all
+    }
+
+    fn names(picked: &[cargo_smysl_facts::Selected<'_>]) -> Vec<String> {
+        picked
+            .iter()
+            .map(|s| match s.fact {
+                Fact::Function(f) => f.name.clone(),
+                _ => String::new(),
+            })
+            .collect()
+    }
+
+    #[test]
+    fn a_touched_file_brings_its_items_and_one_hop_outward() {
+        let all = corpus();
+        let picked = select(&all, &Around::files(["src/clock.rs".into()]));
+        let found = names(&picked);
+        assert!(found.contains(&"session_now".to_string()), "{found:?}");
+        assert!(
+            found.contains(&"unrelated_helper".to_string()),
+            "a touched file comes whole"
+        );
+        // One hop outward: what calls into the touched file, from a file the change did not touch.
+        assert!(found.contains(&"caller_elsewhere".to_string()), "{found:?}");
+        assert!(
+            !found.contains(&"far_away".to_string()),
+            "two hops is not one: {found:?}"
+        );
+        assert_eq!(
+            picked
+                .iter()
+                .find(|s| matches!(s.fact, Fact::Function(f) if f.name == "caller_elsewhere"))
+                .unwrap()
+                .reason,
+            Reason::CalledBy
+        );
+    }
+
+    #[test]
+    fn a_named_item_brings_itself_and_what_it_calls() {
+        let all = corpus();
+        let picked = select(
+            &all,
+            &Around {
+                files: vec![],
+                names: vec!["anchor_once".into()],
+                hops: 1,
+            },
+        );
+        let found = names(&picked);
+        assert!(
+            found.contains(&"anchor_once".to_string()),
+            "the named item: {found:?}"
+        );
+        assert!(
+            found.contains(&"store".to_string()),
+            "what it calls: {found:?}"
+        );
+        assert!(
+            found.contains(&"session_now".to_string()),
+            "and what calls it: {found:?}"
+        );
+        assert!(!found.contains(&"far_away".to_string()), "{found:?}");
+    }
+
+    #[test]
+    fn no_hops_is_the_touched_items_alone_and_selection_is_deterministic() {
+        let all = corpus();
+        let around = Around {
+            files: vec!["src/clock.rs".into()],
+            names: vec![],
+            hops: 0,
+        };
+        let picked = names(&select(&all, &around));
+        assert!(
+            !picked.contains(&"caller_elsewhere".to_string()),
+            "{picked:?}"
+        );
+        assert_eq!(
+            picked,
+            names(&select(&all, &around)),
+            "same input, same order"
+        );
+    }
+
+    fn now_line(all: &[Fact]) -> usize {
+        all.iter()
+            .find_map(|f| match f {
+                Fact::Function(x) if x.name == "now" => Some(x.line),
+                _ => None,
+            })
+            .unwrap()
+    }
+
+    #[test]
+    fn a_rendered_fact_says_what_the_code_does_and_marks_what_it_only_claims() {
+        let all = facts("src/clock.rs", super::SOURCE).unwrap();
+        let now = all
+            .iter()
+            .find(|f| matches!(f, Fact::Function(x) if x.name == "now"))
+            .unwrap();
+        let text = render(now);
+        assert!(text.starts_with("fn Session::now"), "{text}");
+        assert!(
+            text.contains("src/clock.rs:") && text.contains(&format!(":{}", now_line(&all))),
+            "where it is: {text}"
+        );
+        assert!(
+            text.contains("under if wall > anchored"),
+            "the branch a call sits in: {text}"
+        );
+        assert!(
+            text.contains("doc (prose):"),
+            "author text is marked: {text}"
+        );
+        assert!(
+            text.contains("string (prose)"),
+            "and so are literals: {text}"
+        );
+
+        let ledger = all
+            .iter()
+            .find(|f| matches!(f, Fact::Const(c) if c.name == "LEDGER"))
+            .unwrap();
+        assert!(
+            render(ledger).contains("never verifies"),
+            "{}",
+            render(ledger)
+        );
+    }
+}
