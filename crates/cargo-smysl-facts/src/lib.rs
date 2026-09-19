@@ -5,10 +5,12 @@
 //! view of the same parse, for a caller that only wants the items.
 
 pub mod cache;
+pub mod ci;
 pub mod item;
 pub mod scope;
 
 pub use cache::{Cache, CacheError};
+pub use ci::{builds, coverage, Build, Coverage};
 pub use item::{facts, Constant, Event, EventKind, Fact, Structure, TypeAlias, EXTRACTOR_VERSION};
 pub use scope::{render, select, Around, Reason, Selected};
 

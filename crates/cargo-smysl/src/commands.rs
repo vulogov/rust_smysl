@@ -3,7 +3,7 @@ use std::path::Path;
 use cargo_smysl_corpus::query::dependents_of;
 use cargo_smysl_corpus::store::Corpus;
 use cargo_smysl_extract::{Cache as ExtractionCache, Recipe};
-use cargo_smysl_facts::{render, select, Around, Cache};
+use cargo_smysl_facts::{builds, coverage, render, select, Around, Cache, Coverage};
 use cargo_smysl_verdict::{Change, Provider, ProviderJudge, Settings};
 
 use crate::cli::{Command, SmyslArgs};
@@ -193,6 +193,10 @@ fn facts(
             return exit::FAILURE;
         }
         let picked = select(&all, &around);
+        // What CI builds, so a fact behind a `cfg` no job compiles is marked rather than read as true.
+        let ci = builds(root.join(".github").join("workflows"));
+        // Which features are on by default is the manifest's answer, not the workflow's.
+        let defaults = default_features(args);
         println!(
             "{} of {} fact(s) bear on this change ({} file(s), {} name(s), {} hop(s))\n",
             picked.len(),
@@ -201,8 +205,27 @@ fn facts(
             around.names.len(),
             around.hops
         );
+        if ci.is_empty() {
+            println!("(no CI workflow found: coverage of a `cfg` is unknown)\n");
+        }
         for s in &picked {
-            println!("[{:?}] {}\n", s.reason, render(s.fact));
+            let note = match s.fact {
+                cargo_smysl_facts::Fact::Function(f)
+                    if !f.cfg.is_empty() || !f.file_cfg.is_empty() =>
+                {
+                    let cfg: Vec<String> = f.cfg.iter().chain(f.file_cfg.iter()).cloned().collect();
+                    match coverage(&cfg, &ci, &defaults) {
+                        Coverage::Always => String::new(),
+                        Coverage::Some { builds, of } => {
+                            format!(" [CI builds it in {builds} of {of}]")
+                        }
+                        Coverage::Never => " [CI never builds it]".into(),
+                        Coverage::Unknown => String::new(),
+                    }
+                }
+                _ => String::new(),
+            };
+            println!("[{:?}]{note} {}\n", s.reason, render(s.fact));
         }
         return exit::OK;
     }
@@ -616,6 +639,33 @@ fn read_change(root: &Path, rev: Option<&str>, patch: Option<&str>) -> Result<St
         ));
     }
     Ok(out)
+}
+
+/// Every feature the workspace's packages turn on by default, with what those features enable.
+///
+/// A workflow says `--no-default-features --features cli`; it cannot say what `default` means. That is
+/// here, and without it "CI builds this" is a guess.
+fn default_features(args: &SmyslArgs) -> std::collections::BTreeSet<String> {
+    let mut out = std::collections::BTreeSet::new();
+    let mut cmd = cargo_metadata::MetadataCommand::new();
+    if let Some(path) = &args.manifest_path {
+        cmd.manifest_path(path);
+    }
+    let Ok(metadata) = cmd.no_deps().exec() else {
+        return out;
+    };
+    for package in metadata.workspace_packages() {
+        let mut queue: Vec<String> = package.features.get("default").cloned().unwrap_or_default();
+        while let Some(feature) = queue.pop() {
+            let name = feature.split('/').next().unwrap_or(&feature).to_string();
+            if out.insert(name.clone()) {
+                if let Some(more) = package.features.get(&name) {
+                    queue.extend(more.clone());
+                }
+            }
+        }
+    }
+    out
 }
 
 /// The workspace root, the way cargo sees it.

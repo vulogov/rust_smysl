@@ -418,7 +418,13 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
     (touched, named, calls, called-by). One hop because two pulls in most of a crate. `render` writes a
     fact as a line a model reads, with prose marked. `cargo smysl facts --scope [--name N] [--hops H]`
     prints it: on this workspace, 9 of 395 facts for one named function.
-  - Still open here: CI-matrix `cfg` evaluation.
+  - **CI-matrix `cfg` evaluation (D9), done:** the workflows are read for the cargo commands they run and
+    the feature flags they pass (a matrix entry stands for each of its variants), and the manifest for
+    what `default` means; `coverage` then answers, for one `cfg`, always / some of N / never / unknown.
+    `--scope` marks a fact CI never builds. It found one in this repository: the `hosted` TLS path is
+    compiled by no job, so nothing checks it.
+  - It reads words, not YAML semantics, and says how many builds it found, so "never built" from zero
+    builds reads as unknown rather than as a finding.
 - `extract` crate (**done, 2026-09-19**): decisions first, then each decision's prerequisites,
   alternatives and consequences asked for on its own (D6, which the research measured: asked all at once
   a model returns thin prerequisites). The model proposes content only — labels, sources and statuses are
@@ -436,6 +442,9 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
   for a paid provider. `extract` will use the same client.
 - **Done when:** on the S0 set, prerequisite precision is at least the research pro run's (~75%
   genuine), with a measured recall figure; facts regenerate byte-identically.
+  - **Facts regenerate byte-identically: held by a test.** The extraction figure is not measured: it needs
+    the S0 labels, which are still deferred, and on a local 14B one commit of this repository gave one
+    decision where the research's pro runs gave eight.
 
 ## 7. Phase 3 — verdicts and test evidence
 

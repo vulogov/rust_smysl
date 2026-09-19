@@ -375,3 +375,100 @@ pub fn far_away() -> u64 { 1 }
         );
     }
 }
+
+/// D9: which `cfg` CI actually builds, so a claim is not checked against code nothing compiles.
+mod ci {
+    use std::collections::BTreeSet;
+
+    use cargo_smysl_facts::{builds, ci::builds_in, coverage, Coverage};
+
+    const WORKFLOW: &str = r#"
+jobs:
+  test:
+    steps:
+      - run: cargo test --workspace --locked
+  lint:
+    steps:
+      - run: cargo clippy --workspace --all-features --all-targets -- -D warnings
+  matrix:
+    strategy:
+      matrix:
+        features:
+          - "--no-default-features"
+          - "--all-features"
+          - "--no-default-features --features cli"
+    steps:
+      - run: cargo build --workspace ${{ matrix.features }}
+"#;
+
+    #[test]
+    fn the_builds_a_workflow_runs_are_read_from_its_cargo_lines() {
+        let found = builds_in(WORKFLOW);
+        assert_eq!(found.len(), 5, "{found:#?}");
+        assert!(found
+            .iter()
+            .any(|b| b.command == "test" && b.default_features));
+        assert!(found
+            .iter()
+            .any(|b| b.command == "clippy" && b.all_features));
+        // A cargo line that interpolates the matrix stands for each of its entries.
+        let builds: Vec<_> = found.iter().filter(|b| b.command == "build").collect();
+        assert_eq!(builds.len(), 3);
+        assert!(builds
+            .iter()
+            .any(|b| !b.default_features && b.features.is_empty()));
+        assert!(builds.iter().any(|b| b.all_features));
+        assert!(builds
+            .iter()
+            .any(|b| !b.default_features && b.features.contains("cli")));
+    }
+
+    #[test]
+    fn a_cfg_is_covered_always_sometimes_or_never() {
+        let found = builds_in(WORKFLOW);
+        let defaults: BTreeSet<String> = ["cli".to_string()].into_iter().collect();
+        assert_eq!(
+            coverage(&[], &found, &defaults),
+            Coverage::Always,
+            "ungated code"
+        );
+        // `test` is compiled by the one `cargo test` job.
+        assert!(matches!(
+            coverage(&["cfg(test)".into()], &found, &defaults),
+            Coverage::Some { .. }
+        ));
+        // A feature no job names, with one job at --no-default-features, is compiled by some.
+        assert!(matches!(
+            coverage(&["cfg(feature = \"cli\")".into()], &found, &defaults),
+            Coverage::Some { .. }
+        ));
+        // Nothing builds `not(any())`-style impossibilities.
+        assert_eq!(
+            coverage(&["cfg(all(test, not(test)))".into()], &found, &defaults),
+            Coverage::Never
+        );
+        assert_eq!(
+            coverage(&["cfg(feature = \"x\")".into()], &[], &defaults),
+            Coverage::Unknown,
+            "no builds found is not the same as never built"
+        );
+        // A feature no job names and the manifest does not default to is built by the --all-features
+        // jobs only.
+        assert!(matches!(
+            coverage(&["cfg(feature = \"hosted\")".into()], &found, &defaults),
+            Coverage::Some { .. }
+        ));
+    }
+
+    #[test]
+    fn this_repository_s_own_workflows_are_read() {
+        let dir = concat!(env!("CARGO_MANIFEST_DIR"), "/../../.github/workflows");
+        let found = builds(dir);
+        assert!(found.len() >= 4, "{found:#?}");
+        assert!(found.iter().any(|b| b.is_test()), "the test job");
+        assert!(
+            found.iter().any(|b| b.command == "install"),
+            "the install job, which is the objective"
+        );
+    }
+}
