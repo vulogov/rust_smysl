@@ -1,0 +1,180 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 24.742116928100586,
+      "terms": [
+        "document:5.72",
+        "changelog:2.86",
+        "not:2.72",
+        "to:1.44",
+        "and:1.30"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 20.615203857421875,
+      "terms": [
+        "shap:3.09",
+        "shape:3.09",
+        "thi:3.09",
+        "this:3.09",
+        "two:2.66"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 19.292797088623047,
+      "terms": [
+        "shap:3.13",
+        "shape:3.13",
+        "thi:3.13",
+        "this:3.13",
+        "two:2.69"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 18.506999969482422,
+      "terms": [
+        "changelog:2.74",
+        "not:2.54",
+        "to:1.34",
+        "and:1.21",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 12.465224266052246,
+      "terms": [
+        "content:4.98",
+        "fil:2.74",
+        "file:2.74",
+        "to:1.63",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 11.37533950805664,
+      "terms": [
+        "document:4.41",
+        "why:3.30",
+        "that:1.98",
+        "to:1.31",
+        "the:0.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-5",
+      "score": 11.245150566101074,
+      "terms": [
+        "document:4.36",
+        "why:3.26",
+        "that:1.95",
+        "to:1.29",
+        "the:0.39"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 10.307601928710938,
+      "terms": []
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 8.685604095458984,
+      "terms": [
+        "document:5.53",
+        "changelog:2.76",
+        "the:0.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 7.956067085266113,
+      "terms": [
+        "3:5.35",
+        "to:1.19",
+        "and:1.07",
+        "the:0.34"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 7.839435577392578,
+      "terms": [
+        "file:2.92",
+        "fil:2.82",
+        "to:1.73",
+        "the:0.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-4-1",
+      "score": 7.743692398071289,
+      "terms": [
+        "file:2.88",
+        "fil:2.78",
+        "to:1.71",
+        "the:0.37"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/SMYSL_ARCHITECTURE_RFC.md",
+    "Documentation/SMYSL_FORMAT_GUIDE.pdf",
+    "Documentation/SMYSL_FORMAT_GUIDE.typ",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SMYSL_RATIONALE.pdf",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.pdf",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.typ",
+    "Documentation/manual/ch01-02-why-shape.typ",
+    "Documentation/manual/design.typ"
+  ],
+  "findings": [],
+  "fingerprint": "4432502c73020e7dee753806cf844accb7ae6ff76035e1c703dbc9eb81651985",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-e68ce9a9e9fc",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 24,
+    "predicted_tokens": 56457,
+    "prompt_tokens": 49145,
+    "seconds": 257.166965458
+  },
+  "verdicts": []
+}

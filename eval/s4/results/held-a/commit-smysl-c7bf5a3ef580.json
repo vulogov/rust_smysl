@@ -1,0 +1,223 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 312.6039733886719,
+      "terms": [
+        "src:76.15",
+        "nodejs:22.53",
+        "spec:18.26",
+        "uid:18.02",
+        "fixtures:15.57"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 253.20425415039062,
+      "terms": [
+        "cor:50.65",
+        "core:50.65",
+        "uid:18.96",
+        "store:6.49",
+        "stor:5.97"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 235.36082458496094,
+      "terms": [
+        "smysl:62.09",
+        "cor:44.89",
+        "core:44.89",
+        "surfac:20.94",
+        "surface:20.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 217.16294860839844,
+      "terms": [
+        "smysl:64.27",
+        "cor:40.69",
+        "core:40.69",
+        "tests:23.53",
+        "test:13.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-6-1",
+      "score": 174.60641479492188,
+      "terms": [
+        "cor:49.85",
+        "core:49.85",
+        "fixtures:20.28",
+        "uid:18.66",
+        "fixtur:18.11"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-15-1",
+      "score": 146.3574676513672,
+      "terms": [
+        "surfac:23.79",
+        "surface:23.79",
+        "python:22.95",
+        "nodejs:22.79",
+        "wire:16.71"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 143.4989013671875,
+      "terms": [
+        "test:21.26",
+        "surfac:17.72",
+        "surface:17.72",
+        "records:17.38",
+        "tests:16.79"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-15",
+      "score": 140.556884765625,
+      "terms": [
+        "surfac:22.15",
+        "surface:22.15",
+        "python:21.94",
+        "nodejs:21.78",
+        "wire:15.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 137.52178955078125,
+      "terms": [
+        "smysl:72.39",
+        "tests:30.26",
+        "test:24.21",
+        "path:5.42",
+        "for:3.98"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-1-2",
+      "score": 135.27902221679688,
+      "terms": [
+        "smysl:71.21",
+        "tests:29.76",
+        "test:23.82",
+        "path:5.33",
+        "for:3.91"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-9-1",
+      "score": 134.80191040039062,
+      "terms": [
+        "smysl:70.63",
+        "spec:18.88",
+        "format:16.87",
+        "tabl:12.03",
+        "tables:6.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g69ea5c05d859-11-1",
+      "score": 134.71559143066406,
+      "terms": [
+        "surfac:32.20",
+        "surface:32.20",
+        "python:24.87",
+        "nodejs:24.69",
+        "nodej:14.82"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/SMYSL_FORMAT_GUIDE.pdf",
+    "Documentation/SMYSL_FORMAT_GUIDE.typ",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SPEC_DRAFT_1.4.md",
+    "Documentation/manual/appendices.typ",
+    "Documentation/manual/ch14-16-view-salience-retract.typ",
+    "crates/smysl-core/src/surface/lex.rs",
+    "crates/smysl-core/src/surface/mod.rs",
+    "crates/smysl-core/src/surface/parse.rs",
+    "crates/smysl-core/src/surface/write.rs",
+    "crates/smysl-core/tests/lifecycle_fixtures.rs",
+    "crates/smysl-core/tests/surface.rs",
+    "crates/smysl-graph/src/compact.rs",
+    "crates/smysl-graph/tests/merge_idempotence.rs",
+    "crates/smysl-ingest/src/stage.rs",
+    "crates/smysl-render/src/ir.rs",
+    "fixtures/wire/F10-lifecycle.cbor",
+    "fixtures/wire/contention-id/cases.json",
+    "fixtures/wire/relation-id/cases.json",
+    "go/conformance_test.go",
+    "go/lifecycle_test.go",
+    "go/records.go",
+    "go/uid.go",
+    "nodejs/package.json",
+    "nodejs/src/records.js",
+    "nodejs/src/uid.js",
+    "nodejs/test/conformance.test.js",
+    "nodejs/test/lifecycle.test.js",
+    "python/smysl/records.py",
+    "python/smysl/uid.py",
+    "python/tests/test_lifecycle.py",
+    "python/tests/test_spec.py",
+    "scripts/verify-spec-tables.py",
+    "src/main.rs",
+    "tests/cmd_review.rs",
+    "tests/public-api-counts.txt"
+  ],
+  "findings": [],
+  "fingerprint": "e4b6437521c4a152c60150efbd9b14db3886de02dfb43cf1db831fa24b47d71a",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-c7bf5a3ef580",
+  "kind": "commit",
+  "pack_tokens": 1499,
+  "pack_units": 64,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 73407,
+    "prompt_tokens": 85096,
+    "seconds": 487.315497541
+  },
+  "verdicts": []
+}

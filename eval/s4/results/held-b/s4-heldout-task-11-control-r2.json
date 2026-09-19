@@ -1,0 +1,308 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 234.32369995117188,
+      "terms": [
+        "documentation:26.40",
+        "examples:26.40",
+        "exampl:21.44",
+        "cycl:11.36",
+        "ephemeri:9.96"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-2",
+      "score": 164.07139587402344,
+      "terms": [
+        "documentation:26.85",
+        "examples:26.85",
+        "exampl:21.81",
+        "observations:18.71",
+        "observation:17.93"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-4-2",
+      "score": 147.09695434570312,
+      "terms": [
+        "observation:17.11",
+        "observations:17.11",
+        "committ:6.21",
+        "committed:6.21",
+        "use:6.03"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-1-3",
+      "score": 145.9141387939453,
+      "terms": [
+        "observation:16.50",
+        "observations:16.50",
+        "path:5.50",
+        "residual:5.24",
+        "residuals:5.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-2",
+      "score": 113.24974060058594,
+      "terms": [
+        "observation:14.90",
+        "observations:14.90",
+        "four:7.54",
+        "known:7.26",
+        "synthetic:7.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-3-1",
+      "score": 90.92977905273438,
+      "terms": [
+        "examples:30.98",
+        "exampl:25.16",
+        "src:9.34",
+        "xtask:9.34",
+        "manual:7.02"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/gcc3aafefb1da-4",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/gcc3aafefb1da-6",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-1-1",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-1-2",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-6-1",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-3",
+      "score": 82.03569793701172,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 325,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/Release_Notes/1.12.0.md",
+    "Documentation/examples/observations.txt",
+    "crates/ucal/tests/common/mod.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-3-1",
+      "reason": "The change removes the reference to a committed file for observations, contradicting the constraint that manual examples are generated from xtask/src/examples.rs entries.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "Manual examples are generated from xtask/src/examples.rs entries"
+    },
+    {
+      "diff_line": "a path unique to the process, and `CLI-EXAMPLES.md` pipes them in on standard",
+      "kind": "decision",
+      "label": "d/gcc3aafefb1da-4",
+      "reason": "The change states that the repair involved committing the observations file, which contradicts the decision to document a flaky test and its repair.",
+      "source": "Documentation/Release_Notes/1.12.0.md@cc3aafefb1da",
+      "text": "Add release note documenting flaky test and repair.\nRecord that CI found flaky test and how it was fixed."
+    },
+    {
+      "diff_line": "# Observed instants, one decimal tick count per line, for",
+      "kind": "prerequisite",
+      "label": "p/g31e52cc10b1f-1-1",
+      "reason": "The change deletes the observations file, which contradicts the constraint that the program reads the system clock to nanoseconds.",
+      "source": "Documentation/CLI-EXAMPLES.md@31e52cc10b1f",
+      "text": "The program reads the system clock to nanoseconds (nine decimal places)."
+    },
+    {
+      "diff_line": "# Observed instants, one decimal tick count per line, for",
+      "kind": "prerequisite",
+      "label": "p/g31e52cc10b1f-1-2",
+      "reason": "The change deletes the observations file, which contradicts the constraint that ucal now renders by default to T-12.",
+      "source": "Documentation/CLI-EXAMPLES.md@31e52cc10b1f",
+      "text": "ucal now renders by default to T-12, ten rungs below the fillable tier."
+    },
+    {
+      "diff_line": "# Observed instants, one decimal tick count per line, for",
+      "kind": "prerequisite",
+      "label": "p/g31e52cc10b1f-6-1",
+      "reason": "The change deletes the observations file, which contradicts the constraint that constant offset cancels between two readings.",
+      "source": "Documentation/CLI-EXAMPLES.md@31e52cc10b1f",
+      "text": "Constant offset cancels between two readings, rate error does not, quantisation bounds difference twice."
+    },
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-2-1",
+      "reason": "The change removes the reference to using a committed observations file.",
+      "source": "xtask/src/examples.rs@cc3aafefb1da",
+      "text": "The ephemeris file at Documentation/examples/ephemeris.hjson exists with predictable cycle centres"
+    },
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-1-2",
+      "reason": "The change removes the reference to using a committed observations file.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "The committed observations file exists at Documentation/examples/observations.txt with synthetic observations"
+    },
+    {
+      "diff_line": "The repair is that the observations are now a **committed** file,",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-4-2",
+      "reason": "The change states that the repair was to commit the observations file, but now it has been removed.",
+      "source": "Documentation/Release_Notes/1.12.0.md@cc3aafefb1da",
+      "text": "The repair uses a committed observations file"
+    },
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-1-3",
+      "reason": "The change removes the reference to using a committed observations file.",
+      "source": "crates/ucal/tests/json_surface.rs@cc3aafefb1da",
+      "text": "The residuals command accepts a file path argument to read observations"
+    },
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "decision",
+      "label": "d/gcc3aafefb1da-2",
+      "reason": "The change removes the reference to using a committed observations file.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "Create observations as four synthetic instants with known shifts.\nSo residuals are known in advance and can be checked by eye; three inside window and +41 outside demonstrates width property."
+    }
+  ],
+  "fingerprint": "bb94ae62eeca741883dbc41f525c0bc972b69f0e3f3261d97245b9d9f4129996",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-11-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1500,
+  "pack_units": 81,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 11,
+  "usage": {
+    "completion_tokens": 1037,
+    "predicted_tokens": 42176,
+    "prompt_tokens": 31008,
+    "seconds": 183.558505418
+  },
+  "verdicts": [
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "p/gcc3aafefb1da-3-1",
+      "line": 9,
+      "reason": "The change removes the reference to a committed file for observations, contradicting the constraint that manual examples are generated from xtask/src/examples.rs entries.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  The repair was to commit the observations as `Documentation/examples/observations.txt`:",
+      "label": "d/gcc3aafefb1da-4",
+      "line": 36,
+      "reason": "The change states that the repair involved committing the observations file, which contradicts the decision to document a flaky test and its repair.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-# Observed instants, one decimal tick count per line, for",
+      "label": "p/g31e52cc10b1f-1-1",
+      "line": 47,
+      "reason": "The change deletes the observations file, which contradicts the constraint that the program reads the system clock to nanoseconds.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-# Observed instants, one decimal tick count per line, for",
+      "label": "p/g31e52cc10b1f-1-2",
+      "line": 47,
+      "reason": "The change deletes the observations file, which contradicts the constraint that ucal now renders by default to T-12.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-# Observed instants, one decimal tick count per line, for",
+      "label": "p/g31e52cc10b1f-6-1",
+      "line": 47,
+      "reason": "The change deletes the observations file, which contradicts the constraint that constant offset cancels between two readings.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "p/gcc3aafefb1da-2-1",
+      "line": 9,
+      "reason": "The change removes the reference to using a committed observations file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "p/gcc3aafefb1da-1-2",
+      "line": 9,
+      "reason": "The change removes the reference to using a committed observations file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-  The repair is that the observations are now a **committed** file, [`observations.txt`](../examples/observations.txt): four synthetic observations that are the predicted centres of four cycles moved by 0, +3, \u22127 and +41 seconds, so the residuals are known in advance and can be checked by eye. The last is outside its own window and the others are not. A fixture a reader can open is better than one a test invents, and it cannot race.",
+      "label": "p/gcc3aafefb1da-4-2",
+      "line": 25,
+      "reason": "The change states that the repair was to commit the observations file, but now it has been removed.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "p/gcc3aafefb1da-1-3",
+      "line": 9,
+      "reason": "The change removes the reference to using a committed observations file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "d/gcc3aafefb1da-2",
+      "line": 9,
+      "reason": "The change removes the reference to using a committed observations file.",
+      "verdict": "contradicts"
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-4-1",
+      "score": 134.7236328125,
+      "terms": [
+        "usage:23.66",
+        "usag:15.77",
+        "checkout:7.89",
+        "ingest:7.89",
+        "smysl:7.66"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-4",
+      "score": 114.86822509765625,
+      "terms": [
+        "ledger:20.60",
+        "usage:19.21",
+        "usag:12.81",
+        "fil:9.54",
+        "directory:7.46"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 111.87660217285156,
+      "terms": [
+        "path:32.53",
+        "tests:8.64",
+        "smysl:8.04",
+        "test:2.69",
+        "the:2.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 108.62744903564453,
+      "terms": [
+        "usage:24.28",
+        "ledger:21.49",
+        "usag:13.37",
+        "log:7.90",
+        "smysl:7.86"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-6-1",
+      "score": 103.24407958984375,
+      "terms": [
+        "path:25.74",
+        "dispatch:6.47",
+        "command:3.72",
+        "read:3.46",
+        "test:2.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-8",
+      "score": 70.70762634277344,
+      "terms": [
+        "path:34.05",
+        "manual:11.82",
+        "name:6.34",
+        "nam:4.52",
+        "all:3.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-7-1",
+      "score": 60.9748649597168,
+      "terms": [
+        "path:31.48",
+        "smysl:7.78",
+        "none:7.77",
+        "every:4.78",
+        "non:4.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 58.55515670776367,
+      "terms": [
+        "path:29.14",
+        "smysl:7.21",
+        "let:5.50",
+        "thi:4.44",
+        "this:4.44"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 57.434112548828125,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-17",
+      "score": 57.434112548828125,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 57.434112548828125,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-5",
+      "score": 57.434112548828125,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 310,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/manual/appendices.typ",
+    "Documentation/manual/ch09-10-attest-providers.typ",
+    "crates/smysl-provider/src/usage.rs",
+    "src/main.rs",
+    "tests/cmd_usage.rs",
+    "tests/dispatch.rs"
+  ],
+  "findings": [],
+  "fingerprint": "23c95772672282fe05f06568965c85a4db3e40462465c8bd69d283b9665747e5",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-3-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1498,
+  "pack_units": 65,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 3,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 34335,
+    "prompt_tokens": 25078,
+    "seconds": 106.322486293
+  },
+  "verdicts": []
+}

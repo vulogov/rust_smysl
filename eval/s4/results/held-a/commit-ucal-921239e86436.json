@@ -1,0 +1,197 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-3-2",
+      "score": 133.2970733642578,
+      "terms": [
+        "ucal:49.44",
+        "json:25.85",
+        "fields:7.80",
+        "field:5.36"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g449b762e3cca-10",
+      "score": 120.32733154296875,
+      "terms": [
+        "ucal:40.58",
+        "with:7.13",
+        "thi:4.87",
+        "this:4.87",
+        "sam:4.54"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 118.34507751464844,
+      "terms": [
+        "ucal:37.46",
+        "with:6.79",
+        "thi:4.50",
+        "this:4.50",
+        "sam:4.19"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-8-2",
+      "score": 115.89241027832031,
+      "terms": [
+        "ucal:51.63",
+        "sam:5.78",
+        "same:5.78",
+        "field:5.60",
+        "the:2.28"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-3",
+      "score": 109.15419006347656,
+      "terms": [
+        "tests:12.11",
+        "fil:9.87",
+        "file:8.97",
+        "with:5.93",
+        "new:4.46"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-1-2",
+      "score": 108.23722839355469,
+      "terms": [
+        "documentation:28.93",
+        "fil:10.42",
+        "releas:5.72",
+        "release:5.72",
+        "notes:4.96"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-1-1",
+      "score": 105.5398178100586,
+      "terms": [
+        "ucal:56.58",
+        "the:2.24",
+        "and:1.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-3-1",
+      "score": 89.6633071899414,
+      "terms": [
+        "ucal:53.51",
+        "json:27.98",
+        "field:5.81",
+        "the:2.36"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-3",
+      "score": 87.25222778320312,
+      "terms": [
+        "ucal:41.73",
+        "json:21.82",
+        "valu:6.31",
+        "value:6.31",
+        "field:5.48"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-3-1",
+      "score": 83.60692596435547,
+      "terms": [
+        "ucal:37.70",
+        "json:19.71",
+        "valu:5.93",
+        "value:5.93",
+        "its:5.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-1",
+      "score": 79.58920288085938,
+      "terms": [
+        "ucal:46.04",
+        "from:7.72",
+        "show:5.33",
+        "cod:4.95",
+        "code:4.95"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 67.42945098876953,
+      "terms": [
+        "documentation:27.53",
+        "cycl:5.65",
+        "cycle:5.65",
+        "releas:5.56",
+        "release:5.56"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/CLI.md",
+    "Documentation/Release_Notes/1.12.0.md",
+    "Documentation/examples/ephemeris.hjson",
+    "crates/ucal-cosmo/src/dilate.rs",
+    "crates/ucal-cosmo/src/lib.rs",
+    "crates/ucal-events/src/ephem.rs",
+    "crates/ucal-events/src/lib.rs",
+    "crates/ucal/src/ephem_file.rs",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/src/main.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "fixtures/json-surface.txt",
+    "fixtures/ucal-json-1.schema.json",
+    "xtask/src/citations.rs",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [],
+  "fingerprint": "a71b051a68f049790b8f9b39c6676c48c840288def5de92d9b8ea2a3bfdabb44",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-921239e86436",
+  "kind": "commit",
+  "pack_tokens": 1499,
+  "pack_units": 75,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 48705,
+    "prompt_tokens": 36255,
+    "seconds": 167.967180917
+  },
+  "verdicts": []
+}

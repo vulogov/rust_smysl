@@ -1,0 +1,265 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-3",
+      "score": 14.930367469787598,
+      "terms": [
+        "makefil:7.47",
+        "makefile:7.47"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g87345653cdf3-5",
+      "score": 7.465183734893799,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-1",
+      "score": 7.465183734893799,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-2",
+      "score": 7.465183734893799,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-5-1",
+      "score": 7.465183734893799,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 13,
+  "diff_truncated": false,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "BASELINE := 1.0.0",
+        "label": "d/g69ea5c05d859-6",
+        "line": 1,
+        "reason": "The change updates the BASELINE version, which contradicts the decision to pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "BASELINE := 1.0.0",
+        "label": "d/g87345653cdf3-1",
+        "line": 2,
+        "reason": "The change updates the BASELINE version, which contradicts the decision to build constraints via default and field assignment instead of struct literal.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "BASELINE := 1.0.0",
+        "label": "d/g87345653cdf3-10",
+        "line": 3,
+        "reason": "The change updates the BASELINE version, which contradicts the decision to assert on transcript count rather than just MISMATCHED presence in doc output test.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "BASELINE := 1.0.0",
+        "label": "d/g87345653cdf3-11",
+        "line": 4,
+        "reason": "The change updates the BASELINE version, which contradicts the decision to compile out the doc output test outside the default-ish feature set.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "BASELINE := 1.0.0",
+        "label": "d/g87345653cdf3-2",
+        "line": 5,
+        "reason": "The change updates the BASELINE version, which contradicts the decision to remove unused BTreeSet import from pack_exact.rs.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    }
+  ],
+  "files": [
+    "Makefile"
+  ],
+  "findings": [
+    {
+      "diff_line": "BASELINE  := 0.15.0",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-11",
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision that step 3 in ROAD_TO_1.0.md is deferred.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update ROAD_TO_1.0.md to mark steps 1 and 2 done, step 3 deferred, and correct the assumption that python/, \u2026\nThe plan was wrong about the other three implementations because they only read CBOR and never see a @doc header; the migration is Rust-only and smaller than it looked."
+    },
+    {
+      "diff_line": "BASELINE  := 0.15.0",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-12",
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision that version-trap defect is fixed in 0.14.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update format spec \u00a78.5 to record the version-trap defect as fixed in 0.14.\nThe trap was invisible until it bit; the spec should now state the fix so the historical warning is replaced with the actual current behavior."
+    },
+    {
+      "diff_line": "BASELINE  := 0.15.0",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-13",
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision that smysl/1.0 is not a break and means the format is settled.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update format spec \u00a78.6 to say smysl/1.0 is not a break and means the format is settled rather than changed.\nThe version bump signals visibility, not a format change; readers learned the new string quietly, so the compatibility event is the readers' acceptance."
+    },
+    {
+      "diff_line": "BASELINE  := 0.15.0",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-14",
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\u00a78.2 requires readers to refuse a version absent from their list. Flipping the writer before 0.14 is in the field would make every other implementation reject the output."
+    },
+    {
+      "diff_line": "BASELINE  := 0.15.0",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-15",
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision not to add version lists to python/, nodejs/, go/ implementations.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Do not add version lists to python/, nodejs/, go/ implementations.\nAll three read CBOR only and the wire carries no version string, so no surface parser ever sees a @doc header there. The migration plan's assumption was wrong."
+    },
+    {
+      "diff_line": "BASELINE  := 0.15.0",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-4",
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision to implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.",
+      "source": "crates/smysl-core/src/surface/parse.rs@69ea5c05d859",
+      "text": "Implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.\nA derived Default would produce an empty version, which would become an invalid empty @doc header. The CBOR path has no wire version, so the honest default is the current emit version."
+    },
+    {
+      "diff_line": "# moves when a release reaches the registry and not when it is cut. It sat at 0.9.0 through two",
+      "kind": "decision",
+      "label": "d/g87345653cdf3-4",
+      "reason": "The change updates the BASELINE version, which contradicts the decision to make `make ci` depend on fuzz-build.",
+      "source": "git:87345653cdf330199730f4e8a0afe2275902ad11",
+      "text": "Make `make ci` depend on fuzz-build\nCI must see fuzz compilation because local checks passed while the break existed; this makes the gate structural."
+    }
+  ],
+  "fingerprint": "6becaca1f1d43f039d8b6eb9a1020f9ce1c37abe2b508fa31708feca56a98c05",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-ec70d4878ee3",
+  "kind": "commit",
+  "pack_tokens": 1491,
+  "pack_units": 65,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 1234,
+    "predicted_tokens": 7034,
+    "prompt_tokens": 5030,
+    "seconds": 68.172136459
+  },
+  "verdicts": [
+    {
+      "diff_line": "-BASELINE := 0.15.0",
+      "label": "d/g69ea5c05d859-11",
+      "line": 9,
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision that step 3 in ROAD_TO_1.0.md is deferred.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-BASELINE := 0.15.0",
+      "label": "d/g69ea5c05d859-12",
+      "line": 9,
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision that version-trap defect is fixed in 0.14.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-BASELINE := 0.15.0",
+      "label": "d/g69ea5c05d859-13",
+      "line": 9,
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision that smysl/1.0 is not a break and means the format is settled.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-BASELINE := 0.15.0",
+      "label": "d/g69ea5c05d859-14",
+      "line": 9,
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-BASELINE := 0.15.0",
+      "label": "d/g69ea5c05d859-15",
+      "line": 9,
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision not to add version lists to python/, nodejs/, go/ implementations.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-BASELINE := 0.15.0",
+      "label": "d/g69ea5c05d859-4",
+      "line": 9,
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision to implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "BASELINE := 1.0.0",
+      "label": "d/g69ea5c05d859-6",
+      "line": 1,
+      "reason": "The change updates the BASELINE version, which contradicts the decision to pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "BASELINE := 1.0.0",
+      "label": "d/g87345653cdf3-1",
+      "line": 2,
+      "reason": "The change updates the BASELINE version, which contradicts the decision to build constraints via default and field assignment instead of struct literal.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "BASELINE := 1.0.0",
+      "label": "d/g87345653cdf3-10",
+      "line": 3,
+      "reason": "The change updates the BASELINE version, which contradicts the decision to assert on transcript count rather than just MISMATCHED presence in doc output test.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "BASELINE := 1.0.0",
+      "label": "d/g87345653cdf3-11",
+      "line": 4,
+      "reason": "The change updates the BASELINE version, which contradicts the decision to compile out the doc output test outside the default-ish feature set.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "BASELINE := 1.0.0",
+      "label": "d/g87345653cdf3-2",
+      "line": 5,
+      "reason": "The change updates the BASELINE version, which contradicts the decision to remove unused BTreeSet import from pack_exact.rs.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "BASELINE := 1.0.0",
+      "label": "d/g87345653cdf3-4",
+      "line": 6,
+      "reason": "The change updates the BASELINE version, which contradicts the decision to make `make ci` depend on fuzz-build.",
+      "verdict": "contradicts"
+    }
+  ]
+}

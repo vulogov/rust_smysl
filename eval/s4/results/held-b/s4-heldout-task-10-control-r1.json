@@ -1,0 +1,308 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-2-1",
+      "score": 145.27000427246094,
+      "terms": [
+        "err:15.33",
+        "procedur:13.42",
+        "procedure:13.42",
+        "check:8.16",
+        "check_ci_covers_the_procedur:6.71"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-1-2",
+      "score": 120.83096313476562,
+      "terms": [
+        "releas:11.07",
+        "release:11.07",
+        "notes:10.39",
+        "release_not:7.99",
+        "release_notes:7.99"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g5880e472260e-4-1",
+      "score": 120.20951843261719,
+      "terms": [
+        "path:7.08",
+        "back:5.90",
+        "message:5.43",
+        "messag:5.24",
+        "nam:5.09"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-5",
+      "score": 98.8043441772461,
+      "terms": [
+        "procedur:12.94",
+        "procedure:12.94",
+        "check:7.56",
+        "check_ci_covers_the_procedur:6.47",
+        "check_ci_covers_the_procedure:6.47"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-1-1",
+      "score": 93.20171356201172,
+      "terms": [
+        "dir:25.27",
+        "env:8.42",
+        "temp_dir:8.42",
+        "temp:8.15",
+        "write:6.65"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-5-1",
+      "score": 75.17830657958984,
+      "terms": [
+        "procedur:11.54",
+        "procedure:11.54",
+        "check:8.06",
+        "check_ci_covers_the_procedur:5.77",
+        "check_ci_covers_the_procedure:5.77"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 71.5999526977539,
+      "terms": [
+        "notes:8.34",
+        "newest:8.06",
+        "sort:5.96",
+        "filenam:5.57",
+        "remov:5.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 71.13665771484375,
+      "terms": [
+        "notes:8.84",
+        "path:6.66",
+        "check:4.68",
+        "nam:4.37",
+        "back:4.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 69.25761413574219,
+      "terms": [
+        "notes:9.78",
+        "releas:8.81",
+        "release:8.81",
+        "when:5.02",
+        "nam:4.62"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 66.62210083007812,
+      "terms": [
+        "releas:10.76",
+        "release:10.76",
+        "notes:10.10",
+        "release_not:7.60",
+        "release_notes:7.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-4-1",
+      "score": 65.98243713378906,
+      "terms": [
+        "path:10.01",
+        "message:5.83",
+        "messag:5.63",
+        "str:5.63",
+        "contain:5.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 65.54206848144531,
+      "terms": [
+        "notes:9.43",
+        "bump:6.40",
+        "bumped:6.40",
+        "back:6.18",
+        "fallback:5.77"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "xtask/src/citations.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "/// **A version bumped without its notes is an error, not a fallback.**",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-5-1",
+      "reason": "The change restores the doc comment for the check's behavior.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Rejected: not restore the check's doc comment\nLeaving it there made check_ci_covers_the_procedure undocumented."
+    },
+    {
+      "diff_line": "// **The notes for the version being built**, not \"the newest file\".",
+      "kind": "decision",
+      "label": "d/g5880e472260e-1",
+      "reason": "The change introduces a fallback mechanism to the newest notes if the current version's notes are missing.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Read notes for version being built rather than newest sorted file\nSorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing."
+    },
+    {
+      "diff_line": "let Some(version) = workspace_version(root) else {",
+      "kind": "decision",
+      "label": "d/g5880e472260e-4",
+      "reason": "The change introduces a fallback mechanism to the newest notes if the current version's notes are missing.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Make missing-notes test strict about the diagnostic\nAsserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic."
+    },
+    {
+      "diff_line": "let Some(version) = workspace_version(root) else {",
+      "kind": "decision",
+      "label": "d/g5880e472260e-2",
+      "reason": "The change introduces a fallback mechanism to the newest notes if the current version's notes are missing.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Error naming the version when current release notes missing\nThe old sort silently read the previous cycle's file and passed when notes were never written. Now a missing notes file for the current version is an explicit error."
+    },
+    {
+      "diff_line": "/// **A version bumped without its notes falls back to the newest notes.**",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-2-1",
+      "reason": "The change introduces a fallback mechanism for missing notes, which contradicts the rejection of silently falling back to the previous cycle's notes file.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Rejected: silently fall back to the previous cycle's notes file\nThis fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file."
+    },
+    {
+      "diff_line": "///",
+      "kind": "decision",
+      "label": "d/g21665b3aac9b-7",
+      "reason": "The change modifies the behavior of the function to allow falling back to the newest notes instead of refusing when notes are missing.",
+      "source": "git:21665b3aac9be9a762eada806b9ccb56c3cbabea",
+      "text": "Gate years_quantity behind any(events, cosmo)\nIt is called by events for a window's width and by cosmo for an enclosure's ends; no single feature name could express that shape."
+    },
+    {
+      "diff_line": "/// guess closes.",
+      "kind": "prerequisite",
+      "label": "p/g5880e472260e-2-1",
+      "reason": "The change modifies the behavior of the function to allow falling back to the newest notes instead of refusing when notes are missing.",
+      "source": "xtask/src/citations.rs@5880e472260e",
+      "text": "check_ci_covers_the_procedure returns Result<usize, Vec<String>>, so an Err is a failed check."
+    },
+    {
+      "diff_line": ")",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-4-1",
+      "reason": "The change modifies the behavior of the function to allow falling back to the newest notes instead of refusing when notes are missing.",
+      "source": "xtask/src/citations.rs@5880e472260e",
+      "text": "Rejected: assert only that some error came back and the message named the version\nThe loose assertion passed even with the check disabled because read_to_string also fails and names the path containing the version."
+    }
+  ],
+  "fingerprint": "aab7f9fe06d7fa299810648b124255defda310ba9549cf86d6c0efbe6ee9efaa",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-10-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1493,
+  "pack_units": 71,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 10,
+  "usage": {
+    "completion_tokens": 826,
+    "predicted_tokens": 21932,
+    "prompt_tokens": 14649,
+    "seconds": 92.989129375
+  },
+  "verdicts": [
+    {
+      "diff_line": "/// **A version bumped without its notes is an error, not a fallback.**",
+      "label": "r/g5880e472260e-5-1",
+      "line": 9,
+      "reason": "The change restores the doc comment for the check's behavior.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "// **The notes for the version being built**, and only when they are missing, the newest notes there are.",
+      "label": "d/g5880e472260e-1",
+      "line": 126,
+      "reason": "The change introduces a fallback mechanism to the newest notes if the current version's notes are missing.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "// Deriving the version removes that guess; the fallback for a version bumped before its notes exist orders by parsed version, never by filename.",
+      "label": "d/g5880e472260e-4",
+      "line": 139,
+      "reason": "The change introduces a fallback mechanism to the newest notes if the current version's notes are missing.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "// Deriving the version removes that guess; the fallback for a version bumped before its notes exist orders by parsed version, never by filename.",
+      "label": "d/g5880e472260e-2",
+      "line": 139,
+      "reason": "The change introduces a fallback mechanism to the newest notes if the current version's notes are missing.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// **A version bumped without its notes falls back to the newest notes.**",
+      "label": "r/g5880e472260e-2-1",
+      "line": 61,
+      "reason": "The change introduces a fallback mechanism for missing notes, which contradicts the rejection of silently falling back to the previous cycle's notes file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// **A version bumped without its notes is an error, not a fallback.**",
+      "label": "d/g21665b3aac9b-7",
+      "line": 10,
+      "reason": "The change modifies the behavior of the function to allow falling back to the newest notes instead of refusing when notes are missing.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// **A version bumped without its notes falls back to the newest notes.**",
+      "label": "p/g5880e472260e-2-1",
+      "line": 13,
+      "reason": "The change modifies the behavior of the function to allow falling back to the newest notes instead of refusing when notes are missing.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "assert_eq!(super::check_ci_covers_the_procedure(&dir), Ok(1));",
+      "label": "r/g5880e472260e-4-1",
+      "line": 39,
+      "reason": "The change modifies the behavior of the function to allow falling back to the newest notes instead of refusing when notes are missing.",
+      "verdict": "contradicts"
+    }
+  ]
+}

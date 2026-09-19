@@ -1,0 +1,495 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 300.9446716308594,
+      "terms": [
+        "cor:65.12",
+        "core:65.12",
+        "store:19.46",
+        "stor:11.94",
+        "uid:9.48"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 280.00311279296875,
+      "terms": [
+        "src:106.61",
+        "fixtures:11.68",
+        "fixtur:10.43",
+        "record:10.28",
+        "uid:9.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 242.3796844482422,
+      "terms": [
+        "smysl:65.54",
+        "cor:57.71",
+        "core:57.71",
+        "api:27.45",
+        "public:17.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 218.78184509277344,
+      "terms": [
+        "smysl:67.84",
+        "cor:52.32",
+        "core:52.32",
+        "tests:23.53",
+        "assert:6.14"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-8-1",
+      "score": 218.37442016601562,
+      "terms": [
+        "smysl:80.23",
+        "assert:7.81",
+        "unit:6.32",
+        "test:2.82"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g69ea5c05d859-8-1",
+      "score": 215.46466064453125,
+      "terms": [
+        "smysl:71.80",
+        "assert:10.19",
+        "new:4.18",
+        "pass:3.49",
+        "test:2.04"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-6-1",
+      "score": 178.42965698242188,
+      "terms": [
+        "cor:64.09",
+        "core:64.09",
+        "fixtures:15.21",
+        "fixtur:13.58",
+        "uid:9.33"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 121.1898422241211,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-17",
+      "score": 121.1898422241211,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 121.1898422241211,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-5",
+      "score": 121.1898422241211,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g69ea5c05d859-9",
+      "score": 121.1898422241211,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "Not yet: CLI commands to withdraw, resolve and list what is open for review; surface syntax for the two records; and the Python, JavaScript and Go readers, which preserve records 11 and 12 as unknown until they decode them.",
+        "label": "d/g69ea5c05d859-15",
+        "line": 3,
+        "reason": "The change mentions adding support for Python, JavaScript, and Go readers, contradicting the decision not to add version lists to these implementations.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "Build Constraints via default and field assignment instead of struct literal",
+        "label": "d/g87345653cdf3-1",
+        "line": 4,
+        "reason": "The change does not mention anything about build constraints, contradicting the decision to use default and field assignment instead of struct literal.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "Compile out the doc output test outside the default-ish feature set",
+        "label": "d/g87345653cdf3-11",
+        "line": 5,
+        "reason": "The change does not mention anything about compiling out the doc output test, contradicting the decision to compile it out outside the default-ish feature set.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "Remove unused BTreeSet import from pack_exact.rs",
+        "label": "d/g87345653cdf3-2",
+        "line": 6,
+        "reason": "The change does not mention anything about removing the BTreeSet import, contradicting the decision to remove it.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    }
+  ],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/API_CONTRACT.md",
+    "Documentation/SMYSL_ARCHITECTURE_RFC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SPEC_DRAFT_1.4.md",
+    "Documentation/manual/appendices.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "crates/smysl-check/src/passes/integrity.rs",
+    "crates/smysl-core/src/cbor/envelope.rs",
+    "crates/smysl-core/src/cbor/keys.rs",
+    "crates/smysl-core/src/diag.rs",
+    "crates/smysl-core/src/lib.rs",
+    "crates/smysl-core/src/types/lifecycle.rs",
+    "crates/smysl-core/src/types/mod.rs",
+    "crates/smysl-core/src/types/record.rs",
+    "crates/smysl-core/tests/lifecycle_fixtures.rs",
+    "crates/smysl-core/tests/roundtrip.rs",
+    "crates/smysl-graph/src/merge/contention.rs",
+    "crates/smysl-graph/src/store/mod.rs",
+    "crates/smysl-graph/tests/lifecycle.rs",
+    "crates/smysl-pack/src/closure.rs",
+    "crates/smysl-pack/src/constraints.rs",
+    "crates/smysl-pack/tests/lifecycle.rs",
+    "crates/smysl-render/src/ir.rs",
+    "fixtures/wire/contention-id/cases.json",
+    "fixtures/wire/relation-id/cases.json",
+    "src/lib.rs",
+    "tests/public-api-counts.txt",
+    "tests/public-api-pure.txt",
+    "tests/public-api.txt"
+  ],
+  "findings": [
+    {
+      "diff_line": "already computed, now stated, with vectors in `fixtures/wire/relation-id/`.",
+      "kind": "prerequisite",
+      "label": "p/g69ea5c05d859-8-1",
+      "reason": "The change adds a new section stating that the old unit test asserted 'smysl/1.0' as an unknown version, which contradicts the recorded claim that this was rejected.",
+      "source": "crates/smysl-core/src/lib.rs@69ea5c05d859",
+      "text": "Old unit test asserted smysl/1.0 as unknown version."
+    },
+    {
+      "diff_line": "already computed, now stated, with vectors in `fixtures/wire/relation-id/`.",
+      "kind": "rejected alternative",
+      "label": "r/g69ea5c05d859-8-1",
+      "reason": "The change adds a new section stating that the old unit test asserted 'smysl/1.0' as an unknown version, which contradicts the recorded claim that this was rejected.",
+      "source": "crates/smysl-core/src/lib.rs@69ea5c05d859",
+      "text": "Rejected: Assert a literal list and keep using smysl/1.0 as an unknown version.\nThe old test would fail on new versions or silently pass on unlisted additions."
+    },
+    {
+      "diff_line": "(`SMY-W056`, registry 53). Not a `retracts` edge pointing at a rid, because a 1.3 checker would",
+      "kind": "prerequisite",
+      "label": "p/g4968383dc452-6-1",
+      "reason": "The change introduces a new diagnostic code, contradicting the prerequisite that missing facts were recoverable only by decoding core_bytes_hex in uid fixtures.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Missing facts were recoverable only by decoding core_bytes_hex in uid fixtures."
+    },
+    {
+      "diff_line": "### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "kind": "decision",
+      "label": "d/g4968383dc452-12",
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision that tables were hand-typed copies, not assertions against the document.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Correct README claims that tables were asserted against document.\nThe tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document."
+    },
+    {
+      "diff_line": "nothing on the wire.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-17",
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision not to implement rule M in outside readers.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Do not implement rule M in outside readers.\nRule M is checkable against a store, not against a unit; a validate claiming to enforce it would be a check that cannot fail."
+    },
+    {
+      "diff_line": "nothing on the wire.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-19",
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision to measure mutation survivors on store/mod.rs under both per-package and workspace tests.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Measure mutation survivors on store/mod.rs under both per-package and workspace tests.\nTo compare weak per-package claim with stronger workspace claim and quantify artefact rate."
+    },
+    {
+      "diff_line": "nothing on the wire.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-5",
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision to NFC-normalise text in nodejs CBOR encoder.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "NFC-normalise text in nodejs CBOR encoder.\n\u00a73 constraint 6 asks for normalisation at the encoder; previously a no-op for re-encode but needed for authored text."
+    },
+    {
+      "diff_line": "nothing on the wire.",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-9",
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision to strengthen the facade re-export test to check every supported version is accepted and FORMAT_VERSION_DEFAULT.",
+      "source": "src/lib.rs@69ea5c05d859",
+      "text": "Strengthen the facade re-export test to check every supported version is accepted and FORMAT_VERSION_DEFAULT \u2026\nThe previous test only checked the first entry, which would have kept passing while a second supported version went unchecked."
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "kind": "decision",
+      "label": "d/g4968383dc452-1",
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "source": "nodejs/README.md@4968383dc452",
+      "text": "Upgrade nodejs conformance target from C-Read to C-Produce.\nTo provide a fourth independent derivation of uids and a third witness for \u00a72.3 beyond the Rust, strengthening the evidence that the specification is sufficient."
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "kind": "decision",
+      "label": "d/g4968383dc452-15",
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to revise gate 7 blocked command explanation.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Revise gate 7 blocked command explanation, no longer 'decision about book'.\nThe block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision."
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "kind": "decision",
+      "label": "d/g4968383dc452-16",
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to hold beta.smy repair rather than guess missing stanza.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Hold beta.smy repair rather than guess missing stanza.\nThe missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair."
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "kind": "decision",
+      "label": "d/g4968383dc452-21",
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to do not apply 22% artefact fraction to other modules.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Do not apply 22% artefact fraction to other modules.\nOne module evidence is not generalizable; applying the fraction would repeat the error of quoting a number without its configuration."
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "kind": "decision",
+      "label": "d/g4968383dc452-23",
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to implement status integers and source/kind enums as constants in nodejs.",
+      "source": "nodejs/src/uid.js@4968383dc452",
+      "text": "Implement status integers and source/kind enums as constants in nodejs.\nThese values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures."
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "kind": "decision",
+      "label": "d/g4968383dc452-24",
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to implement RFC 4648 base32 alphabet in nodejs.",
+      "source": "Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452",
+      "text": "Implement RFC 4648 base32 alphabet in nodejs.\nThe spec lacked an alphabet; base32hex was equally faithful but would produce mutually unreadable names."
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-12",
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision that the version-trap defect is fixed in 0.14.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update format spec \u00a78.5 to record the version-trap defect as fixed in 0.14.\nThe trap was invisible until it bit; the spec should now state the fix so the historical warning is replaced with the actual current behavior."
+    },
+    {
+      "diff_line": "### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-14",
+      "reason": "The change introduces new features for version 1.4.0, contradicting the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\u00a78.2 requires readers to refuse a version absent from their list. Flipping the writer before 0.14 is in the field would make every other implementation reject the output."
+    }
+  ],
+  "fingerprint": "51629250266ab3fa216a158c51639738cafca423b84ebb3ada4878382dcb0300",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-09271ab14abd",
+  "kind": "commit",
+  "pack_tokens": 1496,
+  "pack_units": 64,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 2204,
+    "predicted_tokens": 56473,
+    "prompt_tokens": 55125,
+    "seconds": 397.785200667
+  },
+  "verdicts": [
+    {
+      "diff_line": "+Old unit test asserted smysl/1.0 as unknown version.",
+      "label": "p/g69ea5c05d859-8-1",
+      "line": 23,
+      "reason": "The change adds a new section stating that the old unit test asserted 'smysl/1.0' as an unknown version, which contradicts the recorded claim that this was rejected.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Old unit test asserted smysl/1.0 as unknown version.",
+      "label": "r/g69ea5c05d859-8-1",
+      "line": 23,
+      "reason": "The change adds a new section stating that the old unit test asserted 'smysl/1.0' as an unknown version, which contradicts the recorded claim that this was rejected.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12142 0 R",
+      "label": "p/g4968383dc452-6-1",
+      "line": 27,
+      "reason": "The change introduces a new diagnostic code, contradicting the prerequisite that missing facts were recoverable only by decoding core_bytes_hex in uid fixtures.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "label": "d/g4968383dc452-12",
+      "line": 10,
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision that tables were hand-typed copies, not assertions against the document.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12142 0 R",
+      "label": "d/g4968383dc452-17",
+      "line": 20,
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision not to implement rule M in outside readers.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12142 0 R",
+      "label": "d/g4968383dc452-19",
+      "line": 20,
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision to measure mutation survivors on store/mod.rs under both per-package and workspace tests.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12142 0 R",
+      "label": "d/g4968383dc452-5",
+      "line": 20,
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision to NFC-normalise text in nodejs CBOR encoder.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12142 0 R",
+      "label": "d/g69ea5c05d859-9",
+      "line": 20,
+      "reason": "The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision to strengthen the facade re-export test to check every supported version is accepted and FORMAT_VERSION_DEFAULT.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "label": "d/g4968383dc452-1",
+      "line": 1,
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "label": "d/g4968383dc452-15",
+      "line": 1,
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to revise gate 7 blocked command explanation.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "label": "d/g4968383dc452-16",
+      "line": 1,
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to hold beta.smy repair rather than guess missing stanza.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "label": "d/g4968383dc452-21",
+      "line": 1,
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to do not apply 22% artefact fraction to other modules.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "label": "d/g4968383dc452-23",
+      "line": 1,
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to implement status integers and source/kind enums as constants in nodejs.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "label": "d/g4968383dc452-24",
+      "line": 1,
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to implement RFC 4648 base32 alphabet in nodejs.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Nothing shipped yet. What this cycle starts from, carried from 1.3.0 (details there):",
+      "label": "d/g69ea5c05d859-12",
+      "line": 1,
+      "reason": "The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision that the version-trap defect is fixed in 0.14.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "label": "d/g69ea5c05d859-14",
+      "line": 2,
+      "reason": "The change introduces new features for version 1.4.0, contradicting the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Not yet: CLI commands to withdraw, resolve and list what is open for review; surface syntax for the two records; and the Python, JavaScript and Go readers, which preserve records 11 and 12 as unknown until they decode them.",
+      "label": "d/g69ea5c05d859-15",
+      "line": 3,
+      "reason": "The change mentions adding support for Python, JavaScript, and Go readers, contradicting the decision not to add version lists to these implementations.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Build Constraints via default and field assignment instead of struct literal",
+      "label": "d/g87345653cdf3-1",
+      "line": 4,
+      "reason": "The change does not mention anything about build constraints, contradicting the decision to use default and field assignment instead of struct literal.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Compile out the doc output test outside the default-ish feature set",
+      "label": "d/g87345653cdf3-11",
+      "line": 5,
+      "reason": "The change does not mention anything about compiling out the doc output test, contradicting the decision to compile it out outside the default-ish feature set.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Remove unused BTreeSet import from pack_exact.rs",
+      "label": "d/g87345653cdf3-2",
+      "line": 6,
+      "reason": "The change does not mention anything about removing the BTreeSet import, contradicting the decision to remove it.",
+      "verdict": "contradicts"
+    }
+  ]
+}

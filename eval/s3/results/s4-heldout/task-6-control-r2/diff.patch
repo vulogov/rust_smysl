@@ -1,0 +1,2050 @@
+ CHANGELOG.md                                       |  16 +-
+ Documentation/SMYSL_FORMAT_SPEC.md                 |   4 +-
+ Documentation/SMYSL_RATIONALE.typ                  |   4 +-
+ Documentation/manual/ch01-03-foundations.typ       |   2 +-
+ Documentation/manual/ch11-13-merge-diff-trace.typ  |  64 ++--
+ .../manual/ch14-16-view-salience-retract.typ       |  60 ++--
+ Documentation/manual/ch17-18-pack-thread.typ       |  44 +--
+ Documentation/manual/ch19-21-verify.typ            |   6 +-
+ Documentation/manual/ch22-24-render.typ            | 122 +++----
+ .../manual/ch25-27-library-walkthrough.typ         |  20 +-
+ README.md                                          |   6 +-
+ crates/smysl-check/src/passes/epistemics.rs        |  25 +-
+ crates/smysl-check/src/passes/trust.rs             |   6 +-
+ crates/smysl-core/src/types/epistemics.rs          |  17 +-
+ crates/smysl-ingest/src/ceiling.rs                 |   3 +-
+ crates/smysl-ingest/src/stage.rs                   |  27 +-
+ crates/smysl-pack/tests/golden-packs.txt           | 370 ++++++++++-----------
+ fixtures/golden/cbor/corpus.cbor                   | Bin 1628 -> 1628 bytes
+ fixtures/golden/render/analyst.html                |   4 +-
+ fixtures/golden/render/analyst.json                |   4 +-
+ fixtures/golden/render/exec.slides.typ             |   4 +-
+ fixtures/golden/render/plain.txt                   |   4 +-
+ fixtures/schema/unit.json                          |   2 +-
+ fixtures/wire/uid/cases.json                       |  12 +-
+ go/uid.go                                          |   8 +-
+ go/uid_test.go                                     |   4 +-
+ nodejs/src/uid.js                                  |   4 +-
+ scripts/verify-spec-tables.py                      |   2 +-
+ tests/global_flags.rs                              |   2 +-
+ 29 files changed, 456 insertions(+), 390 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..585f97d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,21 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++**`cited` now sorts before `derived`.** `Status` is renumbered `unfounded 0`, `speculative 1`,
++`inferred 2`, `cited 3`, `derived 4`, `measured 5`. The integers are the wire encoding (§2.2 key
++6) and the order rules M and T compare, so this moves every uid whose unit is `cited` or
++`derived`, and everything that names one of them.
++
++- Wire: `fixtures/wire/uid/cases.json`, `fixtures/golden/cbor/corpus.cbor` and the §2.2 status
++  table are regenerated; the Go and Node readers carry the new table. **Existing stores that hold
++  a `cited` or `derived` unit do not decode to the same statuses** — the format version was not
++  moved by this change.
++- Rule M: a `derived` unit now exceeds the cap of a `cited` ground (`SMY-E030`). A derivation
++  can rest on `derived` or `measured` grounds, not on a citation alone.
++- Rule T: the `computed` rung (ceiling `derived`) now admits `cited`; the `document` and `web`
++  rungs (ceiling `cited`) no longer admit `derived`, so ingest lowers a `derived` unit from a
++  document to the strongest status its shape supports.
++- The JSON schema's `status` enum, the `pack` golden and the render goldens follow the new order.
+ 
+ ---
+ 
+diff --git a/Documentation/SMYSL_FORMAT_SPEC.md b/Documentation/SMYSL_FORMAT_SPEC.md
+index 239fd86..e1f3531 100644
+--- a/Documentation/SMYSL_FORMAT_SPEC.md
++++ b/Documentation/SMYSL_FORMAT_SPEC.md
+@@ -130,8 +130,8 @@ uids *and* enforce a different monotonicity rule while believing itself conforma
+ | 0 | unfounded |
+ | 1 | speculative |
+ | 2 | inferred |
+-| 3 | derived |
+-| 4 | cited |
++| 3 | cited |
++| 4 | derived |
+ | 5 | measured |
+ 
+ `source` (key 7) is a map with integer keys on the same rules as the core:
+diff --git a/Documentation/SMYSL_RATIONALE.typ b/Documentation/SMYSL_RATIONALE.typ
+index 7f33eed..c4ed0cd 100644
+--- a/Documentation/SMYSL_RATIONALE.typ
++++ b/Documentation/SMYSL_RATIONALE.typ
+@@ -448,7 +448,7 @@ budget, and it has to decide what survives the cut:
+ ```
+ $ smysl --format surface pack --budget 200 --explain --focus c/pool-saturation F1-incident.smy
+ b3:cvhirtgs2mpvli2ethhyeo32uf @L0  -  earned on density
+-b3:phsoomklkmlq3sjvbe6cyuqy5v @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
++b3:vrushyv3sy5ytpkccxuh6cr6de @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
+ b3:xkys7j42mcuyiaxiyh73xddimr dropped: low-value
+ F1-incident.smy: 7 of 8 unit(s), 193 of 200 tokens, greedy mode, gap 0.011
+ ```
+@@ -495,7 +495,7 @@ the other or ask a coordinator who goes first.
+ #screen(caption: "two independently-authored documents, combined")[
+ ```
+ $ smysl merge agent-a.smy agent-b.smy -o combined.cbor
+-agent-b.smy: contention k/ccm3actwjjti65famnoe6mapo5d over b3:cvhirtgs2mpvli2ethhyeo32uf
++agent-b.smy: contention k/cge2mblaiyozvonkdzxkrod222p over b3:cvhirtgs2mpvli2ethhyeo32uf
+   (2 positions, live-rebuttal)
+ ```
+ ]
+diff --git a/Documentation/manual/ch01-03-foundations.typ b/Documentation/manual/ch01-03-foundations.typ
+index 0cb0861..b116a90 100644
+--- a/Documentation/manual/ch01-03-foundations.typ
++++ b/Documentation/manual/ch01-03-foundations.typ
+@@ -668,7 +668,7 @@ you audit by hand every time.
+ #screen(caption: "$ smysl pack --budget 200 --explain --format surface first.smy")[
+ ```
+ b3:fh63h4ededeae3dpn6ov4y4cuo @L0  -  earned on density
+-b3:uxjafqrmtdo2i5nbi2mlma2ylv @L0  -  earned on density
++b3:vwxqnkcoyjyvggaeoytizinrsl @L0  -  earned on density
+ first.smy: 2 of 2 unit(s), 41 of 200 tokens, greedy mode, gap 0.000
+ @doc smysl/0.1 { id: v/pack, intent: pack }
+ 
+diff --git a/Documentation/manual/ch11-13-merge-diff-trace.typ b/Documentation/manual/ch11-13-merge-diff-trace.typ
+index 6685a9f..c273015 100644
+--- a/Documentation/manual/ch11-13-merge-diff-trace.typ
++++ b/Documentation/manual/ch11-13-merge-diff-trace.typ
+@@ -49,14 +49,14 @@ reasoning is exactly what `smysl` calls live:
+ 
+ #screen(caption: "$ smysl merge fixtures/corpus/F1-incident.smy -o /dev/null")[
+ ```
+-fixtures/corpus/F1-incident.smy: contention k/ccm3actwjjti65famnoe6mapo5d over b3:cvhirtgs2mpvli2ethhyeo32uf (2 positions, live-rebuttal)
++fixtures/corpus/F1-incident.smy: contention k/cge2mblaiyozvonkdzxkrod222p over b3:cvhirtgs2mpvli2ethhyeo32uf (2 positions, live-rebuttal)
+ ```
+ ]
+ 
+ `b3:cvhirtgs2mpvli2ethhyeo32uf` is `c/pool-saturation` — the same real uid
+ this book has used since Chapter 19's `pack --focus`, because these are
+ content hashes and this fixture has not changed. The contention id,
+-`k/ccm3actwjjti65famnoe6mapo5d`, is derived from the contention's own content
++`k/cge2mblaiyozvonkdzxkrod222p`, is derived from the contention's own content
+ — the kind, the unit it is over, and its positions — never allocated, so two
+ peers that independently detect the same disagreement name it identically.
+ Detection is not something `merge` invents on the spot: it is a pure
+@@ -88,10 +88,10 @@ other's file. Merging them is the ordinary case this chapter exists for:
+ 
+ #screen(caption: "$ smysl merge fixtures/corpus/F8a-agent-alpha.smy fixtures/corpus/F8b-agent-beta.smy -o /dev/null")[
+ ```
+-fixtures/corpus/F8a-agent-alpha.smy: contention k/co7i7feme3q3sed4l63dkcgmmuy over b3:v5sjn55ujeflrdyu5qycgmtvz3 (2 positions, supersession-fork)
+-fixtures/corpus/F8b-agent-beta.smy: contention k/c3xa27zib4d7t5rme4xekauzh4t over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
++fixtures/corpus/F8a-agent-alpha.smy: contention k/cqrt6imipem5ve27pafz2tzpwuv over b3:blilyv57lmy5n2zdhnmgl5v2g4 (2 positions, supersession-fork)
++fixtures/corpus/F8b-agent-beta.smy: contention k/c3cv5mapyq6eotpvnsed2zrkdxb over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
+ fixtures/corpus/F8b-agent-beta.smy: contention k/cboxvjp36tnst3vmpsoo2mmvhqu over b3:cjixk2inyftvxj55d53w2ivxej (2 positions, label-collision)
+-fixtures/corpus/F8b-agent-beta.smy: contention k/co7i7feme3q3sed4l63dkcgmmuy over b3:v5sjn55ujeflrdyu5qycgmtvz3 (2 positions, supersession-fork)
++fixtures/corpus/F8b-agent-beta.smy: contention k/cqrt6imipem5ve27pafz2tzpwuv over b3:blilyv57lmy5n2zdhnmgl5v2g4 (2 positions, supersession-fork)
+ ```
+ ]
+ 
+@@ -139,7 +139,7 @@ identical two-file merge three times, changing only `--policy`:
+ 
+ #screen(caption: "$ smysl merge --policy latest fixtures/corpus/F8a-agent-alpha.smy fixtures/corpus/F8b-agent-beta.smy -o /dev/null")[
+ ```
+-fixtures/corpus/F8b-agent-beta.smy: contention k/c3xa27zib4d7t5rme4xekauzh4t over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
++fixtures/corpus/F8b-agent-beta.smy: contention k/c3cv5mapyq6eotpvnsed2zrkdxb over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
+ fixtures/corpus/F8b-agent-beta.smy: contention k/cboxvjp36tnst3vmpsoo2mmvhqu over b3:cjixk2inyftvxj55d53w2ivxej (2 positions, label-collision)
+ ```
+ ]
+@@ -264,11 +264,11 @@ disagreements nobody can review one at a time:
+ #screen(caption: "$ smysl merge --max-contentions-per-agent 0 fixtures/corpus/F8a-agent-alpha.smy fixtures/corpus/F8b-agent-beta.smy -o /dev/null")[
+ ```
+ fixtures/corpus/F8a-agent-alpha.smy: warning: SMY-W055: 1 contentions from one source exceeds the cap of 0
+-fixtures/corpus/F8a-agent-alpha.smy: contention k/co7i7feme3q3sed4l63dkcgmmuy over b3:v5sjn55ujeflrdyu5qycgmtvz3 (2 positions, supersession-fork)
++fixtures/corpus/F8a-agent-alpha.smy: contention k/cqrt6imipem5ve27pafz2tzpwuv over b3:blilyv57lmy5n2zdhnmgl5v2g4 (2 positions, supersession-fork)
+ fixtures/corpus/F8b-agent-beta.smy: warning: SMY-W055: 3 contentions from one source exceeds the cap of 0
+-fixtures/corpus/F8b-agent-beta.smy: contention k/c3xa27zib4d7t5rme4xekauzh4t over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
++fixtures/corpus/F8b-agent-beta.smy: contention k/c3cv5mapyq6eotpvnsed2zrkdxb over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
+ fixtures/corpus/F8b-agent-beta.smy: contention k/cboxvjp36tnst3vmpsoo2mmvhqu over b3:cjixk2inyftvxj55d53w2ivxej (2 positions, label-collision)
+-fixtures/corpus/F8b-agent-beta.smy: contention k/co7i7feme3q3sed4l63dkcgmmuy over b3:v5sjn55ujeflrdyu5qycgmtvz3 (2 positions, supersession-fork)
++fixtures/corpus/F8b-agent-beta.smy: contention k/cqrt6imipem5ve27pafz2tzpwuv over b3:blilyv57lmy5n2zdhnmgl5v2g4 (2 positions, supersession-fork)
+ ```
+ ]
+ 
+@@ -305,7 +305,7 @@ attempt degraded to opaque prose in this offline sandbox:
+ 
+ #screen(caption: "$ smysl --store project/store.cbor merge project/store.cbor --staged -o project/store2.cbor")[
+ ```
+-project/store.cbor: contention k/ccm3actwjjti65famnoe6mapo5d over b3:cvhirtgs2mpvli2ethhyeo32uf (2 positions, live-rebuttal)
++project/store.cbor: contention k/cge2mblaiyozvonkdzxkrod222p over b3:cvhirtgs2mpvli2ethhyeo32uf (2 positions, live-rebuttal)
+ smysl merge: committed 2 staged record(s)
+ ```
+ ]
+@@ -423,16 +423,16 @@ it discusses, is different content, hence a different uid.
+ ```
+ 8 only, 5 only, 0 common
+ - b3:cvhirtgs2mpvli2ethhyeo32uf
+-- b3:ekitkvj75uvgzxpvq3ad2nrv3b
++- b3:fl3m2qiivd6b3lj7gmb4i4abpl
+ - b3:izyuzlt42mqcvgdfb4nfpllxyq
+-- b3:js4xzessu5zwjpv2rawtugnuvj
+-- b3:phsoomklkmlq3sjvbe6cyuqy5v
++- b3:ml23h3qshmmsc5i4roix77hqrk
+ - b3:re42iey2e7syg6zp73tfrlqbvh
+-- b3:wo4t2c46lq45fnakd6tajlgcac
++- b3:vrushyv3sy5ytpkccxuh6cr6de
+ - b3:xkys7j42mcuyiaxiyh73xddimr
++- b3:5yj2v2q2wuimibcjqqczpkvqeh
+++ b3:a665b3gewqxrtbgn3qyqoczmiw
+ + b3:bacqe7jyc3pfhpnmn2vivvpz47
+-+ b3:hdn4uifpmzzopwuyajmhyf5xzu
+-+ b3:xa7undjm37yl57reyhuxgkiwmm
+++ b3:odedo2ziedvjaltoxfrkq5frsq
+ + b3:2hkacsatxuvcywj6f4w2lkzojx
+ + b3:4p7cfgyytyimdbqyhq7hkuw2sb
+ ```
+@@ -610,12 +610,12 @@ support — a unit's `grounds` and `deps`, what it rests on to be true.
+ both at once. `F1-incident.smy`'s finding, `f/root-cause`, makes the
+ distinction concrete:
+ 
+-#screen(caption: "$ smysl trace b3:js4xzessu5zwjpv2rawtugnuvj fixtures/corpus/F1-incident.smy   (--grounds is the default)")[
++#screen(caption: "$ smysl trace b3:ml23h3qshmmsc5i4roix77hqrk fixtures/corpus/F1-incident.smy   (--grounds is the default)")[
+ ```
+-b3:js4xzessu5zwjpv2rawtugnuvj (root)
++b3:ml23h3qshmmsc5i4roix77hqrk (root)
+   b3:cvhirtgs2mpvli2ethhyeo32uf (grounds)
+-  b3:wo4t2c46lq45fnakd6tajlgcac (grounds)
+-    b3:ekitkvj75uvgzxpvq3ad2nrv3b (deps)
++  b3:5yj2v2q2wuimibcjqqczpkvqeh (grounds)
++    b3:fl3m2qiivd6b3lj7gmb4i4abpl (deps)
+     b3:izyuzlt42mqcvgdfb4nfpllxyq (grounds)
+     b3:re42iey2e7syg6zp73tfrlqbvh (grounds)
+ fixtures/corpus/F1-incident.smy: 6 unit(s) over 2 step(s)
+@@ -632,9 +632,9 @@ no attestation, just what the claim rests on to be believed.
+ `--parents` on the same root asks a different question and gets a different,
+ honest answer:
+ 
+-#screen(caption: "$ smysl trace --parents b3:js4xzessu5zwjpv2rawtugnuvj fixtures/corpus/F1-incident.smy")[
++#screen(caption: "$ smysl trace --parents b3:ml23h3qshmmsc5i4roix77hqrk fixtures/corpus/F1-incident.smy")[
+ ```
+-b3:js4xzessu5zwjpv2rawtugnuvj (root)
++b3:ml23h3qshmmsc5i4roix77hqrk (root)
+ fixtures/corpus/F1-incident.smy: 1 unit(s) over 0 step(s)
+ ```
+ ]
+@@ -649,10 +649,10 @@ step long.
+ `F8a-agent-alpha.smy` has real `supersedes` edges — Chapter 13's fork over
+ `c/alpha-scope` — and `--parents` finds them from either side:
+ 
+-#screen(caption: "$ smysl trace --parents b3:e3f6wpuw6ie4ruf2ba62yrtagg fixtures/corpus/F8a-agent-alpha.smy")[
++#screen(caption: "$ smysl trace --parents b3:lif7anguh7qi4nyuslgeux57y6 fixtures/corpus/F8a-agent-alpha.smy")[
+ ```
+-b3:e3f6wpuw6ie4ruf2ba62yrtagg (root)
+-  b3:v5sjn55ujeflrdyu5qycgmtvz3 (supersedes)
++b3:lif7anguh7qi4nyuslgeux57y6 (root)
++  b3:blilyv57lmy5n2zdhnmgl5v2g4 (supersedes)
+ fixtures/corpus/F8a-agent-alpha.smy: 2 unit(s) over 1 step(s)
+ ```
+ ]
+@@ -671,11 +671,11 @@ An unbounded trace walks to the roots of whatever it is following — fine for
+ a six-unit fixture, less fine for a corpus with real depth. `--depth`
+ truncates it:
+ 
+-#screen(caption: "$ smysl trace --depth 1 b3:js4xzessu5zwjpv2rawtugnuvj fixtures/corpus/F1-incident.smy")[
++#screen(caption: "$ smysl trace --depth 1 b3:ml23h3qshmmsc5i4roix77hqrk fixtures/corpus/F1-incident.smy")[
+ ```
+-b3:js4xzessu5zwjpv2rawtugnuvj (root)
++b3:ml23h3qshmmsc5i4roix77hqrk (root)
+   b3:cvhirtgs2mpvli2ethhyeo32uf (grounds)
+-  b3:wo4t2c46lq45fnakd6tajlgcac (grounds)
++  b3:5yj2v2q2wuimibcjqqczpkvqeh (grounds)
+ fixtures/corpus/F1-incident.smy: 3 unit(s) over 1 step(s)
+ ```
+ ]
+@@ -692,12 +692,12 @@ actually need before deciding whether to go deeper.
+ answering not just *what* a claim rests on but *who* put each piece there.
+ On this book's hand-authored fixtures, that answer is honestly empty:
+ 
+-#screen(caption: "$ smysl trace --both --agents b3:js4xzessu5zwjpv2rawtugnuvj fixtures/corpus/F1-incident.smy")[
++#screen(caption: "$ smysl trace --both --agents b3:ml23h3qshmmsc5i4roix77hqrk fixtures/corpus/F1-incident.smy")[
+ ```
+-b3:js4xzessu5zwjpv2rawtugnuvj (root)
++b3:ml23h3qshmmsc5i4roix77hqrk (root)
+   b3:cvhirtgs2mpvli2ethhyeo32uf (grounds)
+-  b3:wo4t2c46lq45fnakd6tajlgcac (grounds)
+-    b3:ekitkvj75uvgzxpvq3ad2nrv3b (deps)
++  b3:5yj2v2q2wuimibcjqqczpkvqeh (grounds)
++    b3:fl3m2qiivd6b3lj7gmb4i4abpl (deps)
+     b3:izyuzlt42mqcvgdfb4nfpllxyq (grounds)
+     b3:re42iey2e7syg6zp73tfrlqbvh (grounds)
+ fixtures/corpus/F1-incident.smy: 6 unit(s) over 2 step(s)
+diff --git a/Documentation/manual/ch14-16-view-salience-retract.typ b/Documentation/manual/ch14-16-view-salience-retract.typ
+index f018ce1..adbc526 100644
+--- a/Documentation/manual/ch14-16-view-salience-retract.typ
++++ b/Documentation/manual/ch14-16-view-salience-retract.typ
+@@ -44,11 +44,11 @@ further arguments prints exactly that view, resolved:
+ ```
+ v/f1: 1 root(s), 0 thread(s), 6 unit(s) reachable
+   b3:cvhirtgs2mpvli2ethhyeo32uf
+-  b3:ekitkvj75uvgzxpvq3ad2nrv3b
++  b3:fl3m2qiivd6b3lj7gmb4i4abpl
+   b3:izyuzlt42mqcvgdfb4nfpllxyq
+-  b3:js4xzessu5zwjpv2rawtugnuvj
++  b3:ml23h3qshmmsc5i4roix77hqrk
+   b3:re42iey2e7syg6zp73tfrlqbvh
+-  b3:wo4t2c46lq45fnakd6tajlgcac
++  b3:5yj2v2q2wuimibcjqqczpkvqeh
+ ```
+ ]
+ 
+@@ -83,10 +83,10 @@ picks up a unit `f/root-cause`'s view never touched:
+ ```
+ v/pool-only: 1 root(s), 0 thread(s), 5 unit(s) reachable
+   b3:cvhirtgs2mpvli2ethhyeo32uf
+-  b3:ekitkvj75uvgzxpvq3ad2nrv3b
++  b3:fl3m2qiivd6b3lj7gmb4i4abpl
+   b3:izyuzlt42mqcvgdfb4nfpllxyq
+   b3:re42iey2e7syg6zp73tfrlqbvh
+-  b3:wo4t2c46lq45fnakd6tajlgcac
++  b3:5yj2v2q2wuimibcjqqczpkvqeh
+ ```
+ ]
+ 
+@@ -109,16 +109,16 @@ requires` fills in for a whole document. Multiple `--roots` behave exactly
+ like `@doc roots: [...]` with more than one entry — the view is the union
+ of what each root reaches:
+ 
+-#screen(caption: "$ smysl view --roots b3:cvhirtgs2mpvli2ethhyeo32uf --roots b3:phsoomklkmlq3sjvbe6cyuqy5v --id v/two-roots fixtures/corpus/F1-incident.smy")[
++#screen(caption: "$ smysl view --roots b3:cvhirtgs2mpvli2ethhyeo32uf --roots b3:vrushyv3sy5ytpkccxuh6cr6de --id v/two-roots fixtures/corpus/F1-incident.smy")[
+ ```
+ v/two-roots: 2 root(s), 0 thread(s), 7 unit(s) reachable
+   b3:cvhirtgs2mpvli2ethhyeo32uf
+-  b3:ekitkvj75uvgzxpvq3ad2nrv3b
++  b3:fl3m2qiivd6b3lj7gmb4i4abpl
+   b3:izyuzlt42mqcvgdfb4nfpllxyq
+-  b3:phsoomklkmlq3sjvbe6cyuqy5v
+   b3:re42iey2e7syg6zp73tfrlqbvh
+-  b3:wo4t2c46lq45fnakd6tajlgcac
++  b3:vrushyv3sy5ytpkccxuh6cr6de
+   b3:xkys7j42mcuyiaxiyh73xddimr
++  b3:5yj2v2q2wuimibcjqqczpkvqeh
+ ```
+ ]
+ 
+@@ -211,7 +211,7 @@ ever there.
+ ]
+ 
+ #exercises((
+-  [Run `smysl view --id v/narrow --roots b3:wo4t2c46lq45fnakd6tajlgcac
++  [Run `smysl view --id v/narrow --roots b3:5yj2v2q2wuimibcjqqczpkvqeh
+    --format surface fixtures/corpus/F1-incident.smy`. One root reaches three
+    units. Trace by hand, in the source file, why those three and not the other
+    five.],
+@@ -315,13 +315,13 @@ them in descending order — the full ranking, not a sample:
+ 
+ #screen(caption: "$ smysl salience fixtures/corpus/F1-incident.smy")[
+ ```
+-0.5000  b3:js4xzessu5zwjpv2rawtugnuvj
+-0.3027  b3:wo4t2c46lq45fnakd6tajlgcac
++0.5000  b3:ml23h3qshmmsc5i4roix77hqrk
++0.3027  b3:5yj2v2q2wuimibcjqqczpkvqeh
+ 0.2129  b3:cvhirtgs2mpvli2ethhyeo32uf
+-0.1289  b3:ekitkvj75uvgzxpvq3ad2nrv3b
++0.1289  b3:fl3m2qiivd6b3lj7gmb4i4abpl
+ 0.1289  b3:re42iey2e7syg6zp73tfrlqbvh
+ 0.0898  b3:izyuzlt42mqcvgdfb4nfpllxyq
+-0.0000  b3:phsoomklkmlq3sjvbe6cyuqy5v
++0.0000  b3:vrushyv3sy5ytpkccxuh6cr6de
+ 0.0000  b3:xkys7j42mcuyiaxiyh73xddimr
+ ```
+ ]
+@@ -344,8 +344,8 @@ the highest three without changing a single number:
+ 
+ #screen(caption: "$ smysl salience --top 3 fixtures/corpus/F1-incident.smy")[
+ ```
+-0.5000  b3:js4xzessu5zwjpv2rawtugnuvj
+-0.3027  b3:wo4t2c46lq45fnakd6tajlgcac
++0.5000  b3:ml23h3qshmmsc5i4roix77hqrk
++0.3027  b3:5yj2v2q2wuimibcjqqczpkvqeh
+ 0.2129  b3:cvhirtgs2mpvli2ethhyeo32uf
+ ```
+ ]
+@@ -385,10 +385,10 @@ top unit reaches `1.0`:
+ 
+ #screen(caption: "$ smysl salience --weights 1,0,0 --top 5 fixtures/corpus/F1-incident.smy")[
+ ```
+-1.0000  b3:js4xzessu5zwjpv2rawtugnuvj
+-0.6055  b3:wo4t2c46lq45fnakd6tajlgcac
++1.0000  b3:ml23h3qshmmsc5i4roix77hqrk
++0.6055  b3:5yj2v2q2wuimibcjqqczpkvqeh
+ 0.4248  b3:cvhirtgs2mpvli2ethhyeo32uf
+-0.2578  b3:ekitkvj75uvgzxpvq3ad2nrv3b
++0.2578  b3:fl3m2qiivd6b3lj7gmb4i4abpl
+ 0.2578  b3:re42iey2e7syg6zp73tfrlqbvh
+ ```
+ ]
+@@ -416,16 +416,16 @@ default view never reaches surfaces a completely different ranking from
+ the same store. Seed on `c/canary-clean` (`b3:phsoomklkmlq...`, one of the
+ two units `v/f1` scored `0.0000` above) instead of the view's default root:
+ 
+-#screen(caption: "$ smysl salience --seed b3:phsoomklkmlq3sjvbe6cyuqy5v --top 8 fixtures/corpus/F1-incident.smy")[
++#screen(caption: "$ smysl salience --seed b3:vrushyv3sy5ytpkccxuh6cr6de --top 8 fixtures/corpus/F1-incident.smy")[
+ ```
+-0.5000  b3:phsoomklkmlq3sjvbe6cyuqy5v
++0.5000  b3:vrushyv3sy5ytpkccxuh6cr6de
+ 0.4209  b3:xkys7j42mcuyiaxiyh73xddimr
+ 0.0000  b3:cvhirtgs2mpvli2ethhyeo32uf
+-0.0000  b3:ekitkvj75uvgzxpvq3ad2nrv3b
++0.0000  b3:fl3m2qiivd6b3lj7gmb4i4abpl
+ 0.0000  b3:izyuzlt42mqcvgdfb4nfpllxyq
+-0.0000  b3:js4xzessu5zwjpv2rawtugnuvj
++0.0000  b3:ml23h3qshmmsc5i4roix77hqrk
+ 0.0000  b3:re42iey2e7syg6zp73tfrlqbvh
+-0.0000  b3:wo4t2c46lq45fnakd6tajlgcac
++0.0000  b3:5yj2v2q2wuimibcjqqczpkvqeh
+ ```
+ ]
+ 
+@@ -496,7 +496,7 @@ independent evidence, it is one piece of evidence read twice.
+ ]
+ 
+ #exercises((
+-  [Run `smysl salience --explain b3:js4xzessu5zwjpv2rawtugnuvj
++  [Run `smysl salience --explain b3:ml23h3qshmmsc5i4roix77hqrk
+    fixtures/corpus/F1-incident.smy`. The unit scores 0.5000, made of
+    centrality 1.0000 at weight 0.50, corroboration 0.0000, and role 0.0000.
+    It is the highest-ranked unit in the document *and* scores zero on two of
+@@ -568,9 +568,9 @@ argument, and useless when you arrive knowing only what you are looking for.
+ ```
+ 7.5637  b3:cvhirtgs2mpvli2ethhyeo32uf  The eu-west connection pool is saturated.
+ 0.8732  b3:xkys7j42mcuyiaxiyh73xddimr  The 4.2 canary ran the same pool configuration without the regression.
+-0.8635  b3:js4xzessu5zwjpv2rawtugnuvj  Pool saturation is the leading cause but is not consistent with the canary.
++0.8635  b3:ml23h3qshmmsc5i4roix77hqrk  Pool saturation is the leading cause but is not consistent with the canary.
+ 0.8541  b3:izyuzlt42mqcvgdfb4nfpllxyq  Pool acquisition wait rose from 2 ms to 310 ms over the same window.
+-0.4362  b3:wo4t2c46lq45fnakd6tajlgcac  p95 auth latency tripled after the 4.2 rollout.
++0.4362  b3:5yj2v2q2wuimibcjqqczpkvqeh  p95 auth latency tripled after the 4.2 rollout.
+ ```
+ ]
+ 
+@@ -648,7 +648,7 @@ what they depend on:
+ 
+ #screen(caption: "$ smysl --format surface pack --budget 400 --query \"connection pool saturated\" fixtures/corpus/F1-incident.smy")[
+ ```
+-smysl pack: --query focused 3 unit(s): b3:cvhirtgs2mpvli2ethhyeo32uf, b3:xkys7j42mcuyiaxiyh73xddimr, b3:js4xzessu5zwjpv2rawtugnuvj
++smysl pack: --query focused 3 unit(s): b3:cvhirtgs2mpvli2ethhyeo32uf, b3:xkys7j42mcuyiaxiyh73xddimr, b3:ml23h3qshmmsc5i4roix77hqrk
+ @doc smysl/0.1 { id: v/pack, intent: pack }
+ 
+ @claim c/pool-saturation { status: inferred }
+@@ -788,7 +788,7 @@ seven-day trace. Retracting the trace, dry-run first:
+ #screen(caption: "$ smysl retract --dry-run b3:re42iey2e7syg6zp73tfrlqbvh fixtures/corpus/F1-incident.smy")[
+ ```
+ fixtures/corpus/F1-incident.smy: retracting b3:re42iey2e7syg6zp73tfrlqbvh would leave 2 unit(s) unfounded, 1 of them orphaned
+-fixtures/corpus/F1-incident.smy:   b3:wo4t2c46lq45fnakd6tajlgcac would lose all of its grounds
++fixtures/corpus/F1-incident.smy:   b3:5yj2v2q2wuimibcjqqczpkvqeh would lose all of its grounds
+ fixtures/corpus/F1-incident.smy:   1 more unit(s) rest partly on it and keep other support
+ ```
+ ]
+@@ -933,7 +933,7 @@ blast radius is wrong.
+   [Run `smysl retract --dry-run b3:re42iey2e7syg6zp73tfrlqbvh
+    fixtures/corpus/F1-incident.smy`. It reports reaching 2 units and orphaning
+    1, and *names* the unit that would lose all of its grounds. Now run the same
+-   dry run against `b3:ekitkvj75uvgzxpvq3ad2nrv3b`. Why does one orphan
++   dry run against `b3:fl3m2qiivd6b3lj7gmb4i4abpl`. Why does one orphan
+    something and the other not?],
+   [The command is `--dry-run` by default in every example this chapter shows.
+    Make the argument for why a tool would make you ask twice to retract, when
+diff --git a/Documentation/manual/ch17-18-pack-thread.typ b/Documentation/manual/ch17-18-pack-thread.typ
+index fd29f65..9675b6d 100644
+--- a/Documentation/manual/ch17-18-pack-thread.typ
++++ b/Documentation/manual/ch17-18-pack-thread.typ
+@@ -85,12 +85,12 @@ it by uid or by label:
+ #screen(caption: "$ smysl --format surface pack --budget 200 --explain --focus b3:cvhirtgs2mpvli2ethhyeo32uf fixtures/corpus/F1-incident.smy")[
+ ```
+ b3:cvhirtgs2mpvli2ethhyeo32uf @L1  C5  in focus
+-b3:ekitkvj75uvgzxpvq3ad2nrv3b @L0  -  earned on density
++b3:fl3m2qiivd6b3lj7gmb4i4abpl @L0  -  earned on density
+ b3:izyuzlt42mqcvgdfb4nfpllxyq @L0  C2  ground of b3:cvhirtgs2mpvli2ethhyeo32uf
+-b3:js4xzessu5zwjpv2rawtugnuvj @L0  -  earned on density
+-b3:phsoomklkmlq3sjvbe6cyuqy5v @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
++b3:ml23h3qshmmsc5i4roix77hqrk @L0  -  earned on density
+ b3:re42iey2e7syg6zp73tfrlqbvh @L0  -  earned on density
+-b3:wo4t2c46lq45fnakd6tajlgcac @L1  -  earned on density
++b3:vrushyv3sy5ytpkccxuh6cr6de @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
++b3:5yj2v2q2wuimibcjqqczpkvqeh @L1  -  earned on density
+ b3:xkys7j42mcuyiaxiyh73xddimr dropped: low-value
+ fixtures/corpus/F1-incident.smy: 7 of 8 unit(s), 193 of 200 tokens, greedy mode, gap 0.010
+ ```
+@@ -146,16 +146,16 @@ their closures are computed and merged — asking for two focuses is not the
+ same as asking for one twice as important, it is asking for two independent
+ floors that both must be met:
+ 
+-#screen(caption: "$ smysl pack --budget 400 --explain --focus b3:cvhirtgs2mpvli2ethhyeo32uf --focus b3:js4xzessu5zwjpv2rawtugnuvj fixtures/corpus/F1-incident.smy")[
++#screen(caption: "$ smysl pack --budget 400 --explain --focus b3:cvhirtgs2mpvli2ethhyeo32uf --focus b3:ml23h3qshmmsc5i4roix77hqrk fixtures/corpus/F1-incident.smy")[
+ ```
+ b3:cvhirtgs2mpvli2ethhyeo32uf @L1  C5  in focus
+-b3:ekitkvj75uvgzxpvq3ad2nrv3b @L0  -  earned on density
++b3:fl3m2qiivd6b3lj7gmb4i4abpl @L0  -  earned on density
+ b3:izyuzlt42mqcvgdfb4nfpllxyq @L0  C2  ground of b3:cvhirtgs2mpvli2ethhyeo32uf
+-b3:js4xzessu5zwjpv2rawtugnuvj @L1  C5  in focus
+-b3:phsoomklkmlq3sjvbe6cyuqy5v @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
++b3:ml23h3qshmmsc5i4roix77hqrk @L1  C5  in focus
+ b3:re42iey2e7syg6zp73tfrlqbvh @L0  -  earned on density
+-b3:wo4t2c46lq45fnakd6tajlgcac @L2  C2  ground of b3:js4xzessu5zwjpv2rawtugnuvj
++b3:vrushyv3sy5ytpkccxuh6cr6de @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
+ b3:xkys7j42mcuyiaxiyh73xddimr @L0  -  earned on density
++b3:5yj2v2q2wuimibcjqqczpkvqeh @L2  C2  ground of b3:ml23h3qshmmsc5i4roix77hqrk
+ fixtures/corpus/F1-incident.smy: 8 of 8 unit(s), 244 of 400 tokens, greedy mode, gap 0.000
+ ```
+ ]
+@@ -188,13 +188,13 @@ a gist:
+ #screen(caption: "$ smysl pack --budget 200 --explain --focus b3:cvhirtgs2mpvli2ethhyeo32uf --lod L0 fixtures/corpus/F1-incident.smy")[
+ ```
+ b3:cvhirtgs2mpvli2ethhyeo32uf @L0  C5  in focus
+-b3:ekitkvj75uvgzxpvq3ad2nrv3b @L0  -  earned on density
++b3:fl3m2qiivd6b3lj7gmb4i4abpl @L0  -  earned on density
+ b3:izyuzlt42mqcvgdfb4nfpllxyq @L0  -  earned on density
+-b3:js4xzessu5zwjpv2rawtugnuvj @L0  -  earned on density
+-b3:phsoomklkmlq3sjvbe6cyuqy5v @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
++b3:ml23h3qshmmsc5i4roix77hqrk @L0  -  earned on density
+ b3:re42iey2e7syg6zp73tfrlqbvh @L0  -  earned on density
+-b3:wo4t2c46lq45fnakd6tajlgcac @L0  -  earned on density
++b3:vrushyv3sy5ytpkccxuh6cr6de @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
+ b3:xkys7j42mcuyiaxiyh73xddimr @L0  -  earned on density
++b3:5yj2v2q2wuimibcjqqczpkvqeh @L0  -  earned on density
+ fixtures/corpus/F1-incident.smy: 8 of 8 unit(s), 137 of 200 tokens, greedy mode, gap 0.000
+ ```
+ ]
+@@ -325,12 +325,12 @@ every other unit priced out on budget alone:
+ ```
+ b3:cvhirtgs2mpvli2ethhyeo32uf @L1  C5  in focus
+ b3:izyuzlt42mqcvgdfb4nfpllxyq @L0  C2  ground of b3:cvhirtgs2mpvli2ethhyeo32uf
+-b3:phsoomklkmlq3sjvbe6cyuqy5v @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
+-b3:ekitkvj75uvgzxpvq3ad2nrv3b dropped: budget
+-b3:js4xzessu5zwjpv2rawtugnuvj dropped: budget
++b3:vrushyv3sy5ytpkccxuh6cr6de @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
++b3:fl3m2qiivd6b3lj7gmb4i4abpl dropped: budget
++b3:ml23h3qshmmsc5i4roix77hqrk dropped: budget
+ b3:re42iey2e7syg6zp73tfrlqbvh dropped: budget
+-b3:wo4t2c46lq45fnakd6tajlgcac dropped: budget
+ b3:xkys7j42mcuyiaxiyh73xddimr dropped: low-value
++b3:5yj2v2q2wuimibcjqqczpkvqeh dropped: budget
+ ```
+ ]
+ 
+@@ -685,7 +685,7 @@ from what was named, nothing pulled in from outside it:
+ ```
+ $ smysl thread --derive brief --explain --only \
+     --scope b3:izyuzlt42mqcvgdfb4nfpllxyq --scope b3:cvhirtgs2mpvli2ethhyeo32uf \
+-    --scope b3:phsoomklkmlq3sjvbe6cyuqy5v --scope b3:js4xzessu5zwjpv2rawtugnuvj \
++    --scope b3:vrushyv3sy5ytpkccxuh6cr6de --scope b3:ml23h3qshmmsc5i4roix77hqrk \
+     fixtures/corpus/F1-incident.smy
+ fixtures/corpus/F1-incident.smy: bottom-line  1 of 1..1
+ fixtures/corpus/F1-incident.smy: support      2 of 1..3
+@@ -760,9 +760,9 @@ t/brief  brief  3 step(s)  Auth p95 tripled in eu-west; pool saturation is leadi
+ ```
+ t/brief  brief
+ ~ Auth p95 tripled in eu-west; pool saturation is leading but contested.
+-  1. bottom-line  b3:js4xzessu5zwjpv2rawtugnuvj  Pool saturation is the leading cause but is not consistent with the canary.
++  1. bottom-line  b3:ml23h3qshmmsc5i4roix77hqrk  Pool saturation is the leading cause but is not consistent with the canary.
+   2. support      b3:cvhirtgs2mpvli2ethhyeo32uf  The eu-west connection pool is saturated.
+-  3. risk         b3:phsoomklkmlq3sjvbe6cyuqy5v  The canary rules out a pure configuration cause.
++  3. risk         b3:vrushyv3sy5ytpkccxuh6cr6de  The canary rules out a pure configuration cause.
+ ```
+ ]
+ 
+@@ -803,9 +803,9 @@ diagnostics:
+ ```
+ t/odd-brief  brief
+ ~ A brief that reaches for a role brief never declared.
+-  1. bottom-line  b3:js4xzessu5zwjpv2rawtugnuvj  Pool saturation is the leading cause but is not consistent with the canary.
++  1. bottom-line  b3:ml23h3qshmmsc5i4roix77hqrk  Pool saturation is the leading cause but is not consistent with the canary.
+   2. support      b3:cvhirtgs2mpvli2ethhyeo32uf  The eu-west connection pool is saturated.
+-  3. coda         b3:phsoomklkmlq3sjvbe6cyuqy5v  The canary rules out a pure configuration cause.
++  3. coda         b3:vrushyv3sy5ytpkccxuh6cr6de  The canary rules out a pure configuration cause.
+ ```
+ ]
+ 
+diff --git a/Documentation/manual/ch19-21-verify.typ b/Documentation/manual/ch19-21-verify.typ
+index b90e9ff..527f4ff 100644
+--- a/Documentation/manual/ch19-21-verify.typ
++++ b/Documentation/manual/ch19-21-verify.typ
+@@ -722,7 +722,7 @@ exactly the situation conformance classes exist to describe. The corpus's
+ 
+ #screen(caption: "$ smysl check --conformance C-Read fixtures/corpus/F6-adversarial.smy")[
+ ```
+-fixtures/corpus/F6-adversarial.smy: error: SMY-E030: derived exceeds the cap of inferred set by its weakest ground b3:2hkacsatxuvcywj6f4w2lkzojx (at b3:hdn4uifpmzzopwuyajmhyf5xzu) [try: weaken this unit to inferred, or strengthen b3:2hkacsatxuvcywj6f4w2lkzojx]
++fixtures/corpus/F6-adversarial.smy: error: SMY-E030: derived exceeds the cap of inferred set by its weakest ground b3:2hkacsatxuvcywj6f4w2lkzojx (at b3:odedo2ziedvjaltoxfrkq5frsq) [try: weaken this unit to inferred, or strengthen b3:2hkacsatxuvcywj6f4w2lkzojx]
+ fixtures/corpus/F6-adversarial.smy: C-Read: pass
+ ```
+ ]
+@@ -838,8 +838,8 @@ research trace (`fine` profile):
+ #screen(caption: "$ smysl check --granularity fixtures/corpus/F7-mixed-granularity.smy")[
+ ```
+ fixtures/corpus/F7-mixed-granularity.smy: 1 view(s) at granularity default
+-fixtures/corpus/F7-mixed-granularity.smy: warning: SMY-W041: body is 30 tokens, under the default range 40..120 (at b3:s6etp4fjq3gkd7335lzdwjzx54)
+ fixtures/corpus/F7-mixed-granularity.smy: warning: SMY-W041: body is 26 tokens, under the default range 40..120 (at b3:tfhgiir2fegvfkvq2fplgtvgq7)
++fixtures/corpus/F7-mixed-granularity.smy: warning: SMY-W041: body is 30 tokens, under the default range 40..120 (at b3:uzzyhnuysl7gl3gvkhob5eaisf)
+ fixtures/corpus/F7-mixed-granularity.smy: 22 records, 9 units, 2 diagnostic(s)
+ ```
+ ]
+@@ -940,7 +940,7 @@ file:
+ 
+ #screen(caption: "$ smysl merge fixtures/corpus/F1-incident.smy -o /tmp/incident.cbor")[
+ ```
+-fixtures/corpus/F1-incident.smy: contention k/ccm3actwjjti65famnoe6mapo5d over b3:cvhirtgs2mpvli2ethhyeo32uf (2 positions, live-rebuttal)
++fixtures/corpus/F1-incident.smy: contention k/cge2mblaiyozvonkdzxkrod222p over b3:cvhirtgs2mpvli2ethhyeo32uf (2 positions, live-rebuttal)
+ ```
+ ]
+ 
+diff --git a/Documentation/manual/ch22-24-render.typ b/Documentation/manual/ch22-24-render.typ
+index 8c9862d..0bfe6b8 100644
+--- a/Documentation/manual/ch22-24-render.typ
++++ b/Documentation/manual/ch22-24-render.typ
+@@ -41,19 +41,19 @@ authored `t/brief` thread with three steps and one live rebuttal.
+ 
+ ≈ The eu-west connection pool is saturated.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ ## risk
+ 
+-⊢ On the other hand, the canary rules out a pure configuration cause.
++⊢ Against this, the canary rules out a pure configuration cause.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ ---
+ 
+-**Open contentions:** k/ccm3actwjjti65famnoe6mapo5d
++**Open contentions:** k/cge2mblaiyozvonkdzxkrod222p
+ ```]
+ 
+ Three things to notice before anything else. First, the title line is the
+@@ -126,17 +126,17 @@ appear or what they say.
+ 
+ ≈ The eu-west connection pool is saturated.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ ## risk
+ 
+-⊢ On the other hand, the canary rules out a pure configuration cause.
++⊢ Against this, the canary rules out a pure configuration cause.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ ---
+ 
+-**Open contentions:** k/ccm3actwjjti65famnoe6mapo5d
++**Open contentions:** k/cge2mblaiyozvonkdzxkrod222p
+ ```]
+ 
+ #screen(caption: "$ smysl render --thread t/brief --profile analyst fixtures/corpus/F1-incident.smy")[```
+@@ -149,29 +149,29 @@ appear or what they say.
+ 
+ [inferred] Pool saturation is the leading cause but is not consistent with the canary.
+ 
+-*rests on b3:wo4t2c46lq45fnakd6tajlgcac*
++*rests on b3:5yj2v2q2wuimibcjqqczpkvqeh*
+ 
+ ## support
+ 
+ [inferred] The eu-west connection pool is saturated.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ *rests on b3:izyuzlt42mqcvgdfb4nfpllxyq*
+ 
+ ## risk
+ 
+-[derived] On the other hand, the canary rules out a pure configuration cause.
++[derived] Against this, the canary rules out a pure configuration cause.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ *rests on b3:xkys7j42mcuyiaxiyh73xddimr*
+ 
+ ---
+ 
+-**Open contentions:** k/ccm3actwjjti65famnoe6mapo5d
++**Open contentions:** k/cge2mblaiyozvonkdzxkrod222p
+ ```]
+ 
+ Read the three side by side and every difference traces to the table. `exec`
+@@ -208,7 +208,7 @@ exactly which unfetched grounds they'd have to pull to verify a claim.
+ 
+ #term("Rule V1")[
+   Every profile must render each of the six kernel statuses
+-  (`unfounded`, `speculative`, `inferred`, `derived`, `cited`, `measured`)
++  (`unfounded`, `speculative`, `inferred`, `cited`, `derived`, `measured`)
+   distinguishably from every other one. This is checked once, at
+   `Profile::load`, before any rendering happens — not per block, not at emit
+   time. The practical effect: there is no `Profile` value in the entire
+@@ -285,19 +285,19 @@ suppressed:
+ 
+ ≈ The eu-west connection pool is saturated.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ ## risk
+ 
+-⊢ On the other hand, the canary rules out a pure configuration cause.
++⊢ Against this, the canary rules out a pure configuration cause.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ ---
+ 
+-**Open contentions:** k/ccm3actwjjti65famnoe6mapo5d
++**Open contentions:** k/cge2mblaiyozvonkdzxkrod222p
+ ```]
+ 
+ #screen(caption: "$ smysl render --thread t/brief --profile plain --contentions suppress fixtures/corpus/F1-incident.smy")[```
+@@ -316,11 +316,11 @@ smysl render: SMY-W211: 1 open contention(s) suppressed by profile plain
+ 
+ ## risk
+ 
+-⊢ On the other hand, the canary rules out a pure configuration cause.
++⊢ Against this, the canary rules out a pure configuration cause.
+ 
+ ---
+ 
+-<!-- SMY-W211: 1 open contention(s) suppressed by profile plain: k/ccm3actwjjti65famnoe6mapo5d -->
++<!-- SMY-W211: 1 open contention(s) suppressed by profile plain: k/cge2mblaiyozvonkdzxkrod222p -->
+ ```]
+ 
+ The rendered body is genuinely quieter — no `> **contested**` lines anywhere
+@@ -585,17 +585,17 @@ other five.
+ 
+ #strong[≈] The eu-west connection pool is saturated.
+ 
+-#block(stroke: 1pt, inset: 6pt)[contested — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record]
++#block(stroke: 1pt, inset: 6pt)[contested — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record]
+ 
+-#block(stroke: 1pt, inset: 6pt)[contested — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record]
++#block(stroke: 1pt, inset: 6pt)[contested — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record]
+ 
+ == risk
+ 
+-#strong[⊢] On the other hand, the canary rules out a pure configuration cause.
++#strong[⊢] Against this, the canary rules out a pure configuration cause.
+ 
+-#block(stroke: 1pt, inset: 6pt)[contested — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record]
++#block(stroke: 1pt, inset: 6pt)[contested — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record]
+ 
+-#strong[Open contentions:] k/ccm3actwjjti65famnoe6mapo5d
++#strong[Open contentions:] k/cge2mblaiyozvonkdzxkrod222p
+ ```]
+ 
+ This is not a Markdown file wearing a `.typ` extension — it is Typst source,
+@@ -628,27 +628,27 @@ nor `render-html` — more on that below), so building it first requires
+ <meta name="smysl-profile" content="plain">
+ <meta name="smysl-thread" content="t/brief">
+ <meta name="smysl-contentions-suppressed" content="false">
+-<meta name="smysl-open-contentions" content="k/ccm3actwjjti65famnoe6mapo5d">
++<meta name="smysl-open-contentions" content="k/cge2mblaiyozvonkdzxkrod222p">
+ </head>
+ <body>
+ <h1>Auth p95 tripled in eu-west; pool saturation is leading but contested.</h1>
+ <p class="meta">brief · profile plain</p>
+-<section class="block" data-role="bottom-line" data-status="inferred" data-uid="b3:js4xzessu5zwjpv2rawtugnuvjuf2o3cys7ko3lsnza3btoldlrq" data-lod="L0">
++<section class="block" data-role="bottom-line" data-status="inferred" data-uid="b3:ml23h3qshmmsc5i4roix77hqrk4mvv5w4r7aptzu2gyexifdb57a" data-lod="L0">
+ <h2>bottom-line</h2>
+ <p><span class="status-marker">≈</span> Pool saturation is the leading cause but is not consistent with the canary.</p>
+ </section>
+ <section class="block" data-role="support" data-status="inferred" data-uid="b3:cvhirtgs2mpvli2ethhyeo32ufud72l42pa3zxfmsq7dgg722ada" data-lod="L0">
+ <h2>support</h2>
+ <p><span class="status-marker">≈</span> The eu-west connection pool is saturated.</p>
+-<aside class="contention">k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record</aside>
+-<aside class="contention">k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record</aside>
++<aside class="contention">k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record</aside>
++<aside class="contention">k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record</aside>
+ </section>
+-<section class="block" data-role="risk" data-status="derived" data-uid="b3:phsoomklkmlq3sjvbe6cyuqy5v3sl6srqxpimogpgmoxvg2pit6q" data-lod="L0">
++<section class="block" data-role="risk" data-status="derived" data-uid="b3:vrushyv3sy5ytpkccxuh6cr6de2m46mgdrmlntz4hevp3oi6ki3a" data-lod="L0">
+ <h2>risk</h2>
+-<p><span class="status-marker">⊢</span> On the other hand, the canary rules out a pure configuration cause.</p>
+-<aside class="contention">k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record</aside>
++<p><span class="status-marker">⊢</span> Against this, the canary rules out a pure configuration cause.</p>
++<aside class="contention">k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record</aside>
+ </section>
+-<footer><strong>Open contentions:</strong> k/ccm3actwjjti65famnoe6mapo5d</footer>
++<footer><strong>Open contentions:</strong> k/cge2mblaiyozvonkdzxkrod222p</footer>
+ </body>
+ </html>
+ ```]
+@@ -681,7 +681,7 @@ screen rather than a page:
+ ]
+ #pagebreak()
+ 
+-// slide 1: b3:js4xzessu5zwjpv2rawtugnuvj
++// slide 1: b3:ml23h3qshmmsc5i4roix77hqrk
+ #text(size: 14pt)[bottom-line]
+ 
+ #strong[≈] Pool saturation is the leading cause but is not consistent with the canary.
+@@ -693,22 +693,22 @@ screen rather than a page:
+ 
+ #strong[≈] The eu-west connection pool is saturated.
+ 
+-#block(stroke: 1pt, inset: 6pt)[contested — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record]
++#block(stroke: 1pt, inset: 6pt)[contested — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record]
+ 
+-#block(stroke: 1pt, inset: 6pt)[contested — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record]
++#block(stroke: 1pt, inset: 6pt)[contested — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record]
+ 
+ #pagebreak()
+ 
+-// slide 3: b3:phsoomklkmlq3sjvbe6cyuqy5v
++// slide 3: b3:vrushyv3sy5ytpkccxuh6cr6de
+ #text(size: 14pt)[risk]
+ 
+-#strong[⊢] On the other hand, the canary rules out a pure configuration cause.
++#strong[⊢] Against this, the canary rules out a pure configuration cause.
+ 
+-#block(stroke: 1pt, inset: 6pt)[contested — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record]
++#block(stroke: 1pt, inset: 6pt)[contested — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record]
+ 
+ 
+ #pagebreak()
+-#strong[Open contentions:] k/ccm3actwjjti65famnoe6mapo5d
++#strong[Open contentions:] k/cge2mblaiyozvonkdzxkrod222p
+ ```]
+ 
+ This chains through `typst compile` exactly like the `typst` target does — the
+@@ -727,12 +727,12 @@ not `typst`.
+     "schema": "brief",
+     "audience": null,
+     "contentions_suppressed": false,
+-    "open_contentions": ["k/ccm3actwjjti65famnoe6mapo5d"]
++    "open_contentions": ["k/cge2mblaiyozvonkdzxkrod222p"]
+   },
+   "blocks": [
+     {
+       "role": "bottom-line",
+-      "uid": "b3:js4xzessu5zwjpv2rawtugnuvjuf2o3cys7ko3lsnza3btoldlrq",
++      "uid": "b3:ml23h3qshmmsc5i4roix77hqrk4mvv5w4r7aptzu2gyexifdb57a",
+       "level": "L0",
+       "status": "inferred",
+       "marker": "≈",
+@@ -748,17 +748,17 @@ not `typst`.
+       "marker": "≈",
+       "connective": null,
+       "text": "The eu-west connection pool is saturated.",
+-      "notes": [{"kind": "contention", "text": "k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record"}, {"kind": "contention", "text": "k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record"}]
++      "notes": [{"kind": "contention", "text": "k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record"}, {"kind": "contention", "text": "k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record"}]
+     },
+     {
+       "role": "risk",
+-      "uid": "b3:phsoomklkmlq3sjvbe6cyuqy5v3sl6srqxpimogpgmoxvg2pit6q",
++      "uid": "b3:vrushyv3sy5ytpkccxuh6cr6de2m46mgdrmlntz4hevp3oi6ki3a",
+       "level": "L0",
+       "status": "derived",
+       "marker": "⊢",
+-      "connective": "On the other hand, ",
++      "connective": "Against this, ",
+       "text": "The canary rules out a pure configuration cause.",
+-      "notes": [{"kind": "contention", "text": "k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record"}]
++      "notes": [{"kind": "contention", "text": "k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record"}]
+     }
+   ]
+ }
+@@ -778,19 +778,19 @@ store.
+ Auth p95 tripled in eu-west; pool saturation is leading but contested.
+ ======================================================================
+ 
+-bottom-line [b3:js4xzessu5zwjpv2rawtugnuvj]
++bottom-line [b3:ml23h3qshmmsc5i4roix77hqrk]
+   ≈ Pool saturation is the leading cause but is not consistent with the canary.
+ 
+ support [b3:cvhirtgs2mpvli2ethhyeo32uf]
+   ≈ The eu-west connection pool is saturated.
+-      - k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
+-      - k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++      - k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
++      - k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+-risk [b3:phsoomklkmlq3sjvbe6cyuqy5v]
+-  ⊢ On the other hand, the canary rules out a pure configuration cause.
+-      - k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++risk [b3:vrushyv3sy5ytpkccxuh6cr6de]
++  ⊢ Against this, the canary rules out a pure configuration cause.
++      - k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+-open contentions: k/ccm3actwjjti65famnoe6mapo5d
++open contentions: k/cge2mblaiyozvonkdzxkrod222p
+ ```]
+ 
+ No `#`, no `**`, no HTML tags — a title underlined with `=`, indentation
+@@ -1008,15 +1008,15 @@ at the path:
+ 
+ [INFERRED] Pool saturation is the leading cause but is not consistent with the canary.
+ 
+-*rests on b3:wo4t2c46lq45fnakd6tajlgcac*
++*rests on b3:5yj2v2q2wuimibcjqqczpkvqeh*
+ 
+ ## support
+ 
+ [INFERRED] The eu-west connection pool is saturated.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ *rests on b3:izyuzlt42mqcvgdfb4nfpllxyq*
+ 
+@@ -1024,13 +1024,13 @@ at the path:
+ 
+ [DERIVED] The canary rules out a pure configuration cause.
+ 
+-> **contested** — k/ccm3actwjjti65famnoe6mapo5d: contested, 2 position(s) on record
++> **contested** — k/cge2mblaiyozvonkdzxkrod222p: contested, 2 position(s) on record
+ 
+ *rests on b3:xkys7j42mcuyiaxiyh73xddimr*
+ 
+ ---
+ 
+-**Open contentions:** k/ccm3actwjjti65famnoe6mapo5d
++**Open contentions:** k/cge2mblaiyozvonkdzxkrod222p
+ ```]
+ 
+ This is a fourth, genuinely distinct voice: `[INFERRED]`/`[DERIVED]` in
+diff --git a/Documentation/manual/ch25-27-library-walkthrough.typ b/Documentation/manual/ch25-27-library-walkthrough.typ
+index b68bacb..6e262bd 100644
+--- a/Documentation/manual/ch25-27-library-walkthrough.typ
++++ b/Documentation/manual/ch25-27-library-walkthrough.typ
+@@ -682,8 +682,8 @@ disagree. This is exactly what `merge` exists for:
+ 
+ #screen(caption: "$ smysl merge alpha.smy beta.smy -o merged1.cbor")[
+ ```
+-alpha.smy: contention k/co7i7feme3q3sed4l63dkcgmmuy over b3:v5sjn55ujeflrdyu5qycgmtvz3 (2 positions, supersession-fork)
+-beta.smy: contention k/c3xa27zib4d7t5rme4xekauzh4t over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
++alpha.smy: contention k/cqrt6imipem5ve27pafz2tzpwuv over b3:blilyv57lmy5n2zdhnmgl5v2g4 (2 positions, supersession-fork)
++beta.smy: contention k/c3cv5mapyq6eotpvnsed2zrkdxb over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
+ beta.smy: contention k/cboxvjp36tnst3vmpsoo2mmvhqu over b3:cjixk2inyftvxj55d53w2ivxej (2 positions, label-collision)
+ ```
+ ]
+@@ -735,8 +735,8 @@ Committing it folds straight into the same `merge` you already ran:
+ 
+ #screen(caption: "$ smysl merge alpha.smy beta.smy --staged -o merged2.cbor")[
+ ```
+-alpha.smy: contention k/co7i7feme3q3sed4l63dkcgmmuy over b3:v5sjn55ujeflrdyu5qycgmtvz3 (2 positions, supersession-fork)
+-beta.smy: contention k/c3xa27zib4d7t5rme4xekauzh4t over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
++alpha.smy: contention k/cqrt6imipem5ve27pafz2tzpwuv over b3:blilyv57lmy5n2zdhnmgl5v2g4 (2 positions, supersession-fork)
++beta.smy: contention k/c3cv5mapyq6eotpvnsed2zrkdxb over b3:t65rff76bcbxnwzw4oxzcadthe (2 positions, live-rebuttal)
+ beta.smy: contention k/cboxvjp36tnst3vmpsoo2mmvhqu over b3:cjixk2inyftvxj55d53w2ivxej (2 positions, label-collision)
+ smysl merge: committed 2 staged record(s)
+ ```
+@@ -844,7 +844,7 @@ to what gets shipped:
+ #screen(caption: "$ smysl --format surface pack --budget 120 --explain --focus b3:t65rff76bcbxnwzw4oxzcadthe merged4.cbor")[
+ ```
+ b3:t65rff76bcbxnwzw4oxzcadthe @L1  C5  in focus
+-b3:wo5nb45msupuxfptfxpbh5q4ws @L0  C3  rebuts b3:t65rff76bcbxnwzw4oxzcadthe
++b3:unrwrbrsxjk6gdy2ehnj23ey5x @L0  C3  rebuts b3:t65rff76bcbxnwzw4oxzcadthe
+ b3:34xv6klbhpxqsqsvhm5s3xuegn @L0  C2  ground of b3:t65rff76bcbxnwzw4oxzcadthe
+ b3:cjixk2inyftvxj55d53w2ivxej dropped: budget
+ b3:hpffca2bw76gvsrc6tjvr2q6uw dropped: budget
+@@ -907,24 +907,24 @@ A shortened timeout turns a slow upstream into a retried one, and retries are
+ what fill the queue, so beta reads the same latency curve as a consequence of
+ the release rather than of the pool being undersized.
+ 
+-> **contested** — k/c3xa27zib4d7t5rme4xekauzh4t: contested, 2 position(s) on record
++> **contested** — k/c3cv5mapyq6eotpvnsed2zrkdxb: contested, 2 position(s) on record
+ 
+ ## risk
+ 
+ ⊢ On the other hand, retries were already elevated before 7.1 reached us-east.
+ 
+-> **contested** — k/c3xa27zib4d7t5rme4xekauzh4t: contested, 2 position(s) on record
++> **contested** — k/c3cv5mapyq6eotpvnsed2zrkdxb: contested, 2 position(s) on record
+ 
+ ---
+ 
+-**Open contentions:** k/c3xa27zib4d7t5rme4xekauzh4t, k/co7i7feme3q3sed4l63dkcgmmuy
++**Open contentions:** k/c3cv5mapyq6eotpvnsed2zrkdxb, k/cqrt6imipem5ve27pafz2tzpwuv
+ ```
+ ]
+ 
+ Two things worth noticing. First, the `live-rebuttal` contention over the bottom-line claim
+ survives rendering under `exec` — that is rule V2, and it means a reader of the *exec*
+ brief still sees that the risk section is a live, recorded objection, not editorial hedging.
+-Second, `k/co7i7feme3q3sed4l63dkcgmmuy` — the `supersession-fork` over the pool size — is
++Second, `k/cqrt6imipem5ve27pafz2tzpwuv` — the `supersession-fork` over the pool size — is
+ *still open*. Retiring alpha's root-cause theory did not resolve the smaller disagreement
+ about how big the pool actually was; that is a second, independent decision this report is
+ honestly still waiting on, and the render says so rather than letting it quietly disappear.
+@@ -951,7 +951,7 @@ merged4.cbor: 37 records, 14 units, 0 diagnostic(s)
+ `C-Full` is every conformance class at once — safe to read, safe to consume, safe to author
+ into, safe to merge. The store passes it with the retraction, the finding, and both open
+ contentions all still on record. Nothing about certifying the store required resolving
+-`k/co7i7feme3q3sed4l63dkcgmmuy` first, and that is deliberate: conformance is a statement
++`k/cqrt6imipem5ve27pafz2tzpwuv` first, and that is deliberate: conformance is a statement
+ about the store's *shape*, never about whether every question in it has been answered.
+ 
+ #whatsnext[
+diff --git a/README.md b/README.md
+index a40252a..d6aa813 100644
+--- a/README.md
++++ b/README.md
+@@ -158,7 +158,7 @@ would have dropped:
+ 
+ - **How sure it is.** `measured` (an instrument recorded it) is a different thing from
+   `inferred` (a model reasoned it out). The scale runs `unfounded` → `speculative` →
+-  `inferred` → `derived` → `cited` → `measured`.
++  `inferred` → `cited` → `derived` → `measured`.
+ - **What it rests on.** `grounds: [e/pool-wait]` means this claim stands or falls with that
+   evidence. Retract the evidence and the tool tells you what else falls.
+ - **What contradicts it.** The `rebuts` edge is part of the document. The disagreement is
+@@ -228,7 +228,7 @@ merge **records the contention** instead of picking a winner.
+ 
+ ```bash
+ $ smysl merge agent-a.smy agent-b.smy -o combined.cbor
+-agent-b.smy: contention k/ccm3actwjjti65famnoe6mapo5d over b3:cvhirtgs2mpvli2ethhyeo32uf (2 positions, live-rebuttal)
++agent-b.smy: contention k/cge2mblaiyozvonkdzxkrod222p over b3:cvhirtgs2mpvli2ethhyeo32uf (2 positions, live-rebuttal)
+ ```
+ 
+ This works because a unit's real identity is a hash of its content, not its position in a
+@@ -307,7 +307,7 @@ fixtures/corpus/F1-incident.smy: 13 records, 8 units, 0 diagnostic(s)
+ 
+ $ ./target/debug/smysl --format surface pack --budget 200 --explain fixtures/corpus/F1-incident.smy
+ b3:cvhirtgs2mpvli2ethhyeo32uf @L0  -  earned on density
+-b3:phsoomklkmlq3sjvbe6cyuqy5v @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
++b3:vrushyv3sy5ytpkccxuh6cr6de @L0  C3  rebuts b3:cvhirtgs2mpvli2ethhyeo32uf
+ b3:xkys7j42mcuyiaxiyh73xddimr dropped: low-value
+ fixtures/corpus/F1-incident.smy: 7 of 8 unit(s), 193 of 200 tokens, greedy mode, gap 0.011
+ ```
+diff --git a/crates/smysl-check/src/passes/epistemics.rs b/crates/smysl-check/src/passes/epistemics.rs
+index 798ef36..1a23f41 100644
+--- a/crates/smysl-check/src/passes/epistemics.rs
++++ b/crates/smysl-check/src/passes/epistemics.rs
+@@ -156,13 +156,34 @@ mod tests {
+         let (um, uc) = (canonical_uid(&m), canonical_uid(&c));
+         let records = vec![Record::Unit(m), Record::Unit(c)];
+ 
+-        // `cited` (4) is the weaker of the two, and `derived` (3) is below it.
+-        let ok = grounded("ok", Status::Derived, vec![um, uc]);
++        // `cited` (3) is the weaker of the two, and `inferred` (2) is below it.
++        let ok = grounded("ok", Status::Inferred, vec![um, uc]);
+         let mut all = records.clone();
+         all.push(Record::Unit(ok));
+         assert!(check(all).is_empty());
+     }
+ 
++    /// `cited` sorts below `derived`, so a derivation cannot rest on a citation alone: the
++    /// cap is the weaker ground, and `derived` is one step above `cited`.
++    #[test]
++    fn a_derivation_cannot_outrank_a_citation_it_rests_on() {
++        let c = cited("a citation");
++        let uc = canonical_uid(&c);
++        let m = measured("a measurement");
++        let um = canonical_uid(&m);
++
++        let over = grounded("over", Status::Derived, vec![uc]);
++        let r = check(vec![Record::Unit(c.clone()), Record::Unit(over)]);
++        assert_eq!(r.count(Code::E030), 1);
++        let d = r.iter().find(|d| d.code == Code::E030).unwrap();
++        assert!(d.message.contains("cited"), "{}", d.message);
++
++        // Grounded on a `measured` unit as well, the cap is still the citation.
++        let mixed = grounded("mixed", Status::Derived, vec![uc, um]);
++        let r = check(vec![Record::Unit(c), Record::Unit(m), Record::Unit(mixed)]);
++        assert_eq!(r.count(Code::E030), 1);
++    }
++
+     /// Statuses that ground out externally are exempt: there is no `measured` ground for a
+     /// `measured` unit to rest on.
+     #[test]
+diff --git a/crates/smysl-check/src/passes/trust.rs b/crates/smysl-check/src/passes/trust.rs
+index ca4ba20..e7d86c6 100644
+--- a/crates/smysl-check/src/passes/trust.rs
++++ b/crates/smysl-check/src/passes/trust.rs
+@@ -261,7 +261,11 @@ mod tests {
+         assert!(permits(Rung::Model, Status::Inferred));
+         assert!(!permits(Rung::Model, Status::Derived));
+         assert!(permits(Rung::Computed, Status::Derived));
+-        assert!(!permits(Rung::Computed, Status::Cited));
++        // `cited` sorts below `derived`, so a ceiling of `derived` admits it.
++        assert!(permits(Rung::Computed, Status::Cited));
++        // ...and the document and web rungs, capped at `cited`, no longer admit `derived`.
++        assert!(!permits(Rung::Document, Status::Derived));
++        assert!(!permits(Rung::Web, Status::Derived));
+     }
+ 
+     /// A deterministic tool transcribing a reading may record `measured`. This is the only
+diff --git a/crates/smysl-core/src/types/epistemics.rs b/crates/smysl-core/src/types/epistemics.rs
+index 3d49aa3..696d04e 100644
+--- a/crates/smysl-core/src/types/epistemics.rs
++++ b/crates/smysl-core/src/types/epistemics.rs
+@@ -20,8 +20,8 @@ pub enum Status {
+     Unfounded = 0,
+     Speculative = 1,
+     Inferred = 2,
+-    Derived = 3,
+-    Cited = 4,
++    Cited = 3,
++    Derived = 4,
+     Measured = 5,
+ }
+ 
+@@ -30,8 +30,8 @@ impl Status {
+         Status::Unfounded,
+         Status::Speculative,
+         Status::Inferred,
+-        Status::Derived,
+         Status::Cited,
++        Status::Derived,
+         Status::Measured,
+     ];
+ 
+@@ -44,8 +44,8 @@ impl Status {
+             0 => Some(Status::Unfounded),
+             1 => Some(Status::Speculative),
+             2 => Some(Status::Inferred),
+-            3 => Some(Status::Derived),
+-            4 => Some(Status::Cited),
++            3 => Some(Status::Cited),
++            4 => Some(Status::Derived),
+             5 => Some(Status::Measured),
+             _ => None,
+         }
+@@ -56,8 +56,8 @@ impl Status {
+             Status::Unfounded => "unfounded",
+             Status::Speculative => "speculative",
+             Status::Inferred => "inferred",
+-            Status::Derived => "derived",
+             Status::Cited => "cited",
++            Status::Derived => "derived",
+             Status::Measured => "measured",
+         }
+     }
+@@ -382,10 +382,11 @@ mod tests {
+         assert_eq!(Status::Unfounded.as_u8(), 0);
+         assert_eq!(Status::Speculative.as_u8(), 1);
+         assert_eq!(Status::Inferred.as_u8(), 2);
+-        assert_eq!(Status::Derived.as_u8(), 3);
+-        assert_eq!(Status::Cited.as_u8(), 4);
++        assert_eq!(Status::Cited.as_u8(), 3);
++        assert_eq!(Status::Derived.as_u8(), 4);
+         assert_eq!(Status::Measured.as_u8(), 5);
+         assert!(Status::Speculative < Status::Inferred);
++        assert!(Status::Cited < Status::Derived);
+         assert!(Status::Derived < Status::Measured);
+     }
+ 
+diff --git a/crates/smysl-ingest/src/ceiling.rs b/crates/smysl-ingest/src/ceiling.rs
+index bc05a97..72a0fbc 100644
+--- a/crates/smysl-ingest/src/ceiling.rs
++++ b/crates/smysl-ingest/src/ceiling.rs
+@@ -268,7 +268,8 @@ mod tests {
+         // Grounded: `derived` and `inferred` become reachable.
+         let grounded = core(Status::Inferred, false);
+         assert_eq!(attainable(&grounded, Status::Derived), Status::Derived);
+-        assert_eq!(attainable(&grounded, Status::Cited), Status::Derived);
++        // `cited` sorts below `derived`, and this unit has no source to be cited from.
++        assert_eq!(attainable(&grounded, Status::Cited), Status::Inferred);
+     }
+ 
+     /// Everything else about the unit survives the downgrade: only the status moves.
+diff --git a/crates/smysl-ingest/src/stage.rs b/crates/smysl-ingest/src/stage.rs
+index c1e3d53..00655e2 100644
+--- a/crates/smysl-ingest/src/stage.rs
++++ b/crates/smysl-ingest/src/stage.rs
+@@ -489,7 +489,11 @@ mod tests {
+     /// the union - a claim resting on something ingested an hour ago is the normal case.
+     #[test]
+     fn grounds_already_in_the_store_satisfy_rule_m() {
+-        let ground = cited("already ingested");
++        let ground =
++            UnitCoreBuilder::new(KernelType::Evidence, "already ingested", Status::Measured)
++                .source(SourceRef::new(SourceKind::Metric, "pool.wait_ms"))
++                .build()
++                .unwrap();
+         let uid = canonical_uid(&ground);
+         let store = Store::from_records(vec![Record::Unit(ground)]);
+ 
+@@ -504,6 +508,27 @@ mod tests {
+         assert!(out.weakened.is_empty(), "{:?}", out.weakened);
+     }
+ 
++    /// `cited` sorts below `derived`, so a derivation resting on a citation alone is over its
++    /// cap and is lowered rather than staged as written.
++    #[test]
++    fn a_derivation_resting_on_a_citation_is_weakened() {
++        let ground = cited("already ingested");
++        let uid = canonical_uid(&ground);
++        let store = Store::from_records(vec![Record::Unit(ground)]);
++
++        let out = prepare(
++            &store,
++            vec![derived_on("rests on the earlier one", uid)],
++            Vec::new(),
++            BTreeMap::new(),
++            &attest(),
++        );
++        assert_eq!(out.len(), 1);
++        assert_eq!(out.weakened.len(), 1, "{:?}", out.weakened);
++        assert_eq!(out.weakened[0].from, Status::Derived);
++        assert_eq!(out.weakened[0].to, Status::Inferred);
++    }
++
+     /// The thing a human is asked to approve should be the thing they can read.
+     #[test]
+     fn the_staged_form_is_readable_surface_text() {
+diff --git a/crates/smysl-pack/tests/golden-packs.txt b/crates/smysl-pack/tests/golden-packs.txt
+index 28d0305..37c5836 100644
+--- a/crates/smysl-pack/tests/golden-packs.txt
++++ b/crates/smysl-pack/tests/golden-packs.txt
+@@ -1,281 +1,281 @@
+ F1-incident budget=40: 2 unit(s), 32 token(s), Greedy
+-    b3:ekitkvj75uvgzxpvq3ad2nrv3b L0
+-    b3:wo4t2c46lq45fnakd6tajlgcac L0
++    b3:fl3m2qiivd6b3lj7gmb4i4abpl L0
++    b3:5yj2v2q2wuimibcjqqczpkvqeh L0
+ F1-incident budget=120: 7 unit(s), 116 token(s), Greedy
+     b3:cvhirtgs2mpvli2ethhyeo32uf L0
+-    b3:ekitkvj75uvgzxpvq3ad2nrv3b L0
++    b3:fl3m2qiivd6b3lj7gmb4i4abpl L0
+     b3:izyuzlt42mqcvgdfb4nfpllxyq L0
+-    b3:phsoomklkmlq3sjvbe6cyuqy5v L0
+     b3:re42iey2e7syg6zp73tfrlqbvh L0
+-    b3:wo4t2c46lq45fnakd6tajlgcac L0
++    b3:vrushyv3sy5ytpkccxuh6cr6de L0
+     b3:xkys7j42mcuyiaxiyh73xddimr L0
++    b3:5yj2v2q2wuimibcjqqczpkvqeh L0
+ F1-incident budget=200: 8 unit(s), 137 token(s), Greedy
+     b3:cvhirtgs2mpvli2ethhyeo32uf L0
+-    b3:ekitkvj75uvgzxpvq3ad2nrv3b L0
++    b3:fl3m2qiivd6b3lj7gmb4i4abpl L0
+     b3:izyuzlt42mqcvgdfb4nfpllxyq L0
+-    b3:js4xzessu5zwjpv2rawtugnuvj L0
+-    b3:phsoomklkmlq3sjvbe6cyuqy5v L0
++    b3:ml23h3qshmmsc5i4roix77hqrk L0
+     b3:re42iey2e7syg6zp73tfrlqbvh L0
+-    b3:wo4t2c46lq45fnakd6tajlgcac L0
++    b3:vrushyv3sy5ytpkccxuh6cr6de L0
+     b3:xkys7j42mcuyiaxiyh73xddimr L0
++    b3:5yj2v2q2wuimibcjqqczpkvqeh L0
+ F1-incident budget=400: 8 unit(s), 244 token(s), Greedy
+     b3:cvhirtgs2mpvli2ethhyeo32uf L0
+-    b3:ekitkvj75uvgzxpvq3ad2nrv3b L0
++    b3:fl3m2qiivd6b3lj7gmb4i4abpl L0
+     b3:izyuzlt42mqcvgdfb4nfpllxyq L0
+-    b3:js4xzessu5zwjpv2rawtugnuvj L0
+-    b3:phsoomklkmlq3sjvbe6cyuqy5v L0
++    b3:ml23h3qshmmsc5i4roix77hqrk L0
+     b3:re42iey2e7syg6zp73tfrlqbvh L0
+-    b3:wo4t2c46lq45fnakd6tajlgcac L2
++    b3:vrushyv3sy5ytpkccxuh6cr6de L0
+     b3:xkys7j42mcuyiaxiyh73xddimr L0
++    b3:5yj2v2q2wuimibcjqqczpkvqeh L2
+ F1-incident budget=1000: 8 unit(s), 244 token(s), Greedy
+     b3:cvhirtgs2mpvli2ethhyeo32uf L0
+-    b3:ekitkvj75uvgzxpvq3ad2nrv3b L0
++    b3:fl3m2qiivd6b3lj7gmb4i4abpl L0
+     b3:izyuzlt42mqcvgdfb4nfpllxyq L0
+-    b3:js4xzessu5zwjpv2rawtugnuvj L0
+-    b3:phsoomklkmlq3sjvbe6cyuqy5v L0
++    b3:ml23h3qshmmsc5i4roix77hqrk L0
+     b3:re42iey2e7syg6zp73tfrlqbvh L0
+-    b3:wo4t2c46lq45fnakd6tajlgcac L2
++    b3:vrushyv3sy5ytpkccxuh6cr6de L0
+     b3:xkys7j42mcuyiaxiyh73xddimr L0
++    b3:5yj2v2q2wuimibcjqqczpkvqeh L2
+ F1-incident budget=5000: 8 unit(s), 244 token(s), Greedy
+     b3:cvhirtgs2mpvli2ethhyeo32uf L0
+-    b3:ekitkvj75uvgzxpvq3ad2nrv3b L0
++    b3:fl3m2qiivd6b3lj7gmb4i4abpl L0
+     b3:izyuzlt42mqcvgdfb4nfpllxyq L0
+-    b3:js4xzessu5zwjpv2rawtugnuvj L0
+-    b3:phsoomklkmlq3sjvbe6cyuqy5v L0
++    b3:ml23h3qshmmsc5i4roix77hqrk L0
+     b3:re42iey2e7syg6zp73tfrlqbvh L0
+-    b3:wo4t2c46lq45fnakd6tajlgcac L2
++    b3:vrushyv3sy5ytpkccxuh6cr6de L0
+     b3:xkys7j42mcuyiaxiyh73xddimr L0
++    b3:5yj2v2q2wuimibcjqqczpkvqeh L2
+ F2-research budget=40: 2 unit(s), 31 token(s), Greedy
+-    b3:gvxrs73kd2xjtaqtbg6q62tcuj L0
++    b3:gyz4xxblrp3dzukj5tqlgrw43f L0
+     b3:xiqskepfsn62nfdhjx23ia7ehu L0
+ F2-research budget=120: 6 unit(s), 111 token(s), Greedy
+-    b3:ff64ph6ao6ienpy4mkotmqufru L0
+-    b3:gvxrs73kd2xjtaqtbg6q62tcuj L0
+-    b3:o5plnrheckld6vco3n26djcgbo L0
++    b3:ferw2ktnt3qb57snnrmudaw4lt L0
++    b3:gyz4xxblrp3dzukj5tqlgrw43f L0
++    b3:qw6d76epgrfhcrsknfenpq5hb3 L0
++    b3:uoiigi5g3sdwwgtoif67kag6co L0
+     b3:ushub6ig3oqiqw745abybctrqj L0
+     b3:xiqskepfsn62nfdhjx23ia7ehu L0
+-    b3:yfj6npiqbfzfmrl3bbsdccjud2 L0
+ F2-research budget=200: 10 unit(s), 187 token(s), Greedy
+     b3:aqzqvu7igfpokoq527nzmdvyzr L0
+-    b3:ff64ph6ao6ienpy4mkotmqufru L0
+-    b3:gvxrs73kd2xjtaqtbg6q62tcuj L0
++    b3:ferw2ktnt3qb57snnrmudaw4lt L0
++    b3:gyz4xxblrp3dzukj5tqlgrw43f L0
+     b3:nfuptwbysplfxz7yfrvvhgyemx L0
+-    b3:o5plnrheckld6vco3n26djcgbo L0
++    b3:qw6d76epgrfhcrsknfenpq5hb3 L0
++    b3:uoiigi5g3sdwwgtoif67kag6co L0
+     b3:ushub6ig3oqiqw745abybctrqj L0
+     b3:xieqoh7qdlh66jvabzl7nwxvuc L0
+     b3:xiqskepfsn62nfdhjx23ia7ehu L0
+-    b3:yfj6npiqbfzfmrl3bbsdccjud2 L0
+-    b3:6y7ahgjnjzvhcusydfurkkrq72 L0
++    b3:5l3wu3q7dttfqwbaf6ozrx6jam L0
+ F2-research budget=400: 11 unit(s), 397 token(s), Greedy
+     b3:aqzqvu7igfpokoq527nzmdvyzr L1
+-    b3:ff64ph6ao6ienpy4mkotmqufru L1
+-    b3:gvxrs73kd2xjtaqtbg6q62tcuj L0
+-    b3:kucxel7zqupx2eabiedc7n23qz L0
++    b3:ferw2ktnt3qb57snnrmudaw4lt L1
++    b3:gyz4xxblrp3dzukj5tqlgrw43f L0
+     b3:nfuptwbysplfxz7yfrvvhgyemx L1
+-    b3:o5plnrheckld6vco3n26djcgbo L1
++    b3:nobhzqp276rqxbqhqimc6h5u4p L0
++    b3:qw6d76epgrfhcrsknfenpq5hb3 L0
++    b3:uoiigi5g3sdwwgtoif67kag6co L1
+     b3:ushub6ig3oqiqw745abybctrqj L1
+     b3:xieqoh7qdlh66jvabzl7nwxvuc L0
+     b3:xiqskepfsn62nfdhjx23ia7ehu L0
+-    b3:yfj6npiqbfzfmrl3bbsdccjud2 L0
+-    b3:6y7ahgjnjzvhcusydfurkkrq72 L0
++    b3:5l3wu3q7dttfqwbaf6ozrx6jam L0
+ F2-research budget=1000: 11 unit(s), 397 token(s), Greedy
+     b3:aqzqvu7igfpokoq527nzmdvyzr L1
+-    b3:ff64ph6ao6ienpy4mkotmqufru L1
+-    b3:gvxrs73kd2xjtaqtbg6q62tcuj L0
+-    b3:kucxel7zqupx2eabiedc7n23qz L0
++    b3:ferw2ktnt3qb57snnrmudaw4lt L1
++    b3:gyz4xxblrp3dzukj5tqlgrw43f L0
+     b3:nfuptwbysplfxz7yfrvvhgyemx L1
+-    b3:o5plnrheckld6vco3n26djcgbo L1
++    b3:nobhzqp276rqxbqhqimc6h5u4p L0
++    b3:qw6d76epgrfhcrsknfenpq5hb3 L0
++    b3:uoiigi5g3sdwwgtoif67kag6co L1
+     b3:ushub6ig3oqiqw745abybctrqj L1
+     b3:xieqoh7qdlh66jvabzl7nwxvuc L0
+     b3:xiqskepfsn62nfdhjx23ia7ehu L0
+-    b3:yfj6npiqbfzfmrl3bbsdccjud2 L0
+-    b3:6y7ahgjnjzvhcusydfurkkrq72 L0
++    b3:5l3wu3q7dttfqwbaf6ozrx6jam L0
+ F2-research budget=5000: 11 unit(s), 397 token(s), Greedy
+     b3:aqzqvu7igfpokoq527nzmdvyzr L1
+-    b3:ff64ph6ao6ienpy4mkotmqufru L1
+-    b3:gvxrs73kd2xjtaqtbg6q62tcuj L0
+-    b3:kucxel7zqupx2eabiedc7n23qz L0
++    b3:ferw2ktnt3qb57snnrmudaw4lt L1
++    b3:gyz4xxblrp3dzukj5tqlgrw43f L0
+     b3:nfuptwbysplfxz7yfrvvhgyemx L1
+-    b3:o5plnrheckld6vco3n26djcgbo L1
++    b3:nobhzqp276rqxbqhqimc6h5u4p L0
++    b3:qw6d76epgrfhcrsknfenpq5hb3 L0
++    b3:uoiigi5g3sdwwgtoif67kag6co L1
+     b3:ushub6ig3oqiqw745abybctrqj L1
+     b3:xieqoh7qdlh66jvabzl7nwxvuc L0
+     b3:xiqskepfsn62nfdhjx23ia7ehu L0
+-    b3:yfj6npiqbfzfmrl3bbsdccjud2 L0
+-    b3:6y7ahgjnjzvhcusydfurkkrq72 L0
++    b3:5l3wu3q7dttfqwbaf6ozrx6jam L0
+ F3-narrative budget=40: 2 unit(s), 37 token(s), Greedy
+-    b3:aj463mnuyc4gc76vsissalfmyo L0
+-    b3:oh5fmvgeaqn3ethullkg3vdr4r L0
++    b3:ew5wqruswwzyhmckseqqv5qeux L0
++    b3:vqo7qv7eyw3ob7m2odr5sqkszp L0
+ F3-narrative budget=120: 5 unit(s), 100 token(s), Greedy
+-    b3:aj463mnuyc4gc76vsissalfmyo L0
+-    b3:fbfcii7qalm5njg3b5y35cdha4 L0
+-    b3:oh5fmvgeaqn3ethullkg3vdr4r L0
+-    b3:tgk5vxc6v4aesjgthueofqhjh4 L0
+-    b3:wp6ll3ya46fcqi32l7bkgt2yo6 L0
++    b3:ew5wqruswwzyhmckseqqv5qeux L0
++    b3:uw5ixsc7j2r2e25ujstb7wziqz L0
++    b3:vqo7qv7eyw3ob7m2odr5sqkszp L0
++    b3:yk2uxxc36dtf5er4pfest5wp52 L0
++    b3:5ozk2iaut7mzv4a5aoca5sybpi L0
+ F3-narrative budget=200: 5 unit(s), 100 token(s), Greedy
+-    b3:aj463mnuyc4gc76vsissalfmyo L0
+-    b3:fbfcii7qalm5njg3b5y35cdha4 L0
+-    b3:oh5fmvgeaqn3ethullkg3vdr4r L0
+-    b3:tgk5vxc6v4aesjgthueofqhjh4 L0
+-    b3:wp6ll3ya46fcqi32l7bkgt2yo6 L0
++    b3:ew5wqruswwzyhmckseqqv5qeux L0
++    b3:uw5ixsc7j2r2e25ujstb7wziqz L0
++    b3:vqo7qv7eyw3ob7m2odr5sqkszp L0
++    b3:yk2uxxc36dtf5er4pfest5wp52 L0
++    b3:5ozk2iaut7mzv4a5aoca5sybpi L0
+ F3-narrative budget=400: 5 unit(s), 261 token(s), Greedy
+-    b3:aj463mnuyc4gc76vsissalfmyo L1
+-    b3:fbfcii7qalm5njg3b5y35cdha4 L0
+-    b3:oh5fmvgeaqn3ethullkg3vdr4r L0
+-    b3:tgk5vxc6v4aesjgthueofqhjh4 L0
+-    b3:wp6ll3ya46fcqi32l7bkgt2yo6 L0
++    b3:ew5wqruswwzyhmckseqqv5qeux L0
++    b3:uw5ixsc7j2r2e25ujstb7wziqz L0
++    b3:vqo7qv7eyw3ob7m2odr5sqkszp L1
++    b3:yk2uxxc36dtf5er4pfest5wp52 L0
++    b3:5ozk2iaut7mzv4a5aoca5sybpi L0
+ F3-narrative budget=1000: 5 unit(s), 411 token(s), Greedy
+-    b3:aj463mnuyc4gc76vsissalfmyo L1
+-    b3:fbfcii7qalm5njg3b5y35cdha4 L0
+-    b3:oh5fmvgeaqn3ethullkg3vdr4r L1
+-    b3:tgk5vxc6v4aesjgthueofqhjh4 L0
+-    b3:wp6ll3ya46fcqi32l7bkgt2yo6 L0
++    b3:ew5wqruswwzyhmckseqqv5qeux L1
++    b3:uw5ixsc7j2r2e25ujstb7wziqz L0
++    b3:vqo7qv7eyw3ob7m2odr5sqkszp L1
++    b3:yk2uxxc36dtf5er4pfest5wp52 L0
++    b3:5ozk2iaut7mzv4a5aoca5sybpi L0
+ F3-narrative budget=5000: 5 unit(s), 411 token(s), Greedy
+-    b3:aj463mnuyc4gc76vsissalfmyo L1
+-    b3:fbfcii7qalm5njg3b5y35cdha4 L0
+-    b3:oh5fmvgeaqn3ethullkg3vdr4r L1
+-    b3:tgk5vxc6v4aesjgthueofqhjh4 L0
+-    b3:wp6ll3ya46fcqi32l7bkgt2yo6 L0
++    b3:ew5wqruswwzyhmckseqqv5qeux L1
++    b3:uw5ixsc7j2r2e25ujstb7wziqz L0
++    b3:vqo7qv7eyw3ob7m2odr5sqkszp L1
++    b3:yk2uxxc36dtf5er4pfest5wp52 L0
++    b3:5ozk2iaut7mzv4a5aoca5sybpi L0
+ F4-qa budget=40: 2 unit(s), 35 token(s), Greedy
+-    b3:j3o3fxkpxdb5p2b3kckahr7cdm L0
++    b3:arzcfuarkzrcyg2zhn535b5kio L0
+     b3:kky3utif4vne76f2olnsich3ur L0
+ F4-qa budget=120: 6 unit(s), 107 token(s), Greedy
+-    b3:actmilzmbrikzgsgylcfopsp4f L0
+-    b3:j3o3fxkpxdb5p2b3kckahr7cdm L0
++    b3:arzcfuarkzrcyg2zhn535b5kio L0
+     b3:kky3utif4vne76f2olnsich3ur L0
+     b3:ljnsx4kz3brqrjtaukzmheenhu L0
+     b3:tj5scphwxudwa57yj64mhtczch L0
++    b3:w7zxo4t7ggfy2c7ij4k7fs2oms L0
+     b3:ye72f27iy4sdxl7bv6mowopmuj L0
+ F4-qa budget=200: 9 unit(s), 166 token(s), Greedy
+-    b3:actmilzmbrikzgsgylcfopsp4f L0
+-    b3:j3o3fxkpxdb5p2b3kckahr7cdm L0
++    b3:arzcfuarkzrcyg2zhn535b5kio L0
+     b3:kky3utif4vne76f2olnsich3ur L0
+     b3:ljnsx4kz3brqrjtaukzmheenhu L0
++    b3:nhbpjx2py3hbvnxhcuxywipkh4 L0
+     b3:tj5scphwxudwa57yj64mhtczch L0
+     b3:uqokanrth55djywmh4fxba46op L0
+-    b3:vphjommwrkajtu6jkmvytue5or L0
++    b3:w7zxo4t7ggfy2c7ij4k7fs2oms L0
+     b3:ye72f27iy4sdxl7bv6mowopmuj L0
+-    b3:6eofeegm6wpeszogq7qp4bcakk L0
++    b3:yxf26ikmer63wtayfjcna6gyxf L0
+ F4-qa budget=400: 9 unit(s), 391 token(s), Greedy
+-    b3:actmilzmbrikzgsgylcfopsp4f L1
+-    b3:j3o3fxkpxdb5p2b3kckahr7cdm L0
++    b3:arzcfuarkzrcyg2zhn535b5kio L0
+     b3:kky3utif4vne76f2olnsich3ur L0
+     b3:ljnsx4kz3brqrjtaukzmheenhu L1
++    b3:nhbpjx2py3hbvnxhcuxywipkh4 L1
+     b3:tj5scphwxudwa57yj64mhtczch L0
+     b3:uqokanrth55djywmh4fxba46op L0
+-    b3:vphjommwrkajtu6jkmvytue5or L1
++    b3:w7zxo4t7ggfy2c7ij4k7fs2oms L1
+     b3:ye72f27iy4sdxl7bv6mowopmuj L1
+-    b3:6eofeegm6wpeszogq7qp4bcakk L0
++    b3:yxf26ikmer63wtayfjcna6gyxf L0
+ F4-qa budget=1000: 9 unit(s), 463 token(s), Greedy
+-    b3:actmilzmbrikzgsgylcfopsp4f L1
+-    b3:j3o3fxkpxdb5p2b3kckahr7cdm L1
++    b3:arzcfuarkzrcyg2zhn535b5kio L1
+     b3:kky3utif4vne76f2olnsich3ur L0
+     b3:ljnsx4kz3brqrjtaukzmheenhu L1
++    b3:nhbpjx2py3hbvnxhcuxywipkh4 L1
+     b3:tj5scphwxudwa57yj64mhtczch L0
+     b3:uqokanrth55djywmh4fxba46op L0
+-    b3:vphjommwrkajtu6jkmvytue5or L1
++    b3:w7zxo4t7ggfy2c7ij4k7fs2oms L1
+     b3:ye72f27iy4sdxl7bv6mowopmuj L1
+-    b3:6eofeegm6wpeszogq7qp4bcakk L0
++    b3:yxf26ikmer63wtayfjcna6gyxf L0
+ F4-qa budget=5000: 9 unit(s), 463 token(s), Greedy
+-    b3:actmilzmbrikzgsgylcfopsp4f L1
+-    b3:j3o3fxkpxdb5p2b3kckahr7cdm L1
++    b3:arzcfuarkzrcyg2zhn535b5kio L1
+     b3:kky3utif4vne76f2olnsich3ur L0
+     b3:ljnsx4kz3brqrjtaukzmheenhu L1
++    b3:nhbpjx2py3hbvnxhcuxywipkh4 L1
+     b3:tj5scphwxudwa57yj64mhtczch L0
+     b3:uqokanrth55djywmh4fxba46op L0
+-    b3:vphjommwrkajtu6jkmvytue5or L1
++    b3:w7zxo4t7ggfy2c7ij4k7fs2oms L1
+     b3:ye72f27iy4sdxl7bv6mowopmuj L1
+-    b3:6eofeegm6wpeszogq7qp4bcakk L0
++    b3:yxf26ikmer63wtayfjcna6gyxf L0
+ F5-dataset budget=40: 2 unit(s), 33 token(s), Greedy
+     b3:ij2vhim7fptgjpf7ncdav5pcnj L0
+     b3:usxdws6jsrbpxwgai6u67spzf6 L0
+ F5-dataset budget=120: 6 unit(s), 106 token(s), Greedy
+     b3:ij2vhim7fptgjpf7ncdav5pcnj L0
+     b3:usxdws6jsrbpxwgai6u67spzf6 L0
+-    b3:wtl7eh4atj2nzbnzv3hu3kn7cj L0
++    b3:vtrq634exjmvqnbzpxv6ruueav L0
+     b3:yfjvvteh3xlnr7ew3ioays7hy3 L0
+     b3:2geod3qfjkoneazsfazv7r275p L0
+-    b3:5awlnekzw7ltpeduu3j3m6laxq L0
++    b3:4absqhbt62woiiuaulrzd4amrg L0
+ F5-dataset budget=200: 10 unit(s), 185 token(s), Greedy
+     b3:aqnhfailhalnggfzojclzvebto L0
+-    b3:hrgdfvhnbx5zsck3lscmgc7vff L0
++    b3:ge76kdajfkrldbnqexzhy5u3ru L0
+     b3:ij2vhim7fptgjpf7ncdav5pcnj L0
++    b3:rcbvn5tz246hlsgsbqrhwdo5ke L0
++    b3:rtrvg47o3r6azrd3kaoub2ay77 L0
+     b3:usxdws6jsrbpxwgai6u67spzf6 L0
+-    b3:vrgwtgbiexlq5g6qwwpa6u7hgm L0
+-    b3:wtl7eh4atj2nzbnzv3hu3kn7cj L0
++    b3:vtrq634exjmvqnbzpxv6ruueav L0
+     b3:yfjvvteh3xlnr7ew3ioays7hy3 L0
+     b3:2geod3qfjkoneazsfazv7r275p L0
+-    b3:3j5m5ejs35mffgmmzuuzpj2qqq L0
+-    b3:5awlnekzw7ltpeduu3j3m6laxq L0
++    b3:4absqhbt62woiiuaulrzd4amrg L0
+ F5-dataset budget=400: 12 unit(s), 337 token(s), Greedy
+     b3:aqnhfailhalnggfzojclzvebto L0
+-    b3:hrgdfvhnbx5zsck3lscmgc7vff L1
++    b3:ff7fk7yjwjub6ctl3dfk6hntr2 L0
++    b3:ge76kdajfkrldbnqexzhy5u3ru L0
+     b3:ij2vhim7fptgjpf7ncdav5pcnj L0
+-    b3:pmmua35lvhskpx66wdoynia4xd L0
++    b3:rcbvn5tz246hlsgsbqrhwdo5ke L0
++    b3:rtrvg47o3r6azrd3kaoub2ay77 L1
+     b3:twt66lf5quglr72cql5afvwheq L0
+     b3:usxdws6jsrbpxwgai6u67spzf6 L1
+-    b3:vrgwtgbiexlq5g6qwwpa6u7hgm L0
+-    b3:wtl7eh4atj2nzbnzv3hu3kn7cj L0
++    b3:vtrq634exjmvqnbzpxv6ruueav L0
+     b3:yfjvvteh3xlnr7ew3ioays7hy3 L0
+     b3:2geod3qfjkoneazsfazv7r275p L0
+-    b3:3j5m5ejs35mffgmmzuuzpj2qqq L0
+-    b3:5awlnekzw7ltpeduu3j3m6laxq L0
++    b3:4absqhbt62woiiuaulrzd4amrg L0
+ F5-dataset budget=1000: 12 unit(s), 337 token(s), Greedy
+     b3:aqnhfailhalnggfzojclzvebto L0
+-    b3:hrgdfvhnbx5zsck3lscmgc7vff L1
++    b3:ff7fk7yjwjub6ctl3dfk6hntr2 L0
++    b3:ge76kdajfkrldbnqexzhy5u3ru L0
+     b3:ij2vhim7fptgjpf7ncdav5pcnj L0
+-    b3:pmmua35lvhskpx66wdoynia4xd L0
++    b3:rcbvn5tz246hlsgsbqrhwdo5ke L0
++    b3:rtrvg47o3r6azrd3kaoub2ay77 L1
+     b3:twt66lf5quglr72cql5afvwheq L0
+     b3:usxdws6jsrbpxwgai6u67spzf6 L1
+-    b3:vrgwtgbiexlq5g6qwwpa6u7hgm L0
+-    b3:wtl7eh4atj2nzbnzv3hu3kn7cj L0
++    b3:vtrq634exjmvqnbzpxv6ruueav L0
+     b3:yfjvvteh3xlnr7ew3ioays7hy3 L0
+     b3:2geod3qfjkoneazsfazv7r275p L0
+-    b3:3j5m5ejs35mffgmmzuuzpj2qqq L0
+-    b3:5awlnekzw7ltpeduu3j3m6laxq L0
++    b3:4absqhbt62woiiuaulrzd4amrg L0
+ F5-dataset budget=5000: 12 unit(s), 337 token(s), Greedy
+     b3:aqnhfailhalnggfzojclzvebto L0
+-    b3:hrgdfvhnbx5zsck3lscmgc7vff L1
++    b3:ff7fk7yjwjub6ctl3dfk6hntr2 L0
++    b3:ge76kdajfkrldbnqexzhy5u3ru L0
+     b3:ij2vhim7fptgjpf7ncdav5pcnj L0
+-    b3:pmmua35lvhskpx66wdoynia4xd L0
++    b3:rcbvn5tz246hlsgsbqrhwdo5ke L0
++    b3:rtrvg47o3r6azrd3kaoub2ay77 L1
+     b3:twt66lf5quglr72cql5afvwheq L0
+     b3:usxdws6jsrbpxwgai6u67spzf6 L1
+-    b3:vrgwtgbiexlq5g6qwwpa6u7hgm L0
+-    b3:wtl7eh4atj2nzbnzv3hu3kn7cj L0
++    b3:vtrq634exjmvqnbzpxv6ruueav L0
+     b3:yfjvvteh3xlnr7ew3ioays7hy3 L0
+     b3:2geod3qfjkoneazsfazv7r275p L0
+-    b3:3j5m5ejs35mffgmmzuuzpj2qqq L0
+-    b3:5awlnekzw7ltpeduu3j3m6laxq L0
++    b3:4absqhbt62woiiuaulrzd4amrg L0
+ F6-adversarial budget=40: 2 unit(s), 36 token(s), Greedy
+     b3:bacqe7jyc3pfhpnmn2vivvpz47 L0
+     b3:4p7cfgyytyimdbqyhq7hkuw2sb L0
+ F6-adversarial budget=120: 5 unit(s), 96 token(s), Greedy
++    b3:a665b3gewqxrtbgn3qyqoczmiw L0
+     b3:bacqe7jyc3pfhpnmn2vivvpz47 L0
+-    b3:hdn4uifpmzzopwuyajmhyf5xzu L0
+-    b3:xa7undjm37yl57reyhuxgkiwmm L0
++    b3:odedo2ziedvjaltoxfrkq5frsq L0
+     b3:2hkacsatxuvcywj6f4w2lkzojx L0
+     b3:4p7cfgyytyimdbqyhq7hkuw2sb L0
+ F6-adversarial budget=200: 5 unit(s), 151 token(s), Greedy
++    b3:a665b3gewqxrtbgn3qyqoczmiw L0
+     b3:bacqe7jyc3pfhpnmn2vivvpz47 L0
+-    b3:hdn4uifpmzzopwuyajmhyf5xzu L0
+-    b3:xa7undjm37yl57reyhuxgkiwmm L0
++    b3:odedo2ziedvjaltoxfrkq5frsq L0
+     b3:2hkacsatxuvcywj6f4w2lkzojx L1
+     b3:4p7cfgyytyimdbqyhq7hkuw2sb L0
+ F6-adversarial budget=400: 5 unit(s), 272 token(s), Greedy
++    b3:a665b3gewqxrtbgn3qyqoczmiw L1
+     b3:bacqe7jyc3pfhpnmn2vivvpz47 L0
+-    b3:hdn4uifpmzzopwuyajmhyf5xzu L1
+-    b3:xa7undjm37yl57reyhuxgkiwmm L1
++    b3:odedo2ziedvjaltoxfrkq5frsq L1
+     b3:2hkacsatxuvcywj6f4w2lkzojx L1
+     b3:4p7cfgyytyimdbqyhq7hkuw2sb L0
+ F6-adversarial budget=1000: 5 unit(s), 272 token(s), Greedy
++    b3:a665b3gewqxrtbgn3qyqoczmiw L1
+     b3:bacqe7jyc3pfhpnmn2vivvpz47 L0
+-    b3:hdn4uifpmzzopwuyajmhyf5xzu L1
+-    b3:xa7undjm37yl57reyhuxgkiwmm L1
++    b3:odedo2ziedvjaltoxfrkq5frsq L1
+     b3:2hkacsatxuvcywj6f4w2lkzojx L1
+     b3:4p7cfgyytyimdbqyhq7hkuw2sb L0
+ F6-adversarial budget=5000: 5 unit(s), 272 token(s), Greedy
++    b3:a665b3gewqxrtbgn3qyqoczmiw L1
+     b3:bacqe7jyc3pfhpnmn2vivvpz47 L0
+-    b3:hdn4uifpmzzopwuyajmhyf5xzu L1
+-    b3:xa7undjm37yl57reyhuxgkiwmm L1
++    b3:odedo2ziedvjaltoxfrkq5frsq L1
+     b3:2hkacsatxuvcywj6f4w2lkzojx L1
+     b3:4p7cfgyytyimdbqyhq7hkuw2sb L0
+ F7-mixed-granularity budget=40: 2 unit(s), 33 token(s), Greedy
+@@ -283,143 +283,143 @@ F7-mixed-granularity budget=40: 2 unit(s), 33 token(s), Greedy
+     b3:7m36vxnjf7u34euhcskndrzott L0
+ F7-mixed-granularity budget=120: 7 unit(s), 117 token(s), Greedy
+     b3:de2aqvuf67xtzmx4roisi5ehvt L0
+-    b3:s6etp4fjq3gkd7335lzdwjzx54 L0
+-    b3:s74a4gkw4dl7uiyavm4aqruof5 L0
++    b3:f2llsnzwmxubjr26ow5txytpfg L0
++    b3:r5ikcogrroimfrcu5fvjettike L0
+     b3:tfhgiir2fegvfkvq2fplgtvgq7 L0
++    b3:uzzyhnuysl7gl3gvkhob5eaisf L0
+     b3:yxgkzufidc5f4lnzo6gec2orlx L0
+-    b3:6vyopcz576ffedulovvsyz3npq L0
+     b3:7m36vxnjf7u34euhcskndrzott L0
+ F7-mixed-granularity budget=200: 9 unit(s), 183 token(s), Greedy
+     b3:de2aqvuf67xtzmx4roisi5ehvt L0
++    b3:f2llsnzwmxubjr26ow5txytpfg L0
+     b3:kkjg7kfbzlgopv66j6azxhrt3j L0
+-    b3:q3kwrfzcdb3gp4iysrpp4oztsv L0
+-    b3:s6etp4fjq3gkd7335lzdwjzx54 L0
+-    b3:s74a4gkw4dl7uiyavm4aqruof5 L0
++    b3:r5ikcogrroimfrcu5fvjettike L0
+     b3:tfhgiir2fegvfkvq2fplgtvgq7 L1
++    b3:uzzyhnuysl7gl3gvkhob5eaisf L0
++    b3:xcz3ksxaaxkiceoqmnedguxgln L0
+     b3:yxgkzufidc5f4lnzo6gec2orlx L0
+-    b3:6vyopcz576ffedulovvsyz3npq L0
+     b3:7m36vxnjf7u34euhcskndrzott L0
+ F7-mixed-granularity budget=400: 9 unit(s), 328 token(s), Greedy
+     b3:de2aqvuf67xtzmx4roisi5ehvt L1
++    b3:f2llsnzwmxubjr26ow5txytpfg L0
+     b3:kkjg7kfbzlgopv66j6azxhrt3j L0
+-    b3:q3kwrfzcdb3gp4iysrpp4oztsv L0
+-    b3:s6etp4fjq3gkd7335lzdwjzx54 L1
+-    b3:s74a4gkw4dl7uiyavm4aqruof5 L1
++    b3:r5ikcogrroimfrcu5fvjettike L1
+     b3:tfhgiir2fegvfkvq2fplgtvgq7 L1
++    b3:uzzyhnuysl7gl3gvkhob5eaisf L1
++    b3:xcz3ksxaaxkiceoqmnedguxgln L0
+     b3:yxgkzufidc5f4lnzo6gec2orlx L0
+-    b3:6vyopcz576ffedulovvsyz3npq L0
+     b3:7m36vxnjf7u34euhcskndrzott L0
+ F7-mixed-granularity budget=1000: 9 unit(s), 328 token(s), Greedy
+     b3:de2aqvuf67xtzmx4roisi5ehvt L1
++    b3:f2llsnzwmxubjr26ow5txytpfg L0
+     b3:kkjg7kfbzlgopv66j6azxhrt3j L0
+-    b3:q3kwrfzcdb3gp4iysrpp4oztsv L0
+-    b3:s6etp4fjq3gkd7335lzdwjzx54 L1
+-    b3:s74a4gkw4dl7uiyavm4aqruof5 L1
++    b3:r5ikcogrroimfrcu5fvjettike L1
+     b3:tfhgiir2fegvfkvq2fplgtvgq7 L1
++    b3:uzzyhnuysl7gl3gvkhob5eaisf L1
++    b3:xcz3ksxaaxkiceoqmnedguxgln L0
+     b3:yxgkzufidc5f4lnzo6gec2orlx L0
+-    b3:6vyopcz576ffedulovvsyz3npq L0
+     b3:7m36vxnjf7u34euhcskndrzott L0
+ F7-mixed-granularity budget=5000: 9 unit(s), 328 token(s), Greedy
+     b3:de2aqvuf67xtzmx4roisi5ehvt L1
++    b3:f2llsnzwmxubjr26ow5txytpfg L0
+     b3:kkjg7kfbzlgopv66j6azxhrt3j L0
+-    b3:q3kwrfzcdb3gp4iysrpp4oztsv L0
+-    b3:s6etp4fjq3gkd7335lzdwjzx54 L1
+-    b3:s74a4gkw4dl7uiyavm4aqruof5 L1
++    b3:r5ikcogrroimfrcu5fvjettike L1
+     b3:tfhgiir2fegvfkvq2fplgtvgq7 L1
++    b3:uzzyhnuysl7gl3gvkhob5eaisf L1
++    b3:xcz3ksxaaxkiceoqmnedguxgln L0
+     b3:yxgkzufidc5f4lnzo6gec2orlx L0
+-    b3:6vyopcz576ffedulovvsyz3npq L0
+     b3:7m36vxnjf7u34euhcskndrzott L0
+ F8a-agent-alpha budget=40: 2 unit(s), 32 token(s), Greedy
+     b3:hpffca2bw76gvsrc6tjvr2q6uw L0
+     b3:67eofx62fjigxbfsbufavxjkxg L0
+ F8a-agent-alpha budget=120: 6 unit(s), 99 token(s), Greedy
++    b3:blilyv57lmy5n2zdhnmgl5v2g4 L0
+     b3:cjixk2inyftvxj55d53w2ivxej L0
+-    b3:e3f6wpuw6ie4ruf2ba62yrtagg L0
+     b3:hpffca2bw76gvsrc6tjvr2q6uw L0
+-    b3:v5sjn55ujeflrdyu5qycgmtvz3 L0
+-    b3:5bpbqpyw3yfxrpk53btzsr6ohz L0
++    b3:lif7anguh7qi4nyuslgeux57y6 L0
++    b3:2z7z6fov32ejmm44buotawyni5 L0
+     b3:67eofx62fjigxbfsbufavxjkxg L0
+ F8a-agent-alpha budget=200: 6 unit(s), 192 token(s), Greedy
++    b3:blilyv57lmy5n2zdhnmgl5v2g4 L0
+     b3:cjixk2inyftvxj55d53w2ivxej L1
+-    b3:e3f6wpuw6ie4ruf2ba62yrtagg L0
+     b3:hpffca2bw76gvsrc6tjvr2q6uw L1
+-    b3:v5sjn55ujeflrdyu5qycgmtvz3 L0
+-    b3:5bpbqpyw3yfxrpk53btzsr6ohz L0
++    b3:lif7anguh7qi4nyuslgeux57y6 L0
++    b3:2z7z6fov32ejmm44buotawyni5 L0
+     b3:67eofx62fjigxbfsbufavxjkxg L0
+ F8a-agent-alpha budget=400: 6 unit(s), 192 token(s), Greedy
++    b3:blilyv57lmy5n2zdhnmgl5v2g4 L0
+     b3:cjixk2inyftvxj55d53w2ivxej L1
+-    b3:e3f6wpuw6ie4ruf2ba62yrtagg L0
+     b3:hpffca2bw76gvsrc6tjvr2q6uw L1
+-    b3:v5sjn55ujeflrdyu5qycgmtvz3 L0
+-    b3:5bpbqpyw3yfxrpk53btzsr6ohz L0
++    b3:lif7anguh7qi4nyuslgeux57y6 L0
++    b3:2z7z6fov32ejmm44buotawyni5 L0
+     b3:67eofx62fjigxbfsbufavxjkxg L0
+ F8a-agent-alpha budget=1000: 6 unit(s), 192 token(s), Greedy
++    b3:blilyv57lmy5n2zdhnmgl5v2g4 L0
+     b3:cjixk2inyftvxj55d53w2ivxej L1
+-    b3:e3f6wpuw6ie4ruf2ba62yrtagg L0
+     b3:hpffca2bw76gvsrc6tjvr2q6uw L1
+-    b3:v5sjn55ujeflrdyu5qycgmtvz3 L0
+-    b3:5bpbqpyw3yfxrpk53btzsr6ohz L0
++    b3:lif7anguh7qi4nyuslgeux57y6 L0
++    b3:2z7z6fov32ejmm44buotawyni5 L0
+     b3:67eofx62fjigxbfsbufavxjkxg L0
+ F8a-agent-alpha budget=5000: 6 unit(s), 192 token(s), Greedy
++    b3:blilyv57lmy5n2zdhnmgl5v2g4 L0
+     b3:cjixk2inyftvxj55d53w2ivxej L1
+-    b3:e3f6wpuw6ie4ruf2ba62yrtagg L0
+     b3:hpffca2bw76gvsrc6tjvr2q6uw L1
+-    b3:v5sjn55ujeflrdyu5qycgmtvz3 L0
+-    b3:5bpbqpyw3yfxrpk53btzsr6ohz L0
++    b3:lif7anguh7qi4nyuslgeux57y6 L0
++    b3:2z7z6fov32ejmm44buotawyni5 L0
+     b3:67eofx62fjigxbfsbufavxjkxg L0
+ F8b-agent-beta budget=40: 2 unit(s), 37 token(s), Greedy
+     b3:rq5gjownkpszeibxuvkcj5id4c L0
+     b3:34xv6klbhpxqsqsvhm5s3xuegn L0
+ F8b-agent-beta budget=120: 5 unit(s), 92 token(s), Greedy
++    b3:jr3qf57swoyrq75vwfzzlupap3 L0
+     b3:rq5gjownkpszeibxuvkcj5id4c L0
+     b3:t65rff76bcbxnwzw4oxzcadthe L0
+-    b3:vw6udqf3kcbrqjiv573ai5ox2w L0
+-    b3:wo5nb45msupuxfptfxpbh5q4ws L0
++    b3:unrwrbrsxjk6gdy2ehnj23ey5x L0
+     b3:34xv6klbhpxqsqsvhm5s3xuegn L0
+ F8b-agent-beta budget=200: 5 unit(s), 196 token(s), Greedy
++    b3:jr3qf57swoyrq75vwfzzlupap3 L0
+     b3:rq5gjownkpszeibxuvkcj5id4c L0
+     b3:t65rff76bcbxnwzw4oxzcadthe L1
+-    b3:vw6udqf3kcbrqjiv573ai5ox2w L0
+-    b3:wo5nb45msupuxfptfxpbh5q4ws L0
++    b3:unrwrbrsxjk6gdy2ehnj23ey5x L0
+     b3:34xv6klbhpxqsqsvhm5s3xuegn L1
+ F8b-agent-beta budget=400: 5 unit(s), 196 token(s), Greedy
++    b3:jr3qf57swoyrq75vwfzzlupap3 L0
+     b3:rq5gjownkpszeibxuvkcj5id4c L0
+     b3:t65rff76bcbxnwzw4oxzcadthe L1
+-    b3:vw6udqf3kcbrqjiv573ai5ox2w L0
+-    b3:wo5nb45msupuxfptfxpbh5q4ws L0
++    b3:unrwrbrsxjk6gdy2ehnj23ey5x L0
+     b3:34xv6klbhpxqsqsvhm5s3xuegn L1
+ F8b-agent-beta budget=1000: 5 unit(s), 196 token(s), Greedy
++    b3:jr3qf57swoyrq75vwfzzlupap3 L0
+     b3:rq5gjownkpszeibxuvkcj5id4c L0
+     b3:t65rff76bcbxnwzw4oxzcadthe L1
+-    b3:vw6udqf3kcbrqjiv573ai5ox2w L0
+-    b3:wo5nb45msupuxfptfxpbh5q4ws L0
++    b3:unrwrbrsxjk6gdy2ehnj23ey5x L0
+     b3:34xv6klbhpxqsqsvhm5s3xuegn L1
+ F8b-agent-beta budget=5000: 5 unit(s), 196 token(s), Greedy
++    b3:jr3qf57swoyrq75vwfzzlupap3 L0
+     b3:rq5gjownkpszeibxuvkcj5id4c L0
+     b3:t65rff76bcbxnwzw4oxzcadthe L1
+-    b3:vw6udqf3kcbrqjiv573ai5ox2w L0
+-    b3:wo5nb45msupuxfptfxpbh5q4ws L0
++    b3:unrwrbrsxjk6gdy2ehnj23ey5x L0
+     b3:34xv6klbhpxqsqsvhm5s3xuegn L1
+ F9-forward-compat budget=40: 2 unit(s), 30 token(s), Greedy
+-    b3:smydgqdgiz5faqwarmquc6dhnf L0
++    b3:u7dbhchkge6p6e3dsq5edaa6mh L0
+     b3:v2mdia2yn6jhzzctkjp5bb5yef L0
+ F9-forward-compat budget=120: 3 unit(s), 48 token(s), Greedy
+-    b3:kgdpqbsopesclilrl7zwkkyrhy L0
+-    b3:smydgqdgiz5faqwarmquc6dhnf L0
++    b3:u7dbhchkge6p6e3dsq5edaa6mh L0
+     b3:v2mdia2yn6jhzzctkjp5bb5yef L0
++    b3:76rthzp6gddgesehyioou43ntu L0
+ F9-forward-compat budget=200: 3 unit(s), 48 token(s), Greedy
+-    b3:kgdpqbsopesclilrl7zwkkyrhy L0
+-    b3:smydgqdgiz5faqwarmquc6dhnf L0
++    b3:u7dbhchkge6p6e3dsq5edaa6mh L0
+     b3:v2mdia2yn6jhzzctkjp5bb5yef L0
++    b3:76rthzp6gddgesehyioou43ntu L0
+ F9-forward-compat budget=400: 3 unit(s), 48 token(s), Greedy
+-    b3:kgdpqbsopesclilrl7zwkkyrhy L0
+-    b3:smydgqdgiz5faqwarmquc6dhnf L0
++    b3:u7dbhchkge6p6e3dsq5edaa6mh L0
+     b3:v2mdia2yn6jhzzctkjp5bb5yef L0
++    b3:76rthzp6gddgesehyioou43ntu L0
+ F9-forward-compat budget=1000: 3 unit(s), 48 token(s), Greedy
+-    b3:kgdpqbsopesclilrl7zwkkyrhy L0
+-    b3:smydgqdgiz5faqwarmquc6dhnf L0
++    b3:u7dbhchkge6p6e3dsq5edaa6mh L0
+     b3:v2mdia2yn6jhzzctkjp5bb5yef L0
++    b3:76rthzp6gddgesehyioou43ntu L0
+ F9-forward-compat budget=5000: 3 unit(s), 48 token(s), Greedy
+-    b3:kgdpqbsopesclilrl7zwkkyrhy L0
+-    b3:smydgqdgiz5faqwarmquc6dhnf L0
++    b3:u7dbhchkge6p6e3dsq5edaa6mh L0
+     b3:v2mdia2yn6jhzzctkjp5bb5yef L0
++    b3:76rthzp6gddgesehyioou43ntu L0
+diff --git a/fixtures/golden/cbor/corpus.cbor b/fixtures/golden/cbor/corpus.cbor
+index 0b0ca64..b4855c3 100644
+Binary files a/fixtures/golden/cbor/corpus.cbor and b/fixtures/golden/cbor/corpus.cbor differ
+diff --git a/fixtures/golden/render/analyst.html b/fixtures/golden/render/analyst.html
+index 17a0568..784815f 100644
+--- a/fixtures/golden/render/analyst.html
++++ b/fixtures/golden/render/analyst.html
+@@ -11,7 +11,7 @@
+ <body>
+ <h1>Pool saturation is the leading cause; the clean canary is unexplained</h1>
+ <p class="meta">brief · profile analyst</p>
+-<section class="block" data-role="bottom-line" data-status="derived" data-uid="b3:qq2fbg6tjizz625cqorddxhhftieoknfjz4lv67rkmitaxtjyfka" data-lod="L1">
++<section class="block" data-role="bottom-line" data-status="derived" data-uid="b3:laevzlibhzynzvspwoa5enp4x7zzuyzdc2ctzkb3y3ls3v7tn3sq" data-lod="L1">
+ <h2>bottom-line</h2>
+ <p><span class="status-marker">[derived]</span> Pool saturation is the leading cause
+ 
+@@ -33,7 +33,7 @@ Sampled at 10s resolution; the pre-rollout baseline is the trailing 7-day median
+ <p><span class="status-marker">[speculative]</span> The canary shard was clean throughout</p>
+ <aside class="contention">k/pool-vs-canary: contested, 1 position(s) on record</aside>
+ </section>
+-<section class="block" data-role="ask" data-status="inferred" data-uid="b3:py2mbw2ojee3ehhhosiu6vairsj4afkb54eo57lnmrjqidl5surq" data-lod="L0">
++<section class="block" data-role="ask" data-status="inferred" data-uid="b3:y3ipirxsw2wjnvdivd73x7ycjwxqdo37vl3q3s2lvuzzgjyptgna" data-lod="L0">
+ <h2>ask</h2>
+ <p><span class="status-marker">[inferred]</span> Roll the eu-west shard back to 4.1 and re-measure</p>
+ </section>
+diff --git a/fixtures/golden/render/analyst.json b/fixtures/golden/render/analyst.json
+index 5063783..4adc7a8 100644
+--- a/fixtures/golden/render/analyst.json
++++ b/fixtures/golden/render/analyst.json
+@@ -11,7 +11,7 @@
+   "blocks": [
+     {
+       "role": "bottom-line",
+-      "uid": "b3:qq2fbg6tjizz625cqorddxhhftieoknfjz4lv67rkmitaxtjyfka",
++      "uid": "b3:laevzlibhzynzvspwoa5enp4x7zzuyzdc2ctzkb3y3ls3v7tn3sq",
+       "level": "L1",
+       "status": "derived",
+       "marker": "[derived]",
+@@ -41,7 +41,7 @@
+     },
+     {
+       "role": "ask",
+-      "uid": "b3:py2mbw2ojee3ehhhosiu6vairsj4afkb54eo57lnmrjqidl5surq",
++      "uid": "b3:y3ipirxsw2wjnvdivd73x7ycjwxqdo37vl3q3s2lvuzzgjyptgna",
+       "level": "L0",
+       "status": "inferred",
+       "marker": "[inferred]",
+diff --git a/fixtures/golden/render/exec.slides.typ b/fixtures/golden/render/exec.slides.typ
+index a1e2f61..c1496de 100644
+--- a/fixtures/golden/render/exec.slides.typ
++++ b/fixtures/golden/render/exec.slides.typ
+@@ -9,7 +9,7 @@
+ ]
+ #pagebreak()
+ 
+-// slide 1: b3:qq2fbg6tjizz625cqorddxhhft
++// slide 1: b3:laevzlibhzynzvspwoa5enp4x7
+ #text(size: 14pt)[bottom-line]
+ 
+ #strong[⊢] Pool saturation is the leading cause
+@@ -37,7 +37,7 @@ Connection wait time tracks the latency curve within the noise floor.
+ 
+ #pagebreak()
+ 
+-// slide 4: b3:py2mbw2ojee3ehhhosiu6vairs
++// slide 4: b3:y3ipirxsw2wjnvdivd73x7ycjw
+ #text(size: 14pt)[ask]
+ 
+ #strong[≈] Roll the eu-west shard back to 4.1 and re-measure
+diff --git a/fixtures/golden/render/plain.txt b/fixtures/golden/render/plain.txt
+index b39c0f6..99ffac6 100644
+--- a/fixtures/golden/render/plain.txt
++++ b/fixtures/golden/render/plain.txt
+@@ -1,7 +1,7 @@
+ Pool saturation is the leading cause; the clean canary is unexplained
+ =====================================================================
+ 
+-bottom-line [b3:qq2fbg6tjizz625cqorddxhhft]
++bottom-line [b3:laevzlibhzynzvspwoa5enp4x7]
+   ⊢ Pool saturation is the leading cause
+ 
+   ⊢ Connection wait time tracks the latency curve within the noise floor.
+@@ -18,7 +18,7 @@ risk [b3:chktjhx3padm6ehypfaduwukik]
+   ? The canary shard was clean throughout
+       - k/pool-vs-canary: contested, 1 position(s) on record
+ 
+-ask [b3:py2mbw2ojee3ehhhosiu6vairs]
++ask [b3:y3ipirxsw2wjnvdivd73x7ycjw]
+   ≈ Roll the eu-west shard back to 4.1 and re-measure
+ 
+ open contentions: k/pool-vs-canary
+diff --git a/fixtures/schema/unit.json b/fixtures/schema/unit.json
+index 6d4b2ad..73e565a 100644
+--- a/fixtures/schema/unit.json
++++ b/fixtures/schema/unit.json
+@@ -10,7 +10,7 @@
+     "gist": { "type": "string", "minLength": 1, "maxLength": 120 },
+     "body": { "type": "string" },
+     "detail": { "type": "string" },
+-    "status": { "enum": ["speculative", "inferred", "derived", "cited", "measured"] },
++    "status": { "enum": ["speculative", "inferred", "cited", "derived", "measured"] },
+     "source": {
+       "type": "object",
+       "required": ["kind", "ref"],
+diff --git a/fixtures/wire/uid/cases.json b/fixtures/wire/uid/cases.json
+index 5b2b224..1445ecf 100644
+--- a/fixtures/wire/uid/cases.json
++++ b/fixtures/wire/uid/cases.json
+@@ -218,12 +218,12 @@
+         "detail": null,
+         "deps": [],
+         "grounds": ["0101010101010101010101010101010101010101010101010101010101010101"],
+-        "status": 3,
++        "status": 4,
+         "source": null,
+         "payload_hex": null
+       },
+-      "core_bytes_hex": "a40065636c61696d01766f6e6520676973742c207369782073746174757365730581582001010101010101010101010101010101010101010101010101010101010101010603",
+-      "uid_hex": "0b82bbdcc27e527c1352b6dad5f561dc3f3e792a92a7ca270f4806653df01ce0"
++      "core_bytes_hex": "a40065636c61696d01766f6e6520676973742c207369782073746174757365730581582001010101010101010101010101010101010101010101010101010101010101010604",
++      "uid_hex": "586dd0784293bf18a897d21e3e28595671639e217137a17084d22d35100ea8ca"
+     },
+     {
+       "name": "status-cited",
+@@ -234,12 +234,12 @@
+         "detail": null,
+         "deps": [],
+         "grounds": [],
+-        "status": 4,
++        "status": 3,
+         "source": { "kind": 4, "reference": "a-document", "captured": null },
+         "payload_hex": null
+       },
+-      "core_bytes_hex": "a40065636c61696d01766f6e6520676973742c20736978207374617475736573060407a20004016a612d646f63756d656e74",
+-      "uid_hex": "66e0cec64ad76773713a75552e31dbc190d6ed7a1949a7aaec88ac3473bc0f32"
++      "core_bytes_hex": "a40065636c61696d01766f6e6520676973742c20736978207374617475736573060307a20004016a612d646f63756d656e74",
++      "uid_hex": "774fee6b568f28e406e77b404071ce9576a4e4bf97d6f4d04ca0c8c254c3f559"
+     },
+     {
+       "name": "status-measured",
+diff --git a/go/uid.go b/go/uid.go
+index bb2081b..084dc47 100644
+--- a/go/uid.go
++++ b/go/uid.go
+@@ -70,8 +70,8 @@ const (
+ 	StatusUnfounded   Status = 0
+ 	StatusSpeculative Status = 1
+ 	StatusInferred    Status = 2
+-	StatusDerived     Status = 3
+-	StatusCited       Status = 4
++	StatusCited       Status = 3
++	StatusDerived     Status = 4
+ 	StatusMeasured    Status = 5
+ )
+ 
+@@ -83,10 +83,10 @@ func (s Status) String() string {
+ 		return "speculative"
+ 	case StatusInferred:
+ 		return "inferred"
+-	case StatusDerived:
+-		return "derived"
+ 	case StatusCited:
+ 		return "cited"
++	case StatusDerived:
++		return "derived"
+ 	case StatusMeasured:
+ 		return "measured"
+ 	}
+diff --git a/go/uid_test.go b/go/uid_test.go
+index d6f4528..347b5c6 100644
+--- a/go/uid_test.go
++++ b/go/uid_test.go
+@@ -147,7 +147,7 @@ func TestUidsMatchTheReference(t *testing.T) {
+ // status a unit may legally carry.
+ func TestStatusIsPartOfIdentity(t *testing.T) {
+ 	seen := map[string]Status{}
+-	for _, s := range []Status{StatusSpeculative, StatusInferred, StatusDerived, StatusCited, StatusMeasured} {
++	for _, s := range []Status{StatusSpeculative, StatusInferred, StatusCited, StatusDerived, StatusMeasured} {
+ 		u := &UnitCore{Schema: "claim", Gist: "the same words either way", Status: s}
+ 		// Satisfy the shape rules without touching the words: these are what §7 demands of
+ 		// each status, and demanding them is the point of the class.
+@@ -235,7 +235,7 @@ func TestMalformedUnitsAreRefused(t *testing.T) {
+ //
+ // A `Validate` that returned an error unconditionally would satisfy every case above.
+ func TestWellFormedUnitsAreAccepted(t *testing.T) {
+-	for _, s := range []Status{StatusSpeculative, StatusInferred, StatusDerived, StatusCited, StatusMeasured} {
++	for _, s := range []Status{StatusSpeculative, StatusInferred, StatusCited, StatusDerived, StatusMeasured} {
+ 		u := &UnitCore{Schema: "claim", Gist: "a well-formed claim", Status: s}
+ 		if s.RequiresGrounds() {
+ 			u.Grounds = [][]byte{make([]byte, UidLen)}
+diff --git a/nodejs/src/uid.js b/nodejs/src/uid.js
+index ff5691a..7f23988 100644
+--- a/nodejs/src/uid.js
++++ b/nodejs/src/uid.js
+@@ -52,8 +52,8 @@ export const STATUS = Object.freeze({
+   unfounded: 0,
+   speculative: 1,
+   inferred: 2,
+-  derived: 3,
+-  cited: 4,
++  cited: 3,
++  derived: 4,
+   measured: 5,
+ });
+ 
+diff --git a/scripts/verify-spec-tables.py b/scripts/verify-spec-tables.py
+index 4355936..3389eb7 100644
+--- a/scripts/verify-spec-tables.py
++++ b/scripts/verify-spec-tables.py
+@@ -260,7 +260,7 @@ def main() -> int:
+     check("go: §2.2 statuses",
+           {k: v.replace("status", "") for k, v in
+            named_ints(go_uid, ["StatusUnfounded", "StatusSpeculative", "StatusInferred",
+-                               "StatusDerived", "StatusCited", "StatusMeasured"],
++                               "StatusCited", "StatusDerived", "StatusMeasured"],
+                       r"^\t%s\s+Status = (\d+)$").items()},
+           status)
+     check("go: §2.2 source sub-map keys",
+diff --git a/tests/global_flags.rs b/tests/global_flags.rs
+index 5d9bb57..5355b97 100644
+--- a/tests/global_flags.rs
++++ b/tests/global_flags.rs
+@@ -29,7 +29,7 @@ const F1: &str = "fixtures/corpus/F1-incident.smy";
+ const F3: &str = "fixtures/corpus/F3-narrative.smy";
+ const F6: &str = "fixtures/corpus/F6-adversarial.smy";
+ const F7: &str = "fixtures/corpus/F7-mixed-granularity.smy";
+-const ROOT: &str = "b3:js4xzessu5zwjpv2rawtugnuvj";
++const ROOT: &str = "b3:ml23h3qshmmsc5i4roix77hqrk";
+ const GROUND: &str = "b3:cvhirtgs2mpvli2ethhyeo32uf";
+ 
+ struct Out {

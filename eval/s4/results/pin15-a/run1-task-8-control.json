@@ -1,0 +1,253 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-5",
+      "score": 148.94308471679688
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-5-1",
+      "score": 142.4062957763672
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-1",
+      "score": 129.68931579589844
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-2",
+      "score": 125.74583435058594
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-4",
+      "score": 123.5036392211914
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-2",
+      "score": 119.31702423095703
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 119.05502319335938
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-1-1",
+      "score": 80.61190032958984
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 75.44224548339844
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-10",
+      "score": 67.16798400878906
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-2-1",
+      "score": 63.99979782104492
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-2-2",
+      "score": 60.488887786865234
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "crates/ucal/src/clock.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "/// raw     = max(wall_now, anchor + monotonic_elapsed, last)",
+      "kind": "decision",
+      "label": "d/g2074788f713e-5",
+      "reason": "The change introduces a new variable `last` into the calculation of `raw`, which was not part of the original decision.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Track the last reading to enforce monotonicity against smaller elapsed inputs.\nThe first two branches cannot go backwards on their own, but a caller could pass a smaller elapsed. `last` is belt and braces because the type sells monotonicity."
+    },
+    {
+      "diff_line": "/// raw     = max(wall_now, anchor + monotonic_elapsed, last)",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-5-1",
+      "reason": "The change introduces a new variable `last` into the calculation of `raw`, which was rejected in this unit.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Trust callers to supply non-decreasing elapsed; omit `last`.\nA caller could pass a smaller elapsed, making the first two branches go backwards."
+    },
+    {
+      "diff_line": "since_last_call",
+      "kind": "prerequisite",
+      "label": "p/g2074788f713e-2-1",
+      "reason": "The change introduces a new variable `last_call_elapsed` to track the elapsed time since the last call, which was not part of the original constraint.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Ticks has `try_add` to compute anchor plus monotonic elapsed."
+    },
+    {
+      "diff_line": "since_last_call",
+      "kind": "prerequisite",
+      "label": "p/g2074788f713e-2-2",
+      "reason": "The change introduces a new variable `last_call_elapsed` to track the elapsed time since the last call, which was not part of the original constraint.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "`std::time::Instant::elapsed()` gives monotonic duration from the session base."
+    },
+    {
+      "diff_line": "/// The least a single [`Session::reading`] call may catch a session up by,",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-2",
+      "reason": "The change introduces a new constant `CATCH_UP_FLOOR_NANOS`, which contradicts the claim that a command that never asks the time should not read a clock.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Anchor the session at process start-up.\nA command that never asks the time should not read a clock, and most do not."
+    },
+    {
+      "diff_line": "/// raw     = max(wall_now, anchor + monotonic_elapsed, last)",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-1-1",
+      "reason": "The change modifies the `reading` rule to include `last`, which contradicts the rejection of letting each wallclock tick read the raw system clock directly.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Rejected: Let each wallclock tick read the raw system clock directly.\nA backward step would produce a face that goes back in time."
+    },
+    {
+      "diff_line": "/// raw     = max(wall_now, anchor + monotonic_elapsed, last)",
+      "kind": "decision",
+      "label": "d/g2074788f713e-1",
+      "reason": "The change modifies the `reading` rule to include `last`, which contradicts the decision to route all time readings through a process-wide session clock.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Route all time readings through a process-wide session clock.\nThe system clock can step backwards due to NTP, VM resume, or operator; a continuously running wallclock would show time going backward. The session clock ensures one monotonic reading order."
+    },
+    {
+      "diff_line": "///",
+      "kind": "decision",
+      "label": "d/g2074788f713e-10",
+      "reason": "The change modifies the test for a forward step to ensure it is capped, which contradicts the decision to add tests for backward steps, forward steps, monotonic sequence, and no-finer property.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Add tests for backward steps, forward steps, monotonic sequence, and no-finer property.\nThe commit says tests drive wall clock backwards and assert monotone; another test asserts session reading no finer than raw."
+    },
+    {
+      "diff_line": "///   the oscillator's rate rather than freezing until the wall clock catches up.",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-2-1",
+      "reason": "The change modifies the behavior of a backward step to lose to the monotonic branch, which contradicts the rejection of freezing the clock until the wall clock catches up after a backward step.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Rejected: Freeze the clock until the wall clock catches up after a backward step.\nThe monotonic branch keeps advancing at the oscillator's rate instead."
+    },
+    {
+      "diff_line": "///   refusing it would be preferring this process's opinion to the system's.",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-2-2",
+      "reason": "The change modifies the behavior of a forward step to be capped, which contradicts the rejection of refusing a forward jump because it disagrees with the monotonic projection.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Rejected: Refuse a forward jump because it disagrees with the monotonic projection.\nA forward jump is a correction arriving; refusing would prefer this process's opinion to the system's."
+    }
+  ],
+  "fingerprint": "9f8ae32e380eaede22cac0333c2efb5529f902b97e54f696ef46f9ac32813ed4",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-8-control",
+  "kind": "agent",
+  "pack_tokens": 2993,
+  "pack_units": 132,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 8,
+  "usage": {
+    "completion_tokens": 1108,
+    "prompt_tokens": 14744,
+    "seconds": 116.479512583
+  },
+  "verdicts": [
+    {
+      "diff_line": "/// raw     = max(wall_now, anchor + monotonic_elapsed, last)",
+      "label": "d/g2074788f713e-5",
+      "line": 30,
+      "reason": "The change introduces a new variable `last` into the calculation of `raw`, which was not part of the original decision.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// raw     = max(wall_now, anchor + monotonic_elapsed, last)",
+      "label": "r/g2074788f713e-5-1",
+      "line": 30,
+      "reason": "The change introduces a new variable `last` into the calculation of `raw`, which was rejected in this unit.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "let since_last_call = monotonic_elapsed.try_sub(&self.last_call_elapsed).unwrap_or_else(<Ticks as TickInt>::zero);",
+      "label": "p/g2074788f713e-2-1",
+      "line": 96,
+      "reason": "The change introduces a new variable `last_call_elapsed` to track the elapsed time since the last call, which was not part of the original constraint.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "let since_last_call = monotonic_elapsed.try_sub(&self.last_call_elapsed).unwrap_or_else(<Ticks as TickInt>::zero);",
+      "label": "p/g2074788f713e-2-2",
+      "line": 96,
+      "reason": "The change introduces a new variable `last_call_elapsed` to track the elapsed time since the last call, which was not part of the original constraint.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// The least a single [`Session::reading`] call may catch a session up by,",
+      "label": "r/g2074788f713e-6-2",
+      "line": 9,
+      "reason": "The change introduces a new constant `CATCH_UP_FLOOR_NANOS`, which contradicts the claim that a command that never asks the time should not read a clock.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// raw     = max(wall_now, anchor + monotonic_elapsed, last)",
+      "label": "r/g2074788f713e-1-1",
+      "line": 30,
+      "reason": "The change modifies the `reading` rule to include `last`, which contradicts the rejection of letting each wallclock tick read the raw system clock directly.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// raw     = max(wall_now, anchor + monotonic_elapsed, last)",
+      "label": "d/g2074788f713e-1",
+      "line": 30,
+      "reason": "The change modifies the `reading` rule to include `last`, which contradicts the decision to route all time readings through a process-wide session clock.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// A forward step is accepted \u2014 but not all at once.",
+      "label": "d/g2074788f713e-10",
+      "line": 59,
+      "reason": "The change modifies the test for a forward step to ensure it is capped, which contradicts the decision to add tests for backward steps, forward steps, monotonic sequence, and no-finer property.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// - **A backward step** loses to the monotonic branch, which keeps advancing at",
+      "label": "r/g2074788f713e-2-1",
+      "line": 39,
+      "reason": "The change modifies the behavior of a backward step to lose to the monotonic branch, which contradicts the rejection of freezing the clock until the wall clock catches up after a backward step.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// - **A forward step** is accepted \u2014 but not all at once.",
+      "label": "r/g2074788f713e-2-2",
+      "line": 41,
+      "reason": "The change modifies the behavior of a forward step to be capped, which contradicts the rejection of refusing a forward jump because it disagrees with the monotonic projection.",
+      "verdict": "contradicts"
+    }
+  ]
+}

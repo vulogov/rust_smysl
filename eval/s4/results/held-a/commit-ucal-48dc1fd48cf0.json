@@ -1,0 +1,193 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-3-2",
+      "score": 136.78538513183594,
+      "terms": [
+        "ucal:46.94",
+        "json:26.62",
+        "fields:7.99",
+        "field:5.56"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-8-2",
+      "score": 132.67396545410156,
+      "terms": [
+        "ucal:49.04",
+        "els:7.31",
+        "else:7.31",
+        "field:5.81",
+        "sam:5.65"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g449b762e3cca-10",
+      "score": 116.31773376464844,
+      "terms": [
+        "ucal:38.44",
+        "thi:5.02",
+        "this:5.02",
+        "sam:4.43",
+        "same:4.43"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 115.03384399414062,
+      "terms": [
+        "ucal:35.45",
+        "thi:4.63",
+        "this:4.63",
+        "sam:4.08",
+        "same:4.08"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g449b762e3cca-1-1",
+      "score": 107.84103393554688,
+      "terms": [
+        "ucal:48.93",
+        "object:9.23"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-3",
+      "score": 99.34685516357422,
+      "terms": [
+        "ucal:39.56",
+        "json:22.44",
+        "valu:13.02",
+        "value:13.02",
+        "field:5.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-3-1",
+      "score": 94.97798156738281,
+      "terms": [
+        "ucal:35.68",
+        "json:20.24",
+        "valu:12.22",
+        "value:12.22",
+        "its:5.88"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-3-1",
+      "score": 90.53535461425781,
+      "terms": [
+        "src:56.04",
+        "from:8.69",
+        "examples:7.74",
+        "manual:7.02",
+        "exampl:6.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-3-1",
+      "score": 88.06248474121094,
+      "terms": [
+        "ucal:50.87",
+        "json:28.85",
+        "field:6.03",
+        "the:2.32"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-1",
+      "score": 62.29315185546875,
+      "terms": [
+        "ucal:43.66",
+        "from:7.67",
+        "one:3.27",
+        "only:3.21",
+        "that:2.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g21665b3aac9b-7-1",
+      "score": 60.11844253540039,
+      "terms": [
+        "cosmo:23.05",
+        "enclosur:7.51",
+        "enclosure:7.51",
+        "width:6.26",
+        "years:5.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g21665b3aac9b-7",
+      "score": 59.37015914916992,
+      "terms": [
+        "cosmo:25.30",
+        "enclosur:5.85",
+        "enclosure:5.85",
+        "years:5.74",
+        "width:4.87"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/CLI.md",
+    "Documentation/Release_Notes/1.13.0.md",
+    "crates/ucal-civil/src/jd.rs",
+    "crates/ucal-cosmo/src/dilate.rs",
+    "crates/ucal-cosmo/src/lib.rs",
+    "crates/ucal-cosmo/src/tests.rs",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/src/main.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "fixtures/json-surface.txt",
+    "fixtures/ucal-json-1.schema.json"
+  ],
+  "findings": [],
+  "fingerprint": "7cdb47c4ea677e478dfd07d9c6a4710f520197a0eeb70b7a98ef1c36a5a4ecf9",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-48dc1fd48cf0",
+  "kind": "commit",
+  "pack_tokens": 1492,
+  "pack_units": 77,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 45020,
+    "prompt_tokens": 35628,
+    "seconds": 160.60755445799998
+  },
+  "verdicts": []
+}

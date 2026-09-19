@@ -1,0 +1,175 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g87345653cdf3-5",
+      "score": 87.57960510253906,
+      "terms": [
+        "cargo:12.01",
+        "return:6.19",
+        "print:5.33",
+        "fuzz:4.57",
+        "build:3.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 81.91267395019531,
+      "terms": [
+        "verify:17.19",
+        "cargo:11.90",
+        "doc:6.59",
+        "stal:5.25",
+        "stale:5.25"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-8",
+      "score": 79.52857971191406,
+      "terms": [
+        "manual:23.99",
+        "verify:17.38",
+        "nam:12.00",
+        "doc:6.67",
+        "name:6.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 73.66167449951172,
+      "terms": [
+        "transcript:7.36",
+        "doc:6.48",
+        "transcripts:5.73",
+        "rather:5.31",
+        "ran:4.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-11",
+      "score": 66.61674499511719,
+      "terms": [
+        "featur:8.75",
+        "compil:8.04",
+        "out:6.58",
+        "doc:6.39",
+        "feature:4.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-3",
+      "score": 56.52933883666992,
+      "terms": [
+        "compil:8.65",
+        "makefil:7.47",
+        "makefile:7.47",
+        "compiling:5.86",
+        "them:5.71"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-11-1",
+      "score": 46.088321685791016,
+      "terms": [
+        "featur:8.51",
+        "doc:6.64",
+        "compil:5.96",
+        "feature:4.95",
+        "out:4.88"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 44.92236328125,
+      "terms": [
+        "featur:8.73",
+        "against:4.96",
+        "its:4.96",
+        "features:4.68",
+        "gat:4.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g87345653cdf3-10-1",
+      "score": 43.28461837768555,
+      "terms": [
+        "lin:8.47",
+        "line:8.47",
+        "print:7.54",
+        "ran:6.93",
+        "script:5.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g87345653cdf3-11-1",
+      "score": 41.43421936035156,
+      "terms": [
+        "featur:8.57",
+        "expect:8.33",
+        "script:5.72",
+        "features:5.37",
+        "output:4.41"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-1",
+      "score": 40.956336975097656,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-2",
+      "score": 40.956336975097656,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 283,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "Documentation/manual/ch25-27-library-walkthrough.typ",
+    "Makefile",
+    "scripts/verify-doc-cargo.py"
+  ],
+  "findings": [],
+  "fingerprint": "832b6bbf31e8d660d10a632cd99ff4a151805a76cf9d227a0a3671e0222e690d",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-28e7dd83480b",
+  "kind": "commit",
+  "pack_tokens": 1500,
+  "pack_units": 58,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 34230,
+    "prompt_tokens": 24878,
+    "seconds": 118.827782749
+  },
+  "verdicts": []
+}

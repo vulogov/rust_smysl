@@ -1,0 +1,325 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 148.16981506347656,
+      "terms": [
+        "session:17.03",
+        "anchor:9.73",
+        "tim:9.01",
+        "time:9.01",
+        "start:7.54"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-2",
+      "score": 138.33453369140625,
+      "terms": [
+        "session:17.53",
+        "tim:11.30",
+        "time:11.30",
+        "base:9.26",
+        "instant:8.92"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g449b762e3cca-10",
+      "score": 127.91502380371094,
+      "terms": [
+        "state:10.04",
+        "anchor:9.63",
+        "stat:9.11",
+        "ucal:7.69",
+        "in:5.65"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 126.85002136230469,
+      "terms": [
+        "state:9.26",
+        "anchor:9.15",
+        "stat:8.40",
+        "ucal:7.09",
+        "in:5.21"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 125.45455932617188,
+      "terms": [
+        "session:16.42",
+        "clock:8.00",
+        "let:5.50",
+        "wall:5.22",
+        "doe:4.65"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-9",
+      "score": 124.23448944091797,
+      "terms": [
+        "session:16.42",
+        "clock:8.00",
+        "in:6.75",
+        "cli:6.24",
+        "its:6.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-6",
+      "score": 123.63028717041016,
+      "terms": [
+        "session:17.71",
+        "now:15.74",
+        "state:10.90",
+        "stat:9.89",
+        "anchor:8.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 92.04972076416016,
+      "terms": [
+        "session:16.81",
+        "tim:10.83",
+        "time:10.83",
+        "clock:7.97",
+        "wid:7.97"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-7",
+      "score": 80.57341766357422,
+      "terms": [
+        "now:17.74",
+        "session:11.55",
+        "instant:9.41",
+        "clock:7.52",
+        "now_instant:6.67"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 77.57413482666016,
+      "terms": [
+        "session:15.03",
+        "instant:7.65",
+        "clock:7.50",
+        "tim:7.40",
+        "time:7.40"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-7-2",
+      "score": 76.23237609863281,
+      "terms": [
+        "now:18.01",
+        "session:17.07",
+        "instant:8.68",
+        "clock:7.64",
+        "now_instant:6.77"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-6-1",
+      "score": 62.93632507324219,
+      "terms": [
+        "anchor:8.97",
+        "expect:6.23",
+        "failure:6.23",
+        "lock:6.23",
+        "failur:5.96"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 188,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI.md",
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/main.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "///",
+      "kind": "decision",
+      "label": "d/g2074788f713e-6",
+      "reason": "The comment now states that the session is anchored by `anchor` when the program starts, which contradicts the previous decision that it was anchored inside `session_now` rather than in `get_or_init`.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Store session state as Option and anchor lazily inside session_now, avoiding .expect.\nOnceLock's initializer cannot return a Result; no-panic-in-cli lint refused .expect. Option allows anchoring where a failure can be returned."
+    },
+    {
+      "diff_line": "/// was taken as the truth, and every later reading was measured from it. Called",
+      "kind": "decision",
+      "label": "d/g2074788f713e-1",
+      "reason": "The comment now states that the session is anchored when the program starts, which contradicts the previous decision that the system clock can step backwards due to NTP, VM resume, or operator.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Route all time readings through a process-wide session clock.\nThe system clock can step backwards due to NTP, VM resume, or operator; a continuously running wallclock would show time going backward. The session clock ensures one monotonic reading order."
+    },
+    {
+      "diff_line": "The anchor is taken **when the program starts**, first thing in `main`, and not",
+      "kind": "prerequisite",
+      "label": "p/g2074788f713e-7-2",
+      "reason": "The comment now states that `now_instant` goes through the session clock, which contradicts the previous constraint that `now_instant` goes through the session clock.",
+      "source": "crates/ucal/src/lib.rs@2074788f713e",
+      "text": "`now_instant` goes through session clock, so raw reading needs a separate function."
+    },
+    {
+      "diff_line": "The anchor is taken **when the program starts**, first thing in `main`, and not",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-1",
+      "reason": "This line contradicts the rejected alternative that using `.expect()` inside the OnceLock initializer to handle anchoring failure was refused due to the initializer cannot return a Result.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Rejected: Use `.expect()` inside the OnceLock initializer to handle anchoring failure.\nThe no-panic-in-cli lint refused it because the initializer cannot return a Result."
+    },
+    {
+      "diff_line": "/// Idempotent \u2014 a second call keeps the first anchor.",
+      "kind": "decision",
+      "label": "d/g2074788f713e-11",
+      "reason": "This line contradicts the decision to ignore poison on the session mutex and take the inner value.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Ignore poison on the session mutex and take the inner value.\nA poisoned lock means another thread panicked holding it; state is a pair of tick counts and cannot be torn, so taking inner value is correct."
+    },
+    {
+      "diff_line": ".ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;",
+      "kind": "decision",
+      "label": "d/g2074788f713e-4",
+      "reason": "This line contradicts the decision that Make Session::reading a pure function of its inputs.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Make Session::reading a pure function of its inputs.\nPure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence."
+    },
+    {
+      "diff_line": "The anchor is taken **when the program starts**, first thing in `main`, and not",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-2",
+      "reason": "This line contradicts the claim that anchoring should not occur at process start-up.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Anchor the session at process start-up.\nA command that never asks the time should not read a clock, and most do not."
+    },
+    {
+      "diff_line": "/// The process-wide session.",
+      "kind": "prerequisite",
+      "label": "p/g2074788f713e-2-2",
+      "reason": "This line contradicts the constraint that `std::time::Instant::elapsed()` gives monotonic duration from the session base.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "`std::time::Instant::elapsed()` gives monotonic duration from the session base."
+    },
+    {
+      "diff_line": "/// was taken as the truth, and every later reading was measured from it. Called",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-4-1",
+      "reason": "This line contradicts the claim that having `Session::reading` read the wall clock itself is rejected.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Have Session::reading read the wall clock itself.\nA pure function lets tests drive a wall clock backwards and assert the answer does not follow."
+    }
+  ],
+  "fingerprint": "11657f3312dfcc8e316854eadcf90add9793852565f8e737498809ff593b63f2",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-7-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1500,
+  "pack_units": 73,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 7,
+  "usage": {
+    "completion_tokens": 1046,
+    "predicted_tokens": 25378,
+    "prompt_tokens": 17247,
+    "seconds": 114.8746225
+  },
+  "verdicts": [
+    {
+      "diff_line": "/// The process-wide session.",
+      "label": "d/g2074788f713e-6",
+      "line": 30,
+      "reason": "The comment now states that the session is anchored by `anchor` when the program starts, which contradicts the previous decision that it was anchored inside `session_now` rather than in `get_or_init`.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "A session can only refuse to go back past a reading it has an anchor for. One anchored on first use has no opinion about the clock before that: a wall clock that stepped backwards between the program starting and the first question was taken as the truth, and every later reading was measured from it.",
+      "label": "d/g2074788f713e-1",
+      "line": 59,
+      "reason": "The comment now states that the session is anchored when the program starts, which contradicts the previous decision that the system clock can step backwards due to NTP, VM resume, or operator.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "`now_instant` goes through session clock, so raw reading needs a separate function.",
+      "label": "p/g2074788f713e-7-2",
+      "line": 9,
+      "reason": "The comment now states that `now_instant` goes through the session clock, which contradicts the previous constraint that `now_instant` goes through the session clock.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+      "label": "r/g2074788f713e-6-1",
+      "line": 9,
+      "reason": "This line contradicts the rejected alternative that using `.expect()` inside the OnceLock initializer to handle anchoring failure was refused due to the initializer cannot return a Result.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+A poisoned lock means another thread panicked holding it. The state is a pair of tick counts and cannot be torn, so taking the inner value is correct rather than merely convenient \u2014 the same judgement `body_file::leak` makes about its intern pool.",
+      "label": "d/g2074788f713e-11",
+      "line": 69,
+      "reason": "This line contradicts the decision to ignore poison on the session mutex and take the inner value.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+sess.reading(&wall, &elapsed)",
+      "label": "d/g2074788f713e-4",
+      "line": 129,
+      "reason": "This line contradicts the decision that Make Session::reading a pure function of its inputs.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+      "label": "r/g2074788f713e-6-2",
+      "line": 9,
+      "reason": "This line contradicts the claim that anchoring should not occur at process start-up.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// Anchored by [`anchor`] when the program starts, and by [`session_now`] on the first reading if nothing did \u2014 a library caller has no `main` to anchor from.",
+      "label": "p/g2074788f713e-2-2",
+      "line": 29,
+      "reason": "This line contradicts the constraint that `std::time::Instant::elapsed()` gives monotonic duration from the session base.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+A pure function lets tests drive a wall clock backwards and assert the answer does not follow.",
+      "label": "r/g2074788f713e-4-1",
+      "line": 59,
+      "reason": "This line contradicts the claim that having `Session::reading` read the wall clock itself is rejected.",
+      "verdict": "contradicts"
+    }
+  ]
+}

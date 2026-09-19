@@ -1,0 +1,203 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 49.585086822509766,
+      "terms": [
+        "run:9.89",
+        "stag:7.90",
+        "staged:7.90",
+        "ingest:6.68",
+        "had:5.59"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-22",
+      "score": 45.2916259765625,
+      "terms": [
+        "chunk:8.04",
+        "blake3:6.79",
+        "blak:6.55",
+        "blake:6.55",
+        "3:5.12"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-2",
+      "score": 42.782920837402344,
+      "terms": [
+        "two:6.76",
+        "blak:6.02",
+        "blake:6.02",
+        "calls:5.93",
+        "call:5.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-11",
+      "score": 40.95496368408203,
+      "terms": [
+        "all:7.39",
+        "correct:4.86",
+        "output:4.50",
+        "stat:4.20",
+        "noth:4.10"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-12",
+      "score": 38.51091003417969,
+      "terms": [
+        "all:9.54",
+        "run:8.89",
+        "correct:4.86",
+        "output:4.06",
+        "claim:4.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-15",
+      "score": 38.41426467895508,
+      "terms": [
+        "all:7.52",
+        "carri:4.65",
+        "thre:4.65",
+        "three:4.65",
+        "surfac:3.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-15-1",
+      "score": 37.42314147949219,
+      "terms": [
+        "all:8.08",
+        "carri:4.99",
+        "thre:4.99",
+        "three:4.99",
+        "surfac:3.96"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-4",
+      "score": 35.88787078857422,
+      "terms": [
+        "run:9.27",
+        "befor:6.58",
+        "before:6.58",
+        "unit:4.38",
+        "path:3.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-5",
+      "score": 35.884273529052734,
+      "terms": [
+        "carried:5.20",
+        "surfac:4.23",
+        "surface:4.23",
+        "format:4.19",
+        "carri:3.93"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-12-1",
+      "score": 35.769187927246094,
+      "terms": [
+        "all:9.71",
+        "run:9.06",
+        "output:4.14",
+        "claim:4.13",
+        "correct:3.88"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g69ea5c05d859-15-1",
+      "score": 35.32867431640625,
+      "terms": [
+        "all:10.84",
+        "carri:6.70",
+        "thre:6.70",
+        "three:6.70",
+        "read:4.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-22-1",
+      "score": 34.364742279052734,
+      "terms": [
+        "every:9.88",
+        "chunk:8.30",
+        "input:7.09",
+        "one:5.19",
+        "that:3.91"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 46,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md"
+  ],
+  "findings": [
+    {
+      "diff_line": "- **Staged units lose their labels.** `ingest` passes `stage::prepare` an empty label map, so",
+      "kind": "rejected alternative",
+      "label": "r/g90ec2f781421-4-1",
+      "reason": "The change states that staged units lose their labels, which contradicts the rejected alternative 'run each command in the repository root' because it implies that running commands in the root would not cause this issue.",
+      "source": "git:90ec2f781421002876548124e9fe02073503372c",
+      "text": "Rejected: run each command in the repository root\nIt left .smysl/staged.smy and .smysl/usage.log behind, and usage read a ledger ingest had just written."
+    }
+  ],
+  "fingerprint": "8d66618825700a10f12e08baca3b160a82d657f722e29e5e7c320964380ba21b",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-8d36005523a6",
+  "kind": "commit",
+  "pack_tokens": 1497,
+  "pack_units": 62,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 185,
+    "predicted_tokens": 11875,
+    "prompt_tokens": 8079,
+    "seconds": 36.168724209000004
+  },
+  "verdicts": [
+    {
+      "diff_line": "+- **Staged units lose their labels.** `ingest` passes `stage::prepare` an empty label map, so every label a model wrote is dropped, and units merged from `.smysl/staged.smy` cannot be named by label.",
+      "label": "r/g90ec2f781421-4-1",
+      "line": 39,
+      "reason": "The change states that staged units lose their labels, which contradicts the rejected alternative 'run each command in the repository root' because it implies that running commands in the root would not cause this issue.",
+      "verdict": "contradicts"
+    }
+  ]
+}

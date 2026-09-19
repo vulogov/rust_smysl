@@ -497,12 +497,13 @@ pub fn judge(
 ) -> Result<(Vec<Verdict>, Usage, Fitting), String> {
     let labels = judged(ctx, p.order_seed, p.judge_limit);
     let units = blocks(&ctx.text);
-    let (groups, fitting) = fit(&labels, &units, diff, p);
+    let (groups, mut fitting) = fit(&labels, &units, diff, p);
     for w in &fitting.warnings {
         eprintln!("check: {w}");
     }
     let mut verdicts = Vec::new();
     let mut usage = Usage::default();
+    let mut unusable = 0usize;
     for group in groups {
         let text: String = group
             .iter()
@@ -519,12 +520,27 @@ pub fn judge(
             if diff.truncated { " (truncated)" } else { "" },
             diff.shown
         );
-        let (mut v, u) = call(&user, p)?;
+        // An answer in a shape we cannot read is a call that found nothing, recorded as such: dropping
+        // the case instead would quietly shrink the denominator of every rate computed from this run.
+        let (mut v, u) = match call(&user, p) {
+            Ok(x) => x,
+            Err(e) if e.contains("not the JSON asked for") => {
+                unusable += 1;
+                eprintln!("check: unusable answer, counted as no finding: {e}");
+                (Vec::new(), Usage::default())
+            }
+            Err(e) => return Err(e),
+        };
         usage.predicted_tokens += u64::from(p.model_tokens(&user) + p.model_tokens(&p.system));
         verdicts.append(&mut v);
         usage.prompt_tokens += u.prompt_tokens;
         usage.completion_tokens += u.completion_tokens;
         usage.seconds += u.seconds;
+    }
+    if unusable > 0 {
+        fitting
+            .warnings
+            .push(format!("{unusable} call(s) answered in an unreadable shape and found nothing"));
     }
     Ok((verdicts, usage, fitting))
 }

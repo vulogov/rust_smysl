@@ -1,0 +1,95 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 18.075727462768555
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 17.86970329284668
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 6.769021034240723
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 6.358444690704346
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 5.740069389343262
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 5.414316654205322
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-6",
+      "score": 4.418125152587891
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 4.120856761932373
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-3-1",
+      "score": 3.4902398586273193
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 2.348628520965576
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-5",
+      "score": 2.337827444076538
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-2-1",
+      "score": 1.8460155725479126
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 31,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "Documentation/READINESS.md"
+  ],
+  "findings": [],
+  "fingerprint": "88680a488e646a6889aa84fa648e63e74207f9e52bbc73f218a656274b4107b6",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-bff182b9e76a",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "dev",
+  "task": null,
+  "usage": {
+    "completion_tokens": 24,
+    "prompt_tokens": 5003,
+    "seconds": 17.696577751
+  },
+  "verdicts": []
+}

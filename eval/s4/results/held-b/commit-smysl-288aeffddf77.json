@@ -1,0 +1,183 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 35.26239776611328,
+      "terms": [
+        "its:3.37",
+        "0:3.09",
+        "noth:3.09",
+        "nothing:3.09",
+        "changelog:2.74"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 34.366668701171875,
+      "terms": [
+        "wher:5.02",
+        "where:5.02",
+        "has:4.13",
+        "0:3.48",
+        "changelog:2.76"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 30.180776596069336,
+      "terms": [
+        "its:3.62",
+        "0:3.22",
+        "changelog:2.86",
+        "for:2.72",
+        "not:2.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 19.401208877563477,
+      "terms": [
+        "doe:4.78",
+        "does:4.78",
+        "never:4.78",
+        "not:2.96",
+        "record:1.73"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 18.075729370117188,
+      "terms": [
+        "thi:3.13",
+        "this:3.13",
+        "test:2.69",
+        "two:2.69",
+        "that:2.56"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 17.86970329284668,
+      "terms": [
+        "thi:3.09",
+        "this:3.09",
+        "test:2.66",
+        "two:2.66",
+        "that:2.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 15.889688491821289,
+      "terms": [
+        "request:3.97",
+        "than:3.19",
+        "field:2.99",
+        "for:2.41",
+        "that:1.91"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 12.814619064331055,
+      "terms": [
+        "than:3.37",
+        "field:3.09",
+        "for:2.54",
+        "that:2.02",
+        "and:1.47"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 10.942941665649414,
+      "terms": [
+        "are:5.02",
+        "changelog:2.76",
+        "was:2.76",
+        "the:0.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 8.34927749633789,
+      "terms": [
+        "noth:3.09",
+        "nothing:3.09",
+        "record:1.80",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-5",
+      "score": 7.964409828186035,
+      "terms": [
+        "of:3.45",
+        "was:2.18",
+        "that:1.95",
+        "the:0.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-3-1",
+      "score": 7.624395370483398,
+      "terms": [
+        "has:4.13",
+        "would:3.11",
+        "the:0.38"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 322,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/READINESS.md",
+    "crates/smysl-core/tests/roundtrip.rs",
+    "crates/smysl-graph/src/traverse.rs",
+    "crates/smysl-graph/tests/traversal_order.rs",
+    "crates/smysl-ingest/src/lib.rs",
+    "crates/smysl-provider/src/map/anthropic.rs",
+    "crates/smysl-provider/src/map/gemini.rs",
+    "crates/smysl-provider/src/map/mod.rs"
+  ],
+  "findings": [],
+  "fingerprint": "d3994b981eff421b44f60eb7d97df943f2374e8e940e5abd898866add400703c",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-288aeffddf77",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 24,
+    "predicted_tokens": 32430,
+    "prompt_tokens": 22055,
+    "seconds": 112.463918459
+  },
+  "verdicts": []
+}

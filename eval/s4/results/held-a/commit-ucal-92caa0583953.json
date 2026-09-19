@@ -1,0 +1,171 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-11-2",
+      "score": 110.47590637207031,
+      "terms": [
+        "body:32.10",
+        "file:23.78",
+        "fil:22.97",
+        "makes:6.70",
+        "body_fil:5.90"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g8fdb9b3edb7c-1-1",
+      "score": 104.00128173828125,
+      "terms": [
+        "body:33.78",
+        "file:22.68",
+        "fil:21.91",
+        "body_fil:5.63",
+        "body_file:5.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g8fdb9b3edb7c-1-1",
+      "score": 94.98040008544922,
+      "terms": [
+        "body:35.27",
+        "file:23.38",
+        "fil:22.59",
+        "body_fil:5.80",
+        "body_file:5.80"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g8fdb9b3edb7c-1",
+      "score": 90.38626861572266,
+      "terms": [
+        "body:27.61",
+        "file:15.62",
+        "fil:15.09",
+        "with:7.20",
+        "replace:6.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-3",
+      "score": 82.9926986694336,
+      "terms": [
+        "fil:21.08",
+        "file:19.28",
+        "with:6.79",
+        "replace:5.91",
+        "tests:5.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 80.51334381103516,
+      "terms": [
+        "file:23.58",
+        "fil:22.78",
+        "cycl:5.56",
+        "cycle:5.56",
+        "could:4.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 71.50531005859375,
+      "terms": [
+        "file:20.76",
+        "fil:20.06",
+        "releas:4.48",
+        "release:4.48",
+        "nam:4.31"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 59.98301696777344,
+      "terms": [
+        "file:20.91",
+        "fil:20.21",
+        "rather:7.21",
+        "order:3.49",
+        "notes:3.30"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-4-1",
+      "score": 56.43233108520508,
+      "terms": [
+        "file:21.90",
+        "fil:21.16",
+        "path:4.93",
+        "str:4.72",
+        "the:2.01"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-9",
+      "score": 55.237953186035156,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g31e52cc10b1f-8",
+      "score": 55.237953186035156,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-6",
+      "score": 55.237953186035156,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "31e52cc",
+    "8fdb9b3"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI.md",
+    "Documentation/Release_Notes/1.10.0.md",
+    "crates/ucal/src/body_export.rs",
+    "crates/ucal/src/body_file.rs",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/tests/body_file.rs",
+    "xtask/src/lint.rs"
+  ],
+  "findings": [],
+  "fingerprint": "623fc15ce19698e3c7e43309891cd3274c33da9ba611b5904cd786b8f73a158b",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-92caa0583953",
+  "kind": "commit",
+  "pack_tokens": 1500,
+  "pack_units": 58,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 46480,
+    "prompt_tokens": 32592,
+    "seconds": 144.544253084
+  },
+  "verdicts": []
+}

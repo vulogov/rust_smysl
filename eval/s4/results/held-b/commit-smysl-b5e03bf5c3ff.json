@@ -1,0 +1,176 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "score": 43.088626861572266,
+      "terms": [
+        "smysl:16.56",
+        "cargo:11.04",
+        "check:10.06",
+        "provider:4.67",
+        "the:0.77"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 40.00342559814453,
+      "terms": [
+        "noth:3.82",
+        "nothing:3.82",
+        "changelog:3.48",
+        "for:2.87",
+        "not:2.63"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 33.018672943115234,
+      "terms": [
+        "changelog:3.62",
+        "for:3.07",
+        "not:2.82",
+        "and:1.14",
+        "the:0.83"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 29.946626663208008,
+      "terms": [
+        "shap:3.72",
+        "shape:3.72",
+        "with:3.72",
+        "that:3.32",
+        "two:3.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 29.619979858398438,
+      "terms": [
+        "shap:3.67",
+        "shape:3.67",
+        "with:3.67",
+        "that:3.31",
+        "two:3.23"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 23.12552261352539,
+      "terms": [
+        "passes:4.68",
+        "than:3.79",
+        "field:3.70",
+        "pack:3.09",
+        "for:2.72"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 21.544313430786133,
+      "terms": []
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 21.032543182373047,
+      "terms": [
+        "passes:4.26",
+        "than:3.99",
+        "field:3.82",
+        "for:2.87",
+        "that:2.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 14.522106170654297,
+      "terms": [
+        "are:4.88",
+        "changelog:3.51",
+        "was:3.51",
+        "pass:1.81",
+        "the:0.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 14.155513763427734,
+      "terms": [
+        "content:5.73",
+        "noth:3.82",
+        "nothing:3.82",
+        "the:0.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-1-2",
+      "score": 11.107579231262207,
+      "terms": [
+        "which:6.02",
+        "set:5.09"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-1-1",
+      "score": 10.907978057861328,
+      "terms": [
+        "both:4.76",
+        "from:4.19",
+        "and:1.27",
+        "the:0.69"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 394,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Cargo.lock",
+    "Cargo.toml",
+    "Makefile",
+    "crates/smysl-check/src/lib.rs",
+    "crates/smysl-check/src/passes/integrity.rs",
+    "src/lib.rs"
+  ],
+  "findings": [],
+  "fingerprint": "8e5b5f2d3148f02126afc68665ebaefca0fefc55d6dfacc4f05ade2839ea5e7b",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-b5e03bf5c3ff",
+  "kind": "commit",
+  "pack_tokens": 1365,
+  "pack_units": 40,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 42023,
+    "prompt_tokens": 32630,
+    "seconds": 169.29275424999997
+  },
+  "verdicts": []
+}

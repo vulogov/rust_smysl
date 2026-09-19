@@ -1,0 +1,185 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-3-1",
+      "score": 36.58727264404297,
+      "terms": [
+        "exact:10.99",
+        "defin:8.03",
+        "runs:5.62",
+        "run:4.28",
+        "two:3.75"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-6-1",
+      "score": 35.79636001586914,
+      "terms": [
+        "bound:8.60",
+        "constant:7.17",
+        "doe:6.13",
+        "does:6.13",
+        "two:5.17"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-2-1",
+      "score": 34.17359924316406,
+      "terms": [
+        "exact:11.97",
+        "rather:6.52",
+        "than:5.99",
+        "answer:5.98",
+        "the:2.20"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-5-1",
+      "score": 33.900146484375,
+      "terms": [
+        "number:7.42",
+        "into:6.63",
+        "resolution:6.34",
+        "what:5.25",
+        "one:4.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-9",
+      "score": 33.19324493408203,
+      "terms": [
+        "mor:7.80",
+        "more:7.80",
+        "thi:4.84",
+        "this:4.84",
+        "one:3.59"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-7-3",
+      "score": 32.46281051635742,
+      "terms": [
+        "into:6.46",
+        "already:5.72",
+        "exists:5.36",
+        "tim:5.21",
+        "time:5.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 29.972169876098633,
+      "terms": [
+        "thi:4.50",
+        "this:4.50",
+        "sam:4.19",
+        "same:4.19",
+        "are:3.56"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-3",
+      "score": 29.940305709838867,
+      "terms": [
+        "exact:11.92",
+        "runs:6.40",
+        "run:4.87",
+        "two:4.27",
+        "the:2.47"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-10",
+      "score": 28.440364837646484,
+      "terms": [
+        "thi:4.87",
+        "this:4.87",
+        "sam:4.54",
+        "same:4.54",
+        "are:3.86"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-2-2",
+      "score": 27.93804168701172,
+      "terms": [
+        "correction:5.41",
+        "thi:4.44",
+        "this:4.44",
+        "becaus:4.01",
+        "because:4.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-11-2",
+      "score": 27.9344425201416,
+      "terms": [
+        "about:8.08",
+        "its:6.14",
+        "sam:5.73",
+        "same:5.73",
+        "the:2.26"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-5",
+      "score": 26.952972412109375,
+      "terms": [
+        "resolution:6.41",
+        "number:6.26",
+        "what:5.35",
+        "them:5.14",
+        "and:1.91"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/Proposals/S3-exact-bounded-fitted.md"
+  ],
+  "findings": [],
+  "fingerprint": "83a147e0ed53d07cd5f1afb3039268ca3dd5c10974c5b283f7551f532dedf5f0",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-ab3bf597a571",
+  "kind": "commit",
+  "pack_tokens": 1495,
+  "pack_units": 73,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 21260,
+    "prompt_tokens": 15202,
+    "seconds": 61.654619792
+  },
+  "verdicts": []
+}

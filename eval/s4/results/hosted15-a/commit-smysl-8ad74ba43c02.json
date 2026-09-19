@@ -1,0 +1,102 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 18.075729370117188
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 17.869705200195312
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 15.377370834350586
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 13.095053672790527
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-4-1",
+      "score": 12.76270580291748
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-6",
+      "score": 11.90379810333252
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 11.094574928283691
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 9.72757339477539
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 8.934425354003906
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 8.513981819152832
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 8.178629875183105
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 5.821576118469238
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    ".github/workflows/ci.yml",
+    "Documentation/READINESS.md",
+    "go/README.md",
+    "go/cbor.go",
+    "go/conformance_test.go",
+    "go/go.mod",
+    "go/go.sum",
+    "go/records.go"
+  ],
+  "findings": [],
+  "fingerprint": "c46f6c7c49587663388bdde527f26588e7eb3765afe0d5359076cb8775587c3b",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-8ad74ba43c02",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "dev",
+  "task": null,
+  "usage": {
+    "completion_tokens": 4502,
+    "prompt_tokens": 19420,
+    "seconds": 70.376595333
+  },
+  "verdicts": []
+}

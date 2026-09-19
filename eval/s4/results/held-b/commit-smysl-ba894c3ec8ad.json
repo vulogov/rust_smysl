@@ -1,0 +1,228 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-11",
+      "score": 331.822998046875,
+      "terms": [
+        "documentation:146.29",
+        "tests:23.58",
+        "test:14.67",
+        "that:3.24",
+        "gat:3.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 267.61468505859375,
+      "terms": [
+        "smysl:82.79",
+        "cor:32.06",
+        "core:32.06",
+        "surfac:24.44",
+        "surface:24.44"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 232.0980987548828,
+      "terms": [
+        "smysl:85.69",
+        "cor:29.07",
+        "core:29.07",
+        "tests:26.89",
+        "format:13.44"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 174.92251586914062,
+      "terms": [
+        "smysl:96.52",
+        "tests:34.58",
+        "test:21.52",
+        "cargo:10.37",
+        "path:5.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-1-2",
+      "score": 172.14451599121094,
+      "terms": [
+        "smysl:94.94",
+        "tests:34.01",
+        "test:21.17",
+        "cargo:10.28",
+        "path:5.33"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-16-1",
+      "score": 156.24307250976562,
+      "terms": [
+        "typ:60.04",
+        "surfac:24.84",
+        "surface:24.84",
+        "public:12.01",
+        "type:8.48"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-4-1",
+      "score": 153.0535430908203,
+      "terms": [
+        "smysl:91.94",
+        "ingest:47.31",
+        "write:5.07",
+        "writ:4.67",
+        "the:2.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 150.21206665039062,
+      "terms": [
+        "smysl:86.48",
+        "test:15.10",
+        "verify:14.03",
+        "cargo:8.39",
+        "let:5.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g69ea5c05d859-8-1",
+      "score": 147.77310180664062,
+      "terms": [
+        "smysl:101.35",
+        "test:22.60",
+        "unit:12.64",
+        "assert:7.81",
+        "version:3.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 144.66213989257812,
+      "terms": [
+        "smysl:94.37",
+        "ingest:40.10",
+        "smy:6.03",
+        "the:2.48",
+        "and:1.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-4",
+      "score": 141.2730255126953,
+      "terms": [
+        "smysl:74.67",
+        "ingest:38.42",
+        "test:16.65",
+        "its:6.03",
+        "with:3.26"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-6",
+      "score": 139.3765411376953,
+      "terms": [
+        "smysl:79.95",
+        "format:14.32",
+        "self:5.52",
+        "pars:5.10",
+        "parse:4.99"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Cargo.lock",
+    "Cargo.toml",
+    "Documentation/API_CONTRACT.md",
+    "Documentation/READINESS.md",
+    "Documentation/SMYSL_FORMAT_GUIDE.pdf",
+    "Documentation/SMYSL_FORMAT_GUIDE.typ",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SMYSL_RATIONALE.pdf",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.pdf",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.typ",
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch06-08-validate-infer.typ",
+    "Documentation/manual/ch11-13-merge-diff-trace.typ",
+    "Documentation/manual/ch17-18-pack-thread.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "Documentation/manual/ch25-27-library-walkthrough.typ",
+    "Documentation/manual/design.typ",
+    "crates/smysl-check/src/lib.rs",
+    "crates/smysl-check/src/passes/extension.rs",
+    "crates/smysl-check/tests/mixed_granularity.rs",
+    "crates/smysl-core/src/surface/lex.rs",
+    "crates/smysl-core/src/surface/mod.rs",
+    "crates/smysl-core/src/surface/parse.rs",
+    "crates/smysl-core/src/surface/write.rs",
+    "crates/smysl-core/tests/surface.rs",
+    "crates/smysl-eval/tests/quoting_live.rs",
+    "crates/smysl-ingest/src/attest.rs",
+    "crates/smysl-ingest/src/lib.rs",
+    "crates/smysl-ingest/src/prompt.rs",
+    "crates/smysl-ingest/src/schema.rs",
+    "crates/smysl-ingest/tests/gate.rs",
+    "crates/smysl-provider/src/config.rs",
+    "fixtures/schema/unit.json",
+    "fixtures/tutorial/ch19-21-verify/declared.smy",
+    "src/lib.rs",
+    "src/main.rs",
+    "tests/cli-surface.txt",
+    "tests/label_arguments.rs",
+    "tests/public-api-counts.txt",
+    "tests/public-api.txt"
+  ],
+  "findings": [],
+  "fingerprint": "bfc85fe00ade817fcee97dece9e8036b02182c6726b2d3eb28eb7fdf315ddd6b",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-ba894c3ec8ad",
+  "kind": "commit",
+  "pack_tokens": 1493,
+  "pack_units": 63,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 42531,
+    "prompt_tokens": 33421,
+    "seconds": 169.29782124899998
+  },
+  "verdicts": []
+}

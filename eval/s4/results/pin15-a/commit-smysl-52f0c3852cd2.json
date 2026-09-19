@@ -1,0 +1,106 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 22.192895889282227
+    },
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 18.6840763092041
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 14.017946243286133
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 6.982610702514648
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 5.921292304992676
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 5.866462707519531
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-5",
+      "score": 5.809134483337402
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 5.709216117858887
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 5.582496643066406
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 4.879850387573242
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 4.068856239318848
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 3.8215456008911133
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/SMYSL_ARCHITECTURE_RFC.md",
+    "Documentation/SMYSL_FORMAT_GUIDE.pdf",
+    "Documentation/SMYSL_FORMAT_GUIDE.typ",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SMYSL_RATIONALE.pdf",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.pdf",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.typ",
+    "Documentation/manual/ch17-18-pack-thread.typ",
+    "Documentation/manual/design.typ"
+  ],
+  "findings": [],
+  "fingerprint": "c30f1e103b6d554ae5a7e46ea69330f394f7013a7a8745fcc3ac344c95fd38e1",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-52f0c3852cd2",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "dev",
+  "task": null,
+  "usage": {
+    "completion_tokens": 60,
+    "prompt_tokens": 49152,
+    "seconds": 266.574457209
+  },
+  "verdicts": []
+}

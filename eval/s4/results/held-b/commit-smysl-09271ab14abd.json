@@ -1,0 +1,426 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 300.9446716308594,
+      "terms": [
+        "cor:65.12",
+        "core:65.12",
+        "store:19.46",
+        "stor:11.94",
+        "uid:9.48"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 280.00311279296875,
+      "terms": [
+        "src:106.61",
+        "fixtures:11.68",
+        "fixtur:10.43",
+        "record:10.28",
+        "uid:9.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 242.3796844482422,
+      "terms": [
+        "smysl:65.54",
+        "cor:57.71",
+        "core:57.71",
+        "api:27.45",
+        "public:17.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 218.78184509277344,
+      "terms": [
+        "smysl:67.84",
+        "cor:52.32",
+        "core:52.32",
+        "tests:23.53",
+        "assert:6.14"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-8-1",
+      "score": 218.37442016601562,
+      "terms": [
+        "smysl:80.23",
+        "assert:7.81",
+        "unit:6.32",
+        "test:2.82"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g69ea5c05d859-8-1",
+      "score": 215.46466064453125,
+      "terms": [
+        "smysl:71.80",
+        "assert:10.19",
+        "new:4.18",
+        "pass:3.49",
+        "test:2.04"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-6-1",
+      "score": 178.42965698242188,
+      "terms": [
+        "cor:64.09",
+        "core:64.09",
+        "fixtures:15.21",
+        "fixtur:13.58",
+        "uid:9.33"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 121.1898422241211,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-17",
+      "score": 121.1898422241211,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 121.1898422241211,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-5",
+      "score": 121.1898422241211,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g69ea5c05d859-9",
+      "score": 121.1898422241211,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/API_CONTRACT.md",
+    "Documentation/SMYSL_ARCHITECTURE_RFC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SPEC_DRAFT_1.4.md",
+    "Documentation/manual/appendices.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "crates/smysl-check/src/passes/integrity.rs",
+    "crates/smysl-core/src/cbor/envelope.rs",
+    "crates/smysl-core/src/cbor/keys.rs",
+    "crates/smysl-core/src/diag.rs",
+    "crates/smysl-core/src/lib.rs",
+    "crates/smysl-core/src/types/lifecycle.rs",
+    "crates/smysl-core/src/types/mod.rs",
+    "crates/smysl-core/src/types/record.rs",
+    "crates/smysl-core/tests/lifecycle_fixtures.rs",
+    "crates/smysl-core/tests/roundtrip.rs",
+    "crates/smysl-graph/src/merge/contention.rs",
+    "crates/smysl-graph/src/store/mod.rs",
+    "crates/smysl-graph/tests/lifecycle.rs",
+    "crates/smysl-pack/src/closure.rs",
+    "crates/smysl-pack/src/constraints.rs",
+    "crates/smysl-pack/tests/lifecycle.rs",
+    "crates/smysl-render/src/ir.rs",
+    "fixtures/wire/contention-id/cases.json",
+    "fixtures/wire/relation-id/cases.json",
+    "src/lib.rs",
+    "tests/public-api-counts.txt",
+    "tests/public-api-pure.txt",
+    "tests/public-api.txt"
+  ],
+  "findings": [
+    {
+      "diff_line": "already computed, now stated, with vectors in `fixtures/wire/relation-id/`.",
+      "kind": "rejected alternative",
+      "label": "r/g69ea5c05d859-8-1",
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the rejected alternative of asserting a literal list and keeping smysl/1.0 as an unknown version.",
+      "source": "crates/smysl-core/src/lib.rs@69ea5c05d859",
+      "text": "Rejected: Assert a literal list and keep using smysl/1.0 as an unknown version.\nThe old test would fail on new versions or silently pass on unlisted additions."
+    },
+    {
+      "diff_line": "already computed, now stated, with vectors in `fixtures/wire/relation-id/`.",
+      "kind": "prerequisite",
+      "label": "p/g4968383dc452-6-1",
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the prerequisite that missing facts were recoverable only by decoding core_bytes_hex in uid fixtures.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Missing facts were recoverable only by decoding core_bytes_hex in uid fixtures."
+    },
+    {
+      "diff_line": "already computed, now stated, with vectors in `fixtures/wire/relation-id/`.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-12",
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the decision that corrects README claims that tables were asserted against document.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Correct README claims that tables were asserted against document.\nThe tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document."
+    },
+    {
+      "diff_line": "already computed, now stated, with vectors in `fixtures/wire/relation-id/`.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-17",
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the decision not to implement rule M in outside readers.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Do not implement rule M in outside readers.\nRule M is checkable against a store, not against a unit; a validate claiming to enforce it would be a check that cannot fail."
+    },
+    {
+      "diff_line": "already computed, now stated, with vectors in `fixtures/wire/relation-id/`.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-19",
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the decision to measure mutation survivors on store/mod.rs under both per-package and workspace tests.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Measure mutation survivors on store/mod.rs under both per-package and workspace tests.\nTo compare weak per-package claim with stronger workspace claim and quantify artefact rate."
+    },
+    {
+      "diff_line": "already computed, now stated, with vectors in `fixtures/wire/relation-id/`.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-5",
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the decision to NFC-normalise text in nodejs CBOR encoder.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "NFC-normalise text in nodejs CBOR encoder.\n\u00a73 constraint 6 asks for normalisation at the encoder; previously a no-op for re-encode but needed for authored text."
+    },
+    {
+      "diff_line": "[`Documentation/SPEC_DRAFT_1.4.md`](Documentation/SPEC_DRAFT_1.4.md) is the draft, and the Rust",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-9",
+      "reason": "The change introduces a new specification draft that includes six decisions, which contradicts the previous test only checking the first entry.",
+      "source": "src/lib.rs@69ea5c05d859",
+      "text": "Strengthen the facade re-export test to check every supported version is accepted and FORMAT_VERSION_DEFAULT \u2026\nThe previous test only checked the first entry, which would have kept passing while a second supported version went unchecked."
+    },
+    {
+      "diff_line": "### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "kind": "decision",
+      "label": "d/g4968383dc452-1",
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous upgrade to C-Produce conformance.",
+      "source": "nodejs/README.md@4968383dc452",
+      "text": "Upgrade nodejs conformance target from C-Read to C-Produce.\nTo provide a fourth independent derivation of uids and a third witness for \u00a72.3 beyond the Rust, strengthening the evidence that the specification is sufficient."
+    },
+    {
+      "diff_line": "### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "kind": "decision",
+      "label": "d/g4968383dc452-15",
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous blocked command explanation.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Revise gate 7 blocked command explanation, no longer 'decision about book'.\nThe block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision."
+    },
+    {
+      "diff_line": "### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "kind": "decision",
+      "label": "d/g4968383dc452-16",
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous decision to hold beta.smy repair.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Hold beta.smy repair rather than guess missing stanza.\nThe missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair."
+    },
+    {
+      "diff_line": "### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "kind": "decision",
+      "label": "d/g4968383dc452-21",
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous decision not to apply 22% artefact fraction to other modules.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Do not apply 22% artefact fraction to other modules.\nOne module evidence is not generalizable; applying the fraction would repeat the error of quoting a number without its configuration."
+    },
+    {
+      "diff_line": "### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "kind": "decision",
+      "label": "d/g4968383dc452-23",
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous implementation of status integers and source/kind enums as constants in nodejs.",
+      "source": "nodejs/src/uid.js@4968383dc452",
+      "text": "Implement status integers and source/kind enums as constants in nodejs.\nThese values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures."
+    },
+    {
+      "diff_line": "epistemics, merge, pack/render, extension, provider). Every code carries a severity, and",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-12",
+      "reason": "The change adds a new diagnostic code, increasing the count from 52 to 53, which contradicts the decision that the diagnostics registry should stay at 52 codes.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update format spec \u00a78.5 to record the version-trap defect as fixed in 0.14.\nThe trap was invisible until it bit; the spec should now state the fix so the historical warning is replaced with the actual current behavior."
+    },
+    {
+      "diff_line": "until they decode them.",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-14",
+      "reason": "The change indicates that the CLI commands for withdrawing, resolving, and listing open reviews are not yet implemented, which contradicts the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\u00a78.2 requires readers to refuse a version absent from their list. Flipping the writer before 0.14 is in the field would make every other implementation reject the output."
+    },
+    {
+      "diff_line": "until they decode them.",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-15",
+      "reason": "The change indicates that the Python, JavaScript, and Go implementations do not yet handle records 11 and 12, which contradicts the decision to not add version lists to these implementations.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Do not add version lists to python/, nodejs/, go/ implementations.\nAll three read CBOR only and the wire carries no version string, so no surface parser ever sees a @doc header there. The migration plan's assumption was wrong."
+    },
+    {
+      "diff_line": "already computed, now stated, with vectors in `fixtures/wire/relation-id/`.",
+      "kind": "prerequisite",
+      "label": "p/g69ea5c05d859-8-1",
+      "reason": "The change removes the assertion of 'smysl/1.0' as an unknown version, contradicting the constraint that old unit tests must assert this.",
+      "source": "crates/smysl-core/src/lib.rs@69ea5c05d859",
+      "text": "Old unit test asserted smysl/1.0 as unknown version."
+    }
+  ],
+  "fingerprint": "51629250266ab3fa216a158c51639738cafca423b84ebb3ada4878382dcb0300",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-09271ab14abd",
+  "kind": "commit",
+  "pack_tokens": 1496,
+  "pack_units": 64,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 1895,
+    "predicted_tokens": 56474,
+    "prompt_tokens": 55125,
+    "seconds": 377.329622
+  },
+  "verdicts": [
+    {
+      "diff_line": "+  /Dest 12140 0 R",
+      "label": "r/g69ea5c05d859-8-1",
+      "line": 23,
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the rejected alternative of asserting a literal list and keeping smysl/1.0 as an unknown version.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12140 0 R",
+      "label": "p/g4968383dc452-6-1",
+      "line": 23,
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the prerequisite that missing facts were recoverable only by decoding core_bytes_hex in uid fixtures.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12140 0 R",
+      "label": "d/g4968383dc452-12",
+      "line": 23,
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the decision that corrects README claims that tables were asserted against document.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12140 0 R",
+      "label": "d/g4968383dc452-17",
+      "line": 23,
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the decision not to implement rule M in outside readers.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12140 0 R",
+      "label": "d/g4968383dc452-19",
+      "line": 23,
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the decision to measure mutation survivors on store/mod.rs under both per-package and workspace tests.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  /Dest 12140 0 R",
+      "label": "d/g4968383dc452-5",
+      "line": 23,
+      "reason": "The change adds a new destination (12140) for the 'What you need in front of you' section, which contradicts the decision to NFC-normalise text in nodejs CBOR encoder.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+[`Documentation/SPEC_DRAFT_1.4.md`](Documentation/SPEC_DRAFT_1.4.md) is the draft, and the Rust library implements all six of its decisions.",
+      "label": "d/g69ea5c05d859-9",
+      "line": 12,
+      "reason": "The change introduces a new specification draft that includes six decisions, which contradicts the previous test only checking the first entry.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "label": "d/g4968383dc452-1",
+      "line": 10,
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous upgrade to C-Produce conformance.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "label": "d/g4968383dc452-15",
+      "line": 10,
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous blocked command explanation.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "label": "d/g4968383dc452-16",
+      "line": 10,
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous decision to hold beta.smy repair.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "label": "d/g4968383dc452-21",
+      "line": 10,
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous decision not to apply 22% artefact fraction to other modules.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+### The lifecycle of edges and disagreements \u2014 specification draft and library",
+      "label": "d/g4968383dc452-23",
+      "line": 10,
+      "reason": "The change introduces a new specification draft that includes decisions about the lifecycle of edges and disagreements, which contradicts the previous implementation of status integers and source/kind enums as constants in nodejs.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Diagnostics are a closed registry of **53 codes** in eight groups (parse, identity, LOD, epistemics, merge, pack/render, extension, provider). Every code carries a severity, and fixtures assert exact code sets rather than \"some error\".",
+      "label": "d/g69ea5c05d859-12",
+      "line": 83,
+      "reason": "The change adds a new diagnostic code, increasing the count from 52 to 53, which contradicts the decision that the diagnostics registry should stay at 52 codes.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Not yet: CLI commands to withdraw, resolve and list what is open for review; surface syntax for the two records; and the Python, JavaScript and Go readers, which preserve records 11 and 12 as unknown until they decode them.",
+      "label": "d/g69ea5c05d859-14",
+      "line": 51,
+      "reason": "The change indicates that the CLI commands for withdrawing, resolving, and listing open reviews are not yet implemented, which contradicts the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Not yet: CLI commands to withdraw, resolve and list what is open for review; surface syntax for the two records; and the Python, JavaScript and Go readers, which preserve records 11 and 12 as unknown until they decode them.",
+      "label": "d/g69ea5c05d859-15",
+      "line": 51,
+      "reason": "The change indicates that the Python, JavaScript, and Go implementations do not yet handle records 11 and 12, which contradicts the decision to not add version lists to these implementations.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "- Old unit test asserted smysl/1.0 as unknown version.",
+      "label": "p/g69ea5c05d859-8-1",
+      "line": 23,
+      "reason": "The change removes the assertion of 'smysl/1.0' as an unknown version, contradicting the constraint that old unit tests must assert this.",
+      "verdict": "contradicts"
+    }
+  ]
+}

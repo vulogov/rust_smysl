@@ -1637,6 +1637,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-1-control-r1/diff.patch"
 task = 1
+contradicting = false
+
 
 [[case]]
 set = "heldout"
@@ -1646,6 +1648,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-1-control-r2/diff.patch"
 task = 1
+contradicting = false
+
 
 [[case]]
 set = "heldout"
@@ -1655,6 +1659,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-2-control-r1/diff.patch"
 task = 2
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1664,6 +1670,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-2-control-r2/diff.patch"
 task = 2
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1673,6 +1681,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-3-control-r1/diff.patch"
 task = 3
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1682,6 +1692,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-3-control-r2/diff.patch"
 task = 3
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1691,6 +1703,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-4-control-r1/diff.patch"
 task = 4
+contradicting = false
+
 
 [[case]]
 set = "heldout"
@@ -1700,6 +1714,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-4-control-r2/diff.patch"
 task = 4
+contradicting = false
+
 
 [[case]]
 set = "heldout"
@@ -1709,6 +1725,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-5-control-r1/diff.patch"
 task = 5
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1718,6 +1736,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-5-control-r2/diff.patch"
 task = 5
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1727,6 +1747,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-6-control-r1/diff.patch"
 task = 6
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1736,6 +1758,8 @@ kind = "agent"
 base = "183be01427d67e84d731a697d613f1a035978658"
 source = "s3/results/s4-heldout/task-6-control-r2/diff.patch"
 task = 6
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1745,6 +1769,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-7-control-r1/diff.patch"
 task = 7
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1754,6 +1780,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-7-control-r2/diff.patch"
 task = 7
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1763,6 +1791,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-8-control-r1/diff.patch"
 task = 8
+contradicting = false
+
 
 [[case]]
 set = "heldout"
@@ -1772,6 +1802,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-8-control-r2/diff.patch"
 task = 8
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1781,6 +1813,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-9-control-r1/diff.patch"
 task = 9
+contradicting = false
+
 
 [[case]]
 set = "heldout"
@@ -1790,6 +1824,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-9-control-r2/diff.patch"
 task = 9
+contradicting = false
+
 
 [[case]]
 set = "heldout"
@@ -1799,6 +1835,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-10-control-r1/diff.patch"
 task = 10
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1808,6 +1846,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-10-control-r2/diff.patch"
 task = 10
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1817,6 +1857,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-11-control-r1/diff.patch"
 task = 11
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1826,6 +1868,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-11-control-r2/diff.patch"
 task = 11
+contradicting = true
+
 
 [[case]]
 set = "heldout"
@@ -1835,6 +1879,8 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-12-control-r1/diff.patch"
 task = 12
+contradicting = false
+
 
 [[case]]
 set = "heldout"
@@ -1844,3 +1890,5 @@ kind = "agent"
 base = "425bb3aa5111bf70e5c0044ad11bcd57ead31f38"
 source = "s3/results/s4-heldout/task-12-control-r2/diff.patch"
 task = 12
+contradicting = true
+

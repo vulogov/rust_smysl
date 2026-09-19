@@ -1,0 +1,343 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-5",
+      "score": 169.2772674560547,
+      "terms": [
+        "elaps:18.48",
+        "elapsed:18.48",
+        "last:14.92",
+        "caller:4.84",
+        "branch:4.24"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-1",
+      "score": 168.63162231445312,
+      "terms": [
+        "elaps:19.21",
+        "elapsed:19.21",
+        "monotonic:10.73",
+        "try:9.26",
+        "try_add:9.26"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-2",
+      "score": 158.86000061035156,
+      "terms": [
+        "elaps:17.28",
+        "elapsed:17.28",
+        "monotonic:10.62",
+        "advanc:9.38",
+        "wall:9.21"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-5-1",
+      "score": 157.75283813476562,
+      "terms": [
+        "elapsed:19.34",
+        "elaps:18.64",
+        "last:14.26",
+        "caller:5.34",
+        "branch:4.68"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-2",
+      "score": 156.52908325195312,
+      "terms": [
+        "elaps:19.21",
+        "elapsed:19.21",
+        "tim:11.30",
+        "monotonic:10.73",
+        "session:8.76"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 141.3006134033203,
+      "terms": [
+        "wall:10.45",
+        "session:8.21",
+        "clock:8.00",
+        "let:5.50",
+        "doe:4.65"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 138.59902954101562,
+      "terms": [
+        "tim:9.01",
+        "session:8.52",
+        "most:7.39",
+        "process:6.47",
+        "clock:6.26"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-2-1",
+      "score": 83.6627426147461,
+      "terms": [
+        "advanc:9.82",
+        "wall:9.47",
+        "clock:8.32",
+        "monotonic:7.91",
+        "oscillator:6.16"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-2-2",
+      "score": 82.699951171875,
+      "terms": [
+        "monotonic:9.72",
+        "jump:9.22",
+        "opinion:6.61",
+        "arriving:5.96",
+        "arriv:5.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 82.50629425048828,
+      "terms": [
+        "tim:10.83",
+        "session:8.41",
+        "clock:7.97",
+        "monotonic:7.07",
+        "readings:6.68"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-11",
+      "score": 79.43000030517578,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-4",
+      "score": 79.43000030517578,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 216,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI.md",
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/lib.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "reading = max(wall_now, anchor + monotonic_elapsed)",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-4-1",
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which contradicts the rejected alternative of having Session::reading read the wall clock itself.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Have Session::reading read the wall clock itself.\nA pure function lets tests drive a wall clock backwards and assert the answer does not follow."
+    },
+    {
+      "diff_line": "reading = max(wall_now, anchor + monotonic_elapsed)",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-2",
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which implies anchoring at process start-up.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Anchor the session at process start-up.\nA command that never asks the time should not read a clock, and most do not."
+    },
+    {
+      "diff_line": "reading = max(wall_now, anchor + monotonic_elapsed)",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-2-1",
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which contradicts the rejected alternative of freezing the clock until the wall clock catches up after a backward step.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Rejected: Freeze the clock until the wall clock catches up after a backward step.\nThe monotonic branch keeps advancing at the oscillator's rate instead."
+    },
+    {
+      "diff_line": "reading = max(wall_now, anchor + monotonic_elapsed)",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-2-2",
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which contradicts the rejected alternative of refusing a forward jump because it disagrees with the monotonic projection.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Rejected: Refuse a forward jump because it disagrees with the monotonic projection.\nA forward jump is a correction arriving; refusing would prefer this process's opinion to the system's."
+    },
+    {
+      "diff_line": "reading = max(wall_now, anchor + monotonic_elapsed)",
+      "kind": "decision",
+      "label": "d/g2074788f713e-1",
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which contradicts the decision to route all time readings through a process-wide session clock.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Route all time readings through a process-wide session clock.\nThe system clock can step backwards due to NTP, VM resume, or operator; a continuously running wallclock would show time going backward. The session clock ensures one monotonic reading order."
+    },
+    {
+      "diff_line": "/// backwards or forwards and check that the answer does not follow it.",
+      "kind": "decision",
+      "label": "d/g2074788f713e-4",
+      "reason": "The change allows tests to drive the wall clock forwards, which contradicts the decision that Session::reading should be a pure function of its inputs and thus unable to follow the system clock.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Make Session::reading a pure function of its inputs.\nPure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence."
+    },
+    {
+      "diff_line": "/// How much faster than the oscillator one reading may advance, as a divisor.",
+      "kind": "decision",
+      "label": "d/g2074788f713e-7",
+      "reason": "The introduction of SLEW_DIVISOR and the new logic for calculating readings contradicts the decision to split wall_instant out of now_instant, as it introduces a more complex calculation that involves both wall_now and monotonic_elapsed.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Split wall_instant out of now_instant to expose a raw system clock reading.\nnow_instant goes through session clock; doctor --clock and measurements need the raw reading. Splitting also exposed the feature gate issue."
+    },
+    {
+      "diff_line": "oscillator = last + (monotonic_elapsed - elapsed_at_last)",
+      "kind": "decision",
+      "label": "d/g2074788f713e-9",
+      "reason": "The change modifies the rule for calculating readings, introducing a new concept of 'oscillator' and 'slewing', which contradicts the documented rule in CLI.md.",
+      "source": "Documentation/CLI.md@2074788f713e",
+      "text": "Document the session clock and its rule in CLI.md and release notes.\nRecord one process, one clock and the max rule for users."
+    },
+    {
+      "diff_line": "/// oscillator = last + (monotonic_elapsed - elapsed_at_last)",
+      "kind": "decision",
+      "label": "d/g2074788f713e-2",
+      "reason": "The change introduces a new rule for calculating the reading that includes a 'slew' factor, which contradicts the original decision to use max(wall_now, anchor + monotonic_elapsed) as the reading rule.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.\nBackward steps lose to monotonic branch to keep advancing; forward steps win to track system corrections."
+    },
+    {
+      "diff_line": "/// So a reading never goes backwards, never advances faster than the cap, and",
+      "kind": "prerequisite",
+      "label": "p/g2074788f713e-2-1",
+      "reason": "The change introduces a new concept of 'advance' which is not mentioned in the original constraint that Ticks has `try_add` to compute anchor plus monotonic elapsed.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Ticks has `try_add` to compute anchor plus monotonic elapsed."
+    },
+    {
+      "diff_line": "/// # What it does not do",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-5-1",
+      "reason": "The change introduces a new rule for handling forward steps, which contradicts the rejected alternative of trusting callers to supply non-decreasing elapsed and omitting 'last'.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Trust callers to supply non-decreasing elapsed; omit `last`.\nA caller could pass a smaller elapsed, making the first two branches go backwards."
+    }
+  ],
+  "fingerprint": "6bf4626b8559baa79c738ec39da0393ab29cf8918dee632bb107d8bfca872a6c",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-8-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1495,
+  "pack_units": 72,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 8,
+  "usage": {
+    "completion_tokens": 1292,
+    "predicted_tokens": 28877,
+    "prompt_tokens": 18811,
+    "seconds": 133.335498709
+  },
+  "verdicts": [
+    {
+      "diff_line": "-reading = max(wall_now, anchor + monotonic_elapsed)",
+      "label": "r/g2074788f713e-4-1",
+      "line": 9,
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which contradicts the rejected alternative of having Session::reading read the wall clock itself.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-reading = max(wall_now, anchor + monotonic_elapsed)",
+      "label": "r/g2074788f713e-6-2",
+      "line": 9,
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which implies anchoring at process start-up.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-reading = max(wall_now, anchor + monotonic_elapsed)",
+      "label": "r/g2074788f713e-2-1",
+      "line": 9,
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which contradicts the rejected alternative of freezing the clock until the wall clock catches up after a backward step.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-reading = max(wall_now, anchor + monotonic_elapsed)",
+      "label": "r/g2074788f713e-2-2",
+      "line": 9,
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which contradicts the rejected alternative of refusing a forward jump because it disagrees with the monotonic projection.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-reading = max(wall_now, anchor + monotonic_elapsed)",
+      "label": "d/g2074788f713e-1",
+      "line": 9,
+      "reason": "The change removes the line that defines the reading as the maximum of the wall clock and the anchor plus monotonic elapsed time, which contradicts the decision to route all time readings through a process-wide session clock.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+    /// backwards or forwards and check that the answer does not follow it.",
+      "label": "d/g2074788f713e-4",
+      "line": 140,
+      "reason": "The change allows tests to drive the wall clock forwards, which contradicts the decision that Session::reading should be a pure function of its inputs and thus unable to follow the system clock.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+pub const SLEW_DIVISOR: u64 = 4;",
+      "label": "d/g2074788f713e-7",
+      "line": 59,
+      "reason": "The introduction of SLEW_DIVISOR and the new logic for calculating readings contradicts the decision to split wall_instant out of now_instant, as it introduces a more complex calculation that involves both wall_now and monotonic_elapsed.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+oscillator = last + (monotonic_elapsed - elapsed_at_last)",
+      "label": "d/g2074788f713e-9",
+      "line": 10,
+      "reason": "The change modifies the rule for calculating readings, introducing a new concept of 'oscillator' and 'slewing', which contradicts the documented rule in CLI.md.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// reading = min(max(wall_now, oscillator), oscillator + advance / SLEW_DIVISOR)",
+      "label": "d/g2074788f713e-2",
+      "line": 75,
+      "reason": "The change introduces a new rule for calculating the reading that includes a 'slew' factor, which contradicts the original decision to use max(wall_now, anchor + monotonic_elapsed) as the reading rule.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// where `advance` is the monotonic time since the previous reading.",
+      "label": "p/g2074788f713e-2-1",
+      "line": 96,
+      "reason": "The change introduces a new concept of 'advance' which is not mentioned in the original constraint that Ticks has `try_add` to compute anchor plus monotonic elapsed.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// - **A forward step** is followed, but *slewed*: one reading may advance by at most `1 + 1/SLEW_DIVISOR` times the monotonic time that has passed since the last one.",
+      "label": "r/g2074788f713e-5-1",
+      "line": 106,
+      "reason": "The change introduces a new rule for handling forward steps, which contradicts the rejected alternative of trusting callers to supply non-decreasing elapsed and omitting 'last'.",
+      "verdict": "contradicts"
+    }
+  ]
+}

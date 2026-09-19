@@ -1,0 +1,118 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-1",
+      "score": 55.91614532470703
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 43.92059326171875
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-4",
+      "score": 40.31275939941406
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-1-1",
+      "score": 30.208555221557617
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-10",
+      "score": 28.899850845336914
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-9",
+      "score": 27.19458770751953
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-3",
+      "score": 26.452777862548828
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-3-1",
+      "score": 25.012737274169922
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-2-1",
+      "score": 23.682422637939453
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-2",
+      "score": 21.147666931152344
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 19.763349533081055
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-10-1",
+      "score": 19.60708999633789
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 19,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "crates/ucal/src/clock.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "best = limit;",
+      "kind": "decision",
+      "label": "d/g2074788f713e-2",
+      "reason": "The cap limits forward advance to one second per reading, so a forward wall-clock step no longer wins immediately to track system corrections as the decision specifies.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.\nBackward steps lose to monotonic branch to keep advancing; forward steps win to track system corrections."
+    }
+  ],
+  "fingerprint": "6d0f940e16ceb31a5381de694f2bdf20cc3da4ccd5904cd5cb121a2b2b8806fe",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "naive-8",
+  "kind": "naive",
+  "pack_tokens": 2995,
+  "pack_units": 135,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 8,
+  "usage": {
+    "completion_tokens": 9835,
+    "prompt_tokens": 4936,
+    "seconds": 142.05016454300002
+  },
+  "verdicts": [
+    {
+      "diff_line": "best = limit;",
+      "label": "d/g2074788f713e-2",
+      "line": 13,
+      "reason": "The cap limits forward advance to one second per reading, so a forward wall-clock step no longer wins immediately to track system corrections as the decision specifies.",
+      "verdict": "contradicts"
+    }
+  ]
+}

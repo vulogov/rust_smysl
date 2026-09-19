@@ -1,0 +1,189 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-7-3",
+      "score": 129.57403564453125,
+      "terms": [
+        "cod:12.75",
+        "code:12.75",
+        "tim:10.81",
+        "time:10.81",
+        "mov:8.86"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-9",
+      "score": 96.6744384765625,
+      "terms": [
+        "max:21.99",
+        "clock:8.00",
+        "cli:6.24",
+        "one:4.42",
+        "session:4.11"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-1-1",
+      "score": 89.54144287109375,
+      "terms": [
+        "wallclock:19.80",
+        "tim:8.67",
+        "time:8.67",
+        "clock:7.44",
+        "let:6.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-2",
+      "score": 85.73536682128906,
+      "terms": [
+        "max:26.29",
+        "advanc:18.77",
+        "steps:6.97",
+        "step:5.56",
+        "wall:4.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 77.4649658203125,
+      "terms": [
+        "wallclock:13.74",
+        "tim:10.83",
+        "time:10.83",
+        "clock:7.97",
+        "readings:6.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-10",
+      "score": 62.82884216308594,
+      "terms": [
+        "steps:8.07",
+        "assert:7.70",
+        "tests:5.91",
+        "step:5.54",
+        "clock:5.49"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-1-2",
+      "score": 62.758358001708984,
+      "terms": [
+        "ucal:29.16",
+        "wallclock:20.68",
+        "clock:7.77",
+        "read:2.93",
+        "the:2.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-1-1",
+      "score": 56.801368713378906,
+      "terms": [
+        "ucal:32.28",
+        "wallclock:20.50",
+        "the:2.19",
+        "and:1.83"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-2-1",
+      "score": 54.32878494262695,
+      "terms": [
+        "advance:23.81",
+        "advanc:20.45",
+        "would:4.34",
+        "test:3.61",
+        "the:2.12"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-9-1",
+      "score": 53.8482666015625,
+      "terms": [
+        "max:30.61",
+        "clock:8.21",
+        "with:7.54",
+        "session:4.59",
+        "to:2.90"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-1",
+      "score": 52.526947021484375,
+      "terms": [
+        "ucal:26.19",
+        "cod:9.24",
+        "code:9.24",
+        "one:3.27",
+        "1:3.04"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 51.76618576049805,
+      "terms": [
+        "clock:7.50",
+        "tim:7.40",
+        "time:7.40",
+        "with:4.72",
+        "u:4.55"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 332,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI.md",
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/main.rs",
+    "crates/ucal/src/wallclock/mod.rs",
+    "crates/ucal/tests/wallclock.rs"
+  ],
+  "findings": [],
+  "fingerprint": "78efd2733e7b1f89e2f2d3ac5eab9b8e2d4c572e92ed220c69c14b1d7a44299f",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-8-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1494,
+  "pack_units": 75,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 8,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 37157,
+    "prompt_tokens": 26613,
+    "seconds": 113.81916041699999
+  },
+  "verdicts": []
+}

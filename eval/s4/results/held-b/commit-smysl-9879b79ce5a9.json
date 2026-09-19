@@ -1,0 +1,183 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-13-1",
+      "score": 89.49874877929688,
+      "terms": [
+        "smysl:32.00",
+        "format:11.78",
+        "0:9.95",
+        "1:3.96"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g69ea5c05d859-13-1",
+      "score": 87.50444030761719,
+      "terms": [
+        "smysl:30.91",
+        "format:12.35",
+        "0:8.62",
+        "1:3.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-1",
+      "score": 63.60505294799805,
+      "terms": [
+        "smysl:33.66",
+        "format:10.62",
+        "0:9.38",
+        "1:4.16",
+        "writer:2.93"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 59.30931854248047,
+      "terms": [
+        "smysl:29.23",
+        "e:13.06",
+        "format:9.45",
+        "0:5.24",
+        "1:2.33"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-14-1",
+      "score": 57.47689437866211,
+      "terms": [
+        "smysl:30.57",
+        "0:8.52",
+        "2:7.86",
+        "writer:4.00",
+        "1:3.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-14",
+      "score": 55.676429748535156,
+      "terms": [
+        "smysl:28.64",
+        "0:9.67",
+        "2:7.09",
+        "writer:4.15",
+        "1:3.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-13",
+      "score": 55.29175567626953,
+      "terms": [
+        "smysl:27.03",
+        "format:12.42",
+        "0:7.53",
+        "spec:4.96",
+        "1:3.34"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-1-1",
+      "score": 50.79312515258789,
+      "terms": [
+        "smysl:29.25",
+        "0:8.15",
+        "writer:4.21",
+        "1:3.62",
+        "document:2.91"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g69ea5c05d859-8-1",
+      "score": 48.17334747314453,
+      "terms": [
+        "smysl:34.35",
+        "0:9.57",
+        "1:4.25"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-6",
+      "score": 44.64574432373047,
+      "terms": [
+        "smysl:27.30",
+        "format:10.05",
+        "description:4.67",
+        "document:2.62"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-8-1",
+      "score": 43.26946258544922,
+      "terms": [
+        "smysl:30.85",
+        "0:8.60",
+        "1:3.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 41.19472122192383,
+      "terms": [
+        "smysl:28.24",
+        "format:10.40",
+        "default:2.55"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 114,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/SMYSL_ARCHITECTURE_RFC.md",
+    "Documentation/SMYSL_FORMAT_GUIDE.pdf",
+    "Documentation/SMYSL_FORMAT_GUIDE.typ",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SMYSL_RATIONALE.pdf",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.pdf",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.typ",
+    "Documentation/manual/design.typ"
+  ],
+  "findings": [],
+  "fingerprint": "aec8d607b80b5370193f82aa6b2df6b6ee9223ff6a8d500c17bbe811166892b1",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-9879b79ce5a9",
+  "kind": "commit",
+  "pack_tokens": 1496,
+  "pack_units": 54,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 41633,
+    "prompt_tokens": 35982,
+    "seconds": 186.787694083
+  },
+  "verdicts": []
+}

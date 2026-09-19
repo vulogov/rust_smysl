@@ -1,0 +1,97 @@
+ CHANGELOG.md     |  6 +++++-
+ src/main.rs      | 20 +++++++++++++-------
+ tests/cmd_fmt.rs | 33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 51 insertions(+), 8 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..d613b01 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,11 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++- `smysl fmt` no longer re-parses its own output when that output is byte-identical to the
++  input. The round-trip check compares the second parse with the first, and for identical text
++  the two are the same parse; already-canonical files (the usual case for `--check` and
++  `--write` as a pre-commit habit) now cost one parse instead of two. Files that change are
++  still verified, and no output differs.
+ 
+ ---
+ 
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..5474cbc 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -949,13 +949,19 @@ fn cmd_fmt(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             .with_format_version(out.format_version.clone());
+         let formatted = write_surface(out.view.as_ref(), &out.records, &ctx);
+ 
+-        // The round trip must not move a uid.
+-        match parse_surface(&formatted) {
+-            Ok(again) if again.labels == out.labels && again.records == out.records => {}
+-            _ => {
+-                eprintln!("{path}: canonical form does not reproduce the same records");
+-                worst = worse(worst, ExitCode::HashVerification);
+-                continue;
++        // The round trip must not move a uid. When the writer reproduced the input byte for
++        // byte there is nothing to verify: parsing `formatted` is parsing `src` again, and
++        // `out` is that result. This is the common case for `--check` and for `--write` as a
++        // pre-commit habit, where most files are already canonical, so the second parse is
++        // skipped exactly where it can only repeat the first.
++        if formatted != src {
++            match parse_surface(&formatted) {
++                Ok(again) if again.labels == out.labels && again.records == out.records => {}
++                _ => {
++                    eprintln!("{path}: canonical form does not reproduce the same records");
++                    worst = worse(worst, ExitCode::HashVerification);
++                    continue;
++                }
+             }
+         }
+ 
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..4dfb5a4 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -359,6 +359,39 @@ fn write_rewrites_a_file_and_leaves_stdin_alone() {
+     let _ = std::fs::remove_dir_all(&dir);
+ }
+ 
++/// A document already in canonical form skips the round-trip re-parse, because parsing the
++/// writer's output is parsing the input again. Skipping must change nothing a user can see:
++/// `--check` passes, `--write` leaves the bytes alone, and plain `fmt` prints the input.
++#[test]
++fn an_already_canonical_file_is_unchanged_by_every_mode() {
++    let dir = scratch("canonical");
++    let loose = dir.join("loose.smy");
++    std::fs::write(
++        &loose,
++        "@claim c/a {  status: speculative  }\n~ a claim with loose spacing\n",
++    )
++    .expect("write");
++    let canonical_text = run(&["fmt", loose.to_str().unwrap()]).stdout;
++    assert!(!canonical_text.is_empty());
++
++    let canonical = dir.join("canonical.smy");
++    std::fs::write(&canonical, &canonical_text).expect("write");
++    let c = canonical.to_str().unwrap();
++
++    let printed = run(&["fmt", c]);
++    assert_eq!(printed.code, SUCCESS, "{}", printed.stderr);
++    assert_eq!(printed.stdout, canonical_text, "fmt prints the input back");
++
++    let checked = run(&["fmt", "--check", c]);
++    assert_eq!(checked.code, SUCCESS, "{}", checked.stderr);
++    assert!(!checked.stderr.contains("does not reproduce"));
++
++    let written = run(&["fmt", "--write", c]);
++    assert_eq!(written.code, SUCCESS, "{}", written.stderr);
++    assert_eq!(std::fs::read_to_string(&canonical).unwrap(), canonical_text);
++    let _ = std::fs::remove_dir_all(&dir);
++}
++
+ // ---------------------------------------------------------------------------------------
+ // The round-trip guard, and why two mutants on it stay alive
+ // ---------------------------------------------------------------------------------------

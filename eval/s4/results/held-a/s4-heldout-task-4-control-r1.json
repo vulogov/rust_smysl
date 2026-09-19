@@ -1,0 +1,278 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g532e4d229a6c-1-1",
+      "score": 96.25419616699219,
+      "terms": [
+        "fmt:9.60",
+        "writ:9.31",
+        "writing:6.67",
+        "prints:5.76",
+        "cmd:5.13"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g532e4d229a6c-3",
+      "score": 86.68550109863281,
+      "terms": [
+        "each:10.20",
+        "writ:8.11",
+        "write:4.41",
+        "must:4.38",
+        "canonical:3.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 58.01076889038086,
+      "terms": [
+        "nothing:10.59",
+        "assert:9.54",
+        "noth:8.21",
+        "check:4.51",
+        "first:4.31"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 55.93339157104492,
+      "terms": [
+        "file:13.08",
+        "fil:12.03",
+        "noth:11.74",
+        "nothing:11.74",
+        "to:4.56"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-5",
+      "score": 55.1583366394043,
+      "terms": [
+        "return:7.49",
+        "check:5.99",
+        "print:5.58",
+        "must:4.39",
+        "failure:4.28"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-6-1",
+      "score": 54.24823760986328,
+      "terms": [
+        "fmt:11.64",
+        "writ:9.33",
+        "let:7.46",
+        "write:5.07",
+        "first:4.90"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-3-1",
+      "score": 53.84904861450195,
+      "terms": [
+        "file:12.98",
+        "fil:11.94",
+        "contains:7.58",
+        "canonical:7.24",
+        "contain:6.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 52.66877365112305,
+      "terms": [
+        "file:13.90",
+        "fil:12.38",
+        "noth:9.40",
+        "nothing:9.40",
+        "to:4.84"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-3-1",
+      "score": 52.25855255126953,
+      "terms": [
+        "nam:17.07",
+        "names:12.06",
+        "doe:4.06",
+        "does:4.06",
+        "tests:3.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-1",
+      "score": 52.077674865722656,
+      "terms": [
+        "fmt:11.66",
+        "noth:7.49",
+        "nothing:7.49",
+        "cmd:5.60",
+        "tests:4.03"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 51.91244888305664,
+      "terms": [
+        "writ:6.66",
+        "write:4.67",
+        "check:3.67",
+        "doe:3.19",
+        "does:3.19"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-3",
+      "score": 51.82490921020508,
+      "terms": [
+        "nam:17.10",
+        "names:12.08",
+        "doe:4.07",
+        "does:4.07",
+        "tests:3.89"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 77,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "tests/cmd_fmt.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "assert_eq!(canonical.code, SUCCESS, \"{}\", canonical.stderr);",
+      "kind": "rejected alternative",
+      "label": "r/g532e4d229a6c-1-1",
+      "reason": "This line calls `cmd_fmt` functions directly instead of running the binary, contradicting the rejection.",
+      "source": "tests/cmd_fmt.rs@532e4d229a6c",
+      "text": "Rejected: Writing unit tests that call cmd_fmt functions directly instead of running the binary\nThe command reads the filesystem, parses, writes, and prints with no seam to call, so only running the binary reaches these decisions."
+    },
+    {
+      "diff_line": "assert_eq!(canonical.code, SUCCESS, \"{}\", canonical.stderr);",
+      "kind": "decision",
+      "label": "d/g532e4d229a6c-3",
+      "reason": "This line calls `cmd_fmt` functions directly instead of writing its own document, contradicting the decision.",
+      "source": "tests/cmd_fmt.rs@532e4d229a6c",
+      "text": "Make each test write its own document with the needed property instead of using repository fixtures.\nThe first version depended on repository fixtures like F1 not canonical and F9 having comments. cargo-mutants reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten, causing spurious failures counted as catches. The rule is that a test must not depend on the state of the tree, just as it must not depend on the state of the machine."
+    },
+    {
+      "diff_line": "assert_eq!(out.code, CHECK_ERRORS, \"{}\", out.stderr);",
+      "kind": "decision",
+      "label": "d/g87345653cdf3-10",
+      "reason": "This line asserts only that the exit code is `CHECK_ERRORS`, which does not ensure a gate that cannot confuse nothing wrong with nothing checked, contradicting the decision.",
+      "source": "tests/doc_output.rs@87345653cdf3",
+      "text": "Assert on transcript count rather than just MISMATCHED presence in doc output test\nThe first version asserted only that MISMATCHED appeared, which ran 0 transcripts satisfied; the count assertion ensures a gate that cannot confuse nothing wrong with nothing checked."
+    },
+    {
+      "diff_line": "assert_eq!(",
+      "kind": "prerequisite",
+      "label": "p/ga18e230ae345-4-1",
+      "reason": "This line checks the content of a golden file after modification, contradicting the constraint.",
+      "source": "git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa",
+      "text": "The golden file content is unchanged after the removal, so there is nothing to record."
+    },
+    {
+      "diff_line": "assert_eq!(out.code, CHECK_ERRORS, \"{}\", out.stderr);",
+      "kind": "decision",
+      "label": "d/g87345653cdf3-5",
+      "reason": "This line asserts only that the exit code is `CHECK_ERRORS`, which does not ensure a gate that cannot confuse nothing wrong with nothing checked, contradicting the decision.",
+      "source": "Makefile@87345653cdf3",
+      "text": "Do not pipe fuzz-build's cargo check through tail\nA pipeline's exit status is the last command's, so piping through tail would print errors but return 0; the gate must return non-zero on failure."
+    },
+    {
+      "diff_line": "let canonical = run(&[\"fmt\", first.to_str().unwrap()]);",
+      "kind": "rejected alternative",
+      "label": "r/g69ea5c05d859-6-1",
+      "reason": "This line uses the default `WriteContext` version, contradicting the rejection.",
+      "source": "src/main.rs@69ea5c05d859",
+      "text": "Rejected: Let fmt use the default WriteContext version.\nfmt is the round trip a user runs on purpose and would have been first to relabel."
+    }
+  ],
+  "fingerprint": "0e12821ebfaaf42f0f04ca976942e15445e7ce87b9e6a52c1bdeae86710a6104",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-4-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1496,
+  "pack_units": 55,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 4,
+  "usage": {
+    "completion_tokens": 619,
+    "predicted_tokens": 12885,
+    "prompt_tokens": 8360,
+    "seconds": 56.030349459
+  },
+  "verdicts": [
+    {
+      "diff_line": "let canonical = run(&[\"fmt\", first.to_str().unwrap()]);",
+      "label": "r/g532e4d229a6c-1-1",
+      "line": 28,
+      "reason": "This line calls `cmd_fmt` functions directly instead of running the binary, contradicting the rejection.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "let canonical = run(&[\"fmt\", first.to_str().unwrap()]);",
+      "label": "d/g532e4d229a6c-3",
+      "line": 28,
+      "reason": "This line calls `cmd_fmt` functions directly instead of writing its own document, contradicting the decision.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "assert_eq!(out.code, CHECK_ERRORS, \"{}\", out.stderr);",
+      "label": "d/g87345653cdf3-10",
+      "line": 40,
+      "reason": "This line asserts only that the exit code is `CHECK_ERRORS`, which does not ensure a gate that cannot confuse nothing wrong with nothing checked, contradicting the decision.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "assert_eq!(std::fs::read_to_string(&good).unwrap(), canonical.stdout, \"--check must not modify any file\");",
+      "label": "p/ga18e230ae345-4-1",
+      "line": 67,
+      "reason": "This line checks the content of a golden file after modification, contradicting the constraint.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "assert_eq!(out.code, CHECK_ERRORS, \"{}\", out.stderr);",
+      "label": "d/g87345653cdf3-5",
+      "line": 40,
+      "reason": "This line asserts only that the exit code is `CHECK_ERRORS`, which does not ensure a gate that cannot confuse nothing wrong with nothing checked, contradicting the decision.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "let canonical = run(&[\"fmt\", first.to_str().unwrap()]);",
+      "label": "r/g69ea5c05d859-6-1",
+      "line": 27,
+      "reason": "This line uses the default `WriteContext` version, contradicting the rejection.",
+      "verdict": "contradicts"
+    }
+  ]
+}

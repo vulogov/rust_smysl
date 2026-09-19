@@ -1,0 +1,190 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 75.71440124511719,
+      "terms": [
+        "uid:14.22",
+        "uids:6.70",
+        "store:6.49",
+        "stor:5.97",
+        "unit:5.83"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 67.74304962158203,
+      "terms": [
+        "uid:13.52",
+        "with:7.76",
+        "src:7.62",
+        "fixtures:3.89",
+        "fixtur:3.48"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 50.49026870727539,
+      "terms": [
+        "tests:6.72",
+        "listed:6.44",
+        "assert:6.14",
+        "with:4.78",
+        "unit:4.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-5",
+      "score": 47.0018424987793,
+      "terms": [
+        "arg:16.37",
+        "args:8.19",
+        "argument:5.61",
+        "bar:5.61",
+        "bare:5.61"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-9",
+      "score": 43.84340286254883,
+      "terms": [
+        "assert:9.94",
+        "code:7.18",
+        "cod:6.58",
+        "every:5.52",
+        "store:4.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 41.33869171142578,
+      "terms": [
+        "assert:10.29",
+        "code:7.43",
+        "cod:6.81",
+        "every:5.71",
+        "store:5.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-26-1",
+      "score": 40.72541427612305,
+      "terms": [
+        "uid:14.34",
+        "says:7.00",
+        "say:6.35",
+        "grounds:5.74",
+        "ground:5.62"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-7-1",
+      "score": 40.565799713134766,
+      "terms": [
+        "path:10.49",
+        "none:7.77",
+        "report:5.70",
+        "every:4.78",
+        "non:4.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 40.169437408447266,
+      "terms": [
+        "root:15.31",
+        "each:7.02",
+        "smy:6.03",
+        "run:4.94",
+        "smysl:3.93"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-7-1",
+      "score": 38.954261779785156,
+      "terms": [
+        "uid:11.59",
+        "with:6.65",
+        "grounds:5.67",
+        "ground:5.55",
+        "every:4.75"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-2-1",
+      "score": 38.279354095458984,
+      "terms": [
+        "tests:7.58",
+        "first:5.55",
+        "sam:5.27",
+        "same:5.27",
+        "argument:4.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 38.14640808105469,
+      "terms": [
+        "path:9.71",
+        "let:5.50",
+        "thi:4.44",
+        "this:4.44",
+        "new:3.88"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 304,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/manual/ch11-13-merge-diff-trace.typ",
+    "src/main.rs",
+    "tests/cli-surface.txt",
+    "tests/trace_default_roots.rs"
+  ],
+  "findings": [],
+  "fingerprint": "95820844e833173bf69c7781b256518d67285911334ecb7b6e28c2047da1b4b6",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-5-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1493,
+  "pack_units": 63,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 5,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 33333,
+    "prompt_tokens": 24427,
+    "seconds": 103.266836168
+  },
+  "verdicts": []
+}

@@ -1,0 +1,138 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 63.676918029785156
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-17-1",
+      "score": 54.397789001464844
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-2",
+      "score": 49.81380081176758
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 46.568389892578125
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-19",
+      "score": 45.804359436035156
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 45.00838851928711
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-2",
+      "score": 44.73297119140625
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 44.25951385498047
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-23-1",
+      "score": 43.475685119628906
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-13",
+      "score": 42.278900146484375
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-23",
+      "score": 40.80709457397461
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-2-1",
+      "score": 40.6795539855957
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "crates/smysl-graph/src/lineage.rs",
+    "crates/smysl-graph/tests/lineage.rs",
+    "crates/smysl-graph/tests/predicates.rs",
+    "src/main.rs",
+    "tests/cli-surface.txt",
+    "tests/cmd_trace.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "Command::new(BIN).args(args).output().unwrap()",
+      "kind": "rejected alternative",
+      "label": "r/g90ec2f781421-4-1",
+      "reason": "The new integration test invokes the smysl binary without setting current_dir, so it inherits the repository root and thereby runs commands in the repository root\u2014the rejected alternative\u2014risking the same .smysl artifact side effects.",
+      "source": "git:90ec2f781421002876548124e9fe02073503372c",
+      "text": "Rejected: run each command in the repository root\nIt left .smysl/staged.smy and .smysl/usage.log behind, and usage read a ledger ingest had just written."
+    },
+    {
+      "diff_line": "const F1: &str = \"fixtures/corpus/F1-incident.smy\";",
+      "kind": "decision",
+      "label": "d/g532e4d229a6c-3",
+      "reason": "The new test file uses repository fixtures instead of writing its own document, reversing the decision that each test writes its own document with the needed property.",
+      "source": "tests/cmd_fmt.rs@532e4d229a6c",
+      "text": "Make each test write its own document with the needed property instead of using repository fixtures.\nThe first version depended on repository fixtures like F1 not canonical and F9 having comments. cargo-mutants reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten, causing spurious failures counted as catches. The rule is that a test must not depend on the state of the tree, just as it must not depend on the state of the machine."
+    }
+  ],
+  "fingerprint": "64c61d9be8485e053c443ccbb67dca66d579fc1c62560be44edab2c6457d31b5",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-5-corpus",
+  "kind": "agent",
+  "pack_tokens": 2996,
+  "pack_units": 128,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 5,
+  "usage": {
+    "completion_tokens": 13291,
+    "prompt_tokens": 28928,
+    "seconds": 188.712413043
+  },
+  "verdicts": [
+    {
+      "diff_line": "    Command::new(BIN).args(args).output().unwrap()",
+      "label": "r/g90ec2f781421-4-1",
+      "line": 337,
+      "reason": "The new integration test invokes the smysl binary without setting current_dir, so it inherits the repository root and thereby runs commands in the repository root\u2014the rejected alternative\u2014risking the same .smysl artifact side effects.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "const F1: &str = \"fixtures/corpus/F1-incident.smy\";",
+      "label": "d/g532e4d229a6c-3",
+      "line": 332,
+      "reason": "The new test file uses repository fixtures instead of writing its own document, reversing the decision that each test writes its own document with the needed property.",
+      "verdict": "contradicts"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-13-1",
+      "score": 22.206043243408203
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-19",
+      "score": 17.538166046142578
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-13",
+      "score": 16.609073638916016
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-9",
+      "score": 16.20355224609375
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-15-1",
+      "score": 14.91033935546875
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 14.548419952392578
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 14.356231689453125
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-15",
+      "score": 14.184006690979004
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-19-1",
+      "score": 14.17991828918457
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-8",
+      "score": 14.130611419677734
+    },
+    {
+      "anchored": false,
+      "label": "p/g69ea5c05d859-15-1",
+      "score": 14.104219436645508
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-17",
+      "score": 13.62448787689209
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 14,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "src/main.rs"
+  ],
+  "findings": [],
+  "fingerprint": "3662fc461098a4d8df1d181ac710c972e6784a33cc5fd9c5fc5a850a2d83436e",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "naive-2",
+  "kind": "naive",
+  "pack_tokens": 2997,
+  "pack_units": 129,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 2,
+  "usage": {
+    "completion_tokens": 3377,
+    "prompt_tokens": 4708,
+    "seconds": 54.273652498999994
+  },
+  "verdicts": []
+}

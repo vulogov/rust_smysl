@@ -1,0 +1,163 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-1-2",
+      "score": 140.34161376953125
+    },
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-3",
+      "score": 107.79020690917969
+    },
+    {
+      "anchored": true,
+      "label": "r/g5880e472260e-4-1",
+      "score": 99.80274963378906
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 86.43775939941406
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 80.60279083251953
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 78.134521484375
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-4-1",
+      "score": 66.66744995117188
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-1-1",
+      "score": 59.333980560302734
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 58.845680236816406
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 56.62181091308594
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-6",
+      "score": 52.96302795410156
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-6-1",
+      "score": 47.23091125488281
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 46,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "xtask/src/citations.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "let Some((_, newest)) = notes_files.last() else {",
+      "kind": "decision",
+      "label": "d/g5880e472260e-1",
+      "reason": "The change reads the newest sorted notes file instead of deriving the version being built from the workspace and reading that version's file.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Read notes for version being built rather than newest sorted file\nSorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing."
+    },
+    {
+      "diff_line": "if !newest.exists() {",
+      "kind": "decision",
+      "label": "d/g5880e472260e-2",
+      "reason": "The change deletes the existence check that returned an error naming the current version when its release notes file is missing.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Error naming the version when current release notes missing\nThe old sort silently read the previous cycle's file and passed when notes were never written. Now a missing notes file for the current version is an explicit error."
+    },
+    {
+      "diff_line": "return Err(alloc_vec(\"no release notes found\".into()));",
+      "kind": "decision",
+      "label": "d/g5880e472260e-4",
+      "reason": "This replaces the specific missing-notes diagnostic with a generic error, undoing the strict diagnostic check the decision introduced.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Make missing-notes test strict about the diagnostic\nAsserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic."
+    },
+    {
+      "diff_line": "let Some((_, newest)) = notes_files.last() else {",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-2-1",
+      "reason": "This selects the newest existing release notes file from disk rather than deriving the current workspace version, so a missing current version's notes would silently fall back to the previous cycle's file, exactly the rejected alternative.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Rejected: silently fall back to the previous cycle's notes file\nThis fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file."
+    }
+  ],
+  "fingerprint": "8e893dbbcc98c94b923b413d9127c9d66e103dfbcc2d25b302a794b69b8b64b7",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "naive-9",
+  "kind": "naive",
+  "pack_tokens": 2997,
+  "pack_units": 130,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 9,
+  "usage": {
+    "completion_tokens": 15128,
+    "prompt_tokens": 6730,
+    "seconds": 208.49955279
+  },
+  "verdicts": [
+    {
+      "diff_line": "+    let Some((_, newest)) = notes_files.last() else {",
+      "label": "d/g5880e472260e-1",
+      "line": 31,
+      "reason": "The change reads the newest sorted notes file instead of deriving the version being built from the workspace and reading that version's file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-    if !newest.exists() {",
+      "label": "d/g5880e472260e-2",
+      "line": 37,
+      "reason": "The change deletes the existence check that returned an error naming the current version when its release notes file is missing.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+        return Err(alloc_vec(\"no release notes found\".into()));",
+      "label": "d/g5880e472260e-4",
+      "line": 32,
+      "reason": "This replaces the specific missing-notes diagnostic with a generic error, undoing the strict diagnostic check the decision introduced.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+    let Some((_, newest)) = notes_files.last() else {",
+      "label": "r/g5880e472260e-2-1",
+      "line": 31,
+      "reason": "This selects the newest existing release notes file from disk rather than deriving the current workspace version, so a missing current version's notes would silently fall back to the previous cycle's file, exactly the rejected alternative.",
+      "verdict": "contradicts"
+    }
+  ]
+}

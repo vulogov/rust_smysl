@@ -1,0 +1,266 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-11",
+      "score": 211.4610595703125,
+      "terms": [
+        "documentation:94.66",
+        "tests:17.68",
+        "test:5.50",
+        "noth:4.10",
+        "nothing:4.10"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-12",
+      "score": 155.83279418945312,
+      "terms": [
+        "manual:39.51",
+        "tests:22.81",
+        "test:7.10",
+        "all:4.77",
+        "run:4.45"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-9",
+      "score": 146.21038818359375,
+      "terms": [
+        "code:21.53",
+        "cod:19.74",
+        "dispatch:6.14",
+        "exit:5.80",
+        "assert:4.97"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 144.2310791015625,
+      "terms": [
+        "code:22.29",
+        "cod:20.44",
+        "dispatch:6.36",
+        "exit:6.00",
+        "store:5.15"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 141.82479858398438,
+      "terms": [
+        "tests:25.93",
+        "smysl:24.13",
+        "test:8.07",
+        "path:5.42",
+        "for:3.98"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 139.5743408203125,
+      "terms": [
+        "typ:29.50",
+        "readm:8.01",
+        "readme:8.01",
+        "tabl:6.44",
+        "assert:4.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 100.18311309814453,
+      "terms": [
+        "api:27.45",
+        "smysl:20.70",
+        "public:17.82",
+        "surfac:6.98",
+        "surface:6.98"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-12-1",
+      "score": 90.64312744140625,
+      "terms": [
+        "typ:40.54",
+        "tests:25.30",
+        "table:8.08",
+        "test:7.88",
+        "tabl:6.02"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-16-1",
+      "score": 83.70626831054688,
+      "terms": [
+        "typ:36.03",
+        "public:18.01",
+        "type:8.48",
+        "surfac:7.10",
+        "surface:7.10"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-9-1",
+      "score": 80.61315155029297,
+      "terms": [
+        "typ:38.37",
+        "table:7.64",
+        "test:5.94",
+        "tabl:5.69",
+        "assert:5.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-10-1",
+      "score": 72.48328399658203,
+      "terms": [
+        "api:30.39",
+        "public:19.18",
+        "surfac:7.83",
+        "surface:7.83",
+        "the:3.52"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-13",
+      "score": 70.48702239990234,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 312,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/API_CONTRACT.md",
+    "Documentation/READINESS.md",
+    "Documentation/SMYSL_ARCHITECTURE_RFC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SPEC_DRAFT_1.4.md",
+    "Documentation/manual/about-the-author.typ",
+    "Documentation/manual/appendices.typ",
+    "Documentation/manual/ch01-02-why-shape.typ",
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch14-16-view-salience-retract.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "Makefile",
+    "README.md",
+    "crates/smysl-graph/src/lib.rs",
+    "crates/smysl-graph/src/merge/mod.rs",
+    "crates/smysl-graph/src/merge/review.rs",
+    "src/lib.rs",
+    "src/main.rs",
+    "tests/cli-surface.txt",
+    "tests/cmd_review.rs",
+    "tests/dispatch.rs",
+    "tests/public-api-counts.txt",
+    "tests/public-api-pure.txt",
+    "tests/public-api.txt"
+  ],
+  "findings": [
+    {
+      "diff_line": "`Withdrawal`, `Resolution` and `ResolutionTarget` (257 names, 212 pure).",
+      "kind": "decision",
+      "label": "d/g4968383dc452-13",
+      "reason": "The change removes mention of 'CLI commands to withdraw, resolve and list what is open for review' from the Not Yet section.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Rework doc-output replay to scratch copy and derive states via edits.json.\nPrevious fixtures keyed by filename failed when a chapter's state is keyed by position. Replaying as a chapter with a scratch copy and derived states is stronger."
+    },
+    {
+      "diff_line": "`Withdrawal`, `Resolution` and `ResolutionTarget` (257 names, 212 pure).",
+      "kind": "decision",
+      "label": "d/g4968383dc452-1",
+      "reason": "The change removes mention of 'CLI commands to withdraw, resolve and list what is open for review' from the Not Yet section.",
+      "source": "nodejs/README.md@4968383dc452",
+      "text": "Upgrade nodejs conformance target from C-Read to C-Produce.\nTo provide a fourth independent derivation of uids and a third witness for \u00a72.3 beyond the Rust, strengthening the evidence that the specification is sufficient."
+    },
+    {
+      "diff_line": "two records; and the Python, JavaScript and Go readers, which preserve records 11 and 12 as unknown",
+      "kind": "decision",
+      "label": "d/g4968383dc452-17",
+      "reason": "The change removes mention of 'CLI commands to withdraw, resolve and list what is open for review' from the Not Yet section.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Do not implement rule M in outside readers.\nRule M is checkable against a store, not against a unit; a validate claiming to enforce it would be a check that cannot fail."
+    },
+    {
+      "diff_line": "Not yet: surface syntax for the two records, and the Python, JavaScript and Go readers, which",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-15",
+      "reason": "The change adds mention of Python, JavaScript, and Go readers, contradicting the decision to not add version lists to these implementations.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Do not add version lists to python/, nodejs/, go/ implementations.\nAll three read CBOR only and the wire carries no version string, so no surface parser ever sees a @doc header there. The migration plan's assumption was wrong."
+    }
+  ],
+  "fingerprint": "55a30efe089fb7523e8ba432b6398a1316a064b8098bae28c9dc54dfbb24380c",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-7653d288234b",
+  "kind": "commit",
+  "pack_tokens": 1500,
+  "pack_units": 62,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 532,
+    "predicted_tokens": 44811,
+    "prompt_tokens": 47775,
+    "seconds": 271.209198042
+  },
+  "verdicts": [
+    {
+      "diff_line": "-Not yet: CLI commands to withdraw, resolve and list what is open for review; surface syntax for the\n+Not yet: surface syntax for the two records, and the Python, JavaScript and Go readers, which\n",
+      "label": "d/g4968383dc452-13",
+      "line": 7,
+      "reason": "The change removes mention of 'CLI commands to withdraw, resolve and list what is open for review' from the Not Yet section.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-Not yet: CLI commands to withdraw, resolve and list what is open for review; surface syntax for the\n+Not yet: surface syntax for the two records, and the Python, JavaScript and Go readers, which\n",
+      "label": "d/g4968383dc452-1",
+      "line": 7,
+      "reason": "The change removes mention of 'CLI commands to withdraw, resolve and list what is open for review' from the Not Yet section.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-Not yet: CLI commands to withdraw, resolve and list what is open for review; surface syntax for the\n+Not yet: surface syntax for the two records, and the Python, JavaScript and Go readers, which\n",
+      "label": "d/g4968383dc452-17",
+      "line": 10,
+      "reason": "The change removes mention of 'CLI commands to withdraw, resolve and list what is open for review' from the Not Yet section.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Not yet: surface syntax for the two records, and the Python, JavaScript and Go readers, which preserve records 11 and 12 as unknown until they decode them.",
+      "label": "d/g69ea5c05d859-15",
+      "line": 12,
+      "reason": "The change adds mention of Python, JavaScript, and Go readers, contradicting the decision to not add version lists to these implementations.",
+      "verdict": "contradicts"
+    }
+  ]
+}

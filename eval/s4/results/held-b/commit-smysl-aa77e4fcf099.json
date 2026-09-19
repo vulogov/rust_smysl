@@ -1,0 +1,173 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 31.005495071411133,
+      "terms": [
+        "shap:3.72",
+        "shape:3.72",
+        "with:3.72",
+        "that:3.32",
+        "two:3.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 30.653230667114258,
+      "terms": [
+        "shap:3.67",
+        "shape:3.67",
+        "with:3.67",
+        "that:3.31",
+        "two:3.23"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 28.222328186035156,
+      "terms": [
+        "gate:5.07",
+        "gat:4.77",
+        "tests:4.28",
+        "reach:3.29",
+        "test:3.08"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 24.007854461669922,
+      "terms": [
+        "change:5.50",
+        "doe:5.50",
+        "does:5.50",
+        "chang:3.67",
+        "not:3.06"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 17.211050033569336,
+      "terms": [
+        "wher:5.77",
+        "where:5.77",
+        "has:4.88",
+        "the:0.79"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-1-1",
+      "score": 15.671638488769531,
+      "terms": [
+        "gat:4.76",
+        "reach:4.76",
+        "from:4.19",
+        "and:1.27",
+        "the:0.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-2",
+      "score": 12.980923652648926,
+      "terms": [
+        "should:3.93",
+        "thi:2.62",
+        "this:2.62",
+        "not:2.19",
+        "and:0.88"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "score": 10.95400619506836,
+      "terms": [
+        "smysl:5.52",
+        "provider:4.67",
+        "the:0.77"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g0bc1aeb96d6b-2-1",
+      "score": 10.28472900390625,
+      "terms": [
+        "thi:3.31",
+        "this:3.31",
+        "not:2.09",
+        "and:0.84",
+        "the:0.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-3-1",
+      "score": 9.522188186645508,
+      "terms": [
+        "has:4.88",
+        "would:3.86",
+        "the:0.79"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g0bc1aeb96d6b-1-1",
+      "score": 8.816112518310547,
+      "terms": [
+        "them:4.48",
+        "build:3.33",
+        "and:1.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 8.602187156677246,
+      "terms": [
+        "than:3.99",
+        "that:2.63",
+        "and:1.29",
+        "the:0.70"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/ROAD_TO_1.0.md"
+  ],
+  "findings": [],
+  "fingerprint": "d027c7d402ea9c14cdb91931c9f3c122ad26aaa20f270b72cf2b775596c7e33b",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-aa77e4fcf099",
+  "kind": "commit",
+  "pack_tokens": 1365,
+  "pack_units": 40,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 26103,
+    "prompt_tokens": 17401,
+    "seconds": 80.103721459
+  },
+  "verdicts": []
+}

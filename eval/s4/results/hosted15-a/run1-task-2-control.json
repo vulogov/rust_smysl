@@ -1,0 +1,120 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-6",
+      "score": 136.86378479003906
+    },
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-6-1",
+      "score": 136.7599639892578
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-9-1",
+      "score": 128.24533081054688
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-9",
+      "score": 125.54650115966797
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-6-1",
+      "score": 121.28462982177734
+    },
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 114.8562240600586
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-5",
+      "score": 108.43089294433594
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-17",
+      "score": 62.949737548828125
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-5-1",
+      "score": 60.059200286865234
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-17-1",
+      "score": 58.07913589477539
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-19",
+      "score": 55.714439392089844
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-19-1",
+      "score": 53.277408599853516
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "src/main.rs",
+    "tests/cmd_check_default_store.rs",
+    "tests/dispatch.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": ".unwrap_or_else(|| vec![DEFAULT_STORE.to_string()])",
+      "kind": "prerequisite",
+      "label": "p/g90ec2f781421-6-1",
+      "reason": "This change makes `check` default to `.smysl/store` instead of stdin, so the prerequisite that both `fmt` and `check` read stdin when given no path no longer holds.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "fmt and check read stdin when given no path, so inherited terminal would hang."
+    }
+  ],
+  "fingerprint": "b8d874ee0e97bf502adf298885faec55db285349d621638f467d50bacaa173a2",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-2-control",
+  "kind": "agent",
+  "pack_tokens": 2994,
+  "pack_units": 133,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 2,
+  "usage": {
+    "completion_tokens": 6067,
+    "prompt_tokens": 12212,
+    "seconds": 85.71719149999998
+  },
+  "verdicts": [
+    {
+      "diff_line": "+                .unwrap_or_else(|| vec![DEFAULT_STORE.to_string()])",
+      "label": "p/g90ec2f781421-6-1",
+      "line": 36,
+      "reason": "This change makes `check` default to `.smysl/store` instead of stdin, so the prerequisite that both `fmt` and `check` read stdin when given no path no longer holds.",
+      "verdict": "contradicts"
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 234.32369995117188,
+      "terms": [
+        "documentation:26.40",
+        "examples:26.40",
+        "exampl:21.44",
+        "cycl:11.36",
+        "ephemeri:9.96"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-2",
+      "score": 164.07139587402344,
+      "terms": [
+        "documentation:26.85",
+        "examples:26.85",
+        "exampl:21.81",
+        "observations:18.71",
+        "observation:17.93"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-4-2",
+      "score": 147.09695434570312,
+      "terms": [
+        "observation:17.11",
+        "observations:17.11",
+        "committ:6.21",
+        "committed:6.21",
+        "use:6.03"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-1-3",
+      "score": 145.9141387939453,
+      "terms": [
+        "observation:16.50",
+        "observations:16.50",
+        "path:5.50",
+        "residual:5.24",
+        "residuals:5.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-2",
+      "score": 113.24974060058594,
+      "terms": [
+        "observation:14.90",
+        "observations:14.90",
+        "four:7.54",
+        "known:7.26",
+        "synthetic:7.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-3-1",
+      "score": 90.92977905273438,
+      "terms": [
+        "examples:30.98",
+        "exampl:25.16",
+        "src:9.34",
+        "xtask:9.34",
+        "manual:7.02"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/gcc3aafefb1da-4",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/gcc3aafefb1da-6",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-1-1",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-1-2",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-6-1",
+      "score": 82.03569793701172,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-3",
+      "score": 82.03569793701172,
+      "terms": []
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 346,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/Release_Notes/1.12.0.md",
+    "Documentation/examples/observations.txt",
+    "crates/ucal/tests/common/mod.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-2-3",
+      "reason": "The change removes the reference to 'Documentation/examples/observations.txt' in the CLI example, contradicting the constraint that the observations parser skips blank lines and lines starting with #.",
+      "source": "Documentation/examples/observations.txt@cc3aafefb1da",
+      "text": "Observations parser skips blank lines and lines starting with #"
+    }
+  ],
+  "fingerprint": "4c06904acbfbec63f01ca06b23a0dd7a224d71870b784ece8a55cd228d84dae0",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units",
+      "1 call(s) answered in an unreadable shape and found nothing"
+    ]
+  },
+  "id": "s4-heldout-task-11-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1500,
+  "pack_units": 81,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 11,
+  "usage": {
+    "completion_tokens": 440,
+    "predicted_tokens": 45866,
+    "prompt_tokens": 24949,
+    "seconds": 172.304863542
+  },
+  "verdicts": [
+    {
+      "diff_line": "  -## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "p/gcc3aafefb1da-2-3",
+      "line": 20,
+      "reason": "The change removes the reference to 'Documentation/examples/observations.txt' in the CLI example, contradicting the constraint that the observations parser skips blank lines and lines starting with #.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "  -# Observed instants, one decimal tick count per line, for",
+      "label": "p/gcc3aafefb1da-2-3",
+      "line": 45,
+      "reason": "The change removes the content of 'Documentation/examples/observations.txt', contradicting the constraint that the observations parser skips blank lines and lines starting with #.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "  -# Blank lines and lines starting with `#` are skipped. Reading none at all is an",
+      "label": "p/gcc3aafefb1da-2-3",
+      "line": 50,
+      "reason": "The change removes the content of 'Documentation/examples/observations.txt', contradicting the constraint that the observations parser skips blank lines and lines starting with #.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "  -# error rather than a report of agreement having compared nothing.",
+      "label": "p/gcc3aafefb1da-2-3",
+      "line": 51,
+      "reason": "The change removes the content of 'Documentation/examples/observations.txt', contradicting the constraint that the observations parser skips blank lines and lines starting with #.",
+      "verdict": "contradicts"
+    }
+  ]
+}

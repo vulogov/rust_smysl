@@ -1,0 +1,454 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 275.6201171875,
+      "terms": [
+        "src:45.69",
+        "fixtures:31.14",
+        "uid:22.53",
+        "derived:18.50",
+        "deriv:16.61"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-1-1",
+      "score": 242.83506774902344,
+      "terms": [
+        "2:60.17",
+        "3:48.39",
+        "statu:17.91",
+        "status:17.12",
+        "c:6.12"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-23",
+      "score": 204.71090698242188,
+      "terms": [
+        "fixtures:30.23",
+        "uid:17.38",
+        "statu:16.30",
+        "status:15.59",
+        "fixtur:13.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-1-3",
+      "score": 145.18475341796875,
+      "terms": [
+        "2:59.20",
+        "3:47.61",
+        "smysl:35.32",
+        "and:1.68",
+        "the:1.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-23-1",
+      "score": 119.40412902832031,
+      "terms": [
+        "fixtures:39.47",
+        "uid:18.13",
+        "fixtur:17.62",
+        "statu:16.74",
+        "status:16.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-5-1",
+      "score": 111.51920318603516,
+      "terms": [
+        "3:52.14",
+        "6:50.14",
+        "spec:9.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-10",
+      "score": 109.28874206542969,
+      "terms": [
+        "2:66.37",
+        "cit:13.49",
+        "cited:13.49",
+        "7:6.78",
+        "1:4.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-1",
+      "score": 109.2725830078125,
+      "terms": [
+        "2:41.60",
+        "3:33.45",
+        "uid:16.79",
+        "c:6.36",
+        "nodej:4.32"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-11",
+      "score": 106.63801574707031,
+      "terms": [
+        "2:49.24",
+        "3:39.60",
+        "cbor:7.10",
+        "1:4.04",
+        "other:3.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-2",
+      "score": 103.58351135253906,
+      "terms": [
+        "3:42.38",
+        "uid:16.37",
+        "deriv:12.07",
+        "library:7.99",
+        "c:5.95"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-13",
+      "score": 101.92037200927734,
+      "terms": [
+        "fixtures:28.08",
+        "json:21.38",
+        "deriv:17.30",
+        "derived:13.26",
+        "fixtur:12.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-3",
+      "score": 100.33717346191406,
+      "terms": [
+        "fixtures:30.96",
+        "uid:22.44",
+        "fixtur:19.08",
+        "deriv:13.13",
+        "nodej:4.49"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch11-13-merge-diff-trace.typ",
+    "Documentation/manual/ch14-16-view-salience-retract.typ",
+    "Documentation/manual/ch17-18-pack-thread.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "Documentation/manual/ch22-24-render.typ",
+    "Documentation/manual/ch25-27-library-walkthrough.typ",
+    "README.md",
+    "crates/smysl-check/src/passes/epistemics.rs",
+    "crates/smysl-check/src/passes/trust.rs",
+    "crates/smysl-core/src/types/epistemics.rs",
+    "crates/smysl-ingest/src/ceiling.rs",
+    "crates/smysl-ingest/src/stage.rs",
+    "crates/smysl-pack/tests/golden-packs.txt",
+    "fixtures/golden/cbor/corpus.cbor",
+    "fixtures/golden/render/analyst.html",
+    "fixtures/golden/render/analyst.json",
+    "fixtures/golden/render/exec.slides.typ",
+    "fixtures/golden/render/plain.txt",
+    "fixtures/schema/unit.json",
+    "fixtures/wire/uid/cases.json",
+    "go/uid.go",
+    "go/uid_test.go",
+    "nodejs/src/uid.js",
+    "scripts/verify-spec-tables.py",
+    "tests/global_flags.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "kind": "decision",
+      "label": "d/g4968383dc452-8",
+      "reason": "The change renumbers the `Status` values, contradicting the decision to mark spec-derived constants with SPEC in nodejs src/uid.js.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Mark spec-derived constants with SPEC: in nodejs src/uid.js.\nTo record that these values were previously guessed from fixtures, making the method explicit."
+    },
+    {
+      "diff_line": "`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "kind": "prerequisite",
+      "label": "p/g4968383dc452-1-1",
+      "reason": "The change renumbers the `Status` values, contradicting the constraint that C-Produce is the lowest class that touches \u00a72.3 status identity.",
+      "source": "Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452",
+      "text": "C-Produce is the lowest class that touches \u00a72.3 status identity."
+    },
+    {
+      "diff_line": "`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "kind": "decision",
+      "label": "d/g4968383dc452-23",
+      "reason": "The change renumbers the `Status` values, contradicting the decision to implement status integers and source/kind enums as constants in nodejs.",
+      "source": "nodejs/src/uid.js@4968383dc452",
+      "text": "Implement status integers and source/kind enums as constants in nodejs.\nThese values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures."
+    },
+    {
+      "diff_line": "`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "kind": "prerequisite",
+      "label": "p/g532e4d229a6c-1-3",
+      "reason": "The change renumbers the `Status` values, contradicting the constraint that the `smysl fmt` command uses exit codes 0, 2, and 3 as defined by the specification.",
+      "source": "tests/cmd_fmt.rs@532e4d229a6c",
+      "text": "The `smysl fmt` command uses exit codes 0, 2, and 3 as defined by the specification."
+    },
+    {
+      "diff_line": "`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "kind": "rejected alternative",
+      "label": "r/g4968383dc452-23-1",
+      "reason": "The change renumbers the `Status` values, contradicting the rejection of leaving status and source/kind values recoverable only from fixtures.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Rejected: Leave status and source/kind values recoverable only from fixtures.\nThese were needed for uid derivation and rule M comparisons."
+    },
+    {
+      "diff_line": "| 3 | derived |",
+      "kind": "decision",
+      "label": "d/g4968383dc452-10",
+      "reason": "The change renumbers `derived` to 4 and `cited` to 3, contradicting the decision that corrected go and python citations from \u00a71.1 to \u00a72.2 key 7.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Correct go and python citations from \u00a71.1 to \u00a72.2 key 7.\nThe cited section \u00a71.1 does not exist; a citation to a nonexistent section reads as a clause settling the question. Correct source sub-map is \u00a72.2 key 7."
+    },
+    {
+      "diff_line": "- **Rule M.** A `derived` unit grounded on `cited` evidence now exceeds its cap (`SMY-E030`),",
+      "kind": "decision",
+      "label": "d/g4968383dc452-1",
+      "reason": "The change introduces a new rule where a `derived` unit grounded on `cited` evidence exceeds its cap, contradicting the decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "source": "nodejs/README.md@4968383dc452",
+      "text": "Upgrade nodejs conformance target from C-Read to C-Produce.\nTo provide a fourth independent derivation of uids and a third witness for \u00a72.3 beyond the Rust, strengthening the evidence that the specification is sufficient."
+    },
+    {
+      "diff_line": "- **Rule T.** The `computed` ceiling (`derived`) now reaches `cited`, and the `document` and",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-11",
+      "reason": "The change introduces a behavior change in how statuses are compared, contradicting the decision to update ROAD_TO_1.0.md.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update ROAD_TO_1.0.md to mark steps 1 and 2 done, step 3 deferred, and correct the assumption that python/, \u2026\nThe plan was wrong about the other three implementations because they only read CBOR and never see a @doc header; the migration is Rust-only and smaller than it looked."
+    },
+    {
+      "diff_line": "- **Rule T.** The `computed` ceiling (`derived`) now reaches `cited`, and the `document` and",
+      "kind": "decision",
+      "label": "d/g4968383dc452-2",
+      "reason": "The change introduces a behavior change in how statuses are compared, contradicting the decision to hand-roll BLAKE3-256 in nodejs instead of binding to C library.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Hand-roll BLAKE3-256 in nodejs instead of binding to C library.\nA binding to the same C library the Rust calls would test two callers of one implementation, not whether the specification is enough to derive a uid from."
+    },
+    {
+      "diff_line": "- **Rule T.** The `computed` ceiling (`derived`) now reaches `cited`, and the `document` and",
+      "kind": "decision",
+      "label": "d/g4968383dc452-13",
+      "reason": "The change introduces a behavior change in how statuses are compared, contradicting the decision to rework doc-output replay to scratch copy and derive states via edits.json.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Rework doc-output replay to scratch copy and derive states via edits.json.\nPrevious fixtures keyed by filename failed when a chapter's state is keyed by position. Replaying as a chapter with a scratch copy and derived states is stronger."
+    },
+    {
+      "diff_line": "- **Rule T.** The `computed` ceiling (`derived`) now reaches `cited`, and the `document` and",
+      "kind": "decision",
+      "label": "d/g4968383dc452-3",
+      "reason": "The change introduces a behavior change in how statuses are compared, contradicting the decision to implement uid derivation in nodejs reproducing all sixteen fixture uids.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Implement uid derivation in nodejs reproducing all sixteen fixture uids.\nReaching C-Produce requires deriving uids; reproducing the fixtures proves the implementation matches the reference bytes."
+    },
+    {
+      "diff_line": "normative (\u00a72.2) and are hashed, so **every `cited` and `derived` unit gets a new uid**, as does",
+      "kind": "decision",
+      "label": "d/g4968383dc452-12",
+      "reason": "The change contradicts the decision that tables were asserted against document by changing the status numbering.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Correct README claims that tables were asserted against document.\nThe tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document."
+    },
+    {
+      "diff_line": "- **Rule M.** A `derived` unit grounded on `cited` evidence now exceeds its cap (`SMY-E030`),",
+      "kind": "decision",
+      "label": "d/g4968383dc452-17",
+      "reason": "The change contradicts the decision not to implement rule M in outside readers by implementing it.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Do not implement rule M in outside readers.\nRule M is checkable against a store, not against a unit; a validate claiming to enforce it would be a check that cannot fail."
+    },
+    {
+      "diff_line": "Nothing yet.",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-12",
+      "reason": "The change introduces new changes in the unreleased section, contradicting the decision that nothing was yet changed.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update format spec \u00a78.5 to record the version-trap defect as fixed in 0.14.\nThe trap was invisible until it bit; the spec should now state the fix so the historical warning is replaced with the actual current behavior."
+    },
+    {
+      "diff_line": "everything grounded on one, and the CBOR encoding of both statuses changes. `smysl/1.0` readers",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-14",
+      "reason": "The change implies that `smysl/1.0` readers will now correctly decode the new status order, contradicting the decision to defer flipping the writer default until 0.14 is published.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\u00a78.2 requires readers to refuse a version absent from their list. Flipping the writer before 0.14 is in the field would make every other implementation reject the output."
+    },
+    {
+      "diff_line": "`fixtures/schema/unit.json` (enum order), and the uids quoted in the manual. The Go and Node",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-15",
+      "reason": "The change indicates that changes have been made to the Go and Node implementations, contradicting the decision not to add version lists to these implementations.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Do not add version lists to python/, nodejs/, go/ implementations.\nAll three read CBOR only and the wire carries no version string, so no surface parser ever sees a @doc header there. The migration plan's assumption was wrong."
+    }
+  ],
+  "fingerprint": "979ed489566cf49b2eabf6a8f566611b78e24a0ce19839f1986916c5288931ec",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-6-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1497,
+  "pack_units": 63,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 6,
+  "usage": {
+    "completion_tokens": 1860,
+    "predicted_tokens": 50538,
+    "prompt_tokens": 48261,
+    "seconds": 325.270931875
+  },
+  "verdicts": [
+    {
+      "diff_line": "| +`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "label": "d/g4968383dc452-8",
+      "line": 12,
+      "reason": "The change renumbers the `Status` values, contradicting the decision to mark spec-derived constants with SPEC in nodejs src/uid.js.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| +`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "label": "p/g4968383dc452-1-1",
+      "line": 12,
+      "reason": "The change renumbers the `Status` values, contradicting the constraint that C-Produce is the lowest class that touches \u00a72.3 status identity.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| +`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "label": "d/g4968383dc452-23",
+      "line": 12,
+      "reason": "The change renumbers the `Status` values, contradicting the decision to implement status integers and source/kind enums as constants in nodejs.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| +`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "label": "p/g532e4d229a6c-1-3",
+      "line": 12,
+      "reason": "The change renumbers the `Status` values, contradicting the constraint that the `smysl fmt` command uses exit codes 0, 2, and 3 as defined by the specification.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| +`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "label": "r/g4968383dc452-23-1",
+      "line": 12,
+      "reason": "The change renumbers the `Status` values, contradicting the rejection of leaving status and source/kind values recoverable only from fixtures.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "|  | 3 | derived |",
+      "label": "d/g4968383dc452-10",
+      "line": 41,
+      "reason": "The change renumbers `derived` to 4 and `cited` to 3, contradicting the decision that corrected go and python citations from \u00a71.1 to \u00a72.2 key 7.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+- **Rule M.** A `derived` unit grounded on `cited` evidence now exceeds its cap (`SMY-E030`),",
+      "label": "d/g4968383dc452-1",
+      "line": 24,
+      "reason": "The change introduces a new rule where a `derived` unit grounded on `cited` evidence exceeds its cap, contradicting the decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Everything that compares statuses as integers follows the new order, which is a behaviour change and not only a renumbering:",
+      "label": "d/g69ea5c05d859-11",
+      "line": 27,
+      "reason": "The change introduces a behavior change in how statuses are compared, contradicting the decision to update ROAD_TO_1.0.md.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Everything that compares statuses as integers follows the new order, which is a behaviour change and not only a renumbering:",
+      "label": "d/g4968383dc452-2",
+      "line": 27,
+      "reason": "The change introduces a behavior change in how statuses are compared, contradicting the decision to hand-roll BLAKE3-256 in nodejs instead of binding to C library.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Everything that compares statuses as integers follows the new order, which is a behaviour change and not only a renumbering:",
+      "label": "d/g4968383dc452-13",
+      "line": 27,
+      "reason": "The change introduces a behavior change in how statuses are compared, contradicting the decision to rework doc-output replay to scratch copy and derive states via edits.json.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Everything that compares statuses as integers follows the new order, which is a behaviour change and not only a renumbering:",
+      "label": "d/g4968383dc452-3",
+      "line": 27,
+      "reason": "The change introduces a behavior change in how statuses are compared, contradicting the decision to implement uid derivation in nodejs reproducing all sixteen fixture uids.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| +`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "label": "d/g4968383dc452-12",
+      "line": 14,
+      "reason": "The change contradicts the decision that tables were asserted against document by changing the status numbering.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| +- **Rule M.** A `derived` unit grounded on `cited` evidence now exceeds its cap (`SMY-E030`),",
+      "label": "d/g4968383dc452-17",
+      "line": 24,
+      "reason": "The change contradicts the decision not to implement rule M in outside readers by implementing it.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "Nothing yet.",
+      "label": "d/g69ea5c05d859-12",
+      "line": 4,
+      "reason": "The change introduces new changes in the unreleased section, contradicting the decision that nothing was yet changed.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "`smysl/1.0` readers built against the old table will decode the two statuses swapped.",
+      "label": "d/g69ea5c05d859-14",
+      "line": 15,
+      "reason": "The change implies that `smysl/1.0` readers will now correctly decode the new status order, contradicting the decision to defer flipping the writer default until 0.14 is published.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "The Go and Node tables, the spec table in \u00a72.2 and `scripts/verify-spec-tables.py` move with it.",
+      "label": "d/g69ea5c05d859-15",
+      "line": 18,
+      "reason": "The change indicates that changes have been made to the Go and Node implementations, contradicting the decision not to add version lists to these implementations.",
+      "verdict": "contradicts"
+    }
+  ]
+}

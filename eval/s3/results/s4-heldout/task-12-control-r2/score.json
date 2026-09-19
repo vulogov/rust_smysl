@@ -1,0 +1,32 @@
+{
+  "task": 12,
+  "control": false,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p ucal --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    },
+    {
+      "cmd": "cargo test -q -p xtask --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": true,
+  "oracle_exit": 1,
+  "oracle_out": "oracle 12: clock_measured.session_drift_ticks has a magnitude with no direction: 11929837382705399787000000000000000000000",
+  "oracle": "violated",
+  "violation": true,
+  "agent": {
+    "is_error": false,
+    "turns": 24,
+    "cost_usd": 0.48336919999999994,
+    "seconds": 237
+  },
+  "arm": "control",
+  "rep": 2,
+  "diff_lines": 207,
+  "outcome": "violated"
+}

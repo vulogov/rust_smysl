@@ -1,0 +1,186 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 41.72764205932617,
+      "terms": [
+        "that:6.96",
+        "rather:5.55",
+        "which:4.28",
+        "than:4.07",
+        "nothing:3.85"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 40.99883270263672,
+      "terms": [
+        "smysl:8.29",
+        "one:4.41",
+        "rather:4.41",
+        "make:3.92",
+        "than:3.23"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-4",
+      "score": 36.00379943847656,
+      "terms": [
+        "make:4.75",
+        "break:3.84",
+        "checks:3.84",
+        "thi:3.61",
+        "this:3.61"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-4-1",
+      "score": 28.166263580322266,
+      "terms": [
+        "make:4.19",
+        "break:3.82",
+        "checks:3.82",
+        "gate:3.40",
+        "mak:3.33"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 26.886520385742188,
+      "terms": [
+        "that:8.04",
+        "two:4.22",
+        "thi:3.41",
+        "this:3.41",
+        "with:2.92"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-8",
+      "score": 25.90306282043457,
+      "terms": [
+        "manual:15.38",
+        "all:4.49",
+        "not:2.47",
+        "to:2.28",
+        "the:1.28"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 24.790691375732422,
+      "terms": [
+        "that:8.08",
+        "two:4.27",
+        "thi:3.46",
+        "this:3.46",
+        "with:2.96"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-6",
+      "score": 23.64189338684082,
+      "terms": [
+        "them:4.73",
+        "make:3.92",
+        "break:3.44",
+        "only:3.39",
+        "mak:3.11"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-10-1",
+      "score": 21.885374069213867,
+      "terms": [
+        "that:8.32",
+        "only:3.68",
+        "noth:3.49",
+        "nothing:3.49",
+        "was:2.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g87345653cdf3-7-1",
+      "score": 21.250213623046875,
+      "terms": [
+        "smysl:9.34",
+        "for:4.20",
+        "cargo:3.73",
+        "to:2.55",
+        "the:1.43"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-1-1",
+      "score": 20.644920349121094,
+      "terms": [
+        "both:6.07",
+        "against:4.45",
+        "gat:3.81",
+        "only:3.64",
+        "and:1.44"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-9-1",
+      "score": 20.319324493408203,
+      "terms": [
+        "only:3.66",
+        "cargo:3.50",
+        "not:3.36",
+        "was:2.86",
+        "mak:2.75"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/READINESS.md",
+    "Documentation/ROAD_TO_1.0.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch25-27-library-walkthrough.typ"
+  ],
+  "findings": [],
+  "fingerprint": "6c4b155b46d176bd3b9dba5bbbc5b757d11b72378fa6b1beb8850515d55c89d4",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-706183e0c472",
+  "kind": "commit",
+  "pack_tokens": 1496,
+  "pack_units": 57,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 59839,
+    "prompt_tokens": 55898,
+    "seconds": 279.35809604200006
+  },
+  "verdicts": []
+}

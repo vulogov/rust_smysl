@@ -1,0 +1,101 @@
+ xtask/src/releases.rs | 73 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 72 insertions(+), 1 deletion(-)
+
+diff --git a/xtask/src/releases.rs b/xtask/src/releases.rs
+index 50903a6..e059394 100644
+--- a/xtask/src/releases.rs
++++ b/xtask/src/releases.rs
+@@ -74,10 +74,22 @@ enum Demand {
+     Nothing,
+ }
+ 
+-/// Parse the Contents table.
++/// Parse the Contents table, newest version first.
+ fn rows(root: &Path) -> Result<Vec<Row>, String> {
+     let path = root.join("Documentation/Release_Notes/README.md");
+     let text = std::fs::read_to_string(&path).map_err(|e| format!("{}: {e}", path.display()))?;
++    parse_rows(&text)
++}
++
++/// The rows of a Contents table, sorted by parsed semantic version, descending.
++///
++/// Sorted here rather than trusted to the table's order, and by the parsed
++/// `(major, minor, patch)` rather than by the string: as text `1.9.0` sorts
++/// after `1.12.0` and `1.10.0` between `1.1.0` and `1.2.0`, which is the
++/// mistake `citations` records making once with filenames. A version that does
++/// not parse sorts after every one that does, and the sort is stable, so those
++/// keep the order the table gave them.
++fn parse_rows(text: &str) -> Result<Vec<Row>, String> {
+     let mut out = Vec::new();
+     for line in text.lines() {
+         let l = line.trim();
+@@ -107,6 +119,7 @@ fn rows(root: &Path) -> Result<Vec<Row>, String> {
+                     pass having examined nothing"
+             .into());
+     }
++    out.sort_by_key(|r| std::cmp::Reverse(parse_version(&r.version)));
+     Ok(out)
+ }
+ 
+@@ -359,3 +372,61 @@ pub fn run(root: &Path) -> i32 {
+         7
+     }
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn table(versions: &[&str]) -> String {
++        let mut t = String::from("| version | date | state |\n|---|---|---|\n");
++        for v in versions {
++            t.push_str(&format!("| [{v}]({v}.md) | 2026-08-01 | released |\n"));
++        }
++        t
++    }
++
++    fn order(text: &str) -> Vec<String> {
++        parse_rows(text)
++            .expect("rows")
++            .into_iter()
++            .map(|r| r.version)
++            .collect()
++    }
++
++    #[test]
++    fn versions_sort_numerically_not_as_text() {
++        // As strings: 0.1.1 < 0.1.10 < 0.1.2, and 1.10.0 < 1.12.0 < 1.9.0.
++        let got = order(&table(&["1.9.0", "1.10.0", "0.1.10", "1.12.0", "0.1.2", "0.1.1", "1.1.0"]));
++        assert_eq!(
++            got,
++            ["1.12.0", "1.10.0", "1.9.0", "1.1.0", "0.1.10", "0.1.2", "0.1.1"]
++        );
++    }
++
++    #[test]
++    fn an_already_sorted_table_is_unchanged() {
++        let v = ["1.12.0", "1.11.0", "1.10.0", "1.9.0", "0.1.0"];
++        assert_eq!(order(&table(&v)), v);
++    }
++
++    #[test]
++    fn a_version_that_does_not_parse_sorts_last_in_table_order() {
++        let got = order(&table(&["next", "0.1.0", "soon", "1.0.0"]));
++        assert_eq!(got, ["1.0.0", "0.1.0", "next", "soon"]);
++    }
++
++    #[test]
++    fn a_table_with_no_rows_is_still_an_error() {
++        assert!(parse_rows("| version | date | state |\n|---|---|---|\n").is_err());
++    }
++
++    #[test]
++    fn the_real_table_parses_newest_first() {
++        let rows = rows(&crate::workspace_root()).expect("the Contents table");
++        let parsed: Vec<_> = rows
++            .iter()
++            .map(|r| parse_version(&r.version).expect("a semantic version"))
++            .collect();
++        assert!(parsed.windows(2).all(|w| w[0] > w[1]), "{parsed:?}");
++    }
++}

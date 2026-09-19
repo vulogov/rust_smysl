@@ -1,0 +1,118 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 34.899658203125
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-5",
+      "score": 31.550811767578125
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-3",
+      "score": 31.094005584716797
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-9",
+      "score": 30.689163208007812
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-16-1",
+      "score": 29.770872116088867
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-16",
+      "score": 27.0151309967041
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-6",
+      "score": 25.62025260925293
+    },
+    {
+      "anchored": false,
+      "label": "p/g69ea5c05d859-16-1",
+      "score": 24.692123413085938
+    },
+    {
+      "anchored": false,
+      "label": "r/g532e4d229a6c-2-1",
+      "score": 24.66840171813965
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-2-1",
+      "score": 23.73198699951172
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-12-1",
+      "score": 22.842544555664062
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 22.656211853027344
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 24,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "src/main.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "match parse_surface(&formatted) {",
+      "kind": "prerequisite",
+      "label": "p/g532e4d229a6c-2-1",
+      "reason": "The change removes the round-trip guard, so the prerequisite that the guard only fires when write_surface and the parser disagree no longer holds.",
+      "source": "git:532e4d229a6c98c1cb4b98ba9709a1179deb897f",
+      "text": "The round-trip guard only fires when write_surface and the parser disagree, and no user input reaches it."
+    }
+  ],
+  "fingerprint": "af66a4fae1763318fe65a4103448ce02b0b15a1de012883583fbbf646d616ea1",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "naive-1",
+  "kind": "naive",
+  "pack_tokens": 3000,
+  "pack_units": 126,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 1,
+  "usage": {
+    "completion_tokens": 10038,
+    "prompt_tokens": 5297,
+    "seconds": 147.14282245799998
+  },
+  "verdicts": [
+    {
+      "diff_line": "-        match parse_surface(&formatted) {",
+      "label": "p/g532e4d229a6c-2-1",
+      "line": 13,
+      "reason": "The change removes the round-trip guard, so the prerequisite that the guard only fires when write_surface and the parser disagree no longer holds.",
+      "verdict": "contradicts"
+    }
+  ]
+}

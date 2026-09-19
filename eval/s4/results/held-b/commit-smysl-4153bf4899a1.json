@@ -1,0 +1,238 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 46.072227478027344,
+      "terms": [
+        "releas:7.98",
+        "release:3.99",
+        "noth:3.82",
+        "nothing:3.82",
+        "changelog:3.48"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 39.966915130615234,
+      "terms": [
+        "releas:8.55",
+        "release:4.28",
+        "changelog:3.62",
+        "its:3.38",
+        "not:2.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 23.5211238861084,
+      "terms": [
+        "measur:4.63",
+        "measured:4.63",
+        "that:3.32",
+        "two:3.27",
+        "thi:2.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 23.303707122802734,
+      "terms": [
+        "measur:4.60",
+        "measured:4.60",
+        "that:3.31",
+        "two:3.23",
+        "thi:2.90"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "score": 20.677967071533203,
+      "terms": [
+        "being:5.52",
+        "cargo:5.52",
+        "smysl:5.52",
+        "check:3.35",
+        "the:0.77"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g0bc1aeb96d6b-2-1",
+      "score": 16.645952224731445,
+      "terms": [
+        "thi:3.31",
+        "this:3.31",
+        "into:3.18",
+        "repair:3.18",
+        "not:2.09"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 15.793401718139648,
+      "terms": [
+        "mov:6.12",
+        "noth:3.06",
+        "nothing:3.06",
+        "after:2.78",
+        "the:0.77"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-2",
+      "score": 15.69666862487793,
+      "terms": [
+        "into:3.32",
+        "repair:3.32",
+        "thi:2.62",
+        "this:2.62",
+        "not:2.19"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-4-1",
+      "score": 15.405929565429688,
+      "terms": [
+        "mov:5.96",
+        "noth:2.98",
+        "nothing:2.98",
+        "after:2.71",
+        "the:0.77"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 15.357409477233887,
+      "terms": []
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-1-1",
+      "score": 14.328927993774414,
+      "terms": [
+        "both:4.76",
+        "from:4.19",
+        "against:3.42",
+        "and:1.27",
+        "the:0.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 13.004575729370117,
+      "terms": [
+        "change:5.50",
+        "chang:3.67",
+        "not:3.06",
+        "the:0.77"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 70,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/READINESS.md",
+    "Makefile"
+  ],
+  "findings": [
+    {
+      "diff_line": "from the registry gives `smysl 0.11.0`. `BASELINE` moved from 0.9.0 to 0.11.0 and",
+      "kind": "prerequisite",
+      "label": "p/ga18e230ae345-6-1",
+      "reason": "The change updates the `BASELINE` to 0.11.0, which contradicts the constraint that the changelog has an Unreleased \u2014 0.8.0 section where the removal can be recorded.",
+      "source": "CHANGELOG.md@a18e230ae345",
+      "text": "The changelog has an Unreleased \u2014 0.8.0 section where the removal can be recorded."
+    },
+    {
+      "diff_line": "- ~~Publishing.~~ **Done**: 0.11.0 is on crates.io, twelve crates, and `cargo install smysl`",
+      "kind": "rejected alternative",
+      "label": "r/ga18e230ae345-6-1",
+      "reason": "The change updates the changelog to indicate that publishing is done, which contradicts the rejected alternative of leaving the changelog entry as 'Nothing yet.'",
+      "source": "CHANGELOG.md@a18e230ae345",
+      "text": "Rejected: Leave the changelog entry as 'Nothing yet.'\nTo record the removal and its justification for the 0.8.0 release notes."
+    },
+    {
+      "diff_line": "- ~~Publishing.~~ **Done**: 0.11.0 is on crates.io, twelve crates, and `cargo install smysl`",
+      "kind": "decision",
+      "label": "d/ga18e230ae345-6",
+      "reason": "The change updates the changelog to indicate that publishing is done, which contradicts the decision to document the removal in the changelog.",
+      "source": "CHANGELOG.md@a18e230ae345",
+      "text": "Document the removal in the changelog.\nTo record the removal and its justification for the 0.8.0 release notes."
+    },
+    {
+      "diff_line": "# moves when a release is pushed to the registry and not when it is cut \u2014 0.10.0 was tagged and",
+      "kind": "prerequisite",
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "reason": "The change updates the BASELINE to 0.11.0, which contradicts the constraint that `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused.",
+      "source": "git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e",
+      "text": "`cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused the same way on the \u2026\n`cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused the same way on the previous commit"
+    }
+  ],
+  "fingerprint": "902ca46b12df6230578efd1536c13f3f4b2ee865a88c191058e0c6073e02b2e0",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-4153bf4899a1",
+  "kind": "commit",
+  "pack_tokens": 1365,
+  "pack_units": 40,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 625,
+    "predicted_tokens": 15859,
+    "prompt_tokens": 11018,
+    "seconds": 76.001787875
+  },
+  "verdicts": [
+    {
+      "diff_line": "+  BASELINE  := 0.11.0",
+      "label": "p/ga18e230ae345-6-1",
+      "line": 13,
+      "reason": "The change updates the `BASELINE` to 0.11.0, which contradicts the constraint that the changelog has an Unreleased \u2014 0.8.0 section where the removal can be recorded.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+ ~~Publishing.~~ **Done**: 0.11.0 is on crates.io, twelve crates, and `cargo install smysl` from the registry gives `smysl 0.11.0`. `BASELINE` moved from 0.9.0 to 0.11.0 and `cargo-semver-checks` runs its 223 checks against a real baseline again \u2014 12/12 clean.",
+      "label": "r/ga18e230ae345-6-1",
+      "line": 12,
+      "reason": "The change updates the changelog to indicate that publishing is done, which contradicts the rejected alternative of leaving the changelog entry as 'Nothing yet.'",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+ ~~Publishing.~~ **Done**: 0.11.0 is on crates.io, twelve crates, and `cargo install smysl` from the registry gives `smysl 0.11.0`. `BASELINE` moved from 0.9.0 to 0.11.0 and `cargo-semver-checks` runs its 223 checks against a real baseline again \u2014 12/12 clean.",
+      "label": "d/ga18e230ae345-6",
+      "line": 12,
+      "reason": "The change updates the changelog to indicate that publishing is done, which contradicts the decision to document the removal in the changelog.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-BASELINE  := 0.9.0",
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "line": 59,
+      "reason": "The change updates the BASELINE to 0.11.0, which contradicts the constraint that `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused.",
+      "verdict": "contradicts"
+    }
+  ]
+}

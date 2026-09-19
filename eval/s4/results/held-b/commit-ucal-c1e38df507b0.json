@@ -1,0 +1,187 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-3-1",
+      "score": 51.15314865112305,
+      "terms": [
+        "entri:9.34",
+        "entries:9.34",
+        "src:9.34",
+        "examples:7.74",
+        "exampl:6.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-1-2",
+      "score": 46.90382766723633,
+      "terms": [
+        "documentation:19.97",
+        "releas:5.53",
+        "release:5.53",
+        "notes:5.20",
+        "are:4.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 43.84147644042969,
+      "terms": [
+        "documentation:18.99",
+        "releas:5.38",
+        "release:5.38",
+        "notes:5.05",
+        "are:4.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-7-3",
+      "score": 36.28875732421875,
+      "terms": [
+        "tim:10.81",
+        "time:10.81",
+        "already:5.92",
+        "into:5.92",
+        "read:2.83"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-9-1",
+      "score": 36.265804290771484,
+      "terms": [
+        "end:6.51",
+        "rather:4.96",
+        "thi:4.77",
+        "this:4.77",
+        "than:4.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-5",
+      "score": 34.81000518798828,
+      "terms": [
+        "documentation:14.34",
+        "comment:7.55",
+        "befor:3.78",
+        "before:3.78",
+        "that:2.91"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-8-1",
+      "score": 34.69244384765625,
+      "terms": [
+        "tim:8.38",
+        "time:8.38",
+        "after:6.79",
+        "becaus:3.43",
+        "because:3.43"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-2",
+      "score": 34.46208953857422,
+      "terms": [
+        "documentation:20.14",
+        "examples:6.71",
+        "exampl:5.45",
+        "the:2.16"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 34.15845489501953,
+      "terms": [
+        "tim:10.83",
+        "time:10.83",
+        "all:5.51",
+        "one:3.10",
+        "read:1.95"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 33.87535858154297,
+      "terms": [
+        "documentation:19.80",
+        "examples:6.60",
+        "exampl:5.36",
+        "the:2.12"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-8-1",
+      "score": 32.46788787841797,
+      "terms": [
+        "tim:10.54",
+        "time:10.54",
+        "becaus:4.31",
+        "because:4.31",
+        "read:2.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g21665b3aac9b-9",
+      "score": 31.67868423461914,
+      "terms": [
+        "into:5.32",
+        "two:5.14",
+        "releas:4.91",
+        "release:4.91",
+        "was:4.39"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 327,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/Proposals/S2-deep-time.md",
+    "Documentation/Release_Notes/1.13.0.md",
+    "crates/ucal-events/src/lib.rs"
+  ],
+  "findings": [],
+  "fingerprint": "f1c9f7c0f790ae51d0d2c1576c1692bb59497d74f789b18ad22dd8ee0303be2c",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-c1e38df507b0",
+  "kind": "commit",
+  "pack_tokens": 1499,
+  "pack_units": 76,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 40573,
+    "prompt_tokens": 30387,
+    "seconds": 133.302232418
+  },
+  "verdicts": []
+}

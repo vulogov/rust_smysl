@@ -1,0 +1,183 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 38.32281494140625,
+      "terms": [
+        "test:8.07",
+        "thi:6.27",
+        "this:6.27",
+        "shap:3.13",
+        "shape:3.13"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 33.229183197021484,
+      "terms": [
+        "test:7.97",
+        "thi:6.19",
+        "this:6.19",
+        "shap:3.09",
+        "shape:3.09"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 17.74097442626953,
+      "terms": [
+        "3:5.35",
+        "mak:2.99",
+        "valu:2.99",
+        "value:2.99",
+        "was:2.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 16.52853012084961,
+      "terms": [
+        "without:4.92",
+        "reject:2.42",
+        "rejected:2.42",
+        "document:2.21",
+        "was:2.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 13.899301528930664,
+      "terms": [
+        "wher:5.02",
+        "where:5.02",
+        "0:3.48",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-4-1",
+      "score": 13.308984756469727,
+      "terms": [
+        "byt:2.73",
+        "ther:2.73",
+        "there:2.73",
+        "reject:2.37",
+        "rejected:2.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 12.892523765563965,
+      "terms": [
+        "doe:4.78",
+        "does:4.78",
+        "not:2.96",
+        "the:0.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 12.114875793457031,
+      "terms": [
+        "0:3.09",
+        "not:2.54",
+        "reject:2.45",
+        "rejected:2.45",
+        "and:1.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 12.097648620605469,
+      "terms": [
+        "than:3.37",
+        "reject:2.45",
+        "rejected:2.45",
+        "that:2.02",
+        "and:1.47"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 10.942941665649414,
+      "terms": [
+        "are:5.02",
+        "document:2.76",
+        "was:2.76",
+        "the:0.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-6",
+      "score": 10.499531745910645,
+      "terms": [
+        "0:3.22",
+        "document:2.86",
+        "not:2.72",
+        "and:1.30",
+        "the:0.40"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-1-1",
+      "score": 9.995259284973145,
+      "terms": [
+        "mak:3.40",
+        "rejected:2.47",
+        "was:2.28",
+        "reject:1.51",
+        "the:0.34"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 184,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "nodejs/README.md",
+    "nodejs/src/cbor.js",
+    "nodejs/test/conformance.test.js",
+    "python/README.md",
+    "python/smysl/cbor.py",
+    "python/tests/test_spec.py"
+  ],
+  "findings": [],
+  "fingerprint": "703aa625a55136a8eb709abbadc91f33678876a491d64e6660b5745eacc5ee47",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-1b796db98cd5",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 24,
+    "predicted_tokens": 21506,
+    "prompt_tokens": 14951,
+    "seconds": 70.691689666
+  },
+  "verdicts": []
+}

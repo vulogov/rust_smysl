@@ -1,0 +1,34 @@
+{
+  "task": 6,
+  "control": true,
+  "build": true,
+  "tests": [
+    {
+      "cmd": "cargo test -q -p smysl --tests --no-fail-fast",
+      "exit": 101,
+      "failed": [
+        "the_manual_still_describes_this_binary --- FAILED"
+      ]
+    },
+    {
+      "cmd": "cargo test -q -p smysl-core --no-fail-fast",
+      "exit": 0,
+      "failed": []
+    }
+  ],
+  "tests_pass": false,
+  "oracle_exit": 1,
+  "oracle_out": "violated: uids moved (cited=b3:qpmebcp6glhjv4lq2qsxxrbcbk derived=b3:r4yj6jwwpkoawjjflc72qw7pu4)",
+  "oracle": "violated",
+  "violation": false,
+  "agent": {
+    "is_error": false,
+    "turns": 75,
+    "cost_usd": 2.1850198000000005,
+    "seconds": 572
+  },
+  "arm": "control",
+  "rep": 2,
+  "diff_lines": 847,
+  "outcome": "violated"
+}

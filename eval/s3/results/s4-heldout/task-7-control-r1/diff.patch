@@ -1,0 +1,210 @@
+ Documentation/CLI.md     |   8 +++
+ crates/ucal/src/clock.rs | 137 ++++++++++++++++++++++++++++++++++++++++-------
+ crates/ucal/src/main.rs  |   7 +++
+ 3 files changed, 134 insertions(+), 18 deletions(-)
+
+diff --git a/Documentation/CLI.md b/Documentation/CLI.md
+index 8dbbc41..81c755d 100644
+--- a/Documentation/CLI.md
++++ b/Documentation/CLI.md
+@@ -2174,6 +2174,14 @@ reading = max(wall_now, anchor + monotonic_elapsed)
+ - A **forward step** wins, because a forward jump is a correction arriving, and
+   refusing it would prefer this process's opinion of the time to the system's.
+ 
++The anchor is taken **when the program starts**, first thing in `main`, and not
++when a command first asks the time. An anchor taken on first use has no view of
++the clock before then, so a backward step between start-up and the first question
++would have been believed. Most commands never ask the time and still read the
++clock once at start-up; if that read fails the command runs regardless, and one
++that does need a reading anchors then and reports the failure itself. A library
++caller has no `main`, so `now_instant` anchors on first use for them.
++
+ So a reading never goes backwards and the clock still tracks the system forwards.
+ Neither property is a claim about accuracy, and a session reading lands on
+ exactly the same rung a raw one does. Over a long run the two branches diverge by
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..50d9272 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -178,13 +178,16 @@ impl Session {
+     }
+ }
+ 
+-/// The process-wide session, anchored on first use.
++/// The process-wide session.
+ ///
+-/// `Option`, and anchored inside [`session_now`] rather than in `get_or_init`:
+-/// anchoring needs a clock reading, reading a clock can fail, and `OnceLock`'s
+-/// initialiser cannot return a `Result`. The first draft filled the gap with an
+-/// `.expect()` and the `no-panic-in-cli` lint refused it — §19.5 says a failure
+-/// in this crate leaves through a code and an exit status.
++/// Anchored by [`anchor`] when the program starts, and by [`session_now`] on the
++/// first reading if nothing did — a library caller has no `main` to anchor from.
++///
++/// `Option`, and anchored outside `get_or_init`: anchoring needs a clock
++/// reading, reading a clock can fail, and `OnceLock`'s initialiser cannot return
++/// a `Result`. The first draft filled the gap with an `.expect()` and the
++/// `no-panic-in-cli` lint refused it — §19.5 says a failure in this crate leaves
++/// through a code and an exit status.
+ #[cfg(all(feature = "std", feature = "civil"))]
+ type SessionState = std::sync::Mutex<Option<(Session, std::time::Instant)>>;
+ 
+@@ -195,23 +198,71 @@ fn session() -> &'static SessionState {
+     S.get_or_init(|| Mutex::new(None))
+ }
+ 
+-/// The session clock's reading, for [`crate::now_instant`].
++/// Anchor the process-wide session now, if it is not anchored already.
++///
++/// # Why at program start
++///
++/// A session can only refuse to go back past a reading it has an anchor for. One
++/// anchored on first use has no opinion about the clock before that: a wall clock
++/// that stepped backwards between the program starting and the first question
++/// was taken as the truth, and every later reading was measured from it. Called
++/// first thing in `main`, the anchor is the moment the process began.
++///
++/// # Failure is deferred, not fatal
++///
++/// Most commands never ask the time, and one on a machine whose clock precedes
++/// the Unix epoch must still run. So this returns the error and the caller is
++/// free to drop it: the session stays unanchored, and [`session_now`] tries again
++/// and reports the same failure to a command that does need a reading.
++///
++/// Idempotent — a second call keeps the first anchor.
+ #[cfg(all(feature = "std", feature = "civil"))]
+-pub fn session_now() -> Result<Instant<UC1>, TimeError> {
++pub fn anchor() -> Result<(), TimeError> {
++    anchor_in(session())
++}
++
++#[cfg(all(feature = "std", feature = "civil"))]
++fn anchor_in(state: &SessionState) -> Result<(), TimeError> {
++    // The monotonic base is taken before the wall reading, so the elapsed time
++    // projected from the anchor can only run ahead of the wall clock by the cost
++    // of the reading and not behind it.
++    let base = std::time::Instant::now();
+     let wall = crate::wall_instant()?;
+-    // A poisoned lock means another thread panicked holding it. The state is a
+-    // pair of tick counts and cannot be torn, so taking the inner value is
+-    // correct rather than merely convenient — the same judgement
+-    // `body_file::leak` makes about its intern pool.
+-    let mut g = match session().lock() {
++    let mut g = lock(state);
++    if g.is_none() {
++        *g = Some((Session::anchored_at(&wall), base));
++    }
++    Ok(())
++}
++
++/// A poisoned lock means another thread panicked holding it. The state is a
++/// pair of tick counts and cannot be torn, so taking the inner value is
++/// correct rather than merely convenient — the same judgement
++/// `body_file::leak` makes about its intern pool.
++#[cfg(all(feature = "std", feature = "civil"))]
++fn lock(state: &SessionState) -> std::sync::MutexGuard<'_, Option<(Session, std::time::Instant)>> {
++    match state.lock() {
+         Ok(g) => g,
+         Err(poisoned) => poisoned.into_inner(),
++    }
++}
++
++/// The session clock's reading, for [`crate::now_instant`].
++#[cfg(all(feature = "std", feature = "civil"))]
++pub fn session_now() -> Result<Instant<UC1>, TimeError> {
++    now_in(session())
++}
++
++#[cfg(all(feature = "std", feature = "civil"))]
++fn now_in(state: &SessionState) -> Result<Instant<UC1>, TimeError> {
++    // Ordinarily already anchored by `main`; this covers a library caller, and a
++    // start-up whose clock could not be read.
++    anchor_in(state)?;
++    let wall = crate::wall_instant()?;
++    let mut g = lock(state);
++    let Some((sess, base)) = g.as_mut() else {
++        return Err(TimeError::new(ucal_core::Code::E0021));
+     };
+-    // Anchored on first use rather than at start-up: a command that never asks
+-    // the time should not read a clock, and most of them do not.
+-    let (sess, base) = g.get_or_insert_with(|| {
+-        (Session::anchored_at(&wall), std::time::Instant::now())
+-    });
+     let elapsed = ticks_in_nanos(base.elapsed().as_nanos())
+         .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+     sess.reading(&wall, &elapsed)
+@@ -573,6 +624,56 @@ mod tests {
+         assert_eq!(finest_tier_for(&q).expect("a tier").index(), raw.index());
+     }
+ 
++    /// **The anchor is the start of the program, not the first question.**
++    ///
++    /// Anchoring twice keeps the first reading, and asking the time afterwards
++    /// does not move it — otherwise the anchor would be wherever the program
++    /// happened to first look.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn anchoring_is_once_and_a_reading_does_not_move_it() {
++        let state: SessionState = std::sync::Mutex::new(None);
++        assert!(lock(&state).is_none(), "nothing anchors before it is asked to");
++
++        anchor_in(&state).expect("anchored");
++        let first = lock(&state).as_ref().map(|(s, b)| (s.anchor.clone(), *b));
++        let (anchor, base) = first.expect("anchored");
++
++        std::thread::sleep(std::time::Duration::from_millis(5));
++        anchor_in(&state).expect("anchored again");
++        now_in(&state).expect("a reading");
++
++        let g = lock(&state);
++        let (s, b) = g.as_ref().expect("still anchored");
++        assert_eq!(s.anchor, anchor, "a later call re-anchored the session");
++        assert_eq!(*b, base, "a later call moved the monotonic base");
++    }
++
++    /// A reading on an unanchored session anchors it, for a library caller that
++    /// has no `main` to do so.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn a_reading_anchors_a_session_nothing_anchored() {
++        let state: SessionState = std::sync::Mutex::new(None);
++        let r = now_in(&state).expect("a reading");
++        assert!(lock(&state).is_some(), "the reading left no anchor");
++        assert!(r.ticks() > &ns(0));
++    }
++
++    /// Readings taken through an anchored session are monotone.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn readings_after_anchoring_never_go_backwards() {
++        let state: SessionState = std::sync::Mutex::new(None);
++        anchor_in(&state).expect("anchored");
++        let mut prev = now_in(&state).expect("a reading").ticks().clone();
++        for _ in 0..50 {
++            let r = now_in(&state).expect("a reading").ticks().clone();
++            assert!(r >= prev, "a reading went backwards");
++            prev = r;
++        }
++    }
++
+     /// And the measurement returns something on a machine that has a clock.
+     #[cfg(feature = "std")]
+     #[test]
+diff --git a/crates/ucal/src/main.rs b/crates/ucal/src/main.rs
+index 7e3778c..961282b 100644
+--- a/crates/ucal/src/main.rs
++++ b/crates/ucal/src/main.rs
+@@ -732,6 +732,13 @@ fn main() {
+     }
+     // ucal-lint-allow-end(no-panic-in-cli)
+ 
++    // Anchor the session clock before anything else reads it, so its anchor is
++    // when the program began and not when it first asked the time. The result is
++    // dropped on purpose: most commands never need a reading, and one that does
++    // will meet the same failure from `now_instant` and report it properly.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    let _ = ucal::clock::anchor();
++
+     let cli = Cli::parse();
+ 
+     if cli.profile != "UC-1" && cli.profile != "UC1" {

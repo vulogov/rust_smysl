@@ -1,0 +1,133 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-8",
+      "score": 19.31780242919922
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 16.27461814880371
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 15.196913719177246
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-17-1",
+      "score": 14.471452713012695
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-6-1",
+      "score": 14.24289608001709
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-10",
+      "score": 13.49122428894043
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-8-1",
+      "score": 12.827610969543457
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-4-1",
+      "score": 11.500865936279297
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-3-1",
+      "score": 10.687919616699219
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-3",
+      "score": 10.480268478393555
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-13",
+      "score": 10.188285827636719
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-4",
+      "score": 7.995536804199219
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 15,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "crates/smysl-core/src/types/epistemics.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "Derived = 4,",
+      "kind": "prerequisite",
+      "label": "p/g4968383dc452-8-1",
+      "reason": "The CBOR reader relied on Derived being discriminant 3 to mark spec-derived constants with SPEC:, but this change moves Derived to 4 and gives 3 to Cited, so the reader will no longer identify those constants correctly.",
+      "source": "nodejs/README.md@4968383dc452",
+      "text": "The CBOR reader already marks spec-derived constants with SPEC:."
+    },
+    {
+      "diff_line": "Derived = 4,",
+      "kind": "decision",
+      "label": "d/g4968383dc452-23",
+      "reason": "The change swaps the integer values of Derived and Cited in the Rust Status enum, so the status integer constants implemented in nodejs (Derived=3, Cited=4) no longer match the canonical enum.",
+      "source": "nodejs/src/uid.js@4968383dc452",
+      "text": "Implement status integers and source/kind enums as constants in nodejs.\nThese values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures."
+    }
+  ],
+  "fingerprint": "24107ae94c87d54ebf02f0ba69d8909ea21def70a604b16cc72055e770aee76a",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "naive-6",
+  "kind": "naive",
+  "pack_tokens": 2997,
+  "pack_units": 129,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 6,
+  "usage": {
+    "completion_tokens": 14200,
+    "prompt_tokens": 4549,
+    "seconds": 209.228784458
+  },
+  "verdicts": [
+    {
+      "diff_line": "+    Derived = 4,",
+      "label": "p/g4968383dc452-8-1",
+      "line": 12,
+      "reason": "The CBOR reader relied on Derived being discriminant 3 to mark spec-derived constants with SPEC:, but this change moves Derived to 4 and gives 3 to Cited, so the reader will no longer identify those constants correctly.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+    Derived = 4,",
+      "label": "d/g4968383dc452-23",
+      "line": 12,
+      "reason": "The change swaps the integer values of Derived and Cited in the Rust Status enum, so the status integer constants implemented in nodejs (Derived=3, Cited=4) no longer match the canonical enum.",
+      "verdict": "contradicts"
+    }
+  ]
+}

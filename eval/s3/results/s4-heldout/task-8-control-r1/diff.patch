@@ -1,0 +1,403 @@
+ Documentation/CLI.md             |  16 ++++
+ crates/ucal/src/clock.rs         | 165 +++++++++++++++++++++++++++++++++++++++
+ crates/ucal/src/main.rs          |  27 +++++++
+ crates/ucal/src/wallclock/mod.rs |  21 +++++
+ crates/ucal/tests/wallclock.rs   |  39 +++++++++
+ 5 files changed, 268 insertions(+)
+
+diff --git a/Documentation/CLI.md b/Documentation/CLI.md
+index 8dbbc41..fc3e197 100644
+--- a/Documentation/CLI.md
++++ b/Documentation/CLI.md
+@@ -1591,6 +1591,7 @@ A full-screen clock showing universe time. `q`, `Esc` or `Ctrl-C` quits.
+ ```
+ ucal wallclock [--theme <KEY>] [--startrek|--gagarin|--armstrong]
+ ucal wallclock [--clock-local <ID>]... [--tier <T>] [--since <ORIGIN>]
++ucal wallclock [--max-advance <SPAN>]
+ ucal wallclock --once [--at <INSTANT>] [--height <N>]
+ ucal wallclock --theme list
+ ```
+@@ -2181,6 +2182,21 @@ the rate difference between the oscillator and whatever disciplines the wall
+ clock; `max` bounds the result by whichever is ahead, and that bound is the
+ honest statement of what a session clock costs.
+ 
++**`ucal wallclock --max-advance <SPAN>`** bounds how far one reading may move
++past the previous one, so a forward step of the system clock is shown as a run of
++steps rather than one jump on the face:
++
++```
++reading = min(max(wall_now, anchor + monotonic_elapsed, last), last + SPAN)
++```
++
++The face closes on the system's time at `SPAN` per reading and lands on it, and a
++reading still never goes backwards. `SPAN` is a whole number and a unit — `ns`,
++`us`, `ms`, `s` or `m`, like `500ms` or `2s`; a bare number is refused. It must be
++at least `100ms`, twice the 50 ms refresh interval: a smaller cap than the gap
++between readings would slow the clock rather than smooth a jump. It is a live-clock
++option and is refused with `--once` and `--json`. Off by default.
++
+ **`features[]` names every optional feature this crate has**, and did not until
+ 1.9.0: it listed four and the crate had eight, so a binary built with
+ `--features full` reported `u512, std, civil` while `body`, `events`, `cosmo`
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..ddfd011 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -108,6 +108,28 @@ pub fn finest_tier_for(q: &Ticks) -> Option<Tier> {
+ /// So a reading never goes backwards, and the clock still tracks the system
+ /// forwards. Those are the two properties; neither is a claim about accuracy.
+ ///
++/// # The optional cap
++///
++/// A face that jumps an hour between two frames is as jarring as one that goes
++/// back, and for a clock someone is *watching* the correction is better taken
++/// as a run of large steps than as one. [`Session::with_max_advance`] bounds how
++/// far a single reading may move past the previous one:
++///
++/// ```text
++/// reading = min(max(wall_now, anchor + monotonic_elapsed, last), last + cap)
++/// ```
++///
++/// The reading then closes on the wall clock at `cap` per reading and lands on
++/// it, so the smoothing is finite and the clock ends up where the system says.
++/// Monotonicity is untouched — the cap only lowers a value that was already
++/// `>= last`.
++///
++/// **The cap must exceed the gap between readings**, or the reading falls behind
++/// the wall clock for good: at one reading a second and a cap of half a second
++/// the clock runs at half speed. `ucal wallclock` refuses caps under
++/// [`MIN_MAX_ADVANCE_NANOS`] for that reason. With no cap, which is the default,
++/// nothing above changes.
++///
+ /// # What it does not do
+ ///
+ /// It does not make a reading finer, more accurate, or traceable to anything.
+@@ -121,17 +143,36 @@ pub struct Session {
+     anchor: Ticks,
+     /// The largest reading handed out so far.
+     last: Ticks,
++    /// The most one reading may move past the one before it, if bounded.
++    max_advance: Option<Ticks>,
+ }
+ 
++/// The smallest cap `ucal wallclock --max-advance` accepts: 100 ms.
++///
++/// Twice the clock's 50 ms refresh interval. Below the gap between readings a
++/// cap does not smooth a jump, it slows the clock.
++pub const MIN_MAX_ADVANCE_NANOS: u128 = 100_000_000;
++
+ impl Session {
+     /// Anchor a session at a wall reading.
+     pub fn anchored_at(wall: &Instant<UC1>) -> Session {
+         Session {
+             anchor: wall.ticks().clone(),
+             last: wall.ticks().clone(),
++            max_advance: None,
+         }
+     }
+ 
++    /// Bound how far one reading may advance past the previous one.
++    ///
++    /// `None` removes the bound. See the type's notes for what the cap does and
++    /// the one condition on it.
++    #[must_use]
++    pub fn with_max_advance(mut self, cap: Option<Ticks>) -> Session {
++        self.max_advance = cap;
++        self
++    }
++
+     /// The next reading, given the wall clock now and monotonic elapsed since
+     /// the anchor.
+     ///
+@@ -156,6 +197,17 @@ impl Session {
+         if self.last > best {
+             best = self.last.clone();
+         }
++        // The cap comes last and only ever lowers `best`, which is already
++        // `>= last`, so the reading stays monotone.
++        if let Some(cap) = &self.max_advance {
++            let ceiling = self
++                .last
++                .try_add(cap)
++                .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++            if best > ceiling {
++                best = ceiling;
++            }
++        }
+         self.last = best.clone();
+         Instant::from_ticks(best)
+     }
+@@ -217,6 +269,51 @@ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+     sess.reading(&wall, &elapsed)
+ }
+ 
++/// Bound how far one reading of the process-wide session may advance.
++///
++/// Anchors the session now if nothing has read the clock yet, so the cap is in
++/// force from the first reading. `None` lifts it.
++#[cfg(all(feature = "std", feature = "civil"))]
++pub fn set_max_advance(cap: Option<Ticks>) -> Result<(), TimeError> {
++    let wall = crate::wall_instant()?;
++    let mut g = match session().lock() {
++        Ok(g) => g,
++        Err(poisoned) => poisoned.into_inner(),
++    };
++    let (sess, _) = g.get_or_insert_with(|| {
++        (Session::anchored_at(&wall), std::time::Instant::now())
++    });
++    *sess = sess.clone().with_max_advance(cap);
++    Ok(())
++}
++
++/// Parse a span for `--max-advance`: an integer and a unit, `500ms`, `2s`.
++///
++/// Units are `ns`, `us`, `ms`, `s`, `m`. A bare number is refused rather than
++/// guessed at — `--max-advance 5` would be seconds to one reader and
++/// milliseconds to another.
++pub fn parse_span_nanos(s: &str) -> Result<u128, TimeError> {
++    let bad = || {
++        TimeError::with_context(
++            ucal_core::Code::E0001,
++            "expected a whole number and a unit — ns, us, ms, s or m — like `500ms` or `2s`",
++        )
++    };
++    let t = s.trim();
++    let split = t.find(|c: char| !c.is_ascii_digit()).ok_or_else(bad)?;
++    let (digits, unit) = t.split_at(split);
++    let n: u128 = digits.parse().map_err(|_| bad())?;
++    let per: u128 = match unit {
++        "ns" => 1,
++        "us" => 1_000,
++        "ms" => 1_000_000,
++        "s" => 1_000_000_000,
++        "m" => 60_000_000_000,
++        _ => return Err(bad()),
++    };
++    n.checked_mul(per).ok_or_else(bad)
++}
++
+ /// The structural facts: true on every machine, and needing no sample.
+ pub fn facts() -> Result<Vec<(String, Value)>, TimeError> {
+     let q = ticks_in_nanos(1).ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+@@ -541,6 +638,74 @@ mod tests {
+         }
+     }
+ 
++    /// **The cap.** A forward step is taken as a run of steps no larger than the
++    /// cap, and the reading ends on the wall clock.
++    #[test]
++    fn a_capped_session_smooths_a_forward_jump() {
++        let mut s = Session::anchored_at(&at(100)).with_max_advance(Some(ns(2_000_000_000)));
++        // The wall clock leaps an hour in one second of monotonic time.
++        let mut prev = s.reading(&at(101), &ns(1_000_000_000)).expect("a reading");
++        assert_eq!(prev.ticks().to_dec_string(), at(101).ticks().to_dec_string());
++        let target = at(3_701);
++        let mut steps = 0u32;
++        loop {
++            let r = s.reading(&target, &ns(2_000_000_000)).expect("a reading");
++            let moved = r.ticks().try_sub(prev.ticks()).expect("monotone");
++            assert!(
++                moved <= ns(2_000_000_000),
++                "a reading advanced {} ticks, past the cap",
++                moved.to_dec_string()
++            );
++            prev = r;
++            steps += 1;
++            if prev.ticks() >= target.ticks() {
++                break;
++            }
++            assert!(steps < 5_000, "the reading never reached the wall clock");
++        }
++        assert_eq!(prev.ticks().to_dec_string(), target.ticks().to_dec_string());
++        // 3600 s in 2 s steps, the last of which lands exactly.
++        assert_eq!(steps, 1_800);
++    }
++
++    /// A cap larger than any move changes nothing, and neither does no cap.
++    #[test]
++    fn a_cap_that_is_not_reached_is_invisible() {
++        let mut capped = Session::anchored_at(&at(100)).with_max_advance(Some(ns(10_000_000_000)));
++        let mut free = Session::anchored_at(&at(100));
++        for (w, e) in [(101u64, 1u128), (102, 2), (109, 3), (100, 4)] {
++            let a = capped.reading(&at(w), &ns(e * 1_000_000_000)).expect("a reading");
++            let b = free.reading(&at(w), &ns(e * 1_000_000_000)).expect("a reading");
++            assert_eq!(a.ticks().to_dec_string(), b.ticks().to_dec_string());
++        }
++    }
++
++    /// The cap does not break the guarantee the session exists for.
++    #[test]
++    fn a_capped_sequence_is_still_monotone() {
++        let mut s = Session::anchored_at(&at(1_000)).with_max_advance(Some(ns(1_500_000_000)));
++        let mut prev = at(1_000).ticks().clone();
++        for (i, w) in [1_001u64, 1_500, 999, 990, 1_010, 3_000, 1_005].iter().enumerate() {
++            let r = s
++                .reading(&at(*w), &ns((i as u128 + 1) * 1_000_000_000))
++                .expect("a reading");
++            assert!(r.ticks() >= &prev, "step {i} went backwards");
++            prev = r.ticks().clone();
++        }
++    }
++
++    #[test]
++    fn spans_parse_with_a_unit() {
++        assert_eq!(parse_span_nanos("500ms").expect("ms"), 500_000_000);
++        assert_eq!(parse_span_nanos("2s").expect("s"), 2_000_000_000);
++        assert_eq!(parse_span_nanos("1m").expect("m"), 60_000_000_000);
++        assert_eq!(parse_span_nanos("7us").expect("us"), 7_000);
++        assert_eq!(parse_span_nanos("9ns").expect("ns"), 9);
++        for bad in ["", "5", "s", "1.5s", "-1s", "2h", "5 s", "1e3ms"] {
++            assert!(parse_span_nanos(bad).is_err(), "`{bad}` was accepted");
++        }
++    }
++
+     /// Divergence is reported as a magnitude and a direction, never a negative.
+     ///
+     /// A tick count is unsigned by Rule B, so the sign is a word beside the
+diff --git a/crates/ucal/src/main.rs b/crates/ucal/src/main.rs
+index 7e3778c..50ba71c 100644
+--- a/crates/ucal/src/main.rs
++++ b/crates/ucal/src/main.rs
+@@ -407,6 +407,14 @@ enum Command {
+         /// already prints that number honestly, which is statically.
+         #[arg(long, value_name = "ORIGIN")]
+         since: Option<String>,
++        /// The most one reading may advance, like `500ms` or `2s`: smooths a
++        /// forward jump of the system clock into steps this size.
++        ///
++        /// Live only. The face still lands on the system's time and never goes
++        /// backwards; it just gets there `SPAN` at a time. At least `100ms`, or
++        /// the clock would run slow rather than smooth anything.
++        #[arg(long = "max-advance", value_name = "SPAN")]
++        max_advance: Option<String>,
+         /// Draw one frame to stdout and exit, instead of taking over the screen.
+         #[arg(long)]
+         once: bool,
+@@ -1105,8 +1113,16 @@ fn main() {
+             since,
+             once,
+             at,
++            max_advance,
+             ..
+         } => {
++            if max_advance.is_some() {
++                return Err(ucal_core::TimeError::with_context(
++                    ucal_core::Code::E0018,
++                    "--max-advance smooths a live clock and has nothing to do with \
++                     `--once --json`, which reads a single instant",
++                ));
++            }
+             let key = theme_key(*startrek, *gagarin, *armstrong, theme);
+             if key == "list" {
+                 return Ok(ucal::cmd_wallclock_themes());
+@@ -1234,6 +1250,7 @@ fn main() {
+         clock_local,
+         tier,
+         since,
++        max_advance,
+         once,
+         at,
+         height,
+@@ -1253,6 +1270,13 @@ fn main() {
+             // second width nobody would keep in step with the first.
+             let cols = Render::resolve_width(cli.width, terminal) as u16;
+             let result = LocaleId::parse(&cli.locale).and_then(|l| {
++                if *once && max_advance.is_some() {
++                    return Err(ucal_core::TimeError::with_context(
++                        ucal_core::Code::E0018,
++                        "--max-advance smooths a live clock and only makes sense \
++                         without --once, which draws a single instant",
++                    ));
++                }
+                 let mut dials =
+                     ucal::wallclock::Dials::new(l)?.with_clock_local(clock_local);
+                 if let Some(t) = tier {
+@@ -1285,6 +1309,9 @@ fn main() {
+                          a live clock's instant is now",
+                     ))
+                 } else {
++                    if let Some(span) = max_advance {
++                        ucal::wallclock::set_max_advance(span)?;
++                    }
+                     ucal::wallclock::run_with(key, &dials)
+                 }
+             });
+diff --git a/crates/ucal/src/wallclock/mod.rs b/crates/ucal/src/wallclock/mod.rs
+index d7f05cb..988292c 100644
+--- a/crates/ucal/src/wallclock/mod.rs
++++ b/crates/ucal/src/wallclock/mod.rs
+@@ -106,6 +106,27 @@ pub fn run(
+     run_with(theme_name, &dials)
+ }
+ 
++/// Cap how far one reading of the live clock may advance, from `--max-advance`.
++///
++/// Smooths a forward step of the system clock into a run of steps this size
++/// rather than one jump on the face. Refused under
++/// [`clock::MIN_MAX_ADVANCE_NANOS`](crate::clock::MIN_MAX_ADVANCE_NANOS): the
++/// clock is redrawn every [`REFRESH`], and a cap smaller than the gap between
++/// readings makes the clock run slow instead of smoothing anything.
++pub fn set_max_advance(span: &str) -> Result<(), TimeError> {
++    use ucal_core::Code;
++    let nanos = crate::clock::parse_span_nanos(span)?;
++    if nanos < crate::clock::MIN_MAX_ADVANCE_NANOS {
++        return Err(TimeError::with_context(
++            Code::E0018,
++            "--max-advance under 100ms is below twice the refresh interval, so \
++             the clock would run slow rather than smooth a jump",
++        ));
++    }
++    let cap = crate::clock::ticks_in_nanos(nanos).ok_or_else(|| TimeError::new(Code::E0021))?;
++    crate::clock::set_max_advance(Some(cap))
++}
++
+ /// Run the clock with everything [`Dials`] can ask for (F3).
+ pub fn run_with(theme_name: &str, dials: &Dials) -> Result<(), TimeError> {
+     let theme = theme::by_name(theme_name)?;
+diff --git a/crates/ucal/tests/wallclock.rs b/crates/ucal/tests/wallclock.rs
+index ca40832..d4b2e3f 100644
+--- a/crates/ucal/tests/wallclock.rs
++++ b/crates/ucal/tests/wallclock.rs
+@@ -875,3 +875,42 @@ fn the_hero_is_named_in_the_document() {
+         Some("T2 ".to_string())
+     );
+ }
++
++// ---- --max-advance ------------------------------------------------------
++
++fn ucal(args: &[&str]) -> (i32, String) {
++    let mut p = std::env::current_exe().expect("test binary path");
++    p.pop();
++    if p.ends_with("deps") {
++        p.pop();
++    }
++    let out = std::process::Command::new(p.join(format!("ucal{}", std::env::consts::EXE_SUFFIX)))
++        .args(args)
++        .env("NO_COLOR", "1")
++        .output()
++        .expect("run ucal");
++    (
++        out.status.code().unwrap_or(-1),
++        String::from_utf8_lossy(&out.stderr).into_owned(),
++    )
++}
++
++/// `--max-advance` smooths a live clock; on a single frame it is a mistake, and
++/// a bad or too-small span is refused before the terminal is taken over.
++#[test]
++fn max_advance_is_refused_where_it_means_nothing() {
++    let (code, err) = ucal(&["wallclock", "--once", "--max-advance", "1s"]);
++    assert_ne!(code, 0, "accepted with --once");
++    assert!(err.contains("--max-advance"), "{err}");
++
++    let (code, err) = ucal(&["--json", "wallclock", "--once", "--max-advance", "1s"]);
++    assert_ne!(code, 0, "accepted with --json");
++    assert!(err.contains("--max-advance"), "{err}");
++
++    let (code, err) = ucal(&["wallclock", "--max-advance", "10ms"]);
++    assert_ne!(code, 0, "a cap under the refresh interval was accepted");
++    assert!(err.contains("100ms"), "{err}");
++
++    let (code, _) = ucal(&["wallclock", "--max-advance", "1"]);
++    assert_ne!(code, 0, "a bare number was accepted");
++}

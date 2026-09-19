@@ -1,0 +1,98 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 23.35952377319336
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 22.62386703491211
+    },
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 22.526229858398438
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 19.96753692626953
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 19.74535369873047
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 12.465800285339355
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-4-1",
+      "score": 12.2258939743042
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 12.02304458618164
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-1-1",
+      "score": 10.498977661132812
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 10.390461921691895
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 10.337104797363281
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 8.070903778076172
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 278,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    ".github/workflows/ci.yml",
+    "CHANGELOG.md",
+    "Makefile",
+    "tests/public-api.txt"
+  ],
+  "findings": [],
+  "fingerprint": "681363fa8b3473520d43dcd35675b24d6970d361bd287d260a1b2932ccffcb39",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-50de40254ee5",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "dev",
+  "task": null,
+  "usage": {
+    "completion_tokens": 4089,
+    "prompt_tokens": 16618,
+    "seconds": 59.79354987399999
+  },
+  "verdicts": []
+}

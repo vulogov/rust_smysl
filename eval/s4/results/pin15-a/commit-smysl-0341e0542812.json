@@ -1,0 +1,134 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 86.88972473144531
+    },
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 81.6492919921875
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 62.99475860595703
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 44.60377883911133
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-4-1",
+      "score": 40.17179870605469
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 39.44867706298828
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 36.288246154785156
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 31.497379302978516
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 29.335294723510742
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 22.872573852539062
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 21.35883331298828
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 16.887176513671875
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "crates/smysl-core/src/cbor/envelope.rs",
+    "crates/smysl-core/src/cbor/reader.rs",
+    "crates/smysl-core/tests/invalid_corpus.rs",
+    "fixtures/wire/invalid/README.md",
+    "fixtures/wire/invalid/array-length-not-shortest.cbor",
+    "fixtures/wire/invalid/float-binary64.cbor",
+    "fixtures/wire/invalid/float-half.cbor",
+    "fixtures/wire/invalid/float-infinity.cbor",
+    "fixtures/wire/invalid/float-nan.cbor",
+    "fixtures/wire/invalid/float-not-quantised.cbor",
+    "fixtures/wire/invalid/indefinite-array.cbor",
+    "fixtures/wire/invalid/indefinite-bytes.cbor",
+    "fixtures/wire/invalid/indefinite-map.cbor",
+    "fixtures/wire/invalid/indefinite-text.cbor",
+    "fixtures/wire/invalid/int-five-bytes-for-small.cbor",
+    "fixtures/wire/invalid/int-nine-bytes-for-small.cbor",
+    "fixtures/wire/invalid/int-three-bytes-for-one.cbor",
+    "fixtures/wire/invalid/int-two-bytes-for-one.cbor",
+    "fixtures/wire/invalid/manifest.json",
+    "fixtures/wire/invalid/map-keys-duplicate.cbor",
+    "fixtures/wire/invalid/map-keys-unsorted.cbor",
+    "fixtures/wire/invalid/negint-two-bytes-for-one.cbor",
+    "fixtures/wire/invalid/nesting-too-deep.cbor",
+    "fixtures/wire/invalid/null-inside-map.cbor",
+    "fixtures/wire/invalid/null-value.cbor",
+    "fixtures/wire/invalid/tag-bignum.cbor",
+    "fixtures/wire/invalid/tag-datetime.cbor",
+    "fixtures/wire/invalid/text-invalid-utf8.cbor",
+    "fixtures/wire/invalid/text-length-not-shortest.cbor",
+    "fixtures/wire/invalid/text-not-nfc.cbor",
+    "fixtures/wire/invalid/truncated-array.cbor",
+    "fixtures/wire/invalid/truncated-text.cbor",
+    "fixtures/wire/invalid/undefined-value.cbor",
+    "go/invalid_corpus_test.go",
+    "nodejs/package.json",
+    "nodejs/test/invalid.test.js",
+    "python/tests/test_invalid_corpus.py",
+    "scripts/gen-invalid-corpus.py"
+  ],
+  "findings": [],
+  "fingerprint": "fccba9c31c02737bcd5747a0e7a32984c6d41e9ef5e18bbf0822c38d10ce3fd0",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-0341e0542812",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "dev",
+  "task": null,
+  "usage": {
+    "completion_tokens": 24,
+    "prompt_tokens": 25496,
+    "seconds": 113.7779765
+  },
+  "verdicts": []
+}

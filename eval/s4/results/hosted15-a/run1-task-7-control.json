@@ -1,0 +1,119 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 133.58282470703125
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-2",
+      "score": 110.525390625
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 107.2767333984375
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-4",
+      "score": 103.29320526123047
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 97.71231842041016
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-6",
+      "score": 81.55237579345703
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 59.097171783447266
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-10-1",
+      "score": 58.13469314575195
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-7",
+      "score": 53.798622131347656
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-10",
+      "score": 53.464298248291016
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-7-2",
+      "score": 51.12583923339844
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-1-2",
+      "score": 50.65122604370117
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 128,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/main.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "let _ = ucal::clock::anchor_session();",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-2",
+      "reason": "The change calls anchor_session at program start in main, which is exactly the rejected alternative of anchoring the session at process start-up.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Anchor the session at process start-up.\nA command that never asks the time should not read a clock, and most do not."
+    }
+  ],
+  "fingerprint": "aa9d681a381a74931f805173445640dfc7b996ebc6e2149c5cfacacbe9fb8085",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-7-control",
+  "kind": "agent",
+  "pack_tokens": 2996,
+  "pack_units": 134,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 7,
+  "usage": {
+    "completion_tokens": 17688,
+    "prompt_tokens": 12110,
+    "seconds": 261.461990291
+  },
+  "verdicts": [
+    {
+      "diff_line": "    let _ = ucal::clock::anchor_session();",
+      "label": "r/g2074788f713e-6-2",
+      "line": 124,
+      "reason": "The change calls anchor_session at program start in main, which is exactly the rejected alternative of anchoring the session at process start-up.",
+      "verdict": "contradicts"
+    }
+  ]
+}

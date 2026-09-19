@@ -1,0 +1,470 @@
+ Documentation/CLI-EXAMPLES.md           | 19 ++++++-
+ Documentation/examples/observations.txt | 21 --------
+ crates/ucal/tests/common/mod.rs         | 37 +++++++++++++
+ crates/ucal/tests/json_surface.rs       | 18 +++----
+ crates/ucal/tests/manual_fields.rs      | 18 +++----
+ xtask/src/examples.rs                   | 94 ++++++++++++++++++++++++++++++---
+ 6 files changed, 152 insertions(+), 55 deletions(-)
+
+diff --git a/Documentation/CLI-EXAMPLES.md b/Documentation/CLI-EXAMPLES.md
+index 027a960..862edd6 100644
+--- a/Documentation/CLI-EXAMPLES.md
++++ b/Documentation/CLI-EXAMPLES.md
+@@ -1073,9 +1073,24 @@ cosmological coordinate; giving UC-1 a stated frame is a 2.0 question, because
+ one unsigned integer per instant asserts there is one time.
+ ```
+ 
+-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`
++## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed -`
+ 
+-O minus C, the standard instrument of variable-star and pulsar work. The four synthetic observations are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and the arithmetic can be checked by eye. The last is outside its own window and the others are not — which is the point of carrying a width that grows with the cycle.
++O minus C, the standard instrument of variable-star and pulsar work. The four synthetic observations are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and the arithmetic can be checked by eye. The last is outside its own window and the others are not — which is the point of carrying a width that grows with the cycle. `--observed -` reads standard input, shown here as the first block.
++
++Standard input:
++
++```
++# cycle 0, +0 s
++8070205175623907873429294080830071880530466139316558837890624
++# cycle 100, +3 s
++8070205176188783324648635603786425480530466139316558837890624
++# cycle 250, -7 s
++8070205177036096232523174090236455880530466139316558837890624
++# cycle 500, +41 s
++8070205178448285611789196091997839880530466139316558837890624
++```
++
++Output:
+ 
+ ```
+ ucal ephem residuals
+diff --git a/Documentation/examples/observations.txt b/Documentation/examples/observations.txt
+deleted file mode 100644
+index ccc12a8..0000000
+--- a/Documentation/examples/observations.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-# Observed instants, one decimal tick count per line, for
+-# `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed <this>`.
+-#
+-# Blank lines and lines starting with `#` are skipped. Reading none at all is an
+-# error rather than a report of agreement having compared nothing.
+-#
+-# THESE ARE SYNTHETIC, like the ephemeris they go with: each is the predicted
+-# centre of a cycle, moved by a stated number of seconds, so the residuals are
+-# known in advance and the arithmetic can be checked by eye.
+-
+-# cycle 0, +0 s
+-8070205175623907873429294080830071880530466139316558837890624
+-
+-# cycle 100, +3 s
+-8070205176188783324648635603786425480530466139316558837890624
+-
+-# cycle 250, -7 s
+-8070205177036096232523174090236455880530466139316558837890624
+-
+-# cycle 500, +41 s
+-8070205178448285611789196091997839880530466139316558837890624
+diff --git a/crates/ucal/tests/common/mod.rs b/crates/ucal/tests/common/mod.rs
+new file mode 100644
+index 0000000..0739b18
+--- /dev/null
++++ b/crates/ucal/tests/common/mod.rs
+@@ -0,0 +1,37 @@
++//! Shared by the test binaries that run `ephem residuals`.
++
++use std::path::PathBuf;
++use std::sync::atomic::{AtomicUsize, Ordering};
++
++/// Four synthetic observed instants: the predicted centres of cycles 0, 100,
++/// 250 and 500 of `Documentation/examples/ephemeris.hjson`, moved by 0, +3, -7
++/// and +41 seconds. The residuals are known in advance.
++const OBSERVATIONS: &str = "\
++# cycle 0, +0 s
++8070205175623907873429294080830071880530466139316558837890624
++# cycle 100, +3 s
++8070205176188783324648635603786425480530466139316558837890624
++# cycle 250, -7 s
++8070205177036096232523174090236455880530466139316558837890624
++# cycle 500, +41 s
++8070205178448285611789196091997839880530466139316558837890624
++";
++
++/// Write the observations to a file of their own and return its path.
++///
++/// The first version wrote them into `std::env::temp_dir()` under one fixed
++/// name, from two test binaries that run concurrently. One truncated the file
++/// while the other read it, and the residuals run read nothing. The name now
++/// carries the process id and a counter, so no two calls — in one binary or
++/// across binaries — share a path, and every caller reads what it wrote.
++///
++/// The files are left behind, in Cargo's per-target scratch directory.
++#[allow(dead_code)]
++pub fn write_observations() -> PathBuf {
++    static NEXT: AtomicUsize = AtomicUsize::new(0);
++    let n = NEXT.fetch_add(1, Ordering::Relaxed);
++    let path = PathBuf::from(env!("CARGO_TARGET_TMPDIR"))
++        .join(format!("observations-{}-{n}.txt", std::process::id()));
++    std::fs::write(&path, OBSERVATIONS).expect("write the observations fixture");
++    path
++}
+diff --git a/crates/ucal/tests/json_surface.rs b/crates/ucal/tests/json_surface.rs
+index 9726231..d109d5f 100644
+--- a/crates/ucal/tests/json_surface.rs
++++ b/crates/ucal/tests/json_surface.rs
+@@ -36,6 +36,8 @@ use std::collections::BTreeMap;
+ 
+ use ucal::emit::{Doc, Value};
+ 
++mod common;
++
+ const T: &str = "8070205189123984864657505252035637180530466139316558837890625";
+ const T2: &str = "8070205189999984864657505252035637180530466139316558837890625";
+ 
+@@ -174,20 +176,12 @@ fn commands() -> Vec<(&'static str, Doc)> {
+         v.push(("ephem-show", ucal::cmd_ephem_show(EPH).unwrap()));
+         v.push(("ephem-at", ucal::cmd_ephem_at(EPH, 5000, 3).unwrap()));
+         v.push(("ephem-next", ucal::cmd_ephem_next(EPH, T, 3, 2).unwrap()));
+-        // O1 — residuals read observations from a **committed** fixture.
+-        //
+-        // The first version wrote one into `std::env::temp_dir()` under a fixed
+-        // name, and this file and `manual_fields.rs` both did it — two test
+-        // binaries, one path, run concurrently. One truncated the file while the
+-        // other read it, which produced a residuals run that had read nothing.
+-        // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        // O1 — residuals read observations from a file this test writes, at a
++        // path nothing else shares (see `common`).
++        let obs = common::write_observations();
+         v.push((
+             "ephem-residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, obs.to_str().unwrap(), 1).unwrap(),
+         ));
+     }
+     #[cfg(feature = "cosmo")]
+diff --git a/crates/ucal/tests/manual_fields.rs b/crates/ucal/tests/manual_fields.rs
+index 994355e..614cb44 100644
+--- a/crates/ucal/tests/manual_fields.rs
++++ b/crates/ucal/tests/manual_fields.rs
+@@ -31,6 +31,8 @@ use std::collections::BTreeSet;
+ 
+ use ucal::emit::{Doc, Value};
+ 
++mod common;
++
+ const T: &str = "8070205189123984864657505252035637180530466139316558837890625";
+ const T2: &str = "8070205189999984864657505252035637180530466139316558837890625";
+ 
+@@ -178,20 +180,12 @@ fn all_commands() -> Vec<(&'static str, Doc)> {
+         v.push(("ephem show", ucal::cmd_ephem_show(EPH).unwrap()));
+         v.push(("ephem at", ucal::cmd_ephem_at(EPH, 5000, 3).unwrap()));
+         v.push(("ephem next", ucal::cmd_ephem_next(EPH, T, 3, 2).unwrap()));
+-        // O1 — residuals read observations from a **committed** fixture.
+-        //
+-        // The first version wrote one into `std::env::temp_dir()` under a fixed
+-        // name, and this file and `manual_fields.rs` both did it — two test
+-        // binaries, one path, run concurrently. One truncated the file while the
+-        // other read it, which produced a residuals run that had read nothing.
+-        // It passed locally every time and failed in CI on the cut commit.
+-        const OBS: &str = concat!(
+-            env!("CARGO_MANIFEST_DIR"),
+-            "/../../Documentation/examples/observations.txt"
+-        );
++        // O1 — residuals read observations from a file this test writes, at a
++        // path nothing else shares (see `common`).
++        let obs = common::write_observations();
+         v.push((
+             "ephem residuals",
+-            ucal::cmd_ephem_residuals(EPH, OBS, 1).unwrap(),
++            ucal::cmd_ephem_residuals(EPH, obs.to_str().unwrap(), 1).unwrap(),
+         ));
+     }
+     #[cfg(feature = "cosmo")]
+diff --git a/xtask/src/examples.rs b/xtask/src/examples.rs
+index f27ef6f..9db40af 100644
+--- a/xtask/src/examples.rs
++++ b/xtask/src/examples.rs
+@@ -35,138 +35,188 @@
+ //! rather than left as an unexplained absence.
+ 
+ use std::path::Path;
+-use std::process::Command;
++use std::io::Write;
++use std::process::{Command, Stdio};
+ 
+ /// One example: a command line, and why a reader is being shown it.
+ struct Example {
+     args: &'static [&'static str],
+     why: &'static str,
++    /// Text fed to the command on standard input, and shown above its output.
++    /// For a command that reads a file, this is how an example carries the file
++    /// without the repository committing one.
++    stdin: Option<&'static str>,
+ }
+ 
+ const T: &str = "8070205189123984864657505252035637180530466139316558837890625";
+ 
++/// Four synthetic observed instants for `ephem residuals`: the predicted centres
++/// of cycles 0, 100, 250 and 500 of `ephemeris.hjson`, moved by 0, +3, -7 and
++/// +41 seconds. Passed on standard input so that no file has to be committed
++/// beside the ephemeris, and none can be left stale or raced over.
++const OBSERVATIONS: &str = "\
++# cycle 0, +0 s
++8070205175623907873429294080830071880530466139316558837890624
++# cycle 100, +3 s
++8070205176188783324648635603786425480530466139316558837890624
++# cycle 250, -7 s
++8070205177036096232523174090236455880530466139316558837890624
++# cycle 500, +41 s
++8070205178448285611789196091997839880530466139316558837890624
++";
++
+ fn examples() -> Vec<Example> {
+     vec![
+         Example {
+             args: &["datum"],
+             why: "What tick 0 is, and — more of the output than a reader expects — what is *not* being claimed about it.",
++            stdin: None,
+         },
+         Example {
+             args: &["explain", T],
+             why: "One instant in every form the program has. The 61-digit integer is the value; everything under it is a rendering of that same number.",
++            stdin: None,
+         },
+         Example {
+             args: &["explain", T, "--why"],
+             why: "The same document with each field annotated by the rule or section that requires it. Almost nothing here is a convenience.",
++            stdin: None,
+         },
+         Example {
+             args: &["between", "0", T, "--at", "beat"],
+             why: "A duration on the tier ladder. `--at` adds the whole count and remainder at one named tier.",
++            stdin: None,
+         },
+         Example {
+             args: &["--bridge", "between", "0", T],
+             why: "The same difference with the SI conversion asked for. Without `--bridge` no Earth unit appears, which is the project's whole argument in one flag.",
++            stdin: None,
+         },
+         Example {
+             args: &["ladder", "--named-only"],
+             why: "The ten named rungs of the 45-tier grid. A tier's identity is its exponent; the names are display-only.",
++            stdin: None,
+         },
+         Example {
+             args: &["cal", "list"],
+             why: "Seven derived calendars, two with anchors. A body without an anchor is the ordinary case, not a failure.",
++            stdin: None,
+         },
+         Example {
+             args: &["cal", "show", "earth-d", T],
+             why: "One derived calendar in full: its intercalation, its cycles, and the cited anchor that gives it a phase.",
++            stdin: None,
+         },
+         Example {
+             args: &["show", T],
+             why: "One instant in several calendars at once, each labelled derived or legacy.",
++            stdin: None,
+         },
+         Example {
+             args: &["add", T, "1", "--step", "mars-d-year"],
+             why: "The operation this program did not have: it could read time and measure it, and not move through it. Moving below the datum is an error rather than a negative instant, because absolute time is unsigned (Rule B).",
++            stdin: None,
+         },
+         Example {
+             args: &["add", T, "1", "--in", "mars-d"],
+             why: "The same instant, one Martian year later as the calendar counts them — same day of the year, same position within it. `--step mars-d-year` above adds the mean orbital period instead, which is a duration and lands on a different local date: a local year is not a constant span, because the leap rule makes the lengths differ by one.",
++            stdin: None,
+         },
+         Example {
+             args: &["between", "0", T, "--at", "mars-d"],
+             why: "How many Martian solar days since the datum, whole and remainder. `--at` has always meant express this span in this unit; since 1.11.0 the unit can be a calendar's own and not only a tier.",
++            stdin: None,
+         },
+         Example {
+             args: &["cal", "from", "mars-d", "82-83"],
+             why: "The inverse of `cal show`, and the thing the fifteen derived calendars did not have while Earth's legacy ones had it from 0.1.0. The answer is a window and would be wrong not to be: a local day is a span, and the anchor's uncertainty propagates into it (Rule J.2).",
++            stdin: None,
+         },
+         Example {
+             args: &["cal", "validate", "--all"],
+             why: "The precision probe over every calendar this project ships. Fifteen calendars rest on nineteen distinct published figures and fourteen of those decide their leap rule outright — which is Rule K working, not a defect. The sharp part is the sharing: a satellite's year is its primary's orbit, so Jupiter's 4332.589 d decides five leap rules at once.",
++            stdin: None,
+         },
+         Example {
+             args: &["cal", "validate", "Documentation/examples/europa.hjson"],
+             why: "Two questions with separate answers: does the file load, and does a calendar follow from it? The `precision:` rows measure the caveat this project has carried since 0.2.0 — a rounded parameter is a different calendar — by moving each published figure's last digit and re-deriving.",
++            stdin: None,
+         },
+         Example {
+             args: &["events", "show", "recombination"],
+             why: "A cited milestone. Events are intervals, and the citation travels with the value.",
++            stdin: None,
+         },
+         Example {
+             args: &["timeline"],
+             why: "The catalogue against the tier ladder — the whole of time on one screen.",
++            stdin: None,
+         },
+         Example {
+             args: &["cosmo", "age", "--z", "1100", "--depth", "8"],
+             why: "A certified enclosure by integer quadrature. Depth 8 keeps this example fast; `CLI.md` has the cost table.",
++            stdin: None,
+         },
+         Example {
+             args: &["lighttime", "1", "--unit", "ly"],
+             why: "A light-year is defined as a Julian year times c, so its light-travel time is that year exactly — 31 557 600 s with no remainder. A light-year is a time unit wearing a distance's clothes. One astronomical unit of light-time, 499.004783836 s, is also the largest a barycentric correction can be, for any target and any date.",
++            stdin: None,
+         },
+         Example {
+             args: &["lighttime", "1", "--unit", "pc"],
+             why: "And the unit that cannot convert exactly. A parsec is defined as 648000/pi astronomical units — an exact definition of an irrational number — so the answer is a bracket and no decimal for it is the value.",
++            stdin: None,
+         },
+         Example {
+             args: &["from-jd", "2451545.0", "--scale", "tcb"],
+             why: "Barycentric Coordinate Time, whose offset from TDB is a *defining* constant rather than a measurement — so that step is exact and the answer carries only TDB's own bound, not a tick more. TCB runs ahead of TDB by 0.489 s per Julian year, which reaches a minute inside two centuries.",
++            stdin: None,
+         },
+         Example {
+             args: &["dilate", "--rs-over-r", "0.0000042467", "--show", "18"],
+             why: "The Sun's surface, bracketed to eighteen places by integer square roots. `f64` computing the same redshift keeps about eight of its sixteen digits, because `1/sqrt(1-x) - 1` in the weak field subtracts two numbers that agree to six places. The interval is proved to contain the value rather than converged to it.",
++            stdin: None,
+         },
+         Example {
+             args: &["ephem", "residuals", "Documentation/examples/ephemeris.hjson",
+-                    "--observed", "Documentation/examples/observations.txt"],
+-            why: "O minus C, the standard instrument of variable-star and pulsar work. The four synthetic observations are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and the arithmetic can be checked by eye. The last is outside its own window and the others are not — which is the point of carrying a width that grows with the cycle.",
++                    "--observed", "-"],
++            why: "O minus C, the standard instrument of variable-star and pulsar work. The four synthetic observations are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and the arithmetic can be checked by eye. The last is outside its own window and the others are not — which is the point of carrying a width that grows with the cycle. `--observed -` reads standard input, shown here as the first block.",
++            stdin: Some(OBSERVATIONS),
+         },
+         Example {
+             args: &["ephem", "at", "Documentation/examples/ephemeris.hjson", "--cycle", "5000"],
+             why: "A prediction five thousand cycles past a fit that covers five hundred. The window is the answer — it has grown from 7.5 s at the epoch to 164 s here — and `UCAL-W0003` says the fit does not reach this far. The figures in that file are illustrative and cite nothing, which it states.",
++            stdin: None,
+         },
+         Example {
+             args: &["verify"],
+             why: "The binary re-deriving the constants it ships with, and saying plainly that agreeing with itself is not verification.",
++            stdin: None,
+         },
+         Example {
+             args: &["doctor"],
+             why: "Which profile, which backend, which features — the first thing to paste into a bug report.",
++            stdin: None,
+         },
+         Example {
+             args: &["to-civil", T, "--digits", "3"],
+             why: "An Earth calendar label. This is an Earth command, so it carries Earth units unasked.",
++            stdin: None,
+         },
+         Example {
+             args: &["from-jd", "2451545.0", "--scale", "tt"],
+             why: "J2000.0, the epoch every parameter in this project is stated at, and the first time this program could convert it. `--scale` is required and has no default: a converter that defaults is silently wrong by 69 seconds whenever it guesses.",
++            stdin: None,
+         },
+         Example {
+             args: &["from-jd", "2460000.5", "--scale", "tdb"],
+             why: "The same conversion in a scale that is not exact. TDB differs from TT by a periodic series whose evaluation needs floating point, which Rule E forbids here — so the answer is a window carrying the series' 1.7 ms bound, rather than a centre that would look exact.",
++            stdin: None,
+         },
+         Example {
+             args: &["from-civil", "2026-08-07"],
+             why: "And back. Exact or an error, never rounded.",
++            stdin: None,
+         },
+         // The wall clock, as a frame. Deterministic because `--once --at`
+         // fixes the instant and `COLUMNS` fixes the width, which is the whole
+@@ -176,46 +226,70 @@ fn examples() -> Vec<Example> {
+         Example {
+             args: &["wallclock", "--once", "--at", T, "--theme", "startrek", "--height", "26"],
+             why: "LCARS. The elbow, the rail of tier readouts, the beat in block digits, and the flicker as a bar because a number would be wrong before it was drawn.",
++            stdin: None,
+         },
+         Example {
+             args: &["wallclock", "--once", "--at", T, "--theme", "starwars", "--height", "24"],
+             why: "A targeting computer: canopy brackets, a reticle round the beat, the flicker riding the crosshair, and every other hand compressed into one strip. An instrument, where LCARS is a console.",
++            stdin: None,
+         },
+         Example {
+             args: &["wallclock", "--once", "--at", T, "--gagarin", "--locale", "ru", "--height", "24"],
+             why: "A Vostok instrument panel: an enamelled plate with bezelled gauges set into it, engraved labels, and a red lamp. Everything Cyrillic here comes from --locale ru, including the chrome: through 1.8.0 the plates were hardcoded Russian and this theme was the one place that could override the flag.",
++            stdin: None,
+         },
+         Example {
+             args: &["wallclock", "--once", "--at", T, "--armstrong", "--height", "24"],
+             why: "An Apollo DSKY. VERB 16 NOUN 65 is a real pair — monitor, decimal, time — and the lamps are drawn unlit except COMP ACTY, because the rest report conditions this program does not have.",
++            stdin: None,
+         },
+         Example {
+             args: &["wallclock", "--once", "--at", T, "--theme", "orbit", "--height", "22"],
+             why: "Hands, on dials, in braille. Every tier has 3125 stops because every rung is 5^5 of the one below, so each tier is a circle and they nest. Drawn with integer CORDIC: there is no float in this program and a clock face is a bad place to make the first exception.",
++            stdin: None,
+         },
+         Example {
+             args: &["wallclock", "--once", "--at", T, "--clock-local", "mars-d", "--height", "20"],
+             why: "The plain theme with a second dial. A wall clock's second face has always shown another place, and Mars is one.",
++            stdin: None,
+         },
+         Example {
+             args: &["explain", "abc"],
+             why: "A rejection: an Appendix E code, an exit status, and — since 1.2.0 — what a good input would have looked like.",
++            stdin: None,
+         },
+     ]
+ }
+ 
+ /// Run one example against the built binary and return its output.
+-fn capture(bin: &Path, args: &[&str]) -> Result<String, String> {
++fn capture(bin: &Path, args: &[&str], stdin: Option<&str>) -> Result<String, String> {
+     // `wallclock` needs the non-default `tui` feature. A binary without it
+     // rejects the subcommand, and the resulting file would silently document a
+     // program that is missing a command — so this is an error and names the fix.
+-    let out = Command::new(bin)
++    let mut child = Command::new(bin)
+         .args(args)
+         .env("NO_COLOR", "1")
+         // A fixed width, so the committed file does not depend on the terminal
+         // that generated it.
+         .env("COLUMNS", "80")
+-        .output()
++        .stdin(if stdin.is_some() { Stdio::piped() } else { Stdio::null() })
++        .stdout(Stdio::piped())
++        .stderr(Stdio::piped())
++        .spawn()
++        .map_err(|e| format!("{}: {e}", bin.display()))?;
++    if let Some(text) = stdin {
++        // Dropped at the end of the statement, which closes the pipe. The
++        // inputs are a few hundred bytes, well inside the pipe buffer, so
++        // writing before reading cannot deadlock.
++        child
++            .stdin
++            .take()
++            .expect("stdin was piped")
++            .write_all(text.as_bytes())
++            .map_err(|e| format!("{}: {e}", bin.display()))?;
++    }
++    let out = child
++        .wait_with_output()
+         .map_err(|e| format!("{}: {e}", bin.display()))?;
+     let mut text = String::from_utf8_lossy(&out.stdout).into_owned();
+     let err = String::from_utf8_lossy(&out.stderr);
+@@ -244,8 +318,12 @@ pub fn generate(root: &Path, bin: &Path) -> Result<String, String> {
+     out.push_str("Colour is off and the width is 80 columns, so these match a redirected run rather than a terminal.\n\n---\n");
+ 
+     for ex in examples() {
+-        let text = capture(bin, ex.args)?;
+-        out.push_str(&format!("\n## `ucal {}`\n\n{}\n\n```\n{}```\n", ex.args.join(" "), ex.why, text));
++        let text = capture(bin, ex.args, ex.stdin)?;
++        out.push_str(&format!("\n## `ucal {}`\n\n{}\n\n", ex.args.join(" "), ex.why));
++        if let Some(input) = ex.stdin {
++            out.push_str(&format!("Standard input:\n\n```\n{input}```\n\nOutput:\n\n"));
++        }
++        out.push_str(&format!("```\n{text}```\n"));
+     }
+     let _ = root;
+     Ok(out)

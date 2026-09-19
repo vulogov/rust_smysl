@@ -1,0 +1,120 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 99.52664947509766
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-7-1",
+      "score": 98.783935546875
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-4",
+      "score": 95.13822937011719
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-7-1",
+      "score": 94.37132263183594
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-7-3",
+      "score": 90.59741973876953
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-2",
+      "score": 89.12818145751953
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 72.98313903808594
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-7",
+      "score": 70.42188262939453
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 66.36306762695312
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-1-2",
+      "score": 61.688541412353516
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-3",
+      "score": 56.89146041870117
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-10-1",
+      "score": 53.62356185913086
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 198,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/tests/golden.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "measured.push((\"session_drift\".into(), Value::Section(clock::session_drift()?)));",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-7-1",
+      "reason": "This line adds a session_drift section to doctor --clock, sampling the session clock, which this rejected alternative said not to do.",
+      "source": "crates/ucal/src/lib.rs@2074788f713e",
+      "text": "Rejected: Sample the session clock for `doctor --clock`.\nA session clock measuring itself would be measuring its own output."
+    }
+  ],
+  "fingerprint": "fae95d20d3e79764d28599e77198e73a32da2654c2a09931309fac449409e046",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-12-control",
+  "kind": "agent",
+  "pack_tokens": 2995,
+  "pack_units": 136,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 12,
+  "usage": {
+    "completion_tokens": 17794,
+    "prompt_tokens": 16355,
+    "seconds": 259.475977833
+  },
+  "verdicts": [
+    {
+      "diff_line": "+    measured.push((\"session_drift\".into(), Value::Section(clock::session_drift()?)));",
+      "label": "r/g2074788f713e-7-1",
+      "line": 146,
+      "reason": "This line adds a session_drift section to doctor --clock, sampling the session clock, which this rejected alternative said not to do.",
+      "verdict": "contradicts"
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g532e4d229a6c-1-1",
+      "score": 89.93962097167969,
+      "terms": [
+        "fmt:9.60",
+        "prints:5.76",
+        "with:5.47",
+        "cmd:5.13",
+        "print:5.08"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g532e4d229a6c-3",
+      "score": 83.5938491821289,
+      "terms": [
+        "with:5.99",
+        "write:4.41",
+        "must:4.38",
+        "writ:4.06",
+        "canonical:3.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-5",
+      "score": 63.8913688659668,
+      "terms": [
+        "check:8.98",
+        "through:7.78",
+        "errors:6.32",
+        "error:5.89",
+        "print:5.58"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-3-1",
+      "score": 62.4005126953125,
+      "terms": [
+        "file:12.98",
+        "fil:11.94",
+        "with:8.16",
+        "contains:7.58",
+        "canonical:7.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 57.39508056640625,
+      "terms": [
+        "check:5.51",
+        "with:4.68",
+        "write:4.67",
+        "lik:4.15",
+        "like:4.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-9",
+      "score": 53.39219665527344,
+      "terms": [
+        "assert:7.35",
+        "check:6.73",
+        "str:4.87",
+        "gate:4.75",
+        "contain:4.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 52.99508285522461,
+      "terms": [
+        "assert:9.54",
+        "check:6.77",
+        "with:5.75",
+        "nothing:5.29",
+        "first:4.31"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-6-1",
+      "score": 51.43177795410156,
+      "terms": [
+        "fmt:11.64",
+        "let:7.46",
+        "write:5.07",
+        "first:4.90",
+        "writ:4.67"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-5-1",
+      "score": 46.927589416503906,
+      "terms": [
+        "check:9.57",
+        "through:7.55",
+        "errors:7.00",
+        "error:6.53",
+        "statu:4.75"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 46.798797607421875,
+      "terms": [
+        "file:13.08",
+        "fil:12.03",
+        "noth:5.87",
+        "nothing:5.87",
+        "to:4.56"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-3-1",
+      "score": 46.230247497558594,
+      "terms": [
+        "nam:17.07",
+        "names:6.03",
+        "doe:4.06",
+        "does:4.06",
+        "tests:3.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-1",
+      "score": 46.16865539550781,
+      "terms": [
+        "fmt:11.66",
+        "cmd:5.60",
+        "through:4.87",
+        "tests:4.03",
+        "noth:3.74"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 70,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "tests/cmd_fmt.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "let out = run(&[\"fmt\", \"--check\", l]);",
+      "kind": "rejected alternative",
+      "label": "r/g532e4d229a6c-1-1",
+      "reason": "This line directly calls the cmd_fmt function, contradicting the rejection of writing unit tests that call cmd_fmt functions directly instead of running the binary.",
+      "source": "tests/cmd_fmt.rs@532e4d229a6c",
+      "text": "Rejected: Writing unit tests that call cmd_fmt functions directly instead of running the binary\nThe command reads the filesystem, parses, writes, and prints with no seam to call, so only running the binary reaches these decisions."
+    },
+    {
+      "diff_line": "let dir = scratch(\"check-report\");",
+      "kind": "decision",
+      "label": "d/g532e4d229a6c-3",
+      "reason": "This line creates a temporary directory for the test, contradicting the decision to make each test write its own document with the needed property instead of using repository fixtures.",
+      "source": "tests/cmd_fmt.rs@532e4d229a6c",
+      "text": "Make each test write its own document with the needed property instead of using repository fixtures.\nThe first version depended on repository fixtures like F1 not canonical and F9 having comments. cargo-mutants reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten, causing spurious failures counted as catches. The rule is that a test must not depend on the state of the tree, just as it must not depend on the state of the machine."
+    }
+  ],
+  "fingerprint": "21433d16b57abb28d1cee4496fc1280290d8c3483ffe75a1dc0d005055bb40c0",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-4-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1497,
+  "pack_units": 54,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 4,
+  "usage": {
+    "completion_tokens": 237,
+    "predicted_tokens": 12351,
+    "prompt_tokens": 8024,
+    "seconds": 38.382618917
+  },
+  "verdicts": [
+    {
+      "diff_line": "+    let out = run(&[\"fmt\", \"--check\", l]);",
+      "label": "r/g532e4d229a6c-1-1",
+      "line": 26,
+      "reason": "This line directly calls the cmd_fmt function, contradicting the rejection of writing unit tests that call cmd_fmt functions directly instead of running the binary.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+    let dir = scratch(\"check-report\");",
+      "label": "d/g532e4d229a6c-3",
+      "line": 18,
+      "reason": "This line creates a temporary directory for the test, contradicting the decision to make each test write its own document with the needed property instead of using repository fixtures.",
+      "verdict": "contradicts"
+    }
+  ]
+}

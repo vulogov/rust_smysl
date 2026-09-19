@@ -1,0 +1,203 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-20-1",
+      "score": 49.98529052734375,
+      "terms": [
+        "baselin:9.32",
+        "baseline:9.32",
+        "workspac:6.20",
+        "workspace:6.20"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-3",
+      "score": 37.907554626464844,
+      "terms": [
+        "makefil:6.41",
+        "makefile:6.41",
+        "workspac:5.81",
+        "workspace:5.81",
+        "them:5.65"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-9",
+      "score": 36.83348083496094,
+      "terms": [
+        "went:5.88",
+        "have:5.19",
+        "checked:4.96",
+        "hav:4.96",
+        "first:4.20"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-6-1",
+      "score": 32.949989318847656,
+      "terms": [
+        "let:7.46",
+        "have:6.06",
+        "hav:5.78",
+        "first:4.90",
+        "version:3.07"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g69ea5c05d859-10-1",
+      "score": 32.65748977661133,
+      "terms": [
+        "checked:7.41",
+        "make:6.21",
+        "are:5.28",
+        "mak:4.58",
+        "with:4.18"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-14",
+      "score": 31.755260467529297,
+      "terms": [
+        "publish:6.25",
+        "published:6.25",
+        "until:6.25",
+        "make:3.78",
+        "mak:3.10"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-5",
+      "score": 27.19428062438965,
+      "terms": [
+        "carried:5.20",
+        "make:4.48",
+        "versions:4.48",
+        "carri:3.93",
+        "mak:3.67"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-2-1",
+      "score": 23.716724395751953,
+      "terms": [
+        "call:7.57",
+        "sam:5.81",
+        "same:5.81",
+        "would:3.11",
+        "the:1.41"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-6",
+      "score": 21.35127067565918,
+      "terms": [
+        "have:4.87",
+        "hav:4.65",
+        "first:3.94",
+        "version:3.00",
+        "would:2.45"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-26-1",
+      "score": 21.331079483032227,
+      "terms": [
+        "dep:5.90",
+        "them:4.93",
+        "are:4.14",
+        "with:4.03",
+        "and:1.34"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-3",
+      "score": 20.93001365661621,
+      "terms": [
+        "make:4.00",
+        "hav:3.72",
+        "mak:3.28",
+        "first:3.15",
+        "with:2.99"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-3-1",
+      "score": 20.598125457763672,
+      "terms": [
+        "workspace:6.14",
+        "workspac:5.68",
+        "was:3.38",
+        "check:3.12",
+        "and:1.31"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 30,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "Documentation/READINESS.md",
+    "Makefile"
+  ],
+  "findings": [
+    {
+      "diff_line": "BASELINE  := 1.3.0",
+      "kind": "prerequisite",
+      "label": "p/g4968383dc452-20-1",
+      "reason": "The change updates BASELINE to 1.3.0, which contradicts the constraint that cargo-mutants auto-set timeout based on baseline, causing timeouts on workspace suite.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "cargo-mutants auto-set timeout based on baseline, causing timeouts on workspace suite."
+    }
+  ],
+  "fingerprint": "3dd559f336cba6e6a7e9dcc812cdd5be2e66e311c5dbeb65a962c106b5bdfa24",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-01035bfe7805",
+  "kind": "commit",
+  "pack_tokens": 1494,
+  "pack_units": 58,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 140,
+    "predicted_tokens": 9552,
+    "prompt_tokens": 6425,
+    "seconds": 27.200989335
+  },
+  "verdicts": [
+    {
+      "diff_line": "-BASELINE  := 1.2.0",
+      "label": "p/g4968383dc452-20-1",
+      "line": 27,
+      "reason": "The change updates BASELINE to 1.3.0, which contradicts the constraint that cargo-mutants auto-set timeout based on baseline, causing timeouts on workspace suite.",
+      "verdict": "contradicts"
+    }
+  ]
+}

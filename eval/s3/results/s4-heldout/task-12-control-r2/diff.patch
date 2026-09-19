@@ -1,0 +1,265 @@
+ Documentation/CLI.md        |  10 +++
+ crates/ucal/src/clock.rs    | 159 +++++++++++++++++++++++++++++++++++++++++++-
+ crates/ucal/src/lib.rs      |  12 +++-
+ crates/ucal/tests/golden.rs |  25 +++++++
+ 4 files changed, 204 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/CLI.md b/Documentation/CLI.md
+index 8dbbc41..7357802 100644
+--- a/Documentation/CLI.md
++++ b/Documentation/CLI.md
+@@ -2151,6 +2151,16 @@ almost nothing.** `--clock` reports it: 1000 ns to 41 ns is a factor of 24, and
+ rung is 3125, so it is **24/3125 of a rung** and the finest fillable tier does
+ not move.
+ 
++**The session clock's drift is reported too**, as `clock_measured.session_drift`
++(magnitude in whole nanoseconds, the direction as words, and the baseline it
++accumulated over) and `session_drift_ticks` (the exact tick count). `--clock`
++anchors the session before it samples the clocks, then compares the system clock
++with what the session projects (`anchor + monotonic elapsed`). One command is a
++short baseline, so what it shows is mostly the two clocks' quantisation and not a
++rate error, and it is not accuracy: neither clock is compared with anything
++outside the machine. Built without `civil` there is no session and the field is
++absent.
++
+ ### One process, one clock
+ 
+ Every reading comes from a **session clock**, and it exists for monotonicity
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..c250b71 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -217,6 +217,94 @@ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+     sess.reading(&wall, &elapsed)
+ }
+ 
++/// How far the wall clock sits from the session clock's projection, and over
++/// what baseline.
++///
++/// The magnitude is unsigned (Rule B); [`wall_ahead`](Self::wall_ahead) is the
++/// sign.
++#[derive(Clone, Debug)]
++pub struct SessionDrift {
++    /// The distance between the wall clock and `anchor + monotonic_elapsed`.
++    pub ticks: Ticks,
++    /// `true` when the wall clock is ahead of the projection.
++    pub wall_ahead: bool,
++    /// Monotonic time since the session was anchored — the baseline the drift
++    /// was accumulated over.
++    pub since_anchor: Ticks,
++}
++
++/// The process-wide session's drift from the system clock, now.
++///
++/// `None` when nothing in this process has asked the time yet: the session is
++/// anchored on first use, so there is no anchor to drift from, and anchoring
++/// here would report a drift of zero over a baseline of zero and call it a
++/// measurement. A caller that wants a baseline anchors first with
++/// [`session_now`].
++#[cfg(all(feature = "std", feature = "civil"))]
++pub fn session_drift() -> Result<Option<SessionDrift>, TimeError> {
++    let wall = crate::wall_instant()?;
++    // Poisoning is survivable for the reason `session_now` gives.
++    let g = match session().lock() {
++        Ok(g) => g,
++        Err(poisoned) => poisoned.into_inner(),
++    };
++    let Some((sess, base)) = g.as_ref() else {
++        return Ok(None);
++    };
++    let elapsed = ticks_in_nanos(base.elapsed().as_nanos())
++        .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++    let (ticks, wall_ahead) = sess.divergence(&wall, &elapsed);
++    Ok(Some(SessionDrift {
++        ticks,
++        wall_ahead,
++        since_anchor: elapsed,
++    }))
++}
++
++/// Whole nanoseconds in `t` ticks, rounded toward zero.
++///
++/// Only for display: the exact tick count is reported beside it.
++pub fn nanos_in_ticks(t: &Ticks) -> Option<Ticks> {
++    let per_nano = ticks_in_nanos(1)?;
++    Some(t.quot_rem(&per_nano).0)
++}
++
++/// The report for a [`SessionDrift`], as fields for `doctor --clock`.
++pub fn drift_fields(d: Option<&SessionDrift>) -> Result<Vec<(String, Value)>, TimeError> {
++    let Some(d) = d else {
++        return Ok(vec![(
++            "session_drift".into(),
++            Value::text("not measured — no reading has anchored this process's session clock"),
++        )]);
++    };
++    let ns = |t: &Ticks| -> Result<String, TimeError> {
++        nanos_in_ticks(t)
++            .map(|n| n.to_dec_string())
++            .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))
++    };
++    let magnitude = ns(&d.ticks)?;
++    let baseline = ns(&d.since_anchor)?;
++    let direction = if d.ticks.is_zero_ticks() {
++        "none observed"
++    } else if d.wall_ahead {
++        "the system clock is ahead of the session clock"
++    } else {
++        "the system clock is behind the session clock"
++    };
++    Ok(vec![
++        (
++            "session_drift".into(),
++            Value::text(format!(
++                "{magnitude} ns — {direction}, over {baseline} ns since the session \
++                 anchored. This is one process's lifetime, so it is mostly the two \
++                 clocks' quantisation and not a rate; it is not accuracy either, since \
++                 neither clock is compared with anything outside this machine"
++            )),
++        ),
++        ("session_drift_ticks".into(), Value::number(d.ticks.to_dec_string())),
++    ])
++}
++
+ /// The structural facts: true on every machine, and needing no sample.
+ pub fn facts() -> Result<Vec<(String, Value)>, TimeError> {
+     let q = ticks_in_nanos(1).ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+@@ -573,7 +661,76 @@ mod tests {
+         assert_eq!(finest_tier_for(&q).expect("a tier").index(), raw.index());
+     }
+ 
+-    /// And the measurement returns something on a machine that has a clock.
++    fn drift(secs_ticks: u128, wall_ahead: bool, since: u128) -> SessionDrift {
++        SessionDrift {
++            ticks: ns(secs_ticks),
++            wall_ahead,
++            since_anchor: ns(since),
++        }
++    }
++
++    fn text_of(fields: &[(String, Value)], key: &str) -> String {
++        fields
++            .iter()
++            .find(|(k, _)| k == key)
++            .unwrap_or_else(|| panic!("no `{key}`"))
++            .1
++            .rendered_text()
++    }
++
++    /// The report names the size, the direction and the baseline.
++    #[test]
++    fn drift_is_reported_with_its_direction_and_baseline() {
++        let ahead = drift_fields(Some(&drift(1_500, true, 60_000_000))).expect("fields");
++        let t = text_of(&ahead, "session_drift");
++        assert!(t.starts_with("1500 ns"), "{t}");
++        assert!(t.contains("system clock is ahead of the session clock"), "{t}");
++        assert!(t.contains("over 60000000 ns"), "{t}");
++        assert_eq!(
++            text_of(&ahead, "session_drift_ticks").trim(),
++            ns(1_500).to_dec_string()
++        );
++
++        let behind = drift_fields(Some(&drift(7, false, 1_000))).expect("fields");
++        assert!(text_of(&behind, "session_drift").contains("behind the session clock"));
++    }
++
++    /// No drift is said as such, not as a direction.
++    #[test]
++    fn zero_drift_has_no_direction() {
++        let f = drift_fields(Some(&drift(0, true, 1_000))).expect("fields");
++        let t = text_of(&f, "session_drift");
++        assert!(t.starts_with("0 ns — none observed"), "{t}");
++    }
++
++    /// A session nothing has anchored is reported as unmeasured, not as zero.
++    #[test]
++    fn an_unanchored_session_is_not_a_zero() {
++        let f = drift_fields(None).expect("fields");
++        assert!(text_of(&f, "session_drift").starts_with("not measured"));
++        assert!(f.iter().all(|(k, _)| k != "session_drift_ticks"));
++    }
++
++    /// Ticks convert back to nanoseconds exactly for whole nanoseconds.
++    #[test]
++    fn nanos_round_trip() {
++        let n = nanos_in_ticks(&ns(12_345)).expect("in range");
++        assert_eq!(n.to_dec_string(), "12345");
++    }
++
++    /// Drift from the live session: anchored, then measured against the wall.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn a_live_session_reports_a_drift_once_anchored() {
++        session_now().expect("anchored");
++        let d = session_drift().expect("read").expect("anchored session");
++        // Nothing steps the clock in a test: both clocks moved for the same
++        // few milliseconds, so the drift is far below a second.
++        let second = ns(1_000_000_000);
++        assert!(d.ticks < second, "drift of a second or more: {}", d.ticks.to_dec_string());
++    }
++
++    /// And the measurement returns something on a machine that has a clock."""
+     #[cfg(feature = "std")]
+     #[test]
+     fn the_measurement_observes_both_clocks() {
+diff --git a/crates/ucal/src/lib.rs b/crates/ucal/src/lib.rs
+index bef39bc..69a8d10 100644
+--- a/crates/ucal/src/lib.rs
++++ b/crates/ucal/src/lib.rs
+@@ -409,9 +409,19 @@ pub fn cmd_doctor() -> CmdResult {
+ /// by run, and `doctor`'s ordinary output is compared against a committed
+ /// example byte for byte. A diagnostic that could not be reproduced would fail
+ /// `check-docs` on every machine but the one that generated it.
++///
++/// It also reports how far the session clock has drifted from the system clock.
++/// The session is anchored *before* the sampling below, so the baseline is at
++/// least as long as the sampling took rather than nothing.
+ #[cfg(feature = "std")]
+ pub fn cmd_doctor_measuring() -> CmdResult {
+-    cmd_doctor_inner(Some(clock::measured()?))
++    #[cfg(feature = "civil")]
++    let _ = now_instant()?;
++    #[cfg_attr(not(feature = "civil"), allow(unused_mut))]
++    let mut measured = clock::measured()?;
++    #[cfg(feature = "civil")]
++    measured.extend(clock::drift_fields(clock::session_drift()?.as_ref())?);
++    cmd_doctor_inner(Some(measured))
+ }
+ 
+ fn cmd_doctor_inner(measured: Option<Vec<(String, Value)>>) -> CmdResult {
+diff --git a/crates/ucal/tests/golden.rs b/crates/ucal/tests/golden.rs
+index ae8ee70..04a83b6 100644
+--- a/crates/ucal/tests/golden.rs
++++ b/crates/ucal/tests/golden.rs
+@@ -170,6 +170,31 @@ fn the_implied_age_is_rendered_exactly_not_rounded() {
+ // §19.3 — ucal doctor
+ // ---------------------------------------------------------------------------
+ 
++/// `doctor --clock` says how far the session clock has drifted from the system
++/// clock, and the ordinary `doctor` does not: it is a measurement, and the
++/// ordinary output is compared byte for byte against a committed example.
++#[cfg(all(feature = "std", feature = "civil"))]
++#[test]
++fn doctor_clock_reports_session_drift() {
++    let measured = ucal::cmd_doctor_measuring().unwrap();
++    let Some(Value::Section(fields)) = measured.get("clock_measured") else {
++        panic!("no clock_measured section");
++    };
++    let keys: Vec<&str> = fields.iter().map(|(k, _)| k.as_str()).collect();
++    for want in ["session_drift", "session_drift_ticks"] {
++        assert!(keys.contains(&want), "clock_measured is missing `{want}`");
++    }
++    let drift = fields
++        .iter()
++        .find(|(k, _)| k == "session_drift")
++        .map(|(_, v)| v.rendered_text())
++        .unwrap();
++    assert!(!drift.starts_with("not measured"), "the session was not anchored: {drift}");
++
++    let plain = cmd_doctor().unwrap();
++    assert!(plain.get("clock_measured").is_none());
++}
++
+ #[test]
+ fn doctor_reports_everything_19_3_names() {
+     let doc = cmd_doctor().unwrap();

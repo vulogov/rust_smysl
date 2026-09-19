@@ -1,0 +1,271 @@
+ Documentation/CLI.md     |  18 +++++
+ crates/ucal/src/clock.rs | 173 ++++++++++++++++++++++++++++++++++++++++++++---
+ crates/ucal/src/main.rs  |   4 +-
+ 3 files changed, 184 insertions(+), 11 deletions(-)
+
+diff --git a/Documentation/CLI.md b/Documentation/CLI.md
+index 8dbbc41..953f5f2 100644
+--- a/Documentation/CLI.md
++++ b/Documentation/CLI.md
+@@ -2136,6 +2136,24 @@ actually do, which is a measurement and varies by machine and by run.
+   it. §8.4 makes operation offline, so there is no reference — and a rate error
+   estimated from a short baseline reports quantisation as drift.
+ 
++**Drift** is the fourth number, and the only one `--clock` can report about the
++*session clock* (below). `clock_measured.session_drift` anchors the session
++before sampling, samples, then reads the system clock again and says how far it
++has moved from the session's projection (`anchor + monotonic elapsed`) — in
++whole nanoseconds, as a magnitude and a direction (*ahead of*, *behind*, or
++*agrees with*), over the monotonic baseline it was measured across:
++
++```
++session_drift: 0 ns over 61204583 ns of monotonic time since the session was anchored — the system clock agrees with the session's projection. ...
++```
++
++It is a difference between two clocks in one process. It is **not accuracy** and
++**not a rate**: over a baseline of tens of milliseconds it is mostly
++quantisation, and a step in the system clock (NTP, a VM resuming, an operator
++setting the date) shows up in it at once. The wall side is the raw system clock,
++never the session clock's own output, which would report zero whatever the
++machine did.
++
+ **`ucal now` renders to `T-12`, which is one Planck tick.** That is ten rungs
+ below what a nanosecond can fill and eleven below what a microsecond can. A rung
+ is `5^5`, so the bottom of a `now` reading is the conversion's arithmetic and not
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..4566e68 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -195,28 +195,112 @@ fn session() -> &'static SessionState {
+     S.get_or_init(|| Mutex::new(None))
+ }
+ 
++/// The session, locked. A poisoned lock means another thread panicked holding
++/// it. The state is a pair of tick counts and cannot be torn, so taking the inner
++/// value is correct rather than merely convenient — the same judgement
++/// `body_file::leak` makes about its intern pool.
++#[cfg(all(feature = "std", feature = "civil"))]
++fn locked() -> std::sync::MutexGuard<'static, Option<(Session, std::time::Instant)>> {
++    match session().lock() {
++        Ok(g) => g,
++        Err(poisoned) => poisoned.into_inner(),
++    }
++}
++
++/// Monotonic time since the session's anchor, in ticks and in nanoseconds.
++#[cfg(all(feature = "std", feature = "civil"))]
++fn since(base: &std::time::Instant) -> Result<(Ticks, u128), TimeError> {
++    let nanos = base.elapsed().as_nanos();
++    let ticks = ticks_in_nanos(nanos).ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++    Ok((ticks, nanos))
++}
++
+ /// The session clock's reading, for [`crate::now_instant`].
+ #[cfg(all(feature = "std", feature = "civil"))]
+ pub fn session_now() -> Result<Instant<UC1>, TimeError> {
+     let wall = crate::wall_instant()?;
+-    // A poisoned lock means another thread panicked holding it. The state is a
+-    // pair of tick counts and cannot be torn, so taking the inner value is
+-    // correct rather than merely convenient — the same judgement
+-    // `body_file::leak` makes about its intern pool.
+-    let mut g = match session().lock() {
+-        Ok(g) => g,
+-        Err(poisoned) => poisoned.into_inner(),
+-    };
++    let mut g = locked();
+     // Anchored on first use rather than at start-up: a command that never asks
+     // the time should not read a clock, and most of them do not.
+     let (sess, base) = g.get_or_insert_with(|| {
+         (Session::anchored_at(&wall), std::time::Instant::now())
+     });
+-    let elapsed = ticks_in_nanos(base.elapsed().as_nanos())
+-        .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++    let (elapsed, _) = since(base)?;
+     sess.reading(&wall, &elapsed)
+ }
+ 
++/// How far the system clock has moved from the session clock's projection, and
++/// over how long.
++///
++/// Where [`Session::divergence`] leaves off: this reads both clocks. The wall
++/// side is [`crate::wall_instant`], the raw reading, and not [`session_now`] —
++/// a session clock compared with its own output would report zero whatever the
++/// machine did, because `max` hands back whichever branch is ahead.
++///
++/// Anchors the session if nothing has, so a first call reports a baseline of
++/// nothing and a caller that wants a real one calls this early and again late.
++#[cfg(all(feature = "std", feature = "civil"))]
++pub fn session_drift() -> Result<Drift, TimeError> {
++    let wall = crate::wall_instant()?;
++    let mut g = locked();
++    let (sess, base) = g.get_or_insert_with(|| {
++        (Session::anchored_at(&wall), std::time::Instant::now())
++    });
++    let (elapsed, baseline_ns) = since(base)?;
++    let (magnitude, wall_ahead) = sess.divergence(&wall, &elapsed);
++    Ok(Drift {
++        magnitude,
++        wall_ahead,
++        baseline_ns,
++    })
++}
++
++/// The system clock's distance from the session clock's projection.
++///
++/// A magnitude and a direction, because a tick count is unsigned (Rule B). It is
++/// a **difference between two clocks in one process**, not an error against the
++/// truth: the session's projection is the anchor plus the oscillator, and this
++/// is how far the system clock's disciplining has moved it away since.
++#[derive(Clone, Debug)]
++pub struct Drift {
++    /// How far apart the two are.
++    pub magnitude: Ticks,
++    /// Whether the system clock is ahead of the projection.
++    pub wall_ahead: bool,
++    /// Monotonic time since the session was anchored, in nanoseconds.
++    pub baseline_ns: u128,
++}
++
++impl Drift {
++    /// The sentence `doctor --clock` prints.
++    ///
++    /// The magnitude is a whole number of nanoseconds, since both readings are
++    /// placed to one; anything finer would be the conversion's and is dropped
++    /// by the division rather than shown.
++    pub fn describe(&self) -> String {
++        let per_ns = match ticks_in_nanos(1) {
++            Some(t) => t,
++            None => return "not representable".to_string(),
++        };
++        let (ns, _) = self.magnitude.quot_rem(&per_ns);
++        let ns = ns.to_dec_string();
++        let relation = if ns == "0" {
++            "the system clock agrees with"
++        } else if self.wall_ahead {
++            "the system clock is ahead of"
++        } else {
++            "the system clock is behind"
++        };
++        format!(
++            "{ns} ns over {} ns of monotonic time since the session was anchored — \
++             {relation} the session's projection. A difference between two clocks in \
++             this process, not an error against the truth; over a baseline this short \
++             it is mostly quantisation, and is not a rate",
++            self.baseline_ns
++        )
++    }
++}
++
+ /// The structural facts: true on every machine, and needing no sample.
+ pub fn facts() -> Result<Vec<(String, Value)>, TimeError> {
+     let q = ticks_in_nanos(1).ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+@@ -273,6 +357,12 @@ pub fn facts() -> Result<Vec<(String, Value)>, TimeError> {
+ /// against a committed example.
+ #[cfg(feature = "std")]
+ pub fn measured() -> Result<Vec<(String, Value)>, TimeError> {
++    // Anchor the session before sampling, so the sampling below is the baseline
++    // the drift is reported over. Left until afterwards, a one-shot `doctor`
++    // would anchor and read in the same breath and always report nothing.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    session_drift()?;
++
+     let wall = sample_wall();
+     let mono = sample_monotonic();
+ 
+@@ -325,6 +415,9 @@ pub fn measured() -> Result<Vec<(String, Value)>, TimeError> {
+             )),
+         ));
+     }
++
++    #[cfg(all(feature = "std", feature = "civil"))]
++    out.push(("session_drift".into(), Value::text(session_drift()?.describe())));
+     Ok(out)
+ }
+ 
+@@ -573,6 +666,53 @@ mod tests {
+         assert_eq!(finest_tier_for(&q).expect("a tier").index(), raw.index());
+     }
+ 
++    /// Drift is a magnitude in nanoseconds and a direction in words.
++    #[test]
++    fn drift_is_described_by_size_and_direction() {
++        let s = Session::anchored_at(&at(100));
++        let elapsed = ns(4_000_000_000);
++        for (wall, want) in [
++            (at(105), "1000000000 ns over 4000000000 ns"),
++            (at(105), "the system clock is ahead of the session's projection"),
++            (at(103), "1000000000 ns over 4000000000 ns"),
++            (at(103), "the system clock is behind the session's projection"),
++            (at(104), "0 ns over 4000000000 ns"),
++            (at(104), "the system clock agrees with the session's projection"),
++        ] {
++            let (magnitude, wall_ahead) = s.divergence(&wall, &elapsed);
++            let d = Drift {
++                magnitude,
++                wall_ahead,
++                baseline_ns: 4_000_000_000,
++            };
++            assert!(d.describe().contains(want), "`{want}` not in: {}", d.describe());
++        }
++    }
++
++    /// It is not an accuracy claim, and the sentence says so.
++    #[test]
++    fn drift_does_not_claim_to_be_accuracy() {
++        let d = Drift {
++            magnitude: ns(0),
++            wall_ahead: true,
++            baseline_ns: 1,
++        };
++        assert!(d.describe().contains("not an error against the truth"));
++    }
++
++    /// The raw wall clock and the session's projection are two readings of one
++    /// machine, so over a test's lifetime they agree to well under a second.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn a_live_session_reports_a_drift_and_a_baseline() {
++        let first = session_drift().expect("anchors");
++        std::thread::sleep(std::time::Duration::from_millis(5));
++        let later = session_drift().expect("reads");
++        assert!(later.baseline_ns > first.baseline_ns, "the baseline did not advance");
++        let second = ns(1_000_000_000);
++        assert!(later.magnitude < second, "two clocks of one machine drifted a second apart");
++    }
++
+     /// And the measurement returns something on a machine that has a clock.
+     #[cfg(feature = "std")]
+     #[test]
+@@ -590,4 +730,17 @@ mod tests {
+             );
+         }
+     }
++
++    /// `doctor --clock` reports the drift, with the baseline it is over.
++    #[cfg(all(feature = "std", feature = "civil"))]
++    #[test]
++    fn the_measurement_reports_the_session_drift() {
++        let m = measured().expect("measured");
++        let (_, v) = m
++            .iter()
++            .find(|(k, _)| k == "session_drift")
++            .expect("no `session_drift`");
++        let text = v.rendered_text();
++        assert!(text.contains(" ns over "), "no drift or baseline: {text}");
++    }
+ }
+diff --git a/crates/ucal/src/main.rs b/crates/ucal/src/main.rs
+index 7e3778c..9f986a8 100644
+--- a/crates/ucal/src/main.rs
++++ b/crates/ucal/src/main.rs
+@@ -434,7 +434,9 @@ enum Command {
+         /// Off by default because the result is a *measurement*: it varies by
+         /// machine and by run, and the rest of this report does not. What it
+         /// measures is **resolution**, never accuracy — §8.4 makes operation
+-        /// offline, so there is no reference to compare against.
++        /// offline, so there is no reference to compare against. It also
++        /// reports how far the system clock has drifted from the session
++        /// clock's projection: a difference between two clocks, not an error.
+         #[arg(long)]
+         clock: bool,
+     },

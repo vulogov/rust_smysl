@@ -1,0 +1,330 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 312.6039733886719,
+      "terms": [
+        "src:76.15",
+        "nodejs:22.53",
+        "spec:18.26",
+        "uid:18.02",
+        "fixtures:15.57"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 253.20425415039062,
+      "terms": [
+        "cor:50.65",
+        "core:50.65",
+        "uid:18.96",
+        "store:6.49",
+        "stor:5.97"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 235.36082458496094,
+      "terms": [
+        "smysl:62.09",
+        "cor:44.89",
+        "core:44.89",
+        "surfac:20.94",
+        "surface:20.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 217.16294860839844,
+      "terms": [
+        "smysl:64.27",
+        "cor:40.69",
+        "core:40.69",
+        "tests:23.53",
+        "test:13.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-6-1",
+      "score": 174.60641479492188,
+      "terms": [
+        "cor:49.85",
+        "core:49.85",
+        "fixtures:20.28",
+        "uid:18.66",
+        "fixtur:18.11"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-15-1",
+      "score": 146.3574676513672,
+      "terms": [
+        "surfac:23.79",
+        "surface:23.79",
+        "python:22.95",
+        "nodejs:22.79",
+        "wire:16.71"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 143.4989013671875,
+      "terms": [
+        "test:21.26",
+        "surfac:17.72",
+        "surface:17.72",
+        "records:17.38",
+        "tests:16.79"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-15",
+      "score": 140.556884765625,
+      "terms": [
+        "surfac:22.15",
+        "surface:22.15",
+        "python:21.94",
+        "nodejs:21.78",
+        "wire:15.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 137.52178955078125,
+      "terms": [
+        "smysl:72.39",
+        "tests:30.26",
+        "test:24.21",
+        "path:5.42",
+        "for:3.98"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-1-2",
+      "score": 135.27902221679688,
+      "terms": [
+        "smysl:71.21",
+        "tests:29.76",
+        "test:23.82",
+        "path:5.33",
+        "for:3.91"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-9-1",
+      "score": 134.80191040039062,
+      "terms": [
+        "smysl:70.63",
+        "spec:18.88",
+        "format:16.87",
+        "tabl:12.03",
+        "tables:6.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g69ea5c05d859-11-1",
+      "score": 134.71559143066406,
+      "terms": [
+        "surfac:32.20",
+        "surface:32.20",
+        "python:24.87",
+        "nodejs:24.69",
+        "nodej:14.82"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 242,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/SMYSL_FORMAT_GUIDE.pdf",
+    "Documentation/SMYSL_FORMAT_GUIDE.typ",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SPEC_DRAFT_1.4.md",
+    "Documentation/manual/appendices.typ",
+    "Documentation/manual/ch14-16-view-salience-retract.typ",
+    "crates/smysl-core/src/surface/lex.rs",
+    "crates/smysl-core/src/surface/mod.rs",
+    "crates/smysl-core/src/surface/parse.rs",
+    "crates/smysl-core/src/surface/write.rs",
+    "crates/smysl-core/tests/lifecycle_fixtures.rs",
+    "crates/smysl-core/tests/surface.rs",
+    "crates/smysl-graph/src/compact.rs",
+    "crates/smysl-graph/tests/merge_idempotence.rs",
+    "crates/smysl-ingest/src/stage.rs",
+    "crates/smysl-render/src/ir.rs",
+    "fixtures/wire/F10-lifecycle.cbor",
+    "fixtures/wire/contention-id/cases.json",
+    "fixtures/wire/relation-id/cases.json",
+    "go/conformance_test.go",
+    "go/lifecycle_test.go",
+    "go/records.go",
+    "go/uid.go",
+    "nodejs/package.json",
+    "nodejs/src/records.js",
+    "nodejs/src/uid.js",
+    "nodejs/test/conformance.test.js",
+    "nodejs/test/lifecycle.test.js",
+    "python/smysl/records.py",
+    "python/smysl/uid.py",
+    "python/tests/test_lifecycle.py",
+    "python/tests/test_spec.py",
+    "scripts/verify-spec-tables.py",
+    "src/main.rs",
+    "tests/cmd_review.rs",
+    "tests/public-api-counts.txt"
+  ],
+  "findings": [
+    {
+      "diff_line": "Since folded into the normative specification, with surface syntax and the other three",
+      "kind": "rejected alternative",
+      "label": "r/g69ea5c05d859-15-1",
+      "reason": "The change adds version lists to Python, JavaScript, and Go implementations, contradicting the rejected alternative that stated these should not be added.",
+      "source": "Documentation/ROAD_TO_1.0.md@69ea5c05d859",
+      "text": "Rejected: Add version lists to python/, nodejs/, go/.\nAll three read CBOR only and the wire carries no version string, so no surface parser sees a @doc header there."
+    },
+    {
+      "diff_line": "Since folded into the normative specification, with surface syntax and the other three",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-15",
+      "reason": "The change adds version lists to Python, JavaScript, and Go implementations, contradicting the decision that stated these should not be added.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Do not add version lists to python/, nodejs/, go/ implementations.\nAll three read CBOR only and the wire carries no version string, so no surface parser ever sees a @doc header there. The migration plan's assumption was wrong."
+    },
+    {
+      "diff_line": "Since folded into the normative specification, with surface syntax and the other three",
+      "kind": "prerequisite",
+      "label": "p/g69ea5c05d859-11-1",
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded unit that no surface parser sees @doc header.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "python/, nodejs/, go/ read CBOR only; no surface parser sees @doc header."
+    },
+    {
+      "diff_line": "preserve records 11 and 12 as unknown until they decode them.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-1",
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "source": "nodejs/README.md@4968383dc452",
+      "text": "Upgrade nodejs conformance target from C-Read to C-Produce.\nTo provide a fourth independent derivation of uids and a third witness for \u00a72.3 beyond the Rust, strengthening the evidence that the specification is sufficient."
+    },
+    {
+      "diff_line": "preserve records 11 and 12 as unknown until they decode them.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-12",
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded decision to correct README claims that tables were asserted against document.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Correct README claims that tables were asserted against document.\nThe tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document."
+    },
+    {
+      "diff_line": "preserve records 11 and 12 as unknown until they decode them.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-15",
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded decision to revise gate 7 blocked command explanation.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Revise gate 7 blocked command explanation, no longer 'decision about book'.\nThe block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision."
+    },
+    {
+      "diff_line": "preserve records 11 and 12 as unknown until they decode them.",
+      "kind": "decision",
+      "label": "d/g4968383dc452-16",
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded decision to hold beta.smy repair rather than guess missing stanza.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Hold beta.smy repair rather than guess missing stanza.\nThe missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair."
+    }
+  ],
+  "fingerprint": "4f13770cc6879cb5b102249542f3d37b4b3cda76c76e60426dd4562be2fe639a",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-c7bf5a3ef580",
+  "kind": "commit",
+  "pack_tokens": 1499,
+  "pack_units": 64,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 763,
+    "predicted_tokens": 46214,
+    "prompt_tokens": 56764,
+    "seconds": 339.234911625
+  },
+  "verdicts": [
+    {
+      "diff_line": "+Since folded into the normative specification, with surface syntax and the other three implementations \u2014 see below.",
+      "label": "r/g69ea5c05d859-15-1",
+      "line": 11,
+      "reason": "The change adds version lists to Python, JavaScript, and Go implementations, contradicting the rejected alternative that stated these should not be added.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Since folded into the normative specification, with surface syntax and the other three implementations \u2014 see below.",
+      "label": "d/g69ea5c05d859-15",
+      "line": 11,
+      "reason": "The change adds version lists to Python, JavaScript, and Go implementations, contradicting the decision that stated these should not be added.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Since folded into the normative specification, with surface syntax and the other three implementations \u2014 see below.",
+      "label": "p/g69ea5c05d859-11-1",
+      "line": 11,
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded unit that no surface parser sees @doc header.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Since folded into the normative specification, with surface syntax and the other three implementations \u2014 see below.",
+      "label": "d/g4968383dc452-1",
+      "line": 10,
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Since folded into the normative specification, with surface syntax and the other three implementations \u2014 see below.",
+      "label": "d/g4968383dc452-12",
+      "line": 10,
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded decision to correct README claims that tables were asserted against document.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Since folded into the normative specification, with surface syntax and the other three implementations \u2014 see below.",
+      "label": "d/g4968383dc452-15",
+      "line": 10,
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded decision to revise gate 7 blocked command explanation.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Since folded into the normative specification, with surface syntax and the other three implementations \u2014 see below.",
+      "label": "d/g4968383dc452-16",
+      "line": 10,
+      "reason": "The change states that surface syntax for records is now included, contradicting the recorded decision to hold beta.smy repair rather than guess missing stanza.",
+      "verdict": "contradicts"
+    }
+  ]
+}

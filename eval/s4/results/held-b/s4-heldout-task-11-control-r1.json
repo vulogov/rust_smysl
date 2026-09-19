@@ -1,0 +1,244 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 210.50355529785156,
+      "terms": [
+        "examples:26.40",
+        "documentation:19.80",
+        "exampl:16.08",
+        "cycl:11.36",
+        "ephemeri:9.96"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-2",
+      "score": 140.34805297851562,
+      "terms": [
+        "examples:26.85",
+        "documentation:20.14",
+        "observations:18.71",
+        "observation:17.93",
+        "txt:17.87"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-1-3",
+      "score": 134.05245971679688,
+      "terms": [
+        "observation:16.50",
+        "observations:16.50",
+        "path:5.50",
+        "residual:5.24",
+        "residuals:5.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-2",
+      "score": 113.24974060058594,
+      "terms": [
+        "observation:14.90",
+        "observations:14.90",
+        "four:7.54",
+        "known:7.26",
+        "synthetic:7.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-3-1",
+      "score": 84.64068603515625,
+      "terms": [
+        "examples:30.98",
+        "exampl:18.87",
+        "src:9.34",
+        "xtask:9.34",
+        "manual:7.02"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-2-1",
+      "score": 79.93295288085938,
+      "terms": [
+        "observation:15.66",
+        "observations:15.66",
+        "known:7.53",
+        "advance:5.95",
+        "eye:5.95"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-1",
+      "score": 77.6720199584961,
+      "terms": [
+        "observation:14.43",
+        "observations:14.43",
+        "binari:5.63",
+        "binaries:5.63",
+        "wrot:5.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-2-2",
+      "score": 74.57464599609375,
+      "terms": [
+        "cycl:11.46",
+        "grow:8.86",
+        "outsid:7.00",
+        "outside:7.00",
+        "width:6.66"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/gcc3aafefb1da-6",
+      "score": 70.17402648925781,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-1-1",
+      "score": 70.17402648925781,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-1-2",
+      "score": 70.17402648925781,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-6-1",
+      "score": 70.17402648925781,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 325,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/examples/observations.txt",
+    "crates/ucal/tests/common/mod.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-2-1",
+      "reason": "The change removes the reference to the committed observations file.",
+      "source": "xtask/src/examples.rs@cc3aafefb1da",
+      "text": "The ephemeris file at Documentation/examples/ephemeris.hjson exists with predictable cycle centres"
+    },
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-1-2",
+      "reason": "The change removes the reference to the committed observations file.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "The committed observations file exists at Documentation/examples/observations.txt with synthetic observations"
+    },
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-1-3",
+      "reason": "The change removes the reference to the committed observations file.",
+      "source": "crates/ucal/tests/json_surface.rs@cc3aafefb1da",
+      "text": "The residuals command accepts a file path argument to read observations"
+    },
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "decision",
+      "label": "d/gcc3aafefb1da-2",
+      "reason": "The change removes the reference to the committed observations file.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "Create observations as four synthetic instants with known shifts.\nSo residuals are known in advance and can be checked by eye; three inside window and +41 outside demonstrates width property."
+    },
+    {
+      "diff_line": "## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "kind": "prerequisite",
+      "label": "p/gcc3aafefb1da-3-1",
+      "reason": "The change removes the reference to the committed observations file.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "Manual examples are generated from xtask/src/examples.rs entries"
+    }
+  ],
+  "fingerprint": "5143db1b2051ce8001756c2ce4814913fde3e627260255b7575300ccec5e6398",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-11-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1498,
+  "pack_units": 78,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 11,
+  "usage": {
+    "completion_tokens": 464,
+    "predicted_tokens": 42101,
+    "prompt_tokens": 31648,
+    "seconds": 159.91133100000002
+  },
+  "verdicts": [
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "p/gcc3aafefb1da-2-1",
+      "line": 9,
+      "reason": "The change removes the reference to the committed observations file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "p/gcc3aafefb1da-1-2",
+      "line": 9,
+      "reason": "The change removes the reference to the committed observations file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "p/gcc3aafefb1da-1-3",
+      "line": 9,
+      "reason": "The change removes the reference to the committed observations file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "d/gcc3aafefb1da-2",
+      "line": 9,
+      "reason": "The change removes the reference to the committed observations file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## `ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt`",
+      "label": "p/gcc3aafefb1da-3-1",
+      "line": 9,
+      "reason": "The change removes the reference to the committed observations file.",
+      "verdict": "contradicts"
+    }
+  ]
+}

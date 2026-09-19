@@ -1,0 +1,101 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 34.21759796142578
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 30.167552947998047
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 29.85383415222168
+    },
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 29.533206939697266
+    },
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 25.961780548095703
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 14.787358283996582
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 13.831416130065918
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-3-1",
+      "score": 13.72614860534668
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-1-1",
+      "score": 12.099494934082031
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 11.79664421081543
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 10.607802391052246
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 9.768993377685547
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/READINESS.md",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "crates/smysl-check/tests/scaling.rs",
+    "crates/smysl-core/tests/versioning.rs",
+    "crates/smysl-graph/src/traverse.rs",
+    "crates/smysl-graph/tests/scaling.rs"
+  ],
+  "findings": [],
+  "fingerprint": "0b1fb9bc14985568183c0a6d973559ab5fe42be2f0f473fbdcee73da9bb904fa",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-4710509c2bf9",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "dev",
+  "task": null,
+  "usage": {
+    "completion_tokens": 12587,
+    "prompt_tokens": 22210,
+    "seconds": 195.11825020799998
+  },
+  "verdicts": []
+}

@@ -1,0 +1,194 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 133.58282470703125
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-2",
+      "score": 110.525390625
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 107.2767333984375
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-4",
+      "score": 103.29320526123047
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 97.71231842041016
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-6",
+      "score": 81.55237579345703
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 59.097171783447266
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-10-1",
+      "score": 58.13469314575195
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-7",
+      "score": 53.798622131347656
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-10",
+      "score": 53.464298248291016
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-7-2",
+      "score": 51.12583923339844
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-1-2",
+      "score": 50.65122604370117
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 128,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/main.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "/// The process-wide session, anchored on first use.",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-2",
+      "reason": "The comment now states the session is anchored at program start, contradicting the rejected alternative that it should be anchored lazily.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Anchor the session at process start-up.\nA command that never asks the time should not read a clock, and most do not."
+    },
+    {
+      "diff_line": "/// `Option`, and anchored inside [`session_now`] rather than in `get_or_init`:",
+      "kind": "prerequisite",
+      "label": "p/g2074788f713e-2-2",
+      "reason": "The comment now states the session is filled by `anchor_session` rather than lazily inside `session_now`, contradicting the constraint that `std::time::Instant::elapsed()` gives monotonic duration from the session base.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "`std::time::Instant::elapsed()` gives monotonic duration from the session base."
+    },
+    {
+      "diff_line": "// Ordinarily already anchored by `anchor_session`, called at program",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-4-1",
+      "reason": "The comment now states the session is anchored by `anchor_session` called at program start, contradicting the rejected alternative that `Session::reading` should read the wall clock itself.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Have Session::reading read the wall clock itself.\nA pure function lets tests drive a wall clock backwards and assert the answer does not follow."
+    },
+    {
+      "diff_line": "let (sess, base) = g.get_or_insert_with(|| {",
+      "kind": "decision",
+      "label": "d/g2074788f713e-4",
+      "reason": "The code now inserts the session and base inside `session_now` if not already present, contradicting the decision to make `Session::reading` a pure function of its inputs.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Make Session::reading a pure function of its inputs.\nPure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence."
+    },
+    {
+      "diff_line": "let (sess, base) = g.get_or_insert_with(|| {",
+      "kind": "decision",
+      "label": "d/g2074788f713e-1",
+      "reason": "The code now inserts the session and base inside `session_now` if not already present, contradicting the decision to route all time readings through a process-wide session clock.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Route all time readings through a process-wide session clock.\nThe system clock can step backwards due to NTP, VM resume, or operator; a continuously running wallclock would show time going backward. The session clock ensures one monotonic reading order."
+    },
+    {
+      "diff_line": "let (sess, base) = g.get_or_insert_with(|| {",
+      "kind": "decision",
+      "label": "d/g2074788f713e-6",
+      "reason": "The code now inserts the session and base inside `session_now` if not already present, contradicting the decision to store session state as Option and anchor lazily inside `session_now`, avoiding `.expect`.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Store session state as Option and anchor lazily inside session_now, avoiding .expect.\nOnceLock's initializer cannot return a Result; no-panic-in-cli lint refused .expect. Option allows anchoring where a failure can be returned."
+    }
+  ],
+  "fingerprint": "aa9d681a381a74931f805173445640dfc7b996ebc6e2149c5cfacacbe9fb8085",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-7-control",
+  "kind": "agent",
+  "pack_tokens": 2996,
+  "pack_units": 134,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 7,
+  "usage": {
+    "completion_tokens": 680,
+    "prompt_tokens": 13282,
+    "seconds": 87.970876752
+  },
+  "verdicts": [
+    {
+      "diff_line": "/// The process-wide session, anchored at program start.",
+      "label": "r/g2074788f713e-6-2",
+      "line": 9,
+      "reason": "The comment now states the session is anchored at program start, contradicting the rejected alternative that it should be anchored lazily.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// `Option`, and filled by [`anchor_session`] rather than in `get_or_init`:",
+      "label": "p/g2074788f713e-2-2",
+      "line": 12,
+      "reason": "The comment now states the session is filled by `anchor_session` rather than lazily inside `session_now`, contradicting the constraint that `std::time::Instant::elapsed()` gives monotonic duration from the session base.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "// Ordinarily already anchored by `anchor_session`, called at program start.",
+      "label": "r/g2074788f713e-4-1",
+      "line": 65,
+      "reason": "The comment now states the session is anchored by `anchor_session` called at program start, contradicting the rejected alternative that `Session::reading` should read the wall clock itself.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "let (sess, base) = g.get_or_insert_with(|| {",
+      "label": "d/g2074788f713e-4",
+      "line": 69,
+      "reason": "The code now inserts the session and base inside `session_now` if not already present, contradicting the decision to make `Session::reading` a pure function of its inputs.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "let (sess, base) = g.get_or_insert_with(|| {",
+      "label": "d/g2074788f713e-1",
+      "line": 69,
+      "reason": "The code now inserts the session and base inside `session_now` if not already present, contradicting the decision to route all time readings through a process-wide session clock.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "let (sess, base) = g.get_or_insert_with(|| {",
+      "label": "d/g2074788f713e-6",
+      "line": 69,
+      "reason": "The code now inserts the session and base inside `session_now` if not already present, contradicting the decision to store session state as Option and anchor lazily inside `session_now`, avoiding `.expect`.",
+      "verdict": "contradicts"
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 73.00904083251953,
+      "terms": [
+        "release:16.13",
+        "documentation:12.66",
+        "releas:10.76",
+        "notes:10.10",
+        "cycl:5.45"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-1-2",
+      "score": 67.63459777832031,
+      "terms": [
+        "release:16.60",
+        "documentation:13.31",
+        "releas:11.07",
+        "notes:10.39",
+        "fil:4.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 61.109683990478516,
+      "terms": [
+        "release:13.22",
+        "notes:9.78",
+        "releas:8.81",
+        "version:4.35",
+        "file:4.22"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 60.30624008178711,
+      "terms": [
+        "notes:8.34",
+        "built:8.03",
+        "rather:5.78",
+        "than:5.37",
+        "workspac:4.44"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 59.227439880371094,
+      "terms": [
+        "documentation:13.20",
+        "ephemeri:9.96",
+        "ephemeris:9.96",
+        "cycl:5.68",
+        "cycle:5.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-1-1",
+      "score": 58.55024337768555,
+      "terms": [
+        "cargo:27.77",
+        "toml:9.26",
+        "workspac:7.38",
+        "workspace:7.38",
+        "version:4.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-9",
+      "score": 52.985069274902344,
+      "terms": [
+        "release:14.39",
+        "releas:9.59",
+        "notes:9.01",
+        "its:6.00",
+        "one:4.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 51.89515686035156,
+      "terms": [
+        "notes:9.43",
+        "cycl:5.88",
+        "cycle:5.88",
+        "file:4.81",
+        "fil:4.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 49.88754653930664,
+      "terms": [
+        "calendars:6.20",
+        "calendar:5.66",
+        "thi:4.63",
+        "this:4.63",
+        "anchor:4.58"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-10",
+      "score": 49.15799331665039,
+      "terms": [
+        "calendars:6.43",
+        "calendar:5.87",
+        "thi:5.02",
+        "this:5.02",
+        "anchor:4.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-6",
+      "score": 46.93850326538086,
+      "terms": [
+        "release:13.59",
+        "notes:9.41",
+        "releas:9.06",
+        "with:3.19",
+        "version:3.12"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-11-2",
+      "score": 43.7857780456543,
+      "terms": [
+        "about:8.28",
+        "its:6.35",
+        "body:6.13",
+        "sam:5.60",
+        "same:5.60"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 259,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Cargo.lock",
+    "Cargo.toml",
+    "Documentation/Release_Notes/1.13.0.md",
+    "Documentation/Release_Notes/README.md"
+  ],
+  "findings": [],
+  "fingerprint": "1f9c5e3c1c592da856c1ad5d6ae8c77ba88fbff2c48cf8e37b4dba0b127c1482",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-86d547aa359f",
+  "kind": "commit",
+  "pack_tokens": 1497,
+  "pack_units": 74,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 29972,
+    "prompt_tokens": 22806,
+    "seconds": 95.741061791
+  },
+  "verdicts": []
+}

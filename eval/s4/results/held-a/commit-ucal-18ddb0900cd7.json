@@ -1,0 +1,194 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 134.61508178710938,
+      "terms": [
+        "documentation:19.80",
+        "examples:13.20",
+        "exampl:10.72",
+        "ephemeri:9.96",
+        "ephemeris:9.96"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-3-2",
+      "score": 113.208740234375,
+      "terms": [
+        "ucal:28.16",
+        "json:26.62",
+        "fields:7.99",
+        "field:5.56"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g449b762e3cca-10",
+      "score": 100.95245361328125,
+      "terms": [
+        "ucal:23.07",
+        "thi:5.02",
+        "this:5.02",
+        "anchor:4.81",
+        "sam:4.43"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 100.62844848632812,
+      "terms": [
+        "ucal:21.27",
+        "thi:4.63",
+        "this:4.63",
+        "anchor:4.58",
+        "sam:4.08"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-8-2",
+      "score": 93.63585662841797,
+      "terms": [
+        "ucal:29.43",
+        "field:5.81",
+        "sam:5.65",
+        "same:5.65",
+        "the:2.23"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-3-1",
+      "score": 81.54246520996094,
+      "terms": [
+        "src:28.02",
+        "examples:15.49",
+        "exampl:12.58",
+        "xtask:9.34",
+        "manual:7.02"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-3",
+      "score": 75.74567413330078,
+      "terms": [
+        "ucal:23.73",
+        "json:22.44",
+        "valu:6.51",
+        "value:6.51",
+        "field:5.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-3-1",
+      "score": 73.40628051757812,
+      "terms": [
+        "ucal:21.41",
+        "json:20.24",
+        "valu:6.11",
+        "value:6.11",
+        "its:5.88"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-3-1",
+      "score": 73.2788314819336,
+      "terms": [
+        "ucal:30.52",
+        "json:28.85",
+        "field:6.03",
+        "precision:5.56",
+        "the:2.32"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-2",
+      "score": 68.41374206542969,
+      "terms": [
+        "documentation:20.14",
+        "examples:13.43",
+        "exampl:10.90",
+        "txt:8.93",
+        "file:4.73"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-1",
+      "score": 62.19650650024414,
+      "terms": [
+        "fixtur:12.16",
+        "test:7.39",
+        "written:7.30",
+        "reader:5.23",
+        "file:4.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 58.15564727783203,
+      "terms": [
+        "documentation:18.99",
+        "cycl:5.45",
+        "cycle:5.45",
+        "releas:5.38",
+        "release:5.38"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/CLI.md",
+    "Documentation/Release_Notes/1.13.0.md",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/src/main.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "fixtures/json-surface.txt",
+    "fixtures/ucal-json-1.schema.json",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [],
+  "fingerprint": "3429212882b4fa896d28f4957bf02c69e718d2b86f8f9d5a1e1355969b3b290f",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-18ddb0900cd7",
+  "kind": "commit",
+  "pack_tokens": 1494,
+  "pack_units": 79,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 49946,
+    "prompt_tokens": 34172,
+    "seconds": 153.44636004199998
+  },
+  "verdicts": []
+}

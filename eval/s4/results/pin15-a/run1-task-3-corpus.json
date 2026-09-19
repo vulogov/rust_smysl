@@ -1,0 +1,181 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-4-1",
+      "score": 118.721435546875
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-4",
+      "score": 104.44886779785156
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-6",
+      "score": 95.1409912109375
+    },
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-6-1",
+      "score": 94.93722534179688
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-9",
+      "score": 92.84672546386719
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 91.50251770019531
+    },
+    {
+      "anchored": true,
+      "label": "r/g69ea5c05d859-6-1",
+      "score": 88.86708068847656
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 83.09158325195312
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 61.158599853515625
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 52.22443389892578
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-17",
+      "score": 52.22443389892578
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 52.22443389892578
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 208,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "crates/smysl-provider/src/usage.rs",
+    "src/main.rs",
+    "tests/dispatch.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "The usage ledger (`.smysl/usage.log`) now lives under the user's home directory",
+      "kind": "prerequisite",
+      "label": "p/g90ec2f781421-4-1",
+      "reason": "This change moves the usage ledger to the user's home directory, contradicting the constraint that ingest and usage write to .smysl in the working directory.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "ingest and usage write to .smysl in the working directory, so a shared checkout would be dirtied."
+    },
+    {
+      "diff_line": "let mut ledger = smysl::Ledger::open(smysl::Ledger::default_path());",
+      "kind": "decision",
+      "label": "d/g90ec2f781421-4",
+      "reason": "This change opens the ledger at the default path, which is now in the user's home directory, contradicting the decision to run each command in a scratch directory of its own.",
+      "source": "git:90ec2f781421002876548124e9fe02073503372c",
+      "text": "Run each command in a scratch directory of its own.\nProbing by hand dirtied checkout with .smysl files; usage read ledger ingest wrote. Test should not dirty tree."
+    },
+    {
+      "diff_line": ".env(\"USERPROFILE\", &dir)",
+      "kind": "decision",
+      "label": "d/g90ec2f781421-6",
+      "reason": "This change sets the HOME and USERPROFILE environment variables to the scratch directory, contradicting the decision to set stdin to /dev/null for dispatch test commands.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "Set stdin to /dev/null for dispatch test commands.\nfmt and check read stdin when no path; inherited terminal would hang instead of failing."
+    },
+    {
+      "diff_line": ".env(\"USERPROFILE\", &dir)",
+      "kind": "rejected alternative",
+      "label": "r/g90ec2f781421-6-1",
+      "reason": "This change sets the HOME and USERPROFILE environment variables to the scratch directory, contradicting the rejected alternative of inheriting stdin from the terminal for dispatch test commands.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "Rejected: inherit stdin from the terminal for dispatch test commands\nfmt and check read stdin when given no path; inherited terminal would hang instead of failing."
+    },
+    {
+      "diff_line": ".env(\"USERPROFILE\", &dir)",
+      "kind": "rejected alternative",
+      "label": "r/g90ec2f781421-4-1",
+      "reason": "The change sets the HOME environment variable to a scratch directory, which contradicts the rejected alternative of running each command in the repository root because it changes where the ledger is located.",
+      "source": "git:90ec2f781421002876548124e9fe02073503372c",
+      "text": "Rejected: run each command in the repository root\nIt left .smysl/staged.smy and .smysl/usage.log behind, and usage read a ledger ingest had just written."
+    }
+  ],
+  "fingerprint": "17d0aa57bf39352621a918cb07dac5f3ea8e5bfb3d05939f37993b95e927e129",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-3-corpus",
+  "kind": "agent",
+  "pack_tokens": 2998,
+  "pack_units": 131,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 3,
+  "usage": {
+    "completion_tokens": 587,
+    "prompt_tokens": 18312,
+    "seconds": 109.76037091700002
+  },
+  "verdicts": [
+    {
+      "diff_line": "+The usage ledger (`.smysl/usage.log`) now lives under the user's home directory (`Ledger::default_path`) instead of the project it was invoked from.",
+      "label": "p/g90ec2f781421-4-1",
+      "line": 10,
+      "reason": "This change moves the usage ledger to the user's home directory, contradicting the constraint that ingest and usage write to .smysl in the working directory.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+let mut ledger = smysl::Ledger::open(smysl::Ledger::default_path());",
+      "label": "d/g90ec2f781421-4",
+      "line": 35,
+      "reason": "This change opens the ledger at the default path, which is now in the user's home directory, contradicting the decision to run each command in a scratch directory of its own.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+.env(\"HOME\", &dir).env(\"USERPROFILE\", &dir)",
+      "label": "d/g90ec2f781421-6",
+      "line": 205,
+      "reason": "This change sets the HOME and USERPROFILE environment variables to the scratch directory, contradicting the decision to set stdin to /dev/null for dispatch test commands.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+.env(\"HOME\", &dir).env(\"USERPROFILE\", &dir)",
+      "label": "r/g90ec2f781421-6-1",
+      "line": 205,
+      "reason": "This change sets the HOME and USERPROFILE environment variables to the scratch directory, contradicting the rejected alternative of inheriting stdin from the terminal for dispatch test commands.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+        .env(\"HOME\", &dir)\n",
+      "label": "r/g90ec2f781421-4-1",
+      "line": 205,
+      "reason": "The change sets the HOME environment variable to a scratch directory, which contradicts the rejected alternative of running each command in the repository root because it changes where the ledger is located.",
+      "verdict": "contradicts"
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+ xtask/src/citations.rs | 162 ++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 119 insertions(+), 43 deletions(-)
+
+diff --git a/xtask/src/citations.rs b/xtask/src/citations.rs
+index 1e99b4a..9e673f1 100644
+--- a/xtask/src/citations.rs
++++ b/xtask/src/citations.rs
+@@ -250,46 +250,88 @@ mod tests {
+         assert!(super::check_ci_covers_the_procedure(&crate::workspace_root()).is_ok());
+     }
+ 
+-    /// **A version bumped without its notes is an error, not a fallback.**
+-    ///
+-    /// The sort could not catch this: with no `1.11.0.md` it would silently read
+-    /// `1.10.0.md` and pass. This is the adjacent failure that removing the
+-    /// guess closes.
+-    #[test]
+-    fn a_missing_notes_file_for_the_current_version_is_refused() {
+-        let dir = std::env::temp_dir().join("ucal-procedure-no-notes");
++    /// A scratch tree at version 9.9.9 with a workflow running `have` and the
++    /// given notes files (name, verification command).
++    fn scratch(name: &str, have: &str, notes: &[(&str, &str)]) -> std::path::PathBuf {
++        let dir = std::env::temp_dir().join(name);
+         let _ = std::fs::remove_dir_all(&dir);
+         std::fs::create_dir_all(dir.join("Documentation/Release_Notes")).expect("mkdir");
+         std::fs::create_dir_all(dir.join(".github/workflows")).expect("mkdir");
+-        std::fs::write(dir.join(".github/workflows/verify.yml"), "jobs:\n").expect("write");
+         std::fs::write(
+-            dir.join("Cargo.toml"),
+-            "[workspace.package]\nversion = \"9.9.9\"\n",
++            dir.join(".github/workflows/verify.yml"),
++            format!("jobs:\n  - run: {have}\n"),
+         )
+         .expect("write");
+-        // A notes file for some *other* version, which the old sort would have
+-        // happily read instead.
+         std::fs::write(
+-            dir.join("Documentation/Release_Notes/1.0.0.md"),
+-            "## Verification\n\n```\ncargo test --workspace --release\n```\n",
++            dir.join("Cargo.toml"),
++            "[workspace.package]\nversion = \"9.9.9\"\n",
+         )
+         .expect("write");
++        for (file, cmd) in notes {
++            std::fs::write(
++                dir.join("Documentation/Release_Notes").join(file),
++                format!("## Verification\n\n```\n{cmd}\n```\n"),
++            )
++            .expect("write");
++        }
++        dir
++    }
+ 
+-        let e = super::check_ci_covers_the_procedure(&dir)
+-            .expect_err("a version with no notes must not fall back to another's");
+-        // Specific to the message the explicit check produces. Asserting only
+-        // that *some* error came back passed even with that check disabled —
+-        // `read_to_string` fails too, and its message names the path, which
+-        // contains the version. A test that cannot tell the two apart is not
+-        // testing the branch it claims to.
+-        assert!(
+-            e.iter().any(|m| m.contains("a cycle's notes")),
+-            "expected the missing-notes diagnostic, got: {e:?}"
++    /// **A version bumped without its notes falls back to the newest notes.**
++    ///
++    /// "Newest" is by version, not filename: `1.10.0.md` is newer than
++    /// `1.2.0.md` although it sorts before it. The README is not notes.
++    #[test]
++    fn a_missing_notes_file_falls_back_to_the_newest_notes() {
++        let dir = scratch(
++            "ucal-procedure-fallback",
++            "cargo test --workspace --release",
++            &[
++                ("1.2.0.md", "cargo run -p xtask -- old-check"),
++                ("1.10.0.md", "cargo test --workspace --release"),
++                ("README.md", "cargo run -p xtask -- readme-check"),
++            ],
+         );
+-        assert!(
+-            e.iter().any(|m| m.contains("9.9.9")),
+-            "the message should name the version: {e:?}"
++        // Read 1.10.0.md (whose command CI runs), not 1.2.0.md or README.md.
++        assert_eq!(super::check_ci_covers_the_procedure(&dir), Ok(1));
++        let _ = std::fs::remove_dir_all(&dir);
++
++        // And the fallback file is genuinely the one checked: when it lists
++        // something CI does not run, that is reported against its name.
++        let dir = scratch(
++            "ucal-procedure-fallback-bad",
++            "cargo test --workspace --release",
++            &[
++                ("1.2.0.md", "cargo test --workspace --release"),
++                ("1.10.0.md", "cargo run -p xtask -- new-check"),
++            ],
+         );
++        let e = super::check_ci_covers_the_procedure(&dir).expect_err("1.10.0 is newest");
++        assert!(e.iter().any(|m| m.contains("new-check") && m.contains("1.10.0.md")), "{e:?}");
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// The current version's own notes win over a newer file.
++    #[test]
++    fn the_current_version_s_notes_beat_the_newest() {
++        let dir = scratch(
++            "ucal-procedure-own",
++            "cargo test --workspace --release",
++            &[
++                ("9.9.9.md", "cargo test --workspace --release"),
++                ("10.0.0.md", "cargo run -p xtask -- other-check"),
++            ],
++        );
++        assert_eq!(super::check_ci_covers_the_procedure(&dir), Ok(1));
++        let _ = std::fs::remove_dir_all(&dir);
++    }
++
++    /// With no notes at all there is nothing to fall back to: still an error.
++    #[test]
++    fn no_notes_at_all_is_refused() {
++        let dir = scratch("ucal-procedure-no-notes", "x", &[("README.md", "cargo test")]);
++        let e = super::check_ci_covers_the_procedure(&dir).expect_err("nothing to read");
++        assert!(e.iter().any(|m| m.contains("has no notes") && m.contains("9.9.9")), "{e:?}");
+         let _ = std::fs::remove_dir_all(&dir);
+     }
+ 
+@@ -787,29 +829,23 @@ pub fn check_ci_covers_the_procedure(root: &Path) -> Result<usize, Vec<String>>
+     let Ok(workflow) = std::fs::read_to_string(&wf) else {
+         return Err(alloc_vec(format!("{} is missing", wf.display())));
+     };
+-    // **The notes for the version being built**, not "the newest file".
++    // **The notes for the version being built**, and only when they are missing,
++    // the newest notes there are.
+     //
+     // The first version of this sorted filenames and took the last, which put
+     // `1.10.0.md` between `1.1.0.md` and `1.2.0.md` — so it read the *previous*
+-    // release's procedure and reported success. Sorting numerically would have
+-    // fixed that one bug and left the guess in place; deriving the version
+-    // removes the guess, and catches the adjacent failure the sort could not:
+-    // a version bumped and its notes never written.
++    // release's procedure and reported success. Deriving the version removes
++    // that guess; the fallback for a version bumped before its notes exist
++    // orders by parsed version, never by filename.
+     let Some(version) = workspace_version(root) else {
+         return Err(alloc_vec(
+             "cannot read the workspace version from Cargo.toml".into(),
+         ));
+     };
+-    let newest = root
+-        .join("Documentation/Release_Notes")
+-        .join(format!("{version}.md"));
+-    if !newest.exists() {
+-        return Err(alloc_vec(format!(
+-            "the workspace is at {version} and {} does not exist; a cycle's notes \
+-             are created when it opens",
+-            newest.display()
+-        )));
+-    }
++    let newest = match notes_file_for(root, &version) {
++        Ok(p) => p,
++        Err(e) => return Err(alloc_vec(e)),
++    };
+     let newest = newest.as_path();
+     let Ok(notes) = std::fs::read_to_string(newest) else {
+         return Err(alloc_vec(format!("cannot read {}", newest.display())));
+@@ -836,6 +872,46 @@ pub fn check_ci_covers_the_procedure(root: &Path) -> Result<usize, Vec<String>>
+     }
+ }
+ 
++/// The release-notes file to check for `version`: its own notes when they
++/// exist, otherwise the newest notes in the directory.
++///
++/// "Newest" is by parsed `major.minor.patch`, not by filename — `1.10.0.md`
++/// sorts before `1.2.0.md` as text. Files that are not `<x>.<y>.<z>.md`
++/// (the README) are not notes. An error only when there are no notes at all.
++fn notes_file_for(root: &Path, version: &str) -> Result<std::path::PathBuf, String> {
++    let dir = root.join("Documentation/Release_Notes");
++    let own = dir.join(format!("{version}.md"));
++    if own.exists() {
++        return Ok(own);
++    }
++    let parse = |name: &str| -> Option<(u64, u64, u64)> {
++        let mut it = name.strip_suffix(".md")?.split('.');
++        let v = (
++            it.next()?.parse().ok()?,
++            it.next()?.parse().ok()?,
++            it.next()?.parse().ok()?,
++        );
++        it.next().is_none().then_some(v)
++    };
++    std::fs::read_dir(&dir)
++        .into_iter()
++        .flatten()
++        .flatten()
++        .filter_map(|e| {
++            let v = parse(e.file_name().to_str()?)?;
++            Some((v, e.path()))
++        })
++        .max()
++        .map(|(_, p)| p)
++        .ok_or_else(|| {
++            format!(
++                "the workspace is at {version} and {} has no notes to check, \
++                 neither for {version} nor any earlier version",
++                dir.display()
++            )
++        })
++}
++
+ /// The fenced block under a `## Verification` heading.
+ fn verification_block(notes: &str) -> String {
+     let mut out = String::new();

@@ -1,0 +1,104 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-3",
+      "score": 14.930367469787598,
+      "terms": [
+        "makefil:7.47",
+        "makefile:7.47"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g87345653cdf3-5",
+      "score": 7.465183734893799,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-1",
+      "score": 7.465183734893799,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-2",
+      "score": 7.465183734893799,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-5-1",
+      "score": 7.465183734893799,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 13,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "Makefile"
+  ],
+  "findings": [
+    {
+      "diff_line": "BASELINE  := 0.15.0",
+      "kind": "decision",
+      "label": "d/g0bc1aeb96d6b-1",
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, which contradicts the decision to gate `report_against` and its tests on `gemini` or `anthropic` features.",
+      "source": "git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e",
+      "text": "Gate `report_against` and its tests on `gemini` or `anthropic` features\nThe function is only reached from the feature-gated `gemini` and `anthropic` mappers, so builds without those features had an unused function and CI's `-D warnings` failed."
+    },
+    {
+      "diff_line": "BASELINE  := 0.15.0",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-14",
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, which contradicts the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\u00a78.2 requires readers to refuse a version absent from their list. Flipping the writer before 0.14 is in the field would make every other implementation reject the output."
+    }
+  ],
+  "fingerprint": "6becaca1f1d43f039d8b6eb9a1020f9ce1c37abe2b508fa31708feca56a98c05",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-ec70d4878ee3",
+  "kind": "commit",
+  "pack_tokens": 1491,
+  "pack_units": 65,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 265,
+    "predicted_tokens": 7035,
+    "prompt_tokens": 5030,
+    "seconds": 32.215687207
+  },
+  "verdicts": [
+    {
+      "diff_line": "-BASELINE  := 0.15.0",
+      "label": "d/g0bc1aeb96d6b-1",
+      "line": 5,
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, which contradicts the decision to gate `report_against` and its tests on `gemini` or `anthropic` features.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-BASELINE  := 0.15.0",
+      "label": "d/g69ea5c05d859-14",
+      "line": 5,
+      "reason": "The change updates the BASELINE from 0.15.0 to 1.0.0, which contradicts the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "verdict": "contradicts"
+    }
+  ]
+}

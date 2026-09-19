@@ -1,0 +1,193 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-3-2",
+      "score": 142.18673706054688,
+      "terms": [
+        "ucal:33.66",
+        "json:30.85",
+        "nam:10.49",
+        "fields:7.51",
+        "name:6.17"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-8-2",
+      "score": 123.75582885742188,
+      "terms": [
+        "ucal:35.16",
+        "nam:10.96",
+        "name:6.45",
+        "sam:5.90",
+        "same:5.90"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g449b762e3cca-10",
+      "score": 119.04290771484375,
+      "terms": [
+        "ucal:27.58",
+        "e:7.62",
+        "calendar:5.34",
+        "sam:4.63",
+        "same:4.63"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 117.42872619628906,
+      "terms": [
+        "ucal:25.44",
+        "e:7.03",
+        "calendar:5.15",
+        "sam:4.27",
+        "same:4.27"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g31e52cc10b1f-8",
+      "score": 111.35861206054688,
+      "terms": [
+        "add:16.26",
+        "nam:8.50",
+        "tier:5.88",
+        "name:5.00",
+        "sam:4.58"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g449b762e3cca-10-1",
+      "score": 102.52212524414062,
+      "terms": [
+        "ucal:35.48",
+        "e:9.80",
+        "calendar:5.19",
+        "for:3.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-3",
+      "score": 96.8628158569336,
+      "terms": [
+        "ucal:28.38",
+        "json:26.01",
+        "nam:10.72",
+        "name:6.31",
+        "valu:6.02"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-1",
+      "score": 90.71116638183594,
+      "terms": [
+        "ucal:31.32",
+        "add:15.16",
+        "cod:9.45",
+        "code:9.45",
+        "cal:5.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-3-1",
+      "score": 87.11164855957031,
+      "terms": [
+        "ucal:25.61",
+        "json:23.47",
+        "nam:10.06",
+        "name:5.92",
+        "valu:5.65"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-3-1",
+      "score": 81.26531219482422,
+      "terms": [
+        "ucal:36.47",
+        "json:33.43",
+        "field:5.50",
+        "in:3.66",
+        "the:2.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-4-1",
+      "score": 70.17708587646484,
+      "terms": [
+        "nam:10.39",
+        "str:7.31",
+        "string:7.31",
+        "named:6.65",
+        "som:6.65"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 70.10645294189453,
+      "terms": [
+        "nam:8.92",
+        "str:6.88",
+        "string:6.88",
+        "named:4.75",
+        "som:4.75"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "31e52cc",
+    "8fdb9b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 356,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/CLI.md",
+    "Documentation/Release_Notes/1.11.0.md",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/src/main.rs",
+    "crates/ucal/tests/add.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "fixtures/json-surface.txt",
+    "fixtures/ucal-json-1.schema.json",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [],
+  "fingerprint": "48dd4142d62e5dca87e1b26aa74873d2133f60b5320d523694db6fdd848f2968",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-326bdf13c074",
+  "kind": "commit",
+  "pack_tokens": 1497,
+  "pack_units": 69,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 43176,
+    "prompt_tokens": 32943,
+    "seconds": 161.683492458
+  },
+  "verdicts": []
+}

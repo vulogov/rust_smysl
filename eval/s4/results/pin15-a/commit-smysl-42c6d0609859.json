@@ -1,0 +1,51 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 4.623908042907715
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 2.690333366394043
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 2.656538724899292
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 26,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "nodejs/README.md",
+    "nodejs/package.json"
+  ],
+  "findings": [],
+  "fingerprint": "260f52015ca9881a798cb8c174e69adf0bfe2ca53d6502ecd9fe533e5ece0cf3",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-42c6d0609859",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "dev",
+  "task": null,
+  "usage": {
+    "completion_tokens": 24,
+    "prompt_tokens": 4271,
+    "seconds": 14.711900251
+  },
+  "verdicts": []
+}

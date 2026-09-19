@@ -1,0 +1,9 @@
+cases scored: 93
+recall by pattern (prerequisite in corpus): 7/13 = 0.54
+  by task: 2:1/2 3:1/2 5:0/2 6:2/2 7:2/2 8:1/1 11:0/2
+  misses with other findings (owner may count a hit): ['s4-heldout-task-11-control-r2', 's4-heldout-task-2-control-r1']
+tasks 10 and 12 (not in corpus), pattern hits: 1/3
+agent diffs that kept the prerequisite: 7/8 flagged, 37 flag(s)
+real commits: 12/69 flagged, 63 flag(s)
+flags 170; contradicts verdicts dropped by validation 33
+tokens: prompt 2546533, completion 26500; median seconds per diff 107

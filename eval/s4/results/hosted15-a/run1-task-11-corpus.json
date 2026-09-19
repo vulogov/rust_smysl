@@ -1,0 +1,155 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 197.0115966796875
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-1-3",
+      "score": 178.62039184570312
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-1",
+      "score": 175.53341674804688
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-1-1",
+      "score": 157.61947631835938
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-2",
+      "score": 148.6566925048828
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-1",
+      "score": 108.8651123046875
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-2-1",
+      "score": 98.41284942626953
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-2",
+      "score": 97.2191162109375
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-3",
+      "score": 92.38792419433594
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-3-1",
+      "score": 91.6612777709961
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-3",
+      "score": 87.76670837402344
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-5-1",
+      "score": 86.498046875
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 224,
+  "diff_truncated": false,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "deleted file mode 100644",
+        "label": "p/gcc3aafefb1da-1-2",
+        "line": 15,
+        "reason": "The committed observations file at Documentation/examples/observations.txt is deleted, so the prerequisite that it exists no longer holds.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    }
+  ],
+  "files": [
+    ".gitignore",
+    "Documentation/examples/observations.txt",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "let obs = write_observations_fixture();",
+      "kind": "decision",
+      "label": "d/gcc3aafefb1da-1",
+      "reason": "The change replaces the committed observations file with a test-written temporary fixture, reversing the decision to replace temp fixtures with a committed file.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "Replace test-written temp fixture with committed observations file.\nTwo test binaries wrote the same temp path concurrently causing a race; a committed file cannot race and a reader can open it."
+    },
+    {
+      "diff_line": "std::fs::write(&path, \"8070205176188783269002882404203425480530466139316558837890625\\n\").unwrap();",
+      "kind": "rejected alternative",
+      "label": "r/gcc3aafefb1da-2-1",
+      "reason": "The test now writes a single hardcoded observation without the known shift values, so residuals are not known in advance and cannot be checked by eye, doing exactly what the rejected alternative proposed.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "Rejected: Have the test invent observations without known shifts.\nResiduals would not be known in advance, so cannot be checked by eye."
+    }
+  ],
+  "fingerprint": "aa956a2905d39f6002c3dfddcabff9d94cc0519705be7dbd7c4d6cfa849ecafd",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-11-corpus",
+  "kind": "agent",
+  "pack_tokens": 2995,
+  "pack_units": 137,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 11,
+  "usage": {
+    "completion_tokens": 13640,
+    "prompt_tokens": 18901,
+    "seconds": 186.280731834
+  },
+  "verdicts": [
+    {
+      "diff_line": "+        let obs = write_observations_fixture();",
+      "label": "d/gcc3aafefb1da-1",
+      "line": 84,
+      "reason": "The change replaces the committed observations file with a test-written temporary fixture, reversing the decision to replace temp fixtures with a committed file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "deleted file mode 100644",
+      "label": "p/gcc3aafefb1da-1-2",
+      "line": 15,
+      "reason": "The committed observations file at Documentation/examples/observations.txt is deleted, so the prerequisite that it exists no longer holds.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+    std::fs::write(&path, \"8070205176188783269002882404203425480530466139316558837890625\\n\").unwrap();",
+      "label": "r/gcc3aafefb1da-2-1",
+      "line": 61,
+      "reason": "The test now writes a single hardcoded observation without the known shift values, so residuals are not known in advance and cannot be checked by eye, doing exactly what the rejected alternative proposed.",
+      "verdict": "contradicts"
+    }
+  ]
+}

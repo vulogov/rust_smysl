@@ -1,0 +1,235 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-1",
+      "score": 140.58151245117188,
+      "terms": [
+        "ticks:29.24",
+        "tick:23.24",
+        "anchor:10.02",
+        "has:6.66",
+        "elaps:6.40"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 129.00816345214844,
+      "terms": [
+        "session:21.29",
+        "anchor:9.73",
+        "clock:9.38",
+        "start:7.54",
+        "process:6.47"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 121.46867370605469,
+      "terms": [
+        "session:20.53",
+        "clock:12.00",
+        "wall:10.45",
+        "let:5.50",
+        "tests:4.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-3",
+      "score": 111.70967102050781,
+      "terms": [
+        "ticks:29.66",
+        "tick:23.57",
+        "session:16.26",
+        "clock:11.93",
+        "wall:10.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-3-1",
+      "score": 89.8779296875,
+      "terms": [
+        "ticks:28.04",
+        "tick:22.29",
+        "clock:11.28",
+        "wall:9.82",
+        "nothing:5.43"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-4-1",
+      "score": 73.66693878173828,
+      "terms": [
+        "drift:27.68",
+        "measur:12.53",
+        "clock:11.07",
+        "baselin:5.87",
+        "baseline:5.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 71.12992858886719,
+      "terms": [
+        "session:18.79",
+        "clock:11.25",
+        "wall:8.78",
+        "with:4.72",
+        "feature:4.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-6",
+      "score": 69.5610580444336,
+      "terms": [
+        "session:22.13",
+        "anchor:8.53",
+        "option:7.94",
+        "session_now:7.88",
+        "expect:6.61"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-7",
+      "score": 67.86663818359375,
+      "terms": [
+        "session:14.43",
+        "clock:11.28",
+        "wall:8.81",
+        "system:5.15",
+        "measurement:4.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-2",
+      "score": 65.9922103881836,
+      "terms": [
+        "measured:13.04",
+        "measur:9.38",
+        "machin:7.68",
+        "machine:7.68",
+        "doctor:5.93"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-4-2",
+      "score": 65.71843719482422,
+      "terms": [
+        "drift:36.88",
+        "baselin:7.82",
+        "baseline:7.82",
+        "report:5.05",
+        "from:4.35"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g449b762e3cca-4-1",
+      "score": 63.63126754760742,
+      "terms": [
+        "ticks:32.08",
+        "tick:25.49",
+        "from:4.23",
+        "and:1.83"
+      ]
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 233,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI.md",
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/tests/golden.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-2",
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the decision to reject anchoring the session at process start-up.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Anchor the session at process start-up.\nA command that never asks the time should not read a clock, and most do not."
+    },
+    {
+      "diff_line": "**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-4-1",
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the decision to reject having Session::reading read the wall clock itself.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Have Session::reading read the wall clock itself.\nA pure function lets tests drive a wall clock backwards and assert the answer does not follow."
+    },
+    {
+      "diff_line": "**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "kind": "rejected alternative",
+      "label": "r/g31e52cc10b1f-4-1",
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the decision to reject attempting to measure or estimate clock accuracy.",
+      "source": "git:31e52cc10b1f6079a130e3bc27479739d7e393eb",
+      "text": "Rejected: Attempt to measure or estimate clock accuracy.\nOffline operation provides no reference, and short-baseline rate error reports quantisation as drift."
+    }
+  ],
+  "fingerprint": "31b9454f9de215547c604d9baa58abdfd4555654a666748ba5db935483c6394b",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-12-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1495,
+  "pack_units": 74,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 12,
+  "usage": {
+    "completion_tokens": 344,
+    "predicted_tokens": 27803,
+    "prompt_tokens": 19570,
+    "seconds": 100.157215543
+  },
+  "verdicts": [
+    {
+      "diff_line": "+**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "label": "r/g2074788f713e-6-2",
+      "line": 9,
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the decision to reject anchoring the session at process start-up.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "label": "r/g2074788f713e-4-1",
+      "line": 9,
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the decision to reject having Session::reading read the wall clock itself.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "label": "r/g31e52cc10b1f-4-1",
+      "line": 9,
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the decision to reject attempting to measure or estimate clock accuracy.",
+      "verdict": "contradicts"
+    }
+  ]
+}

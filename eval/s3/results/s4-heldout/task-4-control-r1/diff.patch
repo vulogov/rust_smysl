@@ -1,0 +1,80 @@
+ tests/cmd_fmt.rs | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..298944c 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -301,6 +301,72 @@ fn check_distinguishes_a_formatted_file_from_an_unformatted_one() {
+     let _ = std::fs::remove_dir_all(&dir);
+ }
+ 
++/// `--check` is a gate, not a formatter: it names each file that is not canonical, prints no
++/// document, touches nothing, and keeps going past the first offender so one run reports them
++/// all.
++///
++/// The test above pins the verdict for one file. What it cannot see is what `--check` does
++/// *besides* returning one — writing the canonical form to stdout, rewriting the file, or
++/// stopping at the first failure would all still pass it.
++#[test]
++fn check_names_each_unformatted_file_and_changes_nothing() {
++    let dir = scratch("check-many");
++    let loose = "@claim c/a {  status: speculative  }\n~ a claim with loose spacing\n\n\n\n\
++                 @claim c/b { status: speculative }\n~ another claim entirely\n";
++
++    let first = dir.join("first.smy");
++    let second = dir.join("second.smy");
++    let good = dir.join("good.smy");
++    std::fs::write(&first, loose).expect("write");
++    std::fs::write(&second, loose).expect("write");
++    let canonical = run(&["fmt", first.to_str().unwrap()]);
++    assert_eq!(canonical.code, SUCCESS, "{}", canonical.stderr);
++    std::fs::write(&good, canonical.stdout.as_bytes()).expect("write");
++    assert_ne!(canonical.stdout, loose, "the fixture must not be canonical");
++
++    let (f, s, g) = (
++        first.to_str().unwrap(),
++        second.to_str().unwrap(),
++        good.to_str().unwrap(),
++    );
++    // The canonical file sits between the two, so stopping at the first failure or at the
++    // first pass would each leave one of them unreported.
++    let out = run(&["fmt", "--check", f, g, s]);
++    assert_eq!(out.code, CHECK_ERRORS, "{}", out.stderr);
++    assert!(
++        out.stderr
++            .contains(&format!("{f}: not canonically formatted")),
++        "the first offender is named: {}",
++        out.stderr
++    );
++    assert!(
++        out.stderr
++            .contains(&format!("{s}: not canonically formatted")),
++        "and so is the last, so the run did not stop early: {}",
++        out.stderr
++    );
++    assert!(
++        !out.stderr
++            .contains(&format!("{g}: not canonically formatted")),
++        "a canonical file is not named: {}",
++        out.stderr
++    );
++    assert!(
++        out.stdout.is_empty(),
++        "--check prints no document: {}",
++        out.stdout
++    );
++
++    assert_eq!(std::fs::read_to_string(&first).unwrap(), loose);
++    assert_eq!(std::fs::read_to_string(&second).unwrap(), loose);
++    assert_eq!(
++        std::fs::read_to_string(&good).unwrap(),
++        canonical.stdout,
++        "--check must not modify any file"
++    );
++    let _ = std::fs::remove_dir_all(&dir);
++}
++
+ // ---------------------------------------------------------------------------------------
+ // `--write`
+ // ---------------------------------------------------------------------------------------

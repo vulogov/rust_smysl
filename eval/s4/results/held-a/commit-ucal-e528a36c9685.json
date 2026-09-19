@@ -1,0 +1,185 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-1-1",
+      "score": 54.908912658691406,
+      "terms": [
+        "tim:7.37",
+        "way:7.14",
+        "that:5.76",
+        "cod:4.82",
+        "code:4.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-6-2",
+      "score": 49.921974182128906,
+      "terms": [
+        "tim:8.70",
+        "ask:7.24",
+        "most:7.24",
+        "that:6.79",
+        "should:6.04"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-7-3",
+      "score": 43.58952713012695,
+      "terms": [
+        "tim:10.42",
+        "exist:8.99",
+        "cod:6.80",
+        "code:6.80",
+        "exists:5.36"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-1",
+      "score": 43.51968765258789,
+      "terms": [
+        "that:5.92",
+        "way:5.68",
+        "cod:4.95",
+        "code:4.95",
+        "claim:4.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-9",
+      "score": 42.86869430541992,
+      "terms": [
+        "thi:9.68",
+        "this:9.68",
+        "mor:7.80",
+        "more:7.80",
+        "one:3.59"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 35.708370208740234,
+      "terms": [
+        "about:6.65",
+        "that:5.17",
+        "mak:4.88",
+        "becaus:2.69",
+        "because:2.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-9-1",
+      "score": 35.604156494140625,
+      "terms": [
+        "thi:9.26",
+        "this:9.26",
+        "rather:5.04",
+        "than:4.63",
+        "one:3.43"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-2-2",
+      "score": 35.42082214355469,
+      "terms": [
+        "thi:8.88",
+        "this:8.88",
+        "would:4.01",
+        "becaus:4.01",
+        "because:4.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 33.98666000366211,
+      "terms": [
+        "thi:8.99",
+        "this:8.99",
+        "are:3.56",
+        "ucal:3.41",
+        "with:3.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-10",
+      "score": 32.78895568847656,
+      "terms": [
+        "thi:9.74",
+        "this:9.74",
+        "are:3.86",
+        "ucal:3.69",
+        "with:3.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-4-1",
+      "score": 32.69029235839844,
+      "terms": [
+        "hav:6.66",
+        "have:6.66",
+        "doe:4.87",
+        "does:4.87",
+        "clock:3.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 31.858806610107422,
+      "terms": [
+        "tim:10.44",
+        "time:5.22",
+        "clock:3.77",
+        "can:3.71",
+        "would:3.71"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/Proposals/S4-outside-astronomy.md"
+  ],
+  "findings": [],
+  "fingerprint": "ef41daa2706863c5df028d3981fcae5ccb610b233c864f92774646fe8b5b0f7a",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-e528a36c9685",
+  "kind": "commit",
+  "pack_tokens": 1495,
+  "pack_units": 68,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 22828,
+    "prompt_tokens": 15051,
+    "seconds": 60.829071333
+  },
+  "verdicts": []
+}

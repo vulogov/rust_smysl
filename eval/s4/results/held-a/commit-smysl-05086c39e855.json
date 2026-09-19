@@ -1,0 +1,191 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 19.55650520324707,
+      "terms": [
+        "measur:3.92",
+        "thi:3.13",
+        "this:3.13",
+        "with:3.13",
+        "that:2.56"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 19.348369598388672,
+      "terms": [
+        "measur:3.89",
+        "thi:3.09",
+        "this:3.09",
+        "with:3.09",
+        "that:2.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 13.003946304321289,
+      "terms": [
+        "are:5.02",
+        "documented:5.02",
+        "document:2.76",
+        "the:0.20"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 12.709041595458984,
+      "terms": [
+        "doe:4.78",
+        "does:4.78",
+        "not:2.96",
+        "the:0.18"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 11.308870315551758,
+      "terms": [
+        "than:3.19",
+        "for:2.41",
+        "pack:2.37",
+        "that:1.91",
+        "and:1.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-6",
+      "score": 9.802669525146484,
+      "terms": [
+        "document:2.86",
+        "for:2.72",
+        "not:2.72",
+        "and:1.30",
+        "the:0.20"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 9.560168266296387,
+      "terms": [
+        "than:3.37",
+        "for:2.54",
+        "that:2.02",
+        "and:1.47",
+        "the:0.17"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 8.657487869262695,
+      "terms": [
+        "wer:2.57",
+        "were:2.57",
+        "pack:2.28",
+        "and:1.07",
+        "the:0.17"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-1-1",
+      "score": 8.48277473449707,
+      "terms": [
+        "wer:2.92",
+        "were:2.92",
+        "pack:2.47",
+        "the:0.17"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 7.227839469909668,
+      "terms": [
+        "ther:3.52",
+        "there:3.52",
+        "the:0.19"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 6.469992160797119,
+      "terms": [
+        "for:2.54",
+        "not:2.54",
+        "and:1.21",
+        "the:0.19"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 5.7985310554504395,
+      "terms": [
+        "ther:2.81",
+        "there:2.81",
+        "the:0.19"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 355,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    ".github/workflows/ci.yml",
+    "Cargo.toml",
+    "Makefile",
+    "crates/smysl-check/Cargo.toml",
+    "crates/smysl-core/Cargo.toml",
+    "crates/smysl-embed/Cargo.toml",
+    "crates/smysl-eval/src/measure.rs",
+    "crates/smysl-eval/src/prose.rs",
+    "crates/smysl-graph/Cargo.toml",
+    "crates/smysl-ingest/Cargo.toml",
+    "crates/smysl-pack/Cargo.toml",
+    "crates/smysl-provider/Cargo.toml",
+    "crates/smysl-provider/src/http.rs",
+    "crates/smysl-provider/src/lib.rs",
+    "crates/smysl-provider/src/map/openai.rs",
+    "crates/smysl-render/Cargo.toml",
+    "crates/smysl-retrieve/Cargo.toml",
+    "crates/smysl-thread/Cargo.toml",
+    "crates/smysl-tui/Cargo.toml",
+    "crates/smysl-tui/src/run.rs"
+  ],
+  "findings": [],
+  "fingerprint": "c9a66ef73ddc42d8a66bf02438d0b78d0b1fba3640f931073bf1fc2f9610cd20",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-05086c39e855",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 24,
+    "predicted_tokens": 31913,
+    "prompt_tokens": 22514,
+    "seconds": 98.29451662600002
+  },
+  "verdicts": []
+}

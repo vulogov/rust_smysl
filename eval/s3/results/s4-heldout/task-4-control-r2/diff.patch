@@ -1,0 +1,73 @@
+ tests/cmd_fmt.rs | 59 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..73af58a 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -301,6 +301,65 @@ fn check_distinguishes_a_formatted_file_from_an_unformatted_one() {
+     let _ = std::fs::remove_dir_all(&dir);
+ }
+ 
++/// `--check` on a document that is not canonical is a report, not a rewrite: it names the
++/// file, prints no formatted text, leaves the file as it found it, and does not stop at the
++/// first offender.
++///
++/// The branch is `if check { .. } else if write { .. } else { print }`, so a `--check` that fell
++/// through would print the document to stdout, and one that behaved like `--write` would fix
++/// the file it was only asked about. A gate that repairs what it inspects is not a gate.
++#[test]
++fn check_reports_an_unformatted_file_by_name_and_touches_nothing() {
++    let dir = scratch("check-report");
++
++    let loose_src = "@claim c/a {  status: speculative  }\n~ a claim with loose spacing\n\n\n\n\
++                     @claim c/b { status: speculative }\n~ another claim entirely\n";
++    let loose = dir.join("loose.smy");
++    std::fs::write(&loose, loose_src).expect("write");
++    let l = loose.to_str().unwrap();
++
++    let out = run(&["fmt", "--check", l]);
++    assert_eq!(out.code, CHECK_ERRORS, "{}", out.stderr);
++    assert!(
++        out.stderr
++            .contains(&format!("{l}: not canonically formatted")),
++        "the report must name the file: {}",
++        out.stderr
++    );
++    assert!(
++        out.stdout.is_empty(),
++        "--check must not print the formatted document: {}",
++        out.stdout
++    );
++    assert_eq!(
++        std::fs::read_to_string(&loose).unwrap(),
++        loose_src,
++        "--check must not rewrite the file it inspects"
++    );
++
++    // With a canonical file on either side, only the unformatted one is named, and both are
++    // still examined: the failure of one must not hide the verdict on the next.
++    let canonical = dir.join("canonical.smy");
++    std::fs::write(&canonical, run(&["fmt", l]).stdout).expect("write canonical");
++    let c = canonical.to_str().unwrap();
++
++    let both = run(&["fmt", "--check", c, l, c]);
++    assert_eq!(both.code, CHECK_ERRORS, "{}", both.stderr);
++    assert_eq!(
++        both.stderr.matches("not canonically formatted").count(),
++        1,
++        "exactly the one unformatted file is reported: {}",
++        both.stderr
++    );
++    assert!(both
++        .stderr
++        .contains(&format!("{l}: not canonically formatted")));
++    assert!(!both
++        .stderr
++        .contains(&format!("{c}: not canonically formatted")));
++    let _ = std::fs::remove_dir_all(&dir);
++}
++
+ // ---------------------------------------------------------------------------------------
+ // `--write`
+ // ---------------------------------------------------------------------------------------

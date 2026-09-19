@@ -1,0 +1,140 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 191.12301635742188
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-1-1",
+      "score": 162.8833465576172
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-1-3",
+      "score": 144.02981567382812
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-2",
+      "score": 124.677734375
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-1",
+      "score": 121.40735626220703
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-3",
+      "score": 81.4416732788086
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-1",
+      "score": 77.61080169677734
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-3-1",
+      "score": 76.89689636230469
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-2-1",
+      "score": 69.49442291259766
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-2",
+      "score": 66.67684173583984
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-3-1",
+      "score": 64.1706314086914
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-3",
+      "score": 63.34428787231445
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 268,
+  "diff_truncated": false,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "deleted file mode 100644",
+        "label": "p/gcc3aafefb1da-1-2",
+        "line": 18,
+        "reason": "The committed observations file at Documentation/examples/observations.txt is deleted, so it no longer exists.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    }
+  ],
+  "files": [
+    ".gitignore",
+    "Documentation/examples/observations.txt",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "Documentation/examples/observations.txt",
+      "kind": "decision",
+      "label": "d/gcc3aafefb1da-1",
+      "reason": "Adding the observations file to .gitignore undoes the decision to keep it committed, making it a generated non-committed fixture.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "Replace test-written temp fixture with committed observations file.\nTwo test binaries wrote the same temp path concurrently causing a race; a committed file cannot race and a reader can open it."
+    }
+  ],
+  "fingerprint": "b85ec69646184c361524850da265f3ff870f7a4e69c020fcb5955c60258deea2",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-11-control",
+  "kind": "agent",
+  "pack_tokens": 2995,
+  "pack_units": 137,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 11,
+  "usage": {
+    "completion_tokens": 11304,
+    "prompt_tokens": 21470,
+    "seconds": 156.898209001
+  },
+  "verdicts": [
+    {
+      "diff_line": "deleted file mode 100644",
+      "label": "p/gcc3aafefb1da-1-2",
+      "line": 18,
+      "reason": "The committed observations file at Documentation/examples/observations.txt is deleted, so it no longer exists.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Documentation/examples/observations.txt",
+      "label": "d/gcc3aafefb1da-1",
+      "line": 12,
+      "reason": "Adding the observations file to .gitignore undoes the decision to keep it committed, making it a generated non-committed fixture.",
+      "verdict": "contradicts"
+    }
+  ]
+}

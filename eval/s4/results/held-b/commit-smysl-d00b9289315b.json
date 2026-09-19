@@ -1,0 +1,187 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 29.087865829467773,
+      "terms": [
+        "test:10.76",
+        "thi:3.13",
+        "this:3.13",
+        "with:3.13",
+        "two:2.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 28.741703033447266,
+      "terms": [
+        "test:10.63",
+        "thi:3.09",
+        "this:3.09",
+        "with:3.09",
+        "two:2.66"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-6",
+      "score": 14.113317489624023,
+      "terms": [
+        "document:2.86",
+        "8:2.72",
+        "for:2.72",
+        "not:2.72",
+        "record:1.59"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 10.74660873413086,
+      "terms": [
+        "are:5.02",
+        "document:2.76",
+        "was:2.76",
+        "the:0.20"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 10.485830307006836,
+      "terms": [
+        "8:2.54",
+        "for:2.54",
+        "not:2.54",
+        "record:1.48",
+        "and:1.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 10.039673805236816,
+      "terms": [
+        "byt:5.61",
+        "byte:2.81",
+        "record:1.43",
+        "the:0.19"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-4-1",
+      "score": 9.783215522766113,
+      "terms": [
+        "byt:5.47",
+        "byte:2.73",
+        "record:1.40",
+        "the:0.18"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 9.560169219970703,
+      "terms": [
+        "than:3.37",
+        "for:2.54",
+        "that:2.02",
+        "and:1.47",
+        "the:0.17"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 9.224919319152832,
+      "terms": [
+        "valu:2.99",
+        "value:2.99",
+        "was:2.00",
+        "and:1.07",
+        "the:0.17"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 8.934425354003906,
+      "terms": [
+        "than:3.19",
+        "for:2.41",
+        "that:1.91",
+        "and:1.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 6.577136993408203,
+      "terms": [
+        "document:2.21",
+        "was:2.21",
+        "that:1.98",
+        "the:0.19"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-5",
+      "score": 6.500279426574707,
+      "terms": [
+        "document:2.18",
+        "was:2.18",
+        "that:1.95",
+        "the:0.19"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    ".github/workflows/ci.yml",
+    ".gitignore",
+    "Documentation/READINESS.md",
+    "fixtures/wire/F1-incident.cbor",
+    "fixtures/wire/F4-qa.cbor",
+    "fixtures/wire/F5-dataset.cbor",
+    "fixtures/wire/F9-forward-compat.cbor",
+    "nodejs/README.md",
+    "nodejs/package.json",
+    "nodejs/src/cbor.js",
+    "nodejs/src/index.js",
+    "nodejs/src/records.js",
+    "nodejs/test/conformance.test.js",
+    "python/tests/test_conformance.py"
+  ],
+  "findings": [],
+  "fingerprint": "da7bc913ff7e1426aace3df655479b14cdd0002b52586efd7eed5a2d180c4331",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-d00b9289315b",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 24,
+    "predicted_tokens": 31759,
+    "prompt_tokens": 23036,
+    "seconds": 117.56951320900001
+  },
+  "verdicts": []
+}

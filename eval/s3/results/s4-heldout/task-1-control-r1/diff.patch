@@ -1,0 +1,71 @@
+ CHANGELOG.md     |  7 ++++++-
+ src/main.rs      | 19 ++++++++++++-------
+ tests/cmd_fmt.rs |  7 +++++++
+ 3 files changed, 25 insertions(+), 8 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..d801f56 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,12 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++### `smysl fmt` skips the verification reparse of an already-canonical file
++
++`fmt` parses its output again to check that canonical form does not move a uid. When the
++canonical form is byte-for-byte the input, that second parse reads the same bytes as the first
++and cannot differ, so it is skipped. Output and exit codes are unchanged; only files that
++`fmt` would rewrite still pay for the round-trip check.
+ 
+ ---
+ 
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..de632fa 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -949,13 +949,18 @@ fn cmd_fmt(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             .with_format_version(out.format_version.clone());
+         let formatted = write_surface(out.view.as_ref(), &out.records, &ctx);
+ 
+-        // The round trip must not move a uid.
+-        match parse_surface(&formatted) {
+-            Ok(again) if again.labels == out.labels && again.records == out.records => {}
+-            _ => {
+-                eprintln!("{path}: canonical form does not reproduce the same records");
+-                worst = worse(worst, ExitCode::HashVerification);
+-                continue;
++        // The round trip must not move a uid. When the canonical form is byte-for-byte the
++        // source there is nothing to verify: the second parse would read the same bytes the
++        // first one did and can only return the same records. That is the common case for a
++        // pre-commit `fmt --check` over a tree that is already formatted, so skip the parse.
++        if formatted != src {
++            match parse_surface(&formatted) {
++                Ok(again) if again.labels == out.labels && again.records == out.records => {}
++                _ => {
++                    eprintln!("{path}: canonical form does not reproduce the same records");
++                    worst = worse(worst, ExitCode::HashVerification);
++                    continue;
++                }
+             }
+         }
+ 
+diff --git a/tests/cmd_fmt.rs b/tests/cmd_fmt.rs
+index 6d29052..53551fe 100644
+--- a/tests/cmd_fmt.rs
++++ b/tests/cmd_fmt.rs
+@@ -298,6 +298,13 @@ fn check_distinguishes_a_formatted_file_from_an_unformatted_one() {
+         ok.stderr
+     );
+     assert!(!ok.stderr.contains("not canonically formatted"));
++
++    // An already-canonical file takes the path that skips the verification reparse; it must
++    // still print itself unchanged and say nothing about identity drift.
++    let again = run(&["fmt", canonical.to_str().unwrap()]);
++    assert_eq!(again.code, SUCCESS, "{}", again.stderr);
++    assert_eq!(again.stdout, formatted.stdout);
++    assert!(!again.stderr.contains("does not reproduce"));
+     let _ = std::fs::remove_dir_all(&dir);
+ }
+ 

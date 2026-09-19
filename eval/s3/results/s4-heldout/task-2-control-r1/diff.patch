@@ -1,0 +1,169 @@
+ CHANGELOG.md                        |  3 +-
+ Documentation/manual/appendices.typ |  2 +-
+ src/main.rs                         | 10 +++-
+ tests/cmd_check_default_store.rs    | 93 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 104 insertions(+), 4 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..c63d014 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,8 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++- `smysl check` with no path and no `--store` now checks `.smysl/store`, relative to the
++  current directory, instead of reading stdin. Stdin is still available as `-`.
+ 
+ ---
+ 
+diff --git a/Documentation/manual/appendices.typ b/Documentation/manual/appendices.typ
+index 56c4fff..8e26469 100644
+--- a/Documentation/manual/appendices.typ
++++ b/Documentation/manual/appendices.typ
+@@ -73,7 +73,7 @@ These apply to every subcommand, in any position on the command line.
+     ([`--as`], [`SCHEMA` (repeatable)], [Report fidelity for a consumer implementing these schemas.]),
+     ([`--granularity`], [—], [Report the granularity distribution of the store.]),
+     ([`--pass`], [`NAME` (repeatable)], [Run only these passes.]),
+-    ([`FILE …`], [positional, 0 or more], [Stores to check; `-` or none reads stdin (rule P).]),
++    ([`FILE …`], [positional, 0 or more], [Stores to check; none checks `.smysl/store`, `-` reads stdin (rule P).]),
+   ),
+ )
+ 
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..5e2b1af 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -217,7 +217,7 @@ fn cli() -> Command {
+                     Arg::new("files")
+                         .num_args(0..)
+                         .value_name("FILE")
+-                        .help("Stores to check; `-` or none reads stdin (rule P)"),
++                        .help("Stores to check; none checks `.smysl/store`, `-` reads stdin (rule P)"),
+                 ),
+             "diff" => sub
+                 .arg(
+@@ -1006,8 +1006,14 @@ fn finish_over(bar: Bar, n: usize, verb: &str) {
+     }
+ }
+ 
++/// The store `smysl check` reads when it is given no path and no `--store`.
++const DEFAULT_STORE: &str = ".smysl/store";
++
+ /// `smysl check` - run the check pipeline (§23.1).
+ ///
++/// With no path it checks `.smysl/store`, relative to the directory it is run from. Stdin is
++/// still there, but asked for by name with `-`.
++///
+ /// Exits 3 on any error-severity diagnostic, and `--strict` promotes warnings to that
+ /// threshold. `check` verifies consistency, never correctness (N13): it can tell you a
+ /// body reaches for a unit it never declared, not whether the claim is true.
+@@ -1026,7 +1032,7 @@ fn cmd_check(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             global
+                 .get_one::<String>("store")
+                 .map(|s| vec![s.clone()])
+-                .unwrap_or_else(|| vec!["-".to_string()])
++                .unwrap_or_else(|| vec![DEFAULT_STORE.to_string()])
+         });
+ 
+     // `--as` names the schemas a consumer implements; the kernel is always implied.
+diff --git a/tests/cmd_check_default_store.rs b/tests/cmd_check_default_store.rs
+new file mode 100644
+index 0000000..ab70a4a
+--- /dev/null
++++ b/tests/cmd_check_default_store.rs
+@@ -0,0 +1,93 @@
++//! `smysl check` with no path checks `.smysl/store`.
++//!
++//! It used to read stdin, which made a bare `smysl check` in a project hang on the terminal
++//! rather than check the project. Stdin is still there, but asked for as `-`.
++
++#![cfg(feature = "cli")]
++
++use std::io::Write;
++use std::process::{Command, Stdio};
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++const F1: &str = "fixtures/corpus/F1-incident.smy";
++const F6: &str = "fixtures/corpus/F6-adversarial.smy";
++
++/// A scratch project directory holding `.smysl/store` copied from `fixture`.
++fn project(name: &str, fixture: &str) -> std::path::PathBuf {
++    let dir =
++        std::env::temp_dir().join(format!("smysl-check-default-{}-{name}", std::process::id()));
++    let _ = std::fs::remove_dir_all(&dir);
++    std::fs::create_dir_all(dir.join(".smysl")).unwrap();
++    let src = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join(fixture);
++    std::fs::copy(src, dir.join(".smysl/store")).unwrap();
++    dir
++}
++
++/// Run `smysl <args>` in `dir`, with stdin closed unless `stdin` is given.
++fn run_in(dir: &std::path::Path, args: &[&str], stdin: Option<&[u8]>) -> (i32, String, String) {
++    let mut child = Command::new(BIN)
++        .args(args)
++        .current_dir(dir)
++        .stdin(Stdio::piped())
++        .stdout(Stdio::piped())
++        .stderr(Stdio::piped())
++        .spawn()
++        .expect("the binary under test must run");
++    let mut pipe = child.stdin.take().unwrap();
++    if let Some(bytes) = stdin {
++        pipe.write_all(bytes).unwrap();
++    }
++    drop(pipe);
++    let o = child.wait_with_output().unwrap();
++    (
++        o.status.code().unwrap_or(-1),
++        String::from_utf8_lossy(&o.stdout).into_owned(),
++        String::from_utf8_lossy(&o.stderr).into_owned(),
++    )
++}
++
++/// A clean store passes and a defective one fails, so the default is being *read*, not
++/// merely accepted: a `check` that ignored it and read the empty stdin would pass both.
++#[test]
++fn no_path_checks_the_default_store() {
++    let clean = project("clean", F1);
++    let (code, _, err) = run_in(&clean, &["check"], None);
++    assert_eq!(code, 0, "{err}");
++
++    let bad = project("bad", F6);
++    let (code, _, err) = run_in(&bad, &["check"], None);
++    assert_eq!(code, 3, "{err}");
++    assert!(
++        err.contains(".smysl/store"),
++        "diagnostics name the file: {err}"
++    );
++}
++
++/// No default store is a failure that names the path, not a silent pass over empty input.
++#[test]
++fn a_missing_default_store_is_reported() {
++    let dir =
++        std::env::temp_dir().join(format!("smysl-check-default-{}-empty", std::process::id()));
++    let _ = std::fs::remove_dir_all(&dir);
++    std::fs::create_dir_all(&dir).unwrap();
++    let (code, _, err) = run_in(&dir, &["check"], None);
++    assert_ne!(code, 0);
++    assert!(err.contains(".smysl/store"), "{err}");
++}
++
++/// An explicit path or `--store` wins over the default, and `-` still reads stdin.
++#[test]
++fn explicit_arguments_override_the_default() {
++    let bad = project("override", F6);
++    let f1 = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join(F1);
++
++    let (code, _, err) = run_in(&bad, &["check", f1.to_str().unwrap()], None);
++    assert_eq!(code, 0, "{err}");
++
++    let (code, _, err) = run_in(&bad, &["--store", f1.to_str().unwrap(), "check"], None);
++    assert_eq!(code, 0, "{err}");
++
++    let doc = std::fs::read(&f1).unwrap();
++    let (code, _, err) = run_in(&bad, &["check", "-"], Some(&doc));
++    assert_eq!(code, 0, "{err}");
++}

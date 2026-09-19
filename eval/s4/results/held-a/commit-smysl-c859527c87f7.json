@@ -1,0 +1,195 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "score": 139.8839569091797,
+      "terms": [
+        "smysl:82.80",
+        "provider:46.67",
+        "sam:3.69",
+        "same:3.69",
+        "featur:2.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 41.70442581176758,
+      "terms": [
+        "gemini:7.53",
+        "tests:4.28",
+        "its:3.38",
+        "mapper:3.29",
+        "mappers:3.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-1-1",
+      "score": 35.16519546508789,
+      "terms": [
+        "gemini:7.53",
+        "mapper:4.76",
+        "mappers:4.76",
+        "reach:4.76",
+        "feature:3.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g0bc1aeb96d6b-2-1",
+      "score": 27.928298950195312,
+      "terms": [
+        "repair:6.36",
+        "thi:3.31",
+        "this:3.31",
+        "into:3.18",
+        "sam:2.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-2",
+      "score": 27.773340225219727,
+      "terms": [
+        "repair:6.64",
+        "into:3.32",
+        "sam:2.62",
+        "same:2.62",
+        "thi:2.62"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 23.389677047729492,
+      "terms": [
+        "with:3.72",
+        "that:3.32",
+        "thi:2.94",
+        "this:2.94",
+        "would:2.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 23.143802642822266,
+      "terms": [
+        "with:3.67",
+        "that:3.31",
+        "thi:2.90",
+        "this:2.90",
+        "would:2.90"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 22.061935424804688,
+      "terms": [
+        "doe:5.50",
+        "does:5.50",
+        "never:5.50",
+        "not:3.06",
+        "pass:1.73"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 18.134035110473633,
+      "terms": [
+        "noth:3.82",
+        "nothing:3.82",
+        "its:3.15",
+        "for:2.87",
+        "not:2.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g0bc1aeb96d6b-1-1",
+      "score": 15.111625671386719,
+      "terms": [
+        "gemini:7.41",
+        "for:3.37",
+        "build:3.33",
+        "and:1.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 14.248230934143066,
+      "terms": [
+        "than:3.99",
+        "for:2.87",
+        "that:2.63",
+        "pass:1.48",
+        "is:1.30"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 12.885050773620605,
+      "terms": [
+        "than:3.79",
+        "for:2.72",
+        "that:2.49",
+        "pass:1.41",
+        "and:1.25"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/ROAD_TO_1.0.md",
+    "Makefile",
+    "crates/smysl-ingest/src/chunk.rs",
+    "crates/smysl-ingest/src/lib.rs",
+    "crates/smysl-ingest/src/monotone.rs",
+    "crates/smysl-ingest/src/repair.rs",
+    "crates/smysl-ingest/src/stage.rs",
+    "crates/smysl-provider/src/http.rs",
+    "crates/smysl-provider/src/lib.rs",
+    "crates/smysl-provider/src/map/auth.rs",
+    "crates/smysl-provider/src/map/deepseek.rs",
+    "crates/smysl-provider/src/map/gemini.rs",
+    "crates/smysl-provider/src/map/mod.rs",
+    "crates/smysl-provider/src/map/ollama.rs",
+    "crates/smysl-provider/src/map/openai.rs",
+    "crates/smysl-provider/src/runtime.rs"
+  ],
+  "findings": [],
+  "fingerprint": "eb87779082343f8504606b133b6ef8123dd71e3d4173e13b5ae4155dfff95bb2",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-c859527c87f7",
+  "kind": "commit",
+  "pack_tokens": 1365,
+  "pack_units": 40,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 51142,
+    "prompt_tokens": 35010,
+    "seconds": 157.39135445800002
+  },
+  "verdicts": []
+}

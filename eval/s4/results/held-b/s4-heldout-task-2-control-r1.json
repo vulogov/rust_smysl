@@ -1,0 +1,253 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 86.82817840576172,
+      "terms": [
+        "stor:23.87",
+        "store:19.46",
+        "rul:5.97",
+        "rule:5.97"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-17",
+      "score": 86.3556900024414,
+      "terms": [
+        "stor:18.15",
+        "store:14.80",
+        "rul:6.22",
+        "rule:6.22",
+        "check:4.87"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-19-1",
+      "score": 84.83145904541016,
+      "terms": [
+        "stor:27.18",
+        "store:22.16",
+        "for:3.94"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 83.452392578125,
+      "terms": [
+        "stor:21.78",
+        "store:17.75",
+        "tests:3.82",
+        "with:2.89",
+        "test:2.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-9-1",
+      "score": 63.10810470581055,
+      "terms": [
+        "stor:24.46",
+        "store:19.94",
+        "code:7.77",
+        "cod:7.12",
+        "command:3.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 61.55393981933594,
+      "terms": [
+        "stor:18.96",
+        "store:15.46",
+        "code:7.43",
+        "cod:6.81",
+        "assert:5.14"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-9",
+      "score": 60.53104019165039,
+      "terms": [
+        "stor:17.93",
+        "store:14.62",
+        "code:7.18",
+        "cod:6.58",
+        "assert:4.97"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-6-1",
+      "score": 56.83647918701172,
+      "terms": [
+        "stdin:16.33",
+        "path:8.58",
+        "given:7.02",
+        "check:5.24",
+        "for:3.84"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-8",
+      "score": 53.557861328125,
+      "terms": [
+        "path:11.35",
+        "all:7.74",
+        "name:6.34",
+        "manual:5.91",
+        "nam:4.52"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-6-1",
+      "score": 48.8094482421875,
+      "terms": [
+        "stdin:15.89",
+        "path:11.00",
+        "given:9.01",
+        "check:6.72",
+        "read:4.44"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-6",
+      "score": 47.072052001953125,
+      "terms": [
+        "stdin:16.57",
+        "path:8.87",
+        "check:5.42",
+        "for:3.92",
+        "read:3.58"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-3-1",
+      "score": 45.84374237060547,
+      "terms": [
+        "fixtur:9.20",
+        "bytes:6.49",
+        "file:6.49",
+        "fixture:6.12",
+        "fil:5.97"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 163,
+  "diff_truncated": false,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "+ `smysl check` with no path and no `--store` now checks `.smysl/store`, relative to the current directory, instead of reading stdin. Stdin is still available as `-`.",
+        "label": "r/g90ec2f781421-6-1",
+        "line": 3,
+        "reason": "The change introduces a new behavior where `smysl check` with no path and no `--store` checks `.smysl/store` instead of reading from stdin, contradicting the rejected alternative.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "+ `smysl check` with no path and no `--store` now checks `.smysl/store`, relative to the current directory, instead of reading stdin. Stdin is still available as `-`.",
+        "label": "d/g90ec2f781421-6",
+        "line": 3,
+        "reason": "The change introduces a new behavior where `smysl check` with no path and no `--store` checks `.smysl/store` instead of reading from stdin, contradicting the decision.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    }
+  ],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/manual/appendices.typ",
+    "src/main.rs",
+    "tests/cmd_check_default_store.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "- `smysl check` with no path and no `--store` now checks `.smysl/store`, relative to the",
+      "kind": "rejected alternative",
+      "label": "r/g90ec2f781421-9-1",
+      "reason": "The change introduces a new behavior where `smysl check` with no path and no `--store` checks `.smysl/store` instead of reading from stdin, contradicting the rejected alternative.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "Rejected: assert exit code in every_command_dispatches\nMost commands fail without a store; how they fail is the rest of the suite's job."
+    },
+    {
+      "diff_line": "- `smysl check` with no path and no `--store` now checks `.smysl/store`, relative to the",
+      "kind": "decision",
+      "label": "d/g90ec2f781421-9",
+      "reason": "The change introduces a new behavior where `smysl check` with no path and no `--store` checks `.smysl/store` instead of reading from stdin, contradicting the decision.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "Do not assert exit code in every_command_dispatches.\nMost commands fail without a store; how they fail is rest of suite's job. Claim only that failure came from command not router."
+    }
+  ],
+  "fingerprint": "5247f54c03647a33a9e7e4bf0bc3d42c27d91b490ac4eb7050256e5f609b6d10",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-2-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1500,
+  "pack_units": 67,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 2,
+  "usage": {
+    "completion_tokens": 588,
+    "predicted_tokens": 20400,
+    "prompt_tokens": 14796,
+    "seconds": 83.508431791
+  },
+  "verdicts": [
+    {
+      "diff_line": "+ `smysl check` with no path and no `--store` now checks `.smysl/store`, relative to the current directory, instead of reading stdin. Stdin is still available as `-`.",
+      "label": "r/g90ec2f781421-9-1",
+      "line": 10,
+      "reason": "The change introduces a new behavior where `smysl check` with no path and no `--store` checks `.smysl/store` instead of reading from stdin, contradicting the rejected alternative.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+ `smysl check` with no path and no `--store` now checks `.smysl/store`, relative to the current directory, instead of reading stdin. Stdin is still available as `-`.",
+      "label": "d/g90ec2f781421-9",
+      "line": 10,
+      "reason": "The change introduces a new behavior where `smysl check` with no path and no `--store` checks `.smysl/store` instead of reading from stdin, contradicting the decision.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+ `smysl check` with no path and no `--store` now checks `.smysl/store`, relative to the current directory, instead of reading stdin. Stdin is still available as `-`.",
+      "label": "r/g90ec2f781421-6-1",
+      "line": 3,
+      "reason": "The change introduces a new behavior where `smysl check` with no path and no `--store` checks `.smysl/store` instead of reading from stdin, contradicting the rejected alternative.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+ `smysl check` with no path and no `--store` now checks `.smysl/store`, relative to the current directory, instead of reading stdin. Stdin is still available as `-`.",
+      "label": "d/g90ec2f781421-6",
+      "line": 3,
+      "reason": "The change introduces a new behavior where `smysl check` with no path and no `--store` checks `.smysl/store` instead of reading from stdin, contradicting the decision.",
+      "verdict": "contradicts"
+    }
+  ]
+}

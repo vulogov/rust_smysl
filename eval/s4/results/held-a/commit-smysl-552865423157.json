@@ -1,0 +1,153 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-11",
+      "score": 85.54295349121094,
+      "terms": [
+        "documentation:16.11",
+        "claim:4.30",
+        "doe:3.89",
+        "does:3.89",
+        "that:3.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 81.9173355102539,
+      "terms": [
+        "cor:23.84",
+        "core:23.84",
+        "unit:11.22",
+        "smysl:6.50",
+        "tests:3.03"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 67.70556640625,
+      "terms": [
+        "cor:26.24",
+        "core:26.24",
+        "smysl:6.28",
+        "format:3.29",
+        "the:2.18"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 51.80864334106445,
+      "terms": [
+        "cas:10.25",
+        "cases:5.12",
+        "produc:4.28",
+        "test:4.08",
+        "for:3.20"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-3",
+      "score": 47.48841094970703,
+      "terms": [
+        "fixtures:11.94",
+        "fixtur:11.89",
+        "canonical:4.60",
+        "test:3.85",
+        "fixture:3.84"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g532e4d229a6c-4",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-10",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-12",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g532e4d229a6c-4-1",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g532e4d229a6c-4-2",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-12-1",
+      "score": 40.95866775512695,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    ".github/workflows/ci.yml",
+    "CHANGELOG.md",
+    "Documentation/READINESS.md",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "crates/smysl-core/tests/gen_uid_fixtures.rs",
+    "fixtures/wire/uid/cases.json",
+    "go/README.md",
+    "go/blake3.go",
+    "go/blake3_test.go",
+    "go/uid.go",
+    "go/uid_test.go"
+  ],
+  "findings": [],
+  "fingerprint": "26073c49751e32f7f54a179a52090bb79f32175b11c2c7ab77cf38467a182a63",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-552865423157",
+  "kind": "commit",
+  "pack_tokens": 1497,
+  "pack_units": 53,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 53448,
+    "prompt_tokens": 37274,
+    "seconds": 169.494842458
+  },
+  "verdicts": []
+}

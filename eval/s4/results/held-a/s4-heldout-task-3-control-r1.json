@@ -1,0 +1,225 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-4-1",
+      "score": 149.53298950195312,
+      "terms": [
+        "usage:23.66",
+        "usag:15.77",
+        "writ:9.33",
+        "checkout:7.89",
+        "ingest:7.89"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 116.60646057128906,
+      "terms": [
+        "path:32.53",
+        "tests:12.97",
+        "smysl:8.04",
+        "test:2.69",
+        "the:2.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-4",
+      "score": 115.68345642089844,
+      "terms": [
+        "ledger:20.60",
+        "usage:19.21",
+        "usag:12.81",
+        "directory:7.46",
+        "scratch:7.12"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 108.06024169921875,
+      "terms": [
+        "usage:24.28",
+        "ledger:21.49",
+        "usag:13.37",
+        "left:7.90",
+        "log:7.90"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-9",
+      "score": 108.017333984375,
+      "terms": [
+        "assert:9.94",
+        "code:7.18",
+        "cod:6.58",
+        "dispatch:6.14",
+        "store:4.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 66.9964599609375,
+      "terms": [
+        "path:29.14",
+        "smysl:7.21",
+        "let:5.50",
+        "rather:4.56",
+        "thi:4.44"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 57.84172821044922,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-17",
+      "score": 57.84172821044922,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 57.84172821044922,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-5",
+      "score": 57.84172821044922,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 57.84172821044922,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-5",
+      "score": 57.84172821044922,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 387,
+  "diff_truncated": false,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "+  and resets, `~/.smysl/usage.log` (`$HOME`, or `%USERPROFILE%`), so usage is tracked across\n+  projects rather than per checkout.",
+        "label": "d/g90ec2f781421-4",
+        "line": 35,
+        "reason": "The change moves the usage ledger to the user's home directory, contradicting the decision to run each command in a scratch directory of its own.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "+  and resets, `~/.smysl/usage.log` (`$HOME`, or `%USERPROFILE%`), so usage is tracked across\n+  projects rather than per checkout.",
+        "label": "r/g90ec2f781421-4-1",
+        "line": 35,
+        "reason": "The change moves the usage ledger to the user's home directory, contradicting the rejected alternative of running each command in the repository root.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    }
+  ],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/RFC_PROPOSAL.md",
+    "Documentation/manual/appendices.typ",
+    "Documentation/manual/ch09-10-attest-providers.typ",
+    "crates/smysl-provider/src/usage.rs",
+    "src/main.rs",
+    "tests/cmd_usage.rs",
+    "tests/dispatch.rs",
+    "tests/public-api-counts.txt"
+  ],
+  "findings": [
+    {
+      "diff_line": "- **The usage ledger moves to the user's home directory.** `ingest` writes, and `usage` reads",
+      "kind": "prerequisite",
+      "label": "p/g90ec2f781421-4-1",
+      "reason": "The change moves the usage ledger to the user's home directory, contradicting the prerequisite that ingest and usage write to .smysl in the working directory.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "ingest and usage write to .smysl in the working directory, so a shared checkout would be dirtied."
+    },
+    {
+      "diff_line": "`.smysl/` by an earlier version is not read; concatenate it onto the home one to keep the",
+      "kind": "prerequisite",
+      "label": "p/g90ec2f781421-1-1",
+      "reason": "The change specifies the home directory for the usage ledger, contradicting the prerequisite that Cargo provides the binary path via CARGO_BIN_EXE_smysl for integration tests.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "Cargo provides the binary path via CARGO_BIN_EXE_smysl for integration tests."
+    }
+  ],
+  "fingerprint": "17a6b350bc0e90ea287949cea963a23d71798665a1c45a252d25ec2e93994b26",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-3-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1494,
+  "pack_units": 62,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 3,
+  "usage": {
+    "completion_tokens": 564,
+    "predicted_tokens": 42339,
+    "prompt_tokens": 30813,
+    "seconds": 160.50103725000002
+  },
+  "verdicts": [
+    {
+      "diff_line": "+- **The usage ledger moves to the user's home directory.** `ingest` writes, and `usage` reads\n+  and resets, `~/.smysl/usage.log` (`$HOME`, or `%USERPROFILE%`), so usage is tracked across\n+  projects rather than per checkout.",
+      "label": "p/g90ec2f781421-4-1",
+      "line": 10,
+      "reason": "The change moves the usage ledger to the user's home directory, contradicting the prerequisite that ingest and usage write to .smysl in the working directory.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  and resets, `~/.smysl/usage.log` (`$HOME`, or `%USERPROFILE%`), so usage is tracked across\n+  projects rather than per checkout.",
+      "label": "p/g90ec2f781421-1-1",
+      "line": 13,
+      "reason": "The change specifies the home directory for the usage ledger, contradicting the prerequisite that Cargo provides the binary path via CARGO_BIN_EXE_smysl for integration tests.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  and resets, `~/.smysl/usage.log` (`$HOME`, or `%USERPROFILE%`), so usage is tracked across\n+  projects rather than per checkout.",
+      "label": "d/g90ec2f781421-4",
+      "line": 35,
+      "reason": "The change moves the usage ledger to the user's home directory, contradicting the decision to run each command in a scratch directory of its own.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  and resets, `~/.smysl/usage.log` (`$HOME`, or `%USERPROFILE%`), so usage is tracked across\n+  projects rather than per checkout.",
+      "label": "r/g90ec2f781421-4-1",
+      "line": 35,
+      "reason": "The change moves the usage ledger to the user's home directory, contradicting the rejected alternative of running each command in the repository root.",
+      "verdict": "contradicts"
+    }
+  ]
+}

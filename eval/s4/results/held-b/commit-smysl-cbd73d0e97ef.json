@@ -1,0 +1,193 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-13-1",
+      "score": 118.4433822631836,
+      "terms": [
+        "smysl:32.02",
+        "format:18.63",
+        "0:9.12",
+        "1:7.70",
+        "14:6.65"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g69ea5c05d859-13-1",
+      "score": 113.0947265625,
+      "terms": [
+        "smysl:30.93",
+        "format:19.53",
+        "0:7.89",
+        "1:7.44",
+        "version:1.98"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-11",
+      "score": 88.62446594238281,
+      "terms": [
+        "documentation:88.62"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-13",
+      "score": 86.36994934082031,
+      "terms": [
+        "smysl:27.03",
+        "format:19.64",
+        "6:13.54",
+        "0:6.90",
+        "1:6.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 82.12659454345703,
+      "terms": [
+        "smysl:29.23",
+        "format:14.93",
+        "e:7.14",
+        "g:7.14",
+        "cor:5.96"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-1",
+      "score": 79.33199310302734,
+      "terms": [
+        "smysl:33.69",
+        "format:16.79",
+        "0:8.59",
+        "1:8.10",
+        "document:5.88"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-12",
+      "score": 69.49404907226562,
+      "terms": [
+        "5:24.18",
+        "format:16.94",
+        "0:7.43",
+        "spec:6.67",
+        "14:6.04"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-14",
+      "score": 65.5440902709961,
+      "terms": [
+        "smysl:28.65",
+        "0:8.86",
+        "1:6.89",
+        "14:6.59",
+        "writer:4.92"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 64.2217025756836,
+      "terms": [
+        "smysl:28.25",
+        "format:16.44",
+        "cor:6.56",
+        "core:6.56",
+        "default:3.09"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-1-3",
+      "score": 62.36490249633789,
+      "terms": [
+        "smysl:32.02",
+        "3:21.00",
+        "0:8.17",
+        "the:1.17"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-1-1",
+      "score": 60.9592170715332,
+      "terms": [
+        "smysl:29.26",
+        "0:7.47",
+        "1:7.03",
+        "document:6.01",
+        "writer:5.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-14-1",
+      "score": 60.8637809753418,
+      "terms": [
+        "smysl:30.58",
+        "0:7.80",
+        "1:7.35",
+        "writer:4.74",
+        "8:4.01"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 224,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Cargo.lock",
+    "Cargo.toml",
+    "Documentation/SMYSL_FORMAT_GUIDE.pdf",
+    "Documentation/SMYSL_FORMAT_GUIDE.typ",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SMYSL_RATIONALE.pdf",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.pdf",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.typ",
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch25-27-library-walkthrough.typ",
+    "Documentation/manual/design.typ",
+    "src/lib.rs"
+  ],
+  "findings": [],
+  "fingerprint": "0b2a703ab01eda9926b2a9a5322e755d56e2013cfa9a37a68fe78aef97ea0c2d",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-cbd73d0e97ef",
+  "kind": "commit",
+  "pack_tokens": 1492,
+  "pack_units": 57,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 42981,
+    "prompt_tokens": 38480,
+    "seconds": 198.962672915
+  },
+  "verdicts": []
+}

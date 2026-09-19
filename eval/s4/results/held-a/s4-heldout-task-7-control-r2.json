@@ -1,0 +1,280 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 172.43209838867188,
+      "terms": [
+        "session:17.03",
+        "anchor:14.60",
+        "tim:9.01",
+        "time:9.01",
+        "start:7.54"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 123.88876342773438,
+      "terms": [
+        "session:16.42",
+        "clock:8.00",
+        "read:5.54",
+        "let:5.50",
+        "wall:5.22"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-2",
+      "score": 122.6004409790039,
+      "terms": [
+        "session:17.53",
+        "tim:11.30",
+        "time:11.30",
+        "elaps:6.40",
+        "elapsed:6.40"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g449b762e3cca-10",
+      "score": 117.03372955322266,
+      "terms": [
+        "anchor:14.44",
+        "ucal:11.53",
+        "state:10.04",
+        "stat:9.11",
+        "in:5.65"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-11-1",
+      "score": 116.91377258300781,
+      "terms": [
+        "session:16.56",
+        "state:9.77",
+        "stat:8.86",
+        "lock:6.57",
+        "tick:4.43"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 116.61576843261719,
+      "terms": [
+        "anchor:13.73",
+        "ucal:10.64",
+        "state:9.26",
+        "stat:8.40",
+        "in:5.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-6",
+      "score": 96.48890686035156,
+      "terms": [
+        "session:17.71",
+        "anchor:12.79",
+        "state:10.90",
+        "stat:9.89",
+        "session_now:7.88"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 91.6075439453125,
+      "terms": [
+        "session:16.81",
+        "tim:10.83",
+        "time:10.83",
+        "clock:7.97",
+        "wid:7.97"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 73.88572692871094,
+      "terms": [
+        "session:15.03",
+        "clock:7.50",
+        "tim:7.40",
+        "time:7.40",
+        "feature:4.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-1-1",
+      "score": 69.10594177246094,
+      "terms": [
+        "tim:8.67",
+        "time:8.67",
+        "clock:7.44",
+        "let:6.94",
+        "system:5.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-7",
+      "score": 63.094818115234375,
+      "terms": [
+        "session:11.55",
+        "now:8.87",
+        "clock:7.52",
+        "read:5.67",
+        "system:5.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-2",
+      "score": 61.09059143066406,
+      "terms": [
+        "anchor:13.51",
+        "now:8.32",
+        "elaps:5.76",
+        "elapsed:5.76",
+        "read:5.32"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 154,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI.md",
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/main.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "The clock is anchored at program start, before arguments are parsed, so the",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-2",
+      "reason": "This line contradicts the rejected alternative 'Anchor the session at process start-up' by explicitly stating that the clock is anchored at program start.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Anchor the session at process start-up.\nA command that never asks the time should not read a clock, and most do not."
+    },
+    {
+      "diff_line": "// the time should not read a clock, and most of them do not.",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-4-1",
+      "reason": "This line contradicts the rejected alternative 'Have Session::reading read the wall clock itself' by removing the comment that suggests anchoring on first use.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Have Session::reading read the wall clock itself.\nA pure function lets tests drive a wall clock backwards and assert the answer does not follow."
+    },
+    {
+      "diff_line": "let mut g = match session().lock() {",
+      "kind": "prerequisite",
+      "label": "p/g2074788f713e-2-2",
+      "reason": "This line contradicts the constraint 'std::time::Instant::elapsed() gives monotonic duration from the session base' by changing the locking mechanism.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "`std::time::Instant::elapsed()` gives monotonic duration from the session base."
+    },
+    {
+      "diff_line": "If the system clock cannot be read then, the first reading anchors it instead.",
+      "kind": "decision",
+      "label": "d/g449b762e3cca-10",
+      "reason": "This line contradicts the decision 'Refuse calendars with no anchor' by allowing the session to be anchored by the first reading if the system clock cannot be read.",
+      "source": "Documentation/CLI.md@449b762e3cca",
+      "text": "Refuse calendars with no anchor\nThe same error as the forward direction, UCAL-E0062; thirteen of fifteen derived calendars are in this state."
+    },
+    {
+      "diff_line": "let mut g = match session().lock() {",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-11-1",
+      "reason": "This line contradicts the rejected alternative 'Propagate the poison error from `session().lock()`' by changing the locking mechanism.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Propagate the poison error from `session().lock()`.\nThe state is a pair of tick counts and cannot be torn, so taking the inner value is correct."
+    },
+    {
+      "diff_line": "If the system clock cannot be read then, the first reading anchors it instead.",
+      "kind": "rejected alternative",
+      "label": "r/g449b762e3cca-10-1",
+      "reason": "This line contradicts the rejected alternative 'Allow the inverse for calendars with no anchor' by allowing the session to be anchored by the first reading if the system clock cannot be read.",
+      "source": "Documentation/CLI.md@449b762e3cca",
+      "text": "Rejected: Allow the inverse for calendars with no anchor.\nThe same error as the forward direction, UCAL-E0062, applies; thirteen of fifteen derived calendars are in this state."
+    }
+  ],
+  "fingerprint": "7fe0399bb711c4126f1f2f07eed1c33bf1f7b0b9c4b06aba86081c5cbdd7e2c0",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-7-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1500,
+  "pack_units": 71,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 7,
+  "usage": {
+    "completion_tokens": 678,
+    "predicted_tokens": 21165,
+    "prompt_tokens": 14531,
+    "seconds": 86.151508001
+  },
+  "verdicts": [
+    {
+      "diff_line": "+The clock is anchored at program start, before arguments are parsed, so the anchor is the moment the process began and not the first command to ask the time.",
+      "label": "r/g2074788f713e-6-2",
+      "line": 9,
+      "reason": "This line contradicts the rejected alternative 'Anchor the session at process start-up' by explicitly stating that the clock is anchored at program start.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-    // Anchored on first use rather than at start-up: a command that never asks the time should not read a clock, and most of them do not.",
+      "label": "r/g2074788f713e-4-1",
+      "line": 75,
+      "reason": "This line contradicts the rejected alternative 'Have Session::reading read the wall clock itself' by removing the comment that suggests anchoring on first use.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-    let mut g = match session().lock() {",
+      "label": "p/g2074788f713e-2-2",
+      "line": 69,
+      "reason": "This line contradicts the constraint 'std::time::Instant::elapsed() gives monotonic duration from the session base' by changing the locking mechanism.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+If the system clock cannot be read then, the first reading anchors it instead.",
+      "label": "d/g449b762e3cca-10",
+      "line": 15,
+      "reason": "This line contradicts the decision 'Refuse calendars with no anchor' by allowing the session to be anchored by the first reading if the system clock cannot be read.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-    let mut g = match session().lock() {",
+      "label": "r/g2074788f713e-11-1",
+      "line": 69,
+      "reason": "This line contradicts the rejected alternative 'Propagate the poison error from `session().lock()`' by changing the locking mechanism.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+If the system clock cannot be read then, the first reading anchors it instead.",
+      "label": "r/g449b762e3cca-10-1",
+      "line": 15,
+      "reason": "This line contradicts the rejected alternative 'Allow the inverse for calendars with no anchor' by allowing the session to be anchored by the first reading if the system clock cannot be read.",
+      "verdict": "contradicts"
+    }
+  ]
+}

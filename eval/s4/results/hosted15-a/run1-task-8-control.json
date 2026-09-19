@@ -1,0 +1,133 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-5",
+      "score": 148.94308471679688
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-5-1",
+      "score": 142.4062957763672
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-1",
+      "score": 129.68931579589844
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-2",
+      "score": 125.74583435058594
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-4",
+      "score": 123.5036392211914
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-2",
+      "score": 119.31702423095703
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 119.05502319335938
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-1-1",
+      "score": 80.61190032958984
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 75.44224548339844
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-10",
+      "score": 67.16798400878906
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-2-1",
+      "score": 63.99979782104492
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-2-2",
+      "score": 60.488887786865234
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "crates/ucal/src/clock.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "/// reading = max(wall_now, anchor + monotonic_elapsed)",
+      "kind": "decision",
+      "label": "d/g2074788f713e-2",
+      "reason": "The diff removes the old max-only reading rule and replaces it with a capped rule, reversing the decision to use max(wall_now, anchor + monotonic_elapsed) as the reading rule.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.\nBackward steps lose to monotonic branch to keep advancing; forward steps win to track system corrections."
+    },
+    {
+      "diff_line": "self.last_call_elapsed = monotonic_elapsed.clone();",
+      "kind": "decision",
+      "label": "d/g2074788f713e-4",
+      "reason": "By storing `last_call_elapsed` and using it in the next call, `Session::reading` now depends on prior session state rather than being a pure function of its current inputs.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Make Session::reading a pure function of its inputs.\nPure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence."
+    }
+  ],
+  "fingerprint": "9f8ae32e380eaede22cac0333c2efb5529f902b97e54f696ef46f9ac32813ed4",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-8-control",
+  "kind": "agent",
+  "pack_tokens": 2993,
+  "pack_units": 132,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 8,
+  "usage": {
+    "completion_tokens": 14470,
+    "prompt_tokens": 13277,
+    "seconds": 212.10221254200002
+  },
+  "verdicts": [
+    {
+      "diff_line": "-/// reading = max(wall_now, anchor + monotonic_elapsed)",
+      "label": "d/g2074788f713e-2",
+      "line": 29,
+      "reason": "The diff removes the old max-only reading rule and replaces it with a capped rule, reversing the decision to use max(wall_now, anchor + monotonic_elapsed) as the reading rule.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+        self.last_call_elapsed = monotonic_elapsed.clone();",
+      "label": "d/g2074788f713e-4",
+      "line": 109,
+      "reason": "By storing `last_call_elapsed` and using it in the next call, `Session::reading` now depends on prior session state rather than being a pure function of its current inputs.",
+      "verdict": "contradicts"
+    }
+  ]
+}

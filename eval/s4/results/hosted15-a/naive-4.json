@@ -1,0 +1,118 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g532e4d229a6c-1-1",
+      "score": 38.15304946899414
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-3-1",
+      "score": 32.24409484863281
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-9",
+      "score": 26.601177215576172
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 25.735536575317383
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-1",
+      "score": 25.053401947021484
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-5",
+      "score": 24.960908889770508
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-6-1",
+      "score": 24.31829833984375
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-5-1",
+      "score": 24.102828979492188
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-9",
+      "score": 22.044723510742188
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-6-1",
+      "score": 21.51355743408203
+    },
+    {
+      "anchored": false,
+      "label": "r/g532e4d229a6c-5-1",
+      "score": 21.296337127685547
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-3-1",
+      "score": 21.047765731811523
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 15,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "tests/cmd_fmt.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "let out = run(&[\"fmt\", \"--check\", F1]);",
+      "kind": "decision",
+      "label": "d/g532e4d229a6c-3",
+      "reason": "The new test uses the repository fixture F1 instead of writing its own document with the needed property, reversing the decision to avoid repository fixtures.",
+      "source": "tests/cmd_fmt.rs@532e4d229a6c",
+      "text": "Make each test write its own document with the needed property instead of using repository fixtures.\nThe first version depended on repository fixtures like F1 not canonical and F9 having comments. cargo-mutants reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten, causing spurious failures counted as catches. The rule is that a test must not depend on the state of the tree, just as it must not depend on the state of the machine."
+    }
+  ],
+  "fingerprint": "7cc9b52dd0cdfd4f418efe7b1dd0ea69341e508774e4b851cb21a57d60f61eb7",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "naive-4",
+  "kind": "naive",
+  "pack_tokens": 2999,
+  "pack_units": 129,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 4,
+  "usage": {
+    "completion_tokens": 5975,
+    "prompt_tokens": 4777,
+    "seconds": 87.272502666
+  },
+  "verdicts": [
+    {
+      "diff_line": "+    let out = run(&[\"fmt\", \"--check\", F1]);",
+      "label": "d/g532e4d229a6c-3",
+      "line": 12,
+      "reason": "The new test uses the repository fixture F1 instead of writing its own document with the needed property, reversing the decision to avoid repository fixtures.",
+      "verdict": "contradicts"
+    }
+  ]
+}

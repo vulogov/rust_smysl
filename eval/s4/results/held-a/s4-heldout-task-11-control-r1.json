@@ -1,0 +1,167 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-2-1",
+      "score": 210.50355529785156,
+      "terms": [
+        "examples:26.40",
+        "documentation:19.80",
+        "exampl:16.08",
+        "cycl:11.36",
+        "ephemeri:9.96"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-1-2",
+      "score": 140.34805297851562,
+      "terms": [
+        "examples:26.85",
+        "documentation:20.14",
+        "observations:18.71",
+        "observation:17.93",
+        "txt:17.87"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/gcc3aafefb1da-1-3",
+      "score": 134.05245971679688,
+      "terms": [
+        "observation:16.50",
+        "observations:16.50",
+        "path:5.50",
+        "residual:5.24",
+        "residuals:5.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-2",
+      "score": 113.24974060058594,
+      "terms": [
+        "observation:14.90",
+        "observations:14.90",
+        "four:7.54",
+        "known:7.26",
+        "synthetic:7.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-3-1",
+      "score": 84.64068603515625,
+      "terms": [
+        "examples:30.98",
+        "exampl:18.87",
+        "src:9.34",
+        "xtask:9.34",
+        "manual:7.02"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-2-1",
+      "score": 79.93295288085938,
+      "terms": [
+        "observation:15.66",
+        "observations:15.66",
+        "known:7.53",
+        "advance:5.95",
+        "eye:5.95"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-1",
+      "score": 77.6720199584961,
+      "terms": [
+        "observation:14.43",
+        "observations:14.43",
+        "binari:5.63",
+        "binaries:5.63",
+        "wrot:5.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/gcc3aafefb1da-2-2",
+      "score": 74.57464599609375,
+      "terms": [
+        "cycl:11.46",
+        "grow:8.86",
+        "outsid:7.00",
+        "outside:7.00",
+        "width:6.66"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/gcc3aafefb1da-6",
+      "score": 70.17402648925781,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-1-1",
+      "score": 70.17402648925781,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-1-2",
+      "score": 70.17402648925781,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-6-1",
+      "score": 70.17402648925781,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 328,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/examples/observations.txt",
+    "crates/ucal/tests/common/mod.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "xtask/src/examples.rs"
+  ],
+  "findings": [],
+  "fingerprint": "cc75b403eeaf7b2082cf27bb60c79ef32c42a366b8e984556b66247a664ea756",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-11-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1498,
+  "pack_units": 78,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 11,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 42987,
+    "prompt_tokens": 32164,
+    "seconds": 141.781788458
+  },
+  "verdicts": []
+}

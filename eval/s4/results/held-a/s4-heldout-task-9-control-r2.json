@@ -1,0 +1,305 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 72.64569091796875,
+      "terms": [
+        "newest:24.17",
+        "version:13.14",
+        "sorted:8.03",
+        "sort:5.96",
+        "ordering:4.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-1-1",
+      "score": 58.097373962402344,
+      "terms": [
+        "newest:23.42",
+        "version:12.73",
+        "plac:6.26",
+        "sort:5.78",
+        "one:3.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g21665b3aac9b-6",
+      "score": 56.850032806396484,
+      "terms": [
+        "pars:24.42",
+        "parse:18.31",
+        "all:6.10",
+        "which:3.96",
+        "to:2.14"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g21665b3aac9b-6-1",
+      "score": 56.56753921508789,
+      "terms": [
+        "pars:22.06",
+        "parse:16.54",
+        "them:5.51",
+        "all:4.22",
+        "which:3.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-4-1",
+      "score": 53.9851188659668,
+      "terms": [
+        "version:12.91",
+        "assert:9.33",
+        "som:7.08",
+        "some:7.08",
+        "str:3.98"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-3",
+      "score": 50.362770080566406,
+      "terms": [
+        "pars:24.63",
+        "parse:18.47",
+        "other:4.85",
+        "the:2.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-6",
+      "score": 50.25872802734375,
+      "terms": [
+        "releas:13.59",
+        "version:9.36",
+        "release:4.53",
+        "ordering:4.40",
+        "order:4.25"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-3",
+      "score": 49.716094970703125,
+      "terms": [
+        "version:14.27",
+        "first:9.02",
+        "assert:6.46",
+        "sort:5.60",
+        "test:3.93"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 48.85393524169922,
+      "terms": [
+        "version:8.24",
+        "assert:6.66",
+        "som:5.05",
+        "some:5.05",
+        "str:3.74"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g21665b3aac9b-9",
+      "score": 47.620784759521484,
+      "terms": [
+        "releas:14.73",
+        "first:10.12",
+        "gh:6.68",
+        "split:5.73",
+        "release:4.91"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-7-1",
+      "score": 47.38801193237305,
+      "terms": [
+        "version:14.24",
+        "other:6.47",
+        "ordering:6.36",
+        "order:6.14",
+        "str:4.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g21665b3aac9b-3-1",
+      "score": 46.938377380371094,
+      "terms": [
+        "pars:25.62",
+        "parse:19.21",
+        "is:2.10"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "xtask/src/releases.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "use std::cmp::Ordering;",
+      "kind": "decision",
+      "label": "d/g5880e472260e-1",
+      "reason": "The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the decision to read notes for the version being built rather than the newest sorted file.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Read notes for version being built rather than newest sorted file\nSorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing."
+    },
+    {
+      "diff_line": "use std::cmp::Ordering;",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-1-1",
+      "reason": "The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the rejection of sorting filenames numerically or by version to pick the newest.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Rejected: sort filenames numerically / by version to pick the newest\nSorting numerically would fix only the one exposed bug and would leave the guess in place."
+    },
+    {
+      "diff_line": "fn parse_version(v: &str) -> Option<(u64, u64, u64)> {",
+      "kind": "decision",
+      "label": "d/g21665b3aac9b-6",
+      "reason": "The change removes the `parse_version` function that returns a tuple of three integers representing the major, minor, and patch version numbers, contradicting the decision to gate `parse_form` and `codec::Form` behind all(civil, std) features.",
+      "source": "git:21665b3aac9be9a762eada806b9ccb56c3cbabea",
+      "text": "Gate parse_form and codec::Form behind all(civil, std)\nThey belong to run_now, which needs both civil and std features."
+    },
+    {
+      "diff_line": "fn parse_version(v: &str) -> Option<(u64, u64, u64)> {",
+      "kind": "rejected alternative",
+      "label": "r/g21665b3aac9b-6-1",
+      "reason": "The change removes the `parse_version` function that returns a tuple of three integers representing the major, minor, and patch version numbers, contradicting the rejection of gating `parse_form` and `codec::Form` behind a single feature or leaving them ungated.",
+      "source": "git:21665b3aac9be9a762eada806b9ccb56c3cbabea",
+      "text": "Rejected: Gate parse_form and codec::Form behind a single feature or leave them ungated.\nThey belong to run_now, which needs both civil and std, so all(civil, std) is required."
+    },
+    {
+      "diff_line": "use std::cmp::Ordering;",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-4-1",
+      "reason": "The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the rejection of asserting only that some error came back and the message named the version.",
+      "source": "xtask/src/citations.rs@5880e472260e",
+      "text": "Rejected: assert only that some error came back and the message named the version\nThe loose assertion passed even with the check disabled because read_to_string also fails and names the path containing the version."
+    },
+    {
+      "diff_line": "use std::collections::BTreeSet;",
+      "kind": "decision",
+      "label": "d/g449b762e3cca-3",
+      "reason": "The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the decision to parse the exact form `cal show` prints.",
+      "source": "git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2",
+      "text": "Parse the exact form `cal show` prints\nSo the two commands read each other's output, making the round trip something a person runs."
+    },
+    {
+      "diff_line": "///",
+      "kind": "decision",
+      "label": "d/g5880e472260e-3",
+      "reason": "The change updates the comment to indicate that the function now sorts versions in descending order, which contradicts the previous decision to replace old version-sort tests with current-version and missing-notes tests.",
+      "source": "xtask/src/citations.rs@5880e472260e",
+      "text": "Replace old version-sort tests with current-version and missing-notes tests\nOld tests checked that sorting by version picks 1.10.0 and that stray files sort first. New tests assert the current version's notes file exists and that a missing file is refused."
+    },
+    {
+      "diff_line": "///",
+      "kind": "decision",
+      "label": "d/g5880e472260e-4",
+      "reason": "The change updates the comment to indicate that the function now sorts versions in descending order, which contradicts the previous decision to make missing-notes test strict about the diagnostic.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Make missing-notes test strict about the diagnostic\nAsserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic."
+    }
+  ],
+  "fingerprint": "c8f01caa438e09607e229ad437afe162b8aabac9314f65ae12684297ca3a6162",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-9-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1493,
+  "pack_units": 67,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 9,
+  "usage": {
+    "completion_tokens": 920,
+    "predicted_tokens": 18307,
+    "prompt_tokens": 12978,
+    "seconds": 89.757714417
+  },
+  "verdicts": [
+    {
+      "diff_line": "+/// Parse the Contents table, newest version first.",
+      "label": "d/g5880e472260e-1",
+      "line": 9,
+      "reason": "The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the decision to read notes for the version being built rather than the newest sorted file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// Parse the Contents table, newest version first.",
+      "label": "r/g5880e472260e-1-1",
+      "line": 9,
+      "reason": "The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the rejection of sorting filenames numerically or by version to pick the newest.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-fn parse_version(v: &str) -> Option<(u64, u64, u64)> {",
+      "label": "d/g21665b3aac9b-6",
+      "line": 42,
+      "reason": "The change removes the `parse_version` function that returns a tuple of three integers representing the major, minor, and patch version numbers, contradicting the decision to gate `parse_form` and `codec::Form` behind all(civil, std) features.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-fn parse_version(v: &str) -> Option<(u64, u64, u64)> {",
+      "label": "r/g21665b3aac9b-6-1",
+      "line": 42,
+      "reason": "The change removes the `parse_version` function that returns a tuple of three integers representing the major, minor, and patch version numbers, contradicting the rejection of gating `parse_form` and `codec::Form` behind a single feature or leaving them ungated.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// Parse the Contents table, newest version first.",
+      "label": "r/g5880e472260e-4-1",
+      "line": 9,
+      "reason": "The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the rejection of asserting only that some error came back and the message named the version.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// Parse the Contents table, newest version first.",
+      "label": "d/g449b762e3cca-3",
+      "line": 10,
+      "reason": "The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the decision to parse the exact form `cal show` prints.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// Parse the Contents table, newest version first.",
+      "label": "d/g5880e472260e-3",
+      "line": 19,
+      "reason": "The change updates the comment to indicate that the function now sorts versions in descending order, which contradicts the previous decision to replace old version-sort tests with current-version and missing-notes tests.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// Parse the Contents table, newest version first.",
+      "label": "d/g5880e472260e-4",
+      "line": 19,
+      "reason": "The change updates the comment to indicate that the function now sorts versions in descending order, which contradicts the previous decision to make missing-notes test strict about the diagnostic.",
+      "verdict": "contradicts"
+    }
+  ]
+}

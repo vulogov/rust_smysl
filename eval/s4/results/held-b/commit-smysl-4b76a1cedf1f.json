@@ -1,0 +1,245 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 67.64997863769531,
+      "terms": [
+        "doc:7.45",
+        "output:6.78",
+        "new:5.03",
+        "mutation:4.41",
+        "one:4.41"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 58.24774169921875,
+      "terms": [
+        "doc:7.31",
+        "that:6.96",
+        "output:6.65",
+        "transcript:6.34",
+        "transcripts:4.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-9",
+      "score": 56.27705001831055,
+      "terms": [
+        "doc:8.74",
+        "output:7.96",
+        "doc_output:5.73",
+        "runs:5.19",
+        "replay:4.92"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-11",
+      "score": 44.83506774902344,
+      "terms": [
+        "doc:7.20",
+        "featur:6.58",
+        "output:6.55",
+        "feature:3.79",
+        "features:3.28"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-11-1",
+      "score": 37.55415344238281,
+      "terms": [
+        "doc:7.50",
+        "output:6.83",
+        "featur:6.40",
+        "feature:3.95",
+        "than:3.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-1-1",
+      "score": 33.30135726928711,
+      "terms": [
+        "both:12.14",
+        "featur:6.19",
+        "against:4.45",
+        "feature:4.21",
+        "only:3.64"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-8",
+      "score": 31.52028465270996,
+      "terms": [
+        "doc:7.53",
+        "output:6.86",
+        "manual:5.13",
+        "all:4.49",
+        "binary:3.77"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-9-1",
+      "score": 30.9526309967041,
+      "terms": [
+        "script:4.84",
+        "replay:4.76",
+        "only:3.66",
+        "cargo:3.50",
+        "not:3.36"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g87345653cdf3-4-2",
+      "score": 29.534517288208008,
+      "terms": [
+        "that:8.01",
+        "runs:5.79",
+        "run:4.98",
+        "make:4.43",
+        "mak:3.52"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-7-1",
+      "score": 28.808046340942383,
+      "terms": [
+        "caught:5.72",
+        "mutant:5.72",
+        "testing:5.00",
+        "smysl:4.49",
+        "binary:4.36"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 28.690298080444336,
+      "terms": [
+        "featur:6.56",
+        "against:3.99",
+        "tests:3.99",
+        "features:3.64",
+        "feature:2.88"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 28.438528060913086,
+      "terms": [
+        "documented:7.11",
+        "are:6.22",
+        "measurement:5.20",
+        "document:4.85",
+        "was:3.57"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 122,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "Documentation/READINESS.md",
+    "Documentation/ROAD_TO_1.0.md"
+  ],
+  "findings": [
+    {
+      "diff_line": "| `smysl`, the CLI (0.12) | 269 | **73.6%** |",
+      "kind": "decision",
+      "label": "d/ga18e230ae345-3",
+      "reason": "The line still mentions a measurement of the pass, contradicting the decision to decline keeping the search that measured the pass.",
+      "source": "git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa",
+      "text": "Decline to keep the search that measured the pass.\nWith the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting."
+    },
+    {
+      "diff_line": "| `smysl`, the CLI (0.12) | 269 | **73.6%** |",
+      "kind": "decision",
+      "label": "d/ga18e230ae345-4",
+      "reason": "The line still mentions a measurement of the pass, contradicting the decision to decline updating the golden file.",
+      "source": "git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa",
+      "text": "Decline to update the golden file.\nThe golden file is byte-identical after the removal; no selections moved, so there is nothing to record."
+    },
+    {
+      "diff_line": "| `smysl`, the CLI (0.12) | 269 | **73.6%** |",
+      "kind": "decision",
+      "label": "d/ga18e230ae345-5",
+      "reason": "The line still mentions a measurement of the pass, contradicting the decision to add a comment explaining the removal in place of the loop.",
+      "source": "crates/smysl-pack/src/solve.rs@a18e230ae345",
+      "text": "Add a comment explaining the removal in place of the loop.\nTo document why the pass was removed, including the measurements that justified it."
+    },
+    {
+      "diff_line": "| `smysl`, the CLI (0.12) | 269 | **73.6%** |",
+      "kind": "decision",
+      "label": "d/ga18e230ae345-6",
+      "reason": "The line still mentions a measurement of the pass, contradicting the decision to document the removal in the changelog.",
+      "source": "CHANGELOG.md@a18e230ae345",
+      "text": "Document the removal in the changelog.\nTo record the removal and its justification for the 0.8.0 release notes."
+    }
+  ],
+  "fingerprint": "cd3f7dd75754cb2a2a8d7e2e3fa18155e51430d0a94d69e9f2ae9b16b5e900d4",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-4b76a1cedf1f",
+  "kind": "commit",
+  "pack_tokens": 1488,
+  "pack_units": 55,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 455,
+    "predicted_tokens": 23282,
+    "prompt_tokens": 15873,
+    "seconds": 91.169048709
+  },
+  "verdicts": [
+    {
+      "diff_line": "| `smysl`, the CLI (0.12) | 269 | **73.6%** |",
+      "label": "d/ga18e230ae345-3",
+      "line": 9,
+      "reason": "The line still mentions a measurement of the pass, contradicting the decision to decline keeping the search that measured the pass.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| `smysl`, the CLI (0.12) | 269 | **73.6%** |",
+      "label": "d/ga18e230ae345-4",
+      "line": 9,
+      "reason": "The line still mentions a measurement of the pass, contradicting the decision to decline updating the golden file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| `smysl`, the CLI (0.12) | 269 | **73.6%** |",
+      "label": "d/ga18e230ae345-5",
+      "line": 9,
+      "reason": "The line still mentions a measurement of the pass, contradicting the decision to add a comment explaining the removal in place of the loop.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| `smysl`, the CLI (0.12) | 269 | **73.6%** |",
+      "label": "d/ga18e230ae345-6",
+      "line": 9,
+      "reason": "The line still mentions a measurement of the pass, contradicting the decision to document the removal in the changelog.",
+      "verdict": "contradicts"
+    }
+  ]
+}

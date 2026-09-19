@@ -1,0 +1,220 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 36.72945785522461,
+      "terms": [
+        "yet:4.98",
+        "its:3.37",
+        "releas:3.37",
+        "release:3.37",
+        "changelog:2.74"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 33.09413146972656,
+      "terms": [
+        "its:3.62",
+        "releas:3.62",
+        "release:3.62",
+        "changelog:2.86",
+        "for:2.72"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 24.540557861328125,
+      "terms": [
+        "can:5.02",
+        "has:4.13",
+        "changelog:2.76",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 24.212636947631836,
+      "terms": [
+        "that:5.12",
+        "project:3.13",
+        "thi:3.13",
+        "this:3.13",
+        "with:3.13"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 23.946949005126953,
+      "terms": [
+        "that:5.09",
+        "project:3.09",
+        "thi:3.09",
+        "this:3.09",
+        "with:3.09"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-3-1",
+      "score": 12.646045684814453,
+      "terms": [
+        "been:5.02",
+        "has:4.13",
+        "would:3.11",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 11.74382209777832,
+      "terms": [
+        "that:4.03",
+        "than:3.37",
+        "for:2.54",
+        "and:1.47",
+        "the:0.33"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 11.075325965881348,
+      "terms": [
+        "change:4.78",
+        "chang:2.96",
+        "not:2.96",
+        "the:0.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 10.94294261932373,
+      "terms": [
+        "are:5.02",
+        "changelog:2.76",
+        "was:2.76",
+        "the:0.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 10.846081733703613,
+      "terms": [
+        "that:3.82",
+        "than:3.19",
+        "for:2.41",
+        "and:1.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 6.531824111938477,
+      "terms": [
+        "that:3.95",
+        "was:2.21",
+        "the:0.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-5",
+      "score": 6.465696334838867,
+      "terms": [
+        "that:3.90",
+        "was:2.18",
+        "the:0.39"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 124,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/READINESS.md",
+    "README.md"
+  ],
+  "findings": [
+    {
+      "diff_line": "## Unreleased \u2014 0.9.0",
+      "kind": "rejected alternative",
+      "label": "r/ga18e230ae345-6-1",
+      "reason": "The changelog entry is no longer 'Nothing yet.' as it now contains release notes for version 0.9.0.",
+      "source": "CHANGELOG.md@a18e230ae345",
+      "text": "Rejected: Leave the changelog entry as 'Nothing yet.'\nTo record the removal and its justification for the 0.8.0 release notes."
+    },
+    {
+      "diff_line": "## Unreleased \u2014 0.9.0",
+      "kind": "decision",
+      "label": "d/ga18e230ae345-6",
+      "reason": "The changelog entry is no longer 'Nothing yet.' as it now contains release notes for version 0.9.0.",
+      "source": "CHANGELOG.md@a18e230ae345",
+      "text": "Document the removal in the changelog.\nTo record the removal and its justification for the 0.8.0 release notes."
+    },
+    {
+      "diff_line": "## Unreleased \u2014 0.9.0",
+      "kind": "prerequisite",
+      "label": "p/ga18e230ae345-6-1",
+      "reason": "The changelog entry is no longer 'Nothing yet.' as it now contains release notes for version 0.9.0.",
+      "source": "CHANGELOG.md@a18e230ae345",
+      "text": "The changelog has an Unreleased \u2014 0.8.0 section where the removal can be recorded."
+    }
+  ],
+  "fingerprint": "eb67d5e002a96b489c18320e669487d8399c0df7cb7261fd7ff0663190c10d07",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-4bb718459b65",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 302,
+    "predicted_tokens": 14734,
+    "prompt_tokens": 9902,
+    "seconds": 50.717844334
+  },
+  "verdicts": [
+    {
+      "diff_line": "-## Unreleased \u2014 0.9.0",
+      "label": "r/ga18e230ae345-6-1",
+      "line": 9,
+      "reason": "The changelog entry is no longer 'Nothing yet.' as it now contains release notes for version 0.9.0.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## Unreleased \u2014 0.9.0",
+      "label": "d/ga18e230ae345-6",
+      "line": 9,
+      "reason": "The changelog entry is no longer 'Nothing yet.' as it now contains release notes for version 0.9.0.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## Unreleased \u2014 0.9.0",
+      "label": "p/ga18e230ae345-6-1",
+      "line": 9,
+      "reason": "The changelog entry is no longer 'Nothing yet.' as it now contains release notes for version 0.9.0.",
+      "verdict": "contradicts"
+    }
+  ]
+}

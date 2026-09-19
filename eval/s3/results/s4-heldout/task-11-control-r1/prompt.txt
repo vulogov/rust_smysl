@@ -1,0 +1,5 @@
+You are working in a checkout of the `ucal` Rust repository (the current directory).
+
+Task: Stop committing `observations.txt`; have the tests write the observations they need.
+
+Implement the task completely, with tests where they belong, and make sure `cargo test -q -p ucal --no-fail-fast` and `cargo test -q -p xtask --no-fail-fast` pass. Do not commit.

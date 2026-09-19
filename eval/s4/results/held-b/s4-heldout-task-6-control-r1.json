@@ -1,0 +1,289 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 275.6201171875,
+      "terms": [
+        "src:45.69",
+        "fixtures:31.14",
+        "uid:22.53",
+        "derived:18.50",
+        "deriv:16.61"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-1-1",
+      "score": 242.83506774902344,
+      "terms": [
+        "2:60.17",
+        "3:48.39",
+        "statu:17.91",
+        "status:17.12",
+        "c:6.12"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-23",
+      "score": 204.71090698242188,
+      "terms": [
+        "fixtures:30.23",
+        "uid:17.38",
+        "statu:16.30",
+        "status:15.59",
+        "fixtur:13.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-1-3",
+      "score": 145.18475341796875,
+      "terms": [
+        "2:59.20",
+        "3:47.61",
+        "smysl:35.32",
+        "and:1.68",
+        "the:1.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-23-1",
+      "score": 119.40412902832031,
+      "terms": [
+        "fixtures:39.47",
+        "uid:18.13",
+        "fixtur:17.62",
+        "statu:16.74",
+        "status:16.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-5-1",
+      "score": 111.51920318603516,
+      "terms": [
+        "3:52.14",
+        "6:50.14",
+        "spec:9.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-10",
+      "score": 109.28874206542969,
+      "terms": [
+        "2:66.37",
+        "cit:13.49",
+        "cited:13.49",
+        "7:6.78",
+        "1:4.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-1",
+      "score": 109.2725830078125,
+      "terms": [
+        "2:41.60",
+        "3:33.45",
+        "uid:16.79",
+        "c:6.36",
+        "nodej:4.32"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-11",
+      "score": 106.63801574707031,
+      "terms": [
+        "2:49.24",
+        "3:39.60",
+        "cbor:7.10",
+        "1:4.04",
+        "other:3.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-2",
+      "score": 103.58351135253906,
+      "terms": [
+        "3:42.38",
+        "uid:16.37",
+        "deriv:12.07",
+        "library:7.99",
+        "c:5.95"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-13",
+      "score": 101.92037200927734,
+      "terms": [
+        "fixtures:28.08",
+        "json:21.38",
+        "deriv:17.30",
+        "derived:13.26",
+        "fixtur:12.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-3",
+      "score": 100.33717346191406,
+      "terms": [
+        "fixtures:30.96",
+        "uid:22.44",
+        "fixtur:19.08",
+        "deriv:13.13",
+        "nodej:4.49"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 362,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch11-13-merge-diff-trace.typ",
+    "Documentation/manual/ch14-16-view-salience-retract.typ",
+    "Documentation/manual/ch17-18-pack-thread.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "Documentation/manual/ch22-24-render.typ",
+    "Documentation/manual/ch25-27-library-walkthrough.typ",
+    "README.md",
+    "crates/smysl-check/src/passes/epistemics.rs",
+    "crates/smysl-check/src/passes/trust.rs",
+    "crates/smysl-core/src/types/epistemics.rs",
+    "crates/smysl-ingest/src/ceiling.rs",
+    "crates/smysl-ingest/src/stage.rs",
+    "crates/smysl-pack/tests/golden-packs.txt",
+    "fixtures/golden/cbor/corpus.cbor",
+    "fixtures/golden/render/analyst.html",
+    "fixtures/golden/render/analyst.json",
+    "fixtures/golden/render/exec.slides.typ",
+    "fixtures/golden/render/plain.txt",
+    "fixtures/schema/unit.json",
+    "fixtures/wire/uid/cases.json",
+    "go/uid.go",
+    "go/uid_test.go",
+    "nodejs/src/uid.js",
+    "scripts/verify-spec-tables.py",
+    "tests/global_flags.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "normative (\u00a72.2) and are hashed, so **every `cited` and `derived` unit gets a new uid**, as does",
+      "kind": "decision",
+      "label": "d/g4968383dc452-3",
+      "reason": "The change introduces a behavior change by altering how statuses are compared as integers, contradicting the decision to implement uid derivation in nodejs reproducing all sixteen fixture uids.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Implement uid derivation in nodejs reproducing all sixteen fixture uids.\nReaching C-Produce requires deriving uids; reproducing the fixtures proves the implementation matches the reference bytes."
+    },
+    {
+      "diff_line": "- **Rule M.** A `derived` unit grounded on `cited` evidence now exceeds its cap (`SMY-E030`),",
+      "kind": "decision",
+      "label": "d/g4968383dc452-17",
+      "reason": "The change implements Rule M, which contradicts the decision not to implement rule M in outside readers.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Do not implement rule M in outside readers.\nRule M is checkable against a store, not against a unit; a validate claiming to enforce it would be a check that cannot fail."
+    },
+    {
+      "diff_line": "`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "kind": "decision",
+      "label": "d/g4968383dc452-8",
+      "reason": "The change contradicts the decision to mark spec-derived constants with SPEC: in nodejs src/uid.js, as it changes the status values without marking them.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Mark spec-derived constants with SPEC: in nodejs src/uid.js.\nTo record that these values were previously guessed from fixtures, making the method explicit."
+    },
+    {
+      "diff_line": "`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "kind": "decision",
+      "label": "d/g4968383dc452-23",
+      "reason": "The change contradicts the decision to implement status integers and source/kind enums as constants in nodejs, as it changes the status values without updating the constants.",
+      "source": "nodejs/src/uid.js@4968383dc452",
+      "text": "Implement status integers and source/kind enums as constants in nodejs.\nThese values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures."
+    },
+    {
+      "diff_line": "`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "kind": "rejected alternative",
+      "label": "r/g4968383dc452-23-1",
+      "reason": "The change contradicts the rejection of leaving status and source/kind values recoverable only from fixtures, as it changes the status values without making them recoverable from fixtures.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Rejected: Leave status and source/kind values recoverable only from fixtures.\nThese were needed for uid derivation and rule M comparisons."
+    }
+  ],
+  "fingerprint": "63489f4065fd7d18686fb0d72e211da32e7fdf24f06958f9d18c707471d423ee",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-6-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1497,
+  "pack_units": 63,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 6,
+  "usage": {
+    "completion_tokens": 642,
+    "predicted_tokens": 46555,
+    "prompt_tokens": 42973,
+    "seconds": 231.42371125
+  },
+  "verdicts": [
+    {
+      "diff_line": "+everything that compares statuses as integers follows the new order, which is a behaviour change and not only a renumbering:",
+      "label": "d/g4968383dc452-3",
+      "line": 14,
+      "reason": "The change introduces a behavior change by altering how statuses are compared as integers, contradicting the decision to implement uid derivation in nodejs reproducing all sixteen fixture uids.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+- **Rule M.** A `derived` unit grounded on `cited` evidence now exceeds its cap (`SMY-E030`), since `cited` is the weaker of the two.",
+      "label": "d/g4968383dc452-17",
+      "line": 24,
+      "reason": "The change implements Rule M, which contradicts the decision not to implement rule M in outside readers.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| +`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "label": "d/g4968383dc452-8",
+      "line": 12,
+      "reason": "The change contradicts the decision to mark spec-derived constants with SPEC: in nodejs src/uid.js, as it changes the status values without marking them.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| +`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "label": "d/g4968383dc452-23",
+      "line": 12,
+      "reason": "The change contradicts the decision to implement status integers and source/kind enums as constants in nodejs, as it changes the status values without updating the constants.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| +`Status` is renumbered: `cited` is 3 and `derived` is 4 (was 3 and 4 the other way round);",
+      "label": "r/g4968383dc452-23-1",
+      "line": 12,
+      "reason": "The change contradicts the rejection of leaving status and source/kind values recoverable only from fixtures, as it changes the status values without making them recoverable from fixtures.",
+      "verdict": "contradicts"
+    }
+  ]
+}

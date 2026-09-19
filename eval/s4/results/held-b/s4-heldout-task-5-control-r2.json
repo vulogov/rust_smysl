@@ -1,0 +1,183 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 123.17296600341797,
+      "terms": [
+        "store:19.46",
+        "stor:17.91",
+        "uid:14.22",
+        "unit:5.83",
+        "grounds:5.69"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-19-1",
+      "score": 93.99272155761719,
+      "terms": [
+        "store:22.16",
+        "stor:20.38",
+        "match:6.45",
+        "for:3.94"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 92.61700439453125,
+      "terms": [
+        "store:17.75",
+        "stor:16.33",
+        "tests:7.63",
+        "with:5.78",
+        "test:2.38"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 83.16924285888672,
+      "terms": [
+        "uid:13.52",
+        "with:7.76",
+        "src:7.62",
+        "explicit:6.05",
+        "that:2.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-9",
+      "score": 72.26956939697266,
+      "terms": [
+        "store:14.62",
+        "stor:13.45",
+        "assert:9.94",
+        "code:7.18",
+        "cod:6.58"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 66.66065979003906,
+      "terms": [
+        "store:15.46",
+        "stor:14.22",
+        "assert:10.29",
+        "code:7.43",
+        "cod:6.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-9-1",
+      "score": 62.46253204345703,
+      "terms": [
+        "store:19.94",
+        "stor:18.35",
+        "code:7.77",
+        "cod:7.12",
+        "without:5.59"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-3-1",
+      "score": 55.262062072753906,
+      "terms": [
+        "uid:14.22",
+        "with:8.16",
+        "contains:7.58",
+        "contain:6.70",
+        "file:6.49"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 51.177833557128906,
+      "terms": [
+        "tests:4.80",
+        "with:4.68",
+        "write:4.67",
+        "reach:3.42",
+        "writ:3.33"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 48.05281448364258,
+      "terms": [
+        "over:6.90",
+        "tests:6.72",
+        "assert:6.14",
+        "miss:4.80",
+        "with:4.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-7-1",
+      "score": 42.090518951416016,
+      "terms": [
+        "uid:11.59",
+        "with:6.65",
+        "grounds:5.67",
+        "ground:5.55",
+        "every:4.75"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 41.057655334472656,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 342,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/manual/ch11-13-merge-diff-trace.typ",
+    "src/main.rs",
+    "tests/cli-surface.txt",
+    "tests/trace_default_roots.rs"
+  ],
+  "findings": [],
+  "fingerprint": "c676d2e672f007eadd14707e65d8637c9b1ea01cdf2077f70f30f0dede06e4cd",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-5-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1497,
+  "pack_units": 63,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 5,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 37394,
+    "prompt_tokens": 27001,
+    "seconds": 115.85010408299999
+  },
+  "verdicts": []
+}

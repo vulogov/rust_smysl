@@ -1,0 +1,149 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-16-1",
+      "score": 157.4776611328125,
+      "terms": [
+        "write:9.29",
+        "writ:8.77",
+        "are:5.02",
+        "write_surfac:5.02",
+        "write_surface:5.02"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-5-1",
+      "score": 151.04603576660156,
+      "terms": [
+        "breaking:9.96",
+        "write:8.05",
+        "writ:7.60",
+        "are:4.98",
+        "non:4.49"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-3-1",
+      "score": 121.93354034423828,
+      "terms": [
+        "breaking:10.26",
+        "non:4.57",
+        "exhaustiv:4.57",
+        "exhaustive:4.57",
+        "non_exhaustiv:4.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-16",
+      "score": 119.03134155273438,
+      "terms": [
+        "semver:9.48",
+        "breaking:9.19",
+        "write:7.43",
+        "writ:7.01",
+        "clean:4.74"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-16-1",
+      "score": 94.53504180908203,
+      "terms": [
+        "breaking:9.51",
+        "write:7.68",
+        "writ:7.26",
+        "chang:4.39",
+        "are:3.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-5",
+      "score": 88.39279174804688,
+      "terms": [
+        "write:8.57",
+        "writ:8.09",
+        "what:6.78",
+        "carried:4.94",
+        "that:4.94"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g87345653cdf3-5",
+      "score": 59.51567077636719,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-4-1",
+      "score": 59.51567077636719,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-1",
+      "score": 59.51567077636719,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-2",
+      "score": 59.51567077636719,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-5-1",
+      "score": 59.51567077636719,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "r/g69ea5c05d859-11-1",
+      "score": 59.51567077636719,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 198,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/READINESS.md",
+    "Documentation/ROAD_TO_1.0.md",
+    "Makefile"
+  ],
+  "findings": [],
+  "fingerprint": "7340b95cde79ecf58c2e84edde2ba94f67ed57a1b96ad6f645c73f65d42d5f69",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-8932595dbd1b",
+  "kind": "commit",
+  "pack_tokens": 1497,
+  "pack_units": 62,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 30472,
+    "prompt_tokens": 21183,
+    "seconds": 87.72389983400001
+  },
+  "verdicts": []
+}

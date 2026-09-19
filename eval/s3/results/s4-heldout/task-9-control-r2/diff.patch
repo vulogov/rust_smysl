@@ -1,0 +1,280 @@
+ xtask/src/releases.rs | 227 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 218 insertions(+), 9 deletions(-)
+
+diff --git a/xtask/src/releases.rs b/xtask/src/releases.rs
+index 50903a6..8fcf444 100644
+--- a/xtask/src/releases.rs
++++ b/xtask/src/releases.rs
+@@ -30,6 +30,7 @@
+ //! one asks the much smaller question the table was getting wrong: *is it
+ //! there at all.*
+ 
++use std::cmp::Ordering;
+ use std::collections::BTreeSet;
+ use std::path::Path;
+ use std::process::Command;
+@@ -74,7 +75,15 @@ enum Demand {
+     Nothing,
+ }
+ 
+-/// Parse the Contents table.
++/// Parse the Contents table, newest version first.
++///
++/// The order is not the table's. The table is maintained by hand, and the
++/// alternative to parsing the versions is comparing them as text — which puts
++/// `1.10.0` between `1.1.0` and `1.2.0`, the same mistake the procedure check
++/// in `citations` was rewritten to stop making. Rows are sorted by parsed
++/// version, so a row added in the wrong place is reported in the right one.
++/// Rows whose version does not parse cannot be placed; they go last, in table
++/// order, and [`run`] fails them.
+ fn rows(root: &Path) -> Result<Vec<Row>, String> {
+     let path = root.join("Documentation/Release_Notes/README.md");
+     let text = std::fs::read_to_string(&path).map_err(|e| format!("{}: {e}", path.display()))?;
+@@ -102,6 +111,7 @@ fn rows(root: &Path) -> Result<Vec<Row>, String> {
+             state: cells[2].to_string(),
+         });
+     }
++    sort_newest_first(&mut out);
+     if out.is_empty() {
+         return Err("the Contents table has no version rows, so this check would \
+                     pass having examined nothing"
+@@ -134,13 +144,107 @@ fn demand(state: &str) -> Result<Demand, String> {
+     ))
+ }
+ 
+-fn parse_version(v: &str) -> Option<(u64, u64, u64)> {
+-    let mut it = v.split('.');
+-    Some((
+-        it.next()?.parse().ok()?,
+-        it.next()?.parse().ok()?,
+-        it.next()?.parse().ok()?,
+-    ))
++/// A parsed semantic version, ordered by the rules of semver.org §11.
++///
++/// Build metadata is parsed and discarded: it has no precedence, so two
++/// versions differing only in it compare equal.
++#[derive(Debug, Clone, PartialEq, Eq)]
++struct Version {
++    core: (u64, u64, u64),
++    pre: Vec<PreId>,
++}
++
++/// One dot-separated identifier of a pre-release. Numeric identifiers sort
++/// before alphanumeric ones, which the variant order gives for free.
++#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
++enum PreId {
++    Num(u64),
++    Text(String),
++}
++
++impl Ord for Version {
++    fn cmp(&self, other: &Self) -> Ordering {
++        self.core.cmp(&other.core).then_with(|| {
++            // A pre-release precedes the release it leads up to, and an empty
++            // list is that release; otherwise identifiers compare pairwise and
++            // the shorter list loses a tie, which is what `Vec`'s order is.
++            match (self.pre.is_empty(), other.pre.is_empty()) {
++                (true, true) => Ordering::Equal,
++                (true, false) => Ordering::Greater,
++                (false, true) => Ordering::Less,
++                (false, false) => self.pre.cmp(&other.pre),
++            }
++        })
++    }
++}
++
++impl PartialOrd for Version {
++    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
++        Some(self.cmp(other))
++    }
++}
++
++/// `MAJOR.MINOR.PATCH[-pre][+build]`, or `None`.
++///
++/// Strict where semver is: three numeric components, none empty, none with a
++/// leading zero, so `1.10` and `01.2.3` are not versions.
++fn parse_version(v: &str) -> Option<Version> {
++    let v = v.split_once('+').map_or(v, |(core, build)| {
++        let ok = !build.is_empty()
++            && build
++                .split('.')
++                .all(|i| !i.is_empty() && i.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'-'));
++        if ok {
++            core
++        } else {
++            // Not a valid build suffix; leave it in so that the parse fails.
++            v
++        }
++    });
++    let (core, pre) = match v.split_once('-') {
++        Some((core, pre)) => (core, Some(pre)),
++        None => (v, None),
++    };
++    let mut it = core.split('.');
++    let mut num = || {
++        let n = it.next()?;
++        if n.len() > 1 && n.starts_with('0') {
++            return None;
++        }
++        n.parse::<u64>().ok()
++    };
++    let core = (num()?, num()?, num()?);
++    if it.next().is_some() {
++        return None;
++    }
++    let mut ids = Vec::new();
++    if let Some(pre) = pre {
++        for i in pre.split('.') {
++            if i.is_empty() || !i.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'-') {
++                return None;
++            }
++            if i.bytes().all(|b| b.is_ascii_digit()) {
++                if i.len() > 1 && i.starts_with('0') {
++                    return None;
++                }
++                ids.push(PreId::Num(i.parse().ok()?));
++            } else {
++                ids.push(PreId::Text(i.to_string()));
++            }
++        }
++    }
++    Some(Version { core, pre: ids })
++}
++
++/// Newest first; versions that do not parse after every one that does, in the
++/// order they were found. The sort is stable, so equal versions keep theirs.
++fn sort_newest_first(rows: &mut [Row]) {
++    rows.sort_by(|a, b| match (parse_version(&a.version), parse_version(&b.version)) {
++        (Some(a), Some(b)) => b.cmp(&a),
++        (Some(_), None) => Ordering::Less,
++        (None, Some(_)) => Ordering::Greater,
++        (None, None) => Ordering::Equal,
++    });
+ }
+ 
+ /// Every tag on the remote, without the `refs/tags/` and without `^{}`.
+@@ -301,6 +405,11 @@ pub fn run(root: &Path) -> i32 {
+     let mut exempt = 0usize;
+ 
+     for row in &rows {
++        if parse_version(&row.version).is_none() {
++            println!("  FAIL  {:<8} not a semantic version", row.version);
++            bad.push(format!("{} — not a semantic version, so it cannot be placed", row.version));
++            continue;
++        }
+         let d = match demand(&row.state) {
+             Ok(d) => d,
+             Err(e) => {
+@@ -320,7 +429,7 @@ pub fn run(root: &Path) -> i32 {
+         if !tags.contains(&tag) {
+             missing.push(format!("no `{tag}` on the remote"));
+         }
+-        let above_floor = parse_version(&row.version).is_some_and(|v| v >= GH_RELEASES_FROM);
++        let above_floor = parse_version(&row.version).is_some_and(|v| v.core >= GH_RELEASES_FROM);
+         if above_floor && !releases.contains(&tag) {
+             missing.push(format!("no GitHub release for `{tag}`"));
+         }
+@@ -359,3 +468,103 @@ pub fn run(root: &Path) -> i32 {
+         7
+     }
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn row(v: &str) -> Row {
++        Row {
++            version: v.to_string(),
++            state: "released".to_string(),
++        }
++    }
++
++    fn sorted(versions: &[&str]) -> Vec<String> {
++        let mut r: Vec<Row> = versions.iter().map(|v| row(v)).collect();
++        sort_newest_first(&mut r);
++        r.into_iter().map(|r| r.version).collect()
++    }
++
++    /// **Versions order numerically, not as text.** As text `1.10.0` sits
++    /// between `1.1.0` and `1.2.0`.
++    #[test]
++    fn a_two_digit_minor_sorts_above_a_one_digit_one() {
++        assert_eq!(
++            sorted(&["1.2.0", "1.10.0", "1.1.0", "1.9.0", "0.8.0", "1.12.0", "1.11.0"]),
++            ["1.12.0", "1.11.0", "1.10.0", "1.9.0", "1.2.0", "1.1.0", "0.8.0"]
++        );
++        assert_eq!(sorted(&["1.0.9", "1.0.10", "1.0.2"]), ["1.0.10", "1.0.9", "1.0.2"]);
++        assert_eq!(sorted(&["9.0.0", "10.0.0"]), ["10.0.0", "9.0.0"]);
++    }
++
++    /// The table's own order is the ordering of the file, not of the versions.
++    #[test]
++    fn the_table_order_does_not_matter() {
++        let newest_first = ["1.12.0", "1.11.0", "1.10.0", "1.9.0", "0.1.1", "0.1.0"];
++        let mut shuffled = newest_first;
++        shuffled.reverse();
++        shuffled.swap(1, 4);
++        assert_eq!(sorted(&shuffled), newest_first);
++    }
++
++    #[test]
++    fn prereleases_precede_their_release_in_semver_order() {
++        assert_eq!(
++            sorted(&[
++                "1.0.0",
++                "1.0.0-rc.1",
++                "1.0.0-beta.11",
++                "1.0.0-beta.2",
++                "1.0.0-beta",
++                "1.0.0-alpha.1",
++                "1.0.0-alpha",
++                "1.0.0-1",
++            ]),
++            [
++                "1.0.0",
++                "1.0.0-rc.1",
++                "1.0.0-beta.11",
++                "1.0.0-beta.2",
++                "1.0.0-beta",
++                "1.0.0-alpha.1",
++                "1.0.0-alpha",
++                "1.0.0-1",
++            ]
++        );
++    }
++
++    #[test]
++    fn build_metadata_has_no_precedence() {
++        let a = parse_version("1.0.0+abc").expect("parses");
++        let b = parse_version("1.0.0+xyz").expect("parses");
++        assert_eq!(a.cmp(&b), Ordering::Equal);
++        assert_eq!(sorted(&["1.0.0+b", "1.0.0+a"]), ["1.0.0+b", "1.0.0+a"]);
++    }
++
++    #[test]
++    fn what_is_not_a_version_is_not_parsed_and_sorts_last() {
++        for bad in ["", "1", "1.2", "1.2.3.4", "01.2.3", "1.02.3", "1.2.x", "v1.2.3", "1.2.3-", "1.2.3-a..b", "1.2.3-01", "1.2.3+"] {
++            assert!(parse_version(bad).is_none(), "{bad:?} parsed");
++        }
++        assert_eq!(sorted(&["oops", "1.0.0", "next", "2.0.0"]), ["2.0.0", "1.0.0", "oops", "next"]);
++    }
++
++    #[test]
++    fn the_github_release_floor_compares_the_core() {
++        let v = |s: &str| parse_version(s).expect("parses").core;
++        assert!(v("1.0.0") >= GH_RELEASES_FROM);
++        assert!(v("1.0.0-rc.1") >= GH_RELEASES_FROM);
++        assert!(v("0.8.0") < GH_RELEASES_FROM);
++    }
++
++    /// Against the real table: every row parses, and sorting leaves the newest
++    /// first.
++    #[test]
++    fn the_real_contents_table_parses_and_sorts() {
++        let r = rows(&crate::workspace_root()).expect("the table");
++        assert!(r.iter().all(|r| parse_version(&r.version).is_some()));
++        let v: Vec<Version> = r.iter().map(|r| parse_version(&r.version).expect("parses")).collect();
++        assert!(v.windows(2).all(|w| w[0] >= w[1]));
++    }
++}

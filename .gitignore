@@ -27,3 +27,4 @@ eval/.repos/
 eval/.s3work/
 __pycache__/
 eval/.s4work/
+eval/s4/results/*/flags/

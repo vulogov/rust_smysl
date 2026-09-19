@@ -1,0 +1,385 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-1",
+      "score": 140.58151245117188,
+      "terms": [
+        "ticks:29.24",
+        "tick:23.24",
+        "anchor:10.02",
+        "has:6.66",
+        "elaps:6.40"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 129.00816345214844,
+      "terms": [
+        "session:21.29",
+        "anchor:9.73",
+        "clock:9.38",
+        "start:7.54",
+        "process:6.47"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 121.46867370605469,
+      "terms": [
+        "session:20.53",
+        "clock:12.00",
+        "wall:10.45",
+        "let:5.50",
+        "tests:4.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-3",
+      "score": 111.70967102050781,
+      "terms": [
+        "ticks:29.66",
+        "tick:23.57",
+        "session:16.26",
+        "clock:11.93",
+        "wall:10.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-3-1",
+      "score": 89.8779296875,
+      "terms": [
+        "ticks:28.04",
+        "tick:22.29",
+        "clock:11.28",
+        "wall:9.82",
+        "nothing:5.43"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-4-1",
+      "score": 73.66693878173828,
+      "terms": [
+        "drift:27.68",
+        "measur:12.53",
+        "clock:11.07",
+        "baselin:5.87",
+        "baseline:5.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 71.12992858886719,
+      "terms": [
+        "session:18.79",
+        "clock:11.25",
+        "wall:8.78",
+        "with:4.72",
+        "feature:4.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-6",
+      "score": 69.5610580444336,
+      "terms": [
+        "session:22.13",
+        "anchor:8.53",
+        "option:7.94",
+        "session_now:7.88",
+        "expect:6.61"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-7",
+      "score": 67.86663818359375,
+      "terms": [
+        "session:14.43",
+        "clock:11.28",
+        "wall:8.81",
+        "system:5.15",
+        "measurement:4.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-2",
+      "score": 65.9922103881836,
+      "terms": [
+        "measured:13.04",
+        "measur:9.38",
+        "machin:7.68",
+        "machine:7.68",
+        "doctor:5.93"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-4-2",
+      "score": 65.71843719482422,
+      "terms": [
+        "drift:36.88",
+        "baselin:7.82",
+        "baseline:7.82",
+        "report:5.05",
+        "from:4.35"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g449b762e3cca-4-1",
+      "score": 63.63126754760742,
+      "terms": [
+        "ticks:32.08",
+        "tick:25.49",
+        "from:4.23",
+        "and:1.83"
+      ]
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 233,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/CLI.md",
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/tests/golden.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "kind": "rejected alternative",
+      "label": "r/g31e52cc10b1f-4-1",
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the rejection of measuring or estimating clock accuracy.",
+      "source": "git:31e52cc10b1f6079a130e3bc27479739d7e393eb",
+      "text": "Rejected: Attempt to measure or estimate clock accuracy.\nOffline operation provides no reference, and short-baseline rate error reports quantisation as drift."
+    },
+    {
+      "diff_line": "// Poisoning is survivable for the reason `session_now` gives.",
+      "kind": "decision",
+      "label": "d/g2074788f713e-8",
+      "reason": "This change introduces a call to `crate::wall_instant()`, which contradicts the decision that gate `wall_instant` is under the civil feature.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Gate wall_instant (and session clock) under the civil feature.\nConverting a clock reading is a leap-table lookup, because Unix time is a UTC label. The feature workflow caught the missing gate when building with u512,std."
+    },
+    {
+      "diff_line": "Err(poisoned) => poisoned.into_inner(),",
+      "kind": "decision",
+      "label": "d/g2074788f713e-6",
+      "reason": "This change introduces a call to `session().lock()`, which contradicts the decision to store session state as an Option and anchor lazily inside `session_now`.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Store session state as Option and anchor lazily inside session_now, avoiding .expect.\nOnceLock's initializer cannot return a Result; no-panic-in-cli lint refused .expect. Option allows anchoring where a failure can be returned."
+    },
+    {
+      "diff_line": "// Poisoning is survivable for the reason `session_now` gives.",
+      "kind": "decision",
+      "label": "d/g2074788f713e-7",
+      "reason": "This change introduces a call to `crate::wall_instant()`, which contradicts the decision to split `wall_instant` out of `now_instant`.",
+      "source": "git:2074788f713ef4331ede63d3dc963f8e74e7565c",
+      "text": "Split wall_instant out of now_instant to expose a raw system clock reading.\nnow_instant goes through session clock; doctor --clock and measurements need the raw reading. Splitting also exposed the feature gate issue."
+    },
+    {
+      "diff_line": "**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "kind": "decision",
+      "label": "d/g31e52cc10b1f-2",
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the decision to add a `doctor --clock` flag to sample and report machine resolution.",
+      "source": "git:31e52cc10b1f6079a130e3bc27479739d7e393eb",
+      "text": "Add doctor --clock flag to sample and report machine resolution.\nResolution is measured and varies by machine; it must be behind a flag because doctor's ordinary output is compared against a committed example."
+    },
+    {
+      "diff_line": "**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "kind": "prerequisite",
+      "label": "p/g31e52cc10b1f-4-2",
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the constraint that a rate error from a short baseline reports quantisation as drift.",
+      "source": "git:31e52cc10b1f6079a130e3bc27479739d7e393eb",
+      "text": "A rate error from a short baseline reports quantisation as drift."
+    },
+    {
+      "diff_line": "pub fn session_drift() -> Result<Option<SessionDrift>, TimeError> {",
+      "kind": "decision",
+      "label": "d/g21665b3aac9b-3",
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate RatInterval import behind only 'cosmo'.",
+      "source": "git:21665b3aac9be9a762eada806b9ccb56c3cbabea",
+      "text": "Gate RatInterval import behind feature cosmo\nRatInterval is only parse_redshift's return type and nothing else's, so it arrives with cosmo or not at all."
+    },
+    {
+      "diff_line": "pub fn session_drift() -> Result<Option<SessionDrift>, TimeError> {",
+      "kind": "decision",
+      "label": "d/g21665b3aac9b-4",
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate qualified::Kind import behind only 'civil'.",
+      "source": "git:21665b3aac9be9a762eada806b9ccb56c3cbabea",
+      "text": "Gate qualified::Kind import behind feature civil\nIt is read once, by to-civil."
+    },
+    {
+      "diff_line": "pub fn session_drift() -> Result<Option<SessionDrift>, TimeError> {",
+      "kind": "decision",
+      "label": "d/g21665b3aac9b-5",
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate Rounding import behind only 'civil'.",
+      "source": "git:21665b3aac9be9a762eada806b9ccb56c3cbabea",
+      "text": "Gate Rounding import behind feature civil\nRounding is to-civil's default when --round is absent."
+    },
+    {
+      "diff_line": "pub fn session_drift() -> Result<Option<SessionDrift>, TimeError> {",
+      "kind": "decision",
+      "label": "d/g21665b3aac9b-6",
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate parse_form and codec::Form behind all('civil', 'std').",
+      "source": "git:21665b3aac9be9a762eada806b9ccb56c3cbabea",
+      "text": "Gate parse_form and codec::Form behind all(civil, std)\nThey belong to run_now, which needs both civil and std features."
+    },
+    {
+      "diff_line": "pub fn session_drift() -> Result<Option<SessionDrift>, TimeError> {",
+      "kind": "decision",
+      "label": "d/g21665b3aac9b-7",
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate years_quantity behind any('events', 'cosmo').",
+      "source": "git:21665b3aac9be9a762eada806b9ccb56c3cbabea",
+      "text": "Gate years_quantity behind any(events, cosmo)\nIt is called by events for a window's width and by cosmo for an enclosure's ends; no single feature name could express that shape."
+    },
+    {
+      "diff_line": "/// [`session_now`].",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-2",
+      "reason": "The change introduces a call to `now_instant()`, which anchors the session at process start-up, contradicting the rejected alternative.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Anchor the session at process start-up.\nA command that never asks the time should not read a clock, and most do not."
+    },
+    {
+      "diff_line": "/// [`session_now`].",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-4-1",
+      "reason": "The change introduces a call to `now_instant()`, which anchors the session at process start-up, contradicting the rejected alternative.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Have Session::reading read the wall clock itself.\nA pure function lets tests drive a wall clock backwards and assert the answer does not follow."
+    }
+  ],
+  "fingerprint": "31b9454f9de215547c604d9baa58abdfd4555654a666748ba5db935483c6394b",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-12-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1495,
+  "pack_units": 74,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 12,
+  "usage": {
+    "completion_tokens": 1384,
+    "predicted_tokens": 27803,
+    "prompt_tokens": 19570,
+    "seconds": 216.542427958
+  },
+  "verdicts": [
+    {
+      "diff_line": "+**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "label": "r/g31e52cc10b1f-4-1",
+      "line": 9,
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the rejection of measuring or estimating clock accuracy.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+let wall = crate::wall_instant()?",
+      "label": "d/g2074788f713e-8",
+      "line": 56,
+      "reason": "This change introduces a call to `crate::wall_instant()`, which contradicts the decision that gate `wall_instant` is under the civil feature.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+let g = match session().lock() {",
+      "label": "d/g2074788f713e-6",
+      "line": 59,
+      "reason": "This change introduces a call to `session().lock()`, which contradicts the decision to store session state as an Option and anchor lazily inside `session_now`.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+let wall = crate::wall_instant()?",
+      "label": "d/g2074788f713e-7",
+      "line": 56,
+      "reason": "This change introduces a call to `crate::wall_instant()`, which contradicts the decision to split `wall_instant` out of `now_instant`.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "label": "d/g31e52cc10b1f-2",
+      "line": 9,
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the decision to add a `doctor --clock` flag to sample and report machine resolution.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+**The session clock's drift is reported too**, as `clock_measured.session_drift`",
+      "label": "p/g31e52cc10b1f-4-2",
+      "line": 9,
+      "reason": "This change introduces reporting of the session clock's drift, which contradicts the constraint that a rate error from a short baseline reports quantisation as drift.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "#[cfg(all(feature = \"std\", feature = \"civil\"))]",
+      "label": "d/g21665b3aac9b-3",
+      "line": 54,
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate RatInterval import behind only 'cosmo'.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "#[cfg(all(feature = \"std\", feature = \"civil\"))]",
+      "label": "d/g21665b3aac9b-4",
+      "line": 54,
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate qualified::Kind import behind only 'civil'.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "#[cfg(all(feature = \"std\", feature = \"civil\"))]",
+      "label": "d/g21665b3aac9b-5",
+      "line": 54,
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate Rounding import behind only 'civil'.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "#[cfg(all(feature = \"std\", feature = \"civil\"))]",
+      "label": "d/g21665b3aac9b-6",
+      "line": 54,
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate parse_form and codec::Form behind all('civil', 'std').",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "#[cfg(all(feature = \"std\", feature = \"civil\"))]",
+      "label": "d/g21665b3aac9b-7",
+      "line": 54,
+      "reason": "The change introduces a new function `session_drift` that is gated behind both 'std' and 'civil' features, contradicting the decision to gate years_quantity behind any('events', 'cosmo').",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+    let _ = now_instant()?;",
+      "label": "r/g2074788f713e-6-2",
+      "line": 52,
+      "reason": "The change introduces a call to `now_instant()`, which anchors the session at process start-up, contradicting the rejected alternative.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+    let _ = now_instant()?;",
+      "label": "r/g2074788f713e-4-1",
+      "line": 52,
+      "reason": "The change introduces a call to `now_instant()`, which anchors the session at process start-up, contradicting the rejected alternative.",
+      "verdict": "contradicts"
+    }
+  ]
+}

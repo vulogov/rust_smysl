@@ -1,0 +1,184 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "score": 68.85767364501953,
+      "terms": [
+        "smysl:60.72",
+        "sam:3.69",
+        "same:3.69",
+        "the:0.77"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 50.441795349121094,
+      "terms": [
+        "0:3.99",
+        "changelog:3.62",
+        "document:3.62",
+        "not:2.82",
+        "and:1.14"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 46.19889831542969,
+      "terms": [
+        "0:3.82",
+        "changelog:3.48",
+        "not:2.63",
+        "and:1.06",
+        "the:0.78"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 34.428836822509766,
+      "terms": []
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 18.4835262298584,
+      "terms": [
+        "shap:3.72",
+        "shape:3.72",
+        "that:3.32",
+        "two:3.27",
+        "test:2.67"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 18.285511016845703,
+      "terms": [
+        "shap:3.67",
+        "shape:3.67",
+        "that:3.31",
+        "two:3.23",
+        "test:2.64"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 16.21352195739746,
+      "terms": [
+        "are:4.88",
+        "changelog:3.51",
+        "document:3.51",
+        "was:3.51",
+        "the:0.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 12.39836597442627,
+      "terms": [
+        "tests:4.28",
+        "against:3.08",
+        "test:3.08",
+        "and:1.34",
+        "the:0.62"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-2",
+      "score": 9.051711082458496,
+      "terms": [
+        "sam:2.62",
+        "same:2.62",
+        "not:2.19",
+        "and:0.88",
+        "the:0.73"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 8.970332145690918,
+      "terms": [
+        "document:2.81",
+        "was:2.81",
+        "that:2.58",
+        "the:0.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-5",
+      "score": 8.895545959472656,
+      "terms": [
+        "document:2.77",
+        "was:2.77",
+        "that:2.54",
+        "the:0.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g0bc1aeb96d6b-2-1",
+      "score": 8.684232711791992,
+      "terms": [
+        "sam:2.51",
+        "same:2.51",
+        "not:2.09",
+        "and:0.84",
+        "the:0.72"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 117,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/SMYSL_ARCHITECTURE_RFC.md",
+    "Documentation/SMYSL_FORMAT_GUIDE.pdf",
+    "Documentation/SMYSL_FORMAT_GUIDE.typ",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SMYSL_RATIONALE.pdf",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.pdf",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.typ",
+    "Documentation/manual/design.typ",
+    "Makefile",
+    "crates/smysl-eval/tests/quoting_live.rs"
+  ],
+  "findings": [],
+  "fingerprint": "b4f11008ccb0f61f102c4fe144a7b62a86544ac93705db49df18f1315c121d4e",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-b705c18df948",
+  "kind": "commit",
+  "pack_tokens": 1365,
+  "pack_units": 40,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 42168,
+    "prompt_tokens": 33057,
+    "seconds": 170.767828209
+  },
+  "verdicts": []
+}

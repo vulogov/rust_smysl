@@ -1,0 +1,279 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 111.67854309082031,
+      "terms": [
+        "readm:8.01",
+        "readme:8.01",
+        "tables:7.00",
+        "tabl:6.44",
+        "against:5.71"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g4968383dc452-16-1",
+      "score": 86.91438293457031,
+      "terms": [
+        "stanza:7.78",
+        "missing:7.21",
+        "miss:6.42",
+        "pag:6.18",
+        "page:6.18"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 83.02754211425781,
+      "terms": [
+        "unreleas:8.73",
+        "unreleased:8.73",
+        "wher:8.73",
+        "where:8.73",
+        "changelog:7.06"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-16",
+      "score": 76.51930236816406,
+      "terms": [
+        "beta:8.52",
+        "stanza:7.76",
+        "missing:7.19",
+        "smy:7.18",
+        "rather:6.25"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-7",
+      "score": 65.70677185058594,
+      "terms": [
+        "literally:6.63",
+        "said:6.02",
+        "wher:6.02",
+        "where:6.02",
+        "uids:4.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-15",
+      "score": 61.628509521484375,
+      "terms": [
+        "block:12.26",
+        "blocked:9.07",
+        "longer:6.21",
+        "chapters:6.13",
+        "gate:5.03"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-6",
+      "score": 50.837615966796875,
+      "terms": [
+        "fact:7.71",
+        "facts:7.71",
+        "missing:5.74",
+        "miss:5.11",
+        "spec:4.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-6-1",
+      "score": 48.174896240234375,
+      "terms": [
+        "fact:7.89",
+        "facts:7.89",
+        "missing:6.60",
+        "miss:5.87",
+        "wer:5.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-9",
+      "score": 46.86122131347656,
+      "terms": [
+        "tables:7.30",
+        "tabl:6.72",
+        "gate:4.75",
+        "spec:4.60",
+        "implementations:4.41"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-9-1",
+      "score": 45.12135696411133,
+      "terms": [
+        "tabl:5.69",
+        "against:5.31",
+        "edit:5.10",
+        "noth:4.43",
+        "nothing:4.43"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-2-1",
+      "score": 44.104652404785156,
+      "terms": [
+        "first:5.55",
+        "sam:5.27",
+        "same:5.27",
+        "wer:4.94",
+        "were:4.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 43.30796432495117,
+      "terms": [
+        "rather:5.72",
+        "nothing:5.29",
+        "than:4.86",
+        "which:4.44",
+        "first:4.31"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 103,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "findings": [
+    {
+      "diff_line": "it contained one string. A gate that had reported on the manual since 0.3 could not see a",
+      "kind": "decision",
+      "label": "d/g4968383dc452-12",
+      "reason": "The change states that tests did not actually assert the spec's tables against the document, contradicting the decision.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Correct README claims that tables were asserted against document.\nThe tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document."
+    },
+    {
+      "diff_line": "`beta.smy` in chapter 29 unlocks seven commands, `draft.smy` in chapter 4 unlocks one. Both",
+      "kind": "rejected alternative",
+      "label": "r/g4968383dc452-16-1",
+      "reason": "The change indicates that missing stanzas were held back rather than guessed, contradicting the rejected alternative.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Rejected: Guess the missing stanza into the published chapter.\nThe missing stanza cannot be reconstructed from the page, and guessing is not repair."
+    },
+    {
+      "diff_line": "## Unreleased \u2014 1.2.0",
+      "kind": "prerequisite",
+      "label": "p/ga18e230ae345-6-1",
+      "reason": "The change updates the unreleased section to 1.3.0, contradicting the prerequisite that it should be 1.2.0.",
+      "source": "CHANGELOG.md@a18e230ae345",
+      "text": "The changelog has an Unreleased \u2014 0.8.0 section where the removal can be recorded."
+    },
+    {
+      "diff_line": "`beta.smy` in chapter 29 unlocks seven commands, `draft.smy` in chapter 4 unlocks one. Both",
+      "kind": "decision",
+      "label": "d/g4968383dc452-16",
+      "reason": "The change indicates that missing stanzas were held back rather than guessed, contradicting the decision.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Hold beta.smy repair rather than guess missing stanza.\nThe missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair."
+    },
+    {
+      "diff_line": "## Unreleased \u2014 1.3.0",
+      "kind": "decision",
+      "label": "d/g4968383dc452-7",
+      "reason": "The change introduces a new process for parsing and comparing specifications, contradicting the decision about empty deps/grounds.",
+      "source": "Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452",
+      "text": "Declare empty deps/grounds are omitted, not encoded as empty.\nThe spec previously said 'required, MAY be empty', which read literally gives a five-key map where the reference emits three, producing wrong uids."
+    },
+    {
+      "diff_line": "anything but reading. The rest need `edits.json` chains written against chapters whose",
+      "kind": "decision",
+      "label": "d/g4968383dc452-15",
+      "reason": "The change describes Gate 7's remaining commands as blocked on writing `edits.json` chains, contradicting the decision about Gate 7's blocked command explanation.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Revise gate 7 blocked command explanation, no longer 'decision about book'.\nThe block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision."
+    }
+  ],
+  "fingerprint": "2d11000ed5c7fd61f662b9499145a67bb4ac804b0285c3658ab276349ff31dee",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-832ab414062a",
+  "kind": "commit",
+  "pack_tokens": 1496,
+  "pack_units": 62,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 673,
+    "predicted_tokens": 18174,
+    "prompt_tokens": 12081,
+    "seconds": 74.79371274900001
+  },
+  "verdicts": [
+    {
+      "diff_line": "- Tests said to assert the spec's tables \"against the document\" read that document only to check it contained one string.",
+      "label": "d/g4968383dc452-12",
+      "line": 23,
+      "reason": "The change states that tests did not actually assert the spec's tables against the document, contradicting the decision.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+ Both chapters' transcripts were generated from documents fuller than the pages print, and neither stanza is recoverable from the page \u2014 so both were held back rather than guessed at.",
+      "label": "r/g4968383dc452-16-1",
+      "line": 47,
+      "reason": "The change indicates that missing stanzas were held back rather than guessed, contradicting the rejected alternative.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-## Unreleased \u2014 1.2.0",
+      "label": "p/ga18e230ae345-6-1",
+      "line": 9,
+      "reason": "The change updates the unreleased section to 1.3.0, contradicting the prerequisite that it should be 1.2.0.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+ Both chapters' transcripts were generated from documents fuller than the pages print, and neither stanza is recoverable from the page \u2014 so both were held back rather than guessed at.",
+      "label": "d/g4968383dc452-16",
+      "line": 47,
+      "reason": "The change indicates that missing stanzas were held back rather than guessed, contradicting the decision.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+ `make spec-tables` now parses the specification's tables and compares every implementation against them, so the next such gap fails a build instead of surviving two releases unnoticed.",
+      "label": "d/g4968383dc452-7",
+      "line": 10,
+      "reason": "The change introduces a new process for parsing and comparing specifications, contradicting the decision about empty deps/grounds.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+ The rest need `edits.json` chains written against chapters whose narratives assemble a file across several blocks.",
+      "label": "d/g4968383dc452-15",
+      "line": 43,
+      "reason": "The change describes Gate 7's remaining commands as blocked on writing `edits.json` chains, contradicting the decision about Gate 7's blocked command explanation.",
+      "verdict": "contradicts"
+    }
+  ]
+}

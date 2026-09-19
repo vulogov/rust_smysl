@@ -1,0 +1,121 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-6-1",
+      "score": 106.08454895019531
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-6",
+      "score": 103.30696105957031
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-9",
+      "score": 100.86404418945312
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-6-1",
+      "score": 90.22915649414062
+    },
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 88.63458251953125
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-5",
+      "score": 82.94204711914062
+    },
+    {
+      "anchored": true,
+      "label": "r/g69ea5c05d859-6-1",
+      "score": 79.14872741699219
+    },
+    {
+      "anchored": false,
+      "label": "r/g532e4d229a6c-1-1",
+      "score": 55.76516342163086
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-4",
+      "score": 55.08236312866211
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 52.938232421875
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 52.22996520996094
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-3",
+      "score": 42.82163619995117
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 212,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/manual/appendices.typ",
+    "src/main.rs",
+    "tests/cmd_check.rs",
+    "tests/dispatch.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": ".unwrap_or_else(|| vec![DEFAULT_CHECK_STORE.to_string()])",
+      "kind": "prerequisite",
+      "label": "p/g90ec2f781421-6-1",
+      "reason": "This line makes a bare `check` with no path or `--store` use `.smysl/store` instead of `-`, so `check` no longer reads stdin when given no path; the constraint's premise that both `fmt` and `check` read stdin under that condition no longer holds.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "fmt and check read stdin when given no path, so inherited terminal would hang."
+    }
+  ],
+  "fingerprint": "190c7d02c183d5c3f5a08e39ac2c083ff74bb11805deb07c7b1a488cff471e68",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-2-corpus",
+  "kind": "agent",
+  "pack_tokens": 2995,
+  "pack_units": 125,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 2,
+  "usage": {
+    "completion_tokens": 11481,
+    "prompt_tokens": 16205,
+    "seconds": 169.779019666
+  },
+  "verdicts": [
+    {
+      "diff_line": "+                .unwrap_or_else(|| vec![DEFAULT_CHECK_STORE.to_string()])",
+      "label": "p/g90ec2f781421-6-1",
+      "line": 43,
+      "reason": "This line makes a bare `check` with no path or `--store` use `.smysl/store` instead of `-`, so `check` no longer reads stdin when given no path; the constraint's premise that both `fmt` and `check` read stdin under that condition no longer holds.",
+      "verdict": "contradicts"
+    }
+  ]
+}

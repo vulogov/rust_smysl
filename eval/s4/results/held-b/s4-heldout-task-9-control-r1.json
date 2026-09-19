@@ -1,0 +1,230 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 81.63187408447266,
+      "terms": [
+        "sorted:16.06",
+        "sort:11.93",
+        "version:8.76",
+        "newest:8.06",
+        "rather:5.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-3",
+      "score": 62.59809875488281,
+      "terms": [
+        "pars:24.63",
+        "parse:24.63",
+        "making:6.08",
+        "mak:4.85",
+        "the:2.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g21665b3aac9b-6",
+      "score": 60.39375305175781,
+      "terms": [
+        "pars:24.42",
+        "parse:24.42",
+        "std:5.68",
+        "which:3.96",
+        "and:1.92"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g21665b3aac9b-6-1",
+      "score": 59.5241813659668,
+      "terms": [
+        "pars:22.06",
+        "parse:22.06",
+        "them:5.51",
+        "std:4.74",
+        "which:3.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-3",
+      "score": 54.84457778930664,
+      "terms": [
+        "sort:11.20",
+        "version:9.51",
+        "assert:6.46",
+        "tests:6.27",
+        "test:3.93"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-1-1",
+      "score": 54.39930725097656,
+      "terms": [
+        "sort:11.56",
+        "version:8.49",
+        "filenam:7.81",
+        "filenames:7.81",
+        "newest:7.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g21665b3aac9b-3-1",
+      "score": 51.239444732666016,
+      "terms": [
+        "pars:25.62",
+        "parse:25.62"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-3-1",
+      "score": 50.119300842285156,
+      "terms": [
+        "sort:12.49",
+        "version:9.17",
+        "tests:6.04",
+        "after:5.37",
+        "keep:5.22"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g21665b3aac9b-3",
+      "score": 43.4290771484375,
+      "terms": [
+        "pars:18.76",
+        "parse:18.76",
+        "with:2.64",
+        "not:1.90",
+        "and:1.36"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 43.00739669799805,
+      "terms": [
+        "string:7.48",
+        "assert:6.66",
+        "version:5.49",
+        "mak:5.03",
+        "str:3.74"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-6",
+      "score": 42.05449676513672,
+      "terms": [
+        "sort:8.50",
+        "version:6.24",
+        "record:4.78",
+        "result:4.58",
+        "releas:4.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-6-1",
+      "score": 40.76178741455078,
+      "terms": [
+        "sort:12.30",
+        "text:9.21",
+        "keep:5.11",
+        "releas:4.63",
+        "that:3.01"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 98,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "xtask/src/releases.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "/// Parse the Contents table, newest version first.",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-1-1",
+      "reason": "The comment now states that the function parses the Contents table with the newest version first, which contradicts the rejected alternative of sorting filenames numerically by version to pick the newest.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Rejected: sort filenames numerically / by version to pick the newest\nSorting numerically would fix only the one exposed bug and would leave the guess in place."
+    },
+    {
+      "diff_line": "/// Parse the Contents table.",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-3-1",
+      "reason": "The comment now states that the function parses the Contents table without specifying sorting behavior, which contradicts the rejected alternative of keeping the two old tests for version-sort behavior.",
+      "source": "xtask/src/citations.rs@5880e472260e",
+      "text": "Rejected: keep the two old tests for version-sort behavior\nThe old tests exercised sorting behavior that no longer exists after replacing the sort with current-version lookup."
+    },
+    {
+      "diff_line": "/// Parse the Contents table, newest version first.",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-6-1",
+      "reason": "The change introduces a new function `parse_rows` that sorts the release notes by semantic version in descending order, which contradicts the rejected alternative of keeping the old release-notes text describing the numeric sort.",
+      "source": "Documentation/Release_Notes/1.10.0.md@5880e472260e",
+      "text": "Rejected: keep the old release-notes text describing the numeric sort\nThat text described the abandoned numeric sort and omitted the adjacent failure and sweep findings."
+    }
+  ],
+  "fingerprint": "723f07ac6291bc3d6812badc6faff3495aaea3fd57504b5396f1aa1d5eb0480d",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-9-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1499,
+  "pack_units": 69,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 9,
+  "usage": {
+    "completion_tokens": 344,
+    "predicted_tokens": 13475,
+    "prompt_tokens": 10255,
+    "seconds": 52.234755917
+  },
+  "verdicts": [
+    {
+      "diff_line": "/// Parse the Contents table, newest version first.",
+      "label": "r/g5880e472260e-1-1",
+      "line": 10,
+      "reason": "The comment now states that the function parses the Contents table with the newest version first, which contradicts the rejected alternative of sorting filenames numerically by version to pick the newest.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// Parse the Contents table.",
+      "label": "r/g5880e472260e-3-1",
+      "line": 9,
+      "reason": "The comment now states that the function parses the Contents table without specifying sorting behavior, which contradicts the rejected alternative of keeping the two old tests for version-sort behavior.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// Parse the Contents table, newest version first.",
+      "label": "r/g5880e472260e-6-1",
+      "line": 10,
+      "reason": "The change introduces a new function `parse_rows` that sorts the release notes by semantic version in descending order, which contradicts the rejected alternative of keeping the old release-notes text describing the numeric sort.",
+      "verdict": "contradicts"
+    }
+  ]
+}

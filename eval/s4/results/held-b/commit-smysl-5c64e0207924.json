@@ -1,0 +1,185 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 86.92915344238281,
+      "terms": [
+        "store:17.75",
+        "stor:10.89",
+        "mod:6.91",
+        "claim:5.19",
+        "tests:3.82"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-19-1",
+      "score": 81.26781463623047,
+      "terms": [
+        "store:22.16",
+        "stor:13.59",
+        "mod:7.77",
+        "for:3.94"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 80.88887786865234,
+      "terms": [
+        "src:15.23",
+        "record:13.71",
+        "uid:9.01",
+        "with:3.88",
+        "from:2.62"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 80.51835632324219,
+      "terms": [
+        "store:19.46",
+        "stor:11.94",
+        "uid:9.48",
+        "unit:5.83"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g532e4d229a6c-5-1",
+      "score": 67.62327575683594,
+      "terms": [
+        "merg:30.68",
+        "merge:24.55",
+        "tests:3.83",
+        "for:3.52",
+        "test:2.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-5",
+      "score": 60.79856872558594,
+      "terms": [
+        "merg:31.44",
+        "merge:25.15",
+        "and:1.68",
+        "to:1.38",
+        "the:1.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-5-1",
+      "score": 59.60277557373047,
+      "terms": [
+        "merg:32.22",
+        "merge:25.78",
+        "and:1.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 56.85961151123047,
+      "terms": [
+        "record:14.36",
+        "records:8.69",
+        "round:4.73",
+        "different:4.59",
+        "can:3.98"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-9",
+      "score": 49.16722869873047,
+      "terms": [
+        "store:14.62",
+        "every:11.03",
+        "stor:8.97",
+        "assert:4.97",
+        "claim:4.28"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-3-1",
+      "score": 49.062469482421875,
+      "terms": [
+        "uid:9.48",
+        "contains:7.58",
+        "canonical:7.24",
+        "contain:6.70",
+        "bytes:6.49"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-3-1",
+      "score": 46.252357482910156,
+      "terms": [
+        "uid:9.56",
+        "canonical:7.29",
+        "different:6.66",
+        "bytes:6.54",
+        "byt:5.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-2",
+      "score": 45.26142120361328,
+      "terms": [
+        "binding:8.56",
+        "bind:7.65",
+        "uid:6.55",
+        "sam:4.02",
+        "same:4.02"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 362,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "crates/smysl-graph/src/merge/contention.rs",
+    "crates/smysl-graph/src/store/mod.rs",
+    "crates/smysl-graph/tests/merge_idempotence.rs"
+  ],
+  "findings": [],
+  "fingerprint": "88a9ba9a7df7a3e301391850b02f23a6239fe604c1742e6b1b77ac1718ca450c",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-5c64e0207924",
+  "kind": "commit",
+  "pack_tokens": 1497,
+  "pack_units": 63,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 42139,
+    "prompt_tokens": 28113,
+    "seconds": 129.628771043
+  },
+  "verdicts": []
+}

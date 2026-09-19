@@ -65,7 +65,14 @@ def agreed(runs):
     return both
 
 
+def labels():
+    """Case labels come from the registry, not the stored result: an agent diff is labelled by its
+    oracle after the run that produced it (eval/s4/sets.toml)."""
+    return {c["id"]: c for c in tomllib.loads((EVAL / "s4" / "sets.toml").read_text())["case"]}
+
+
 def load(runs):
+    reg = labels()
     rows = {}
     for run in runs:
         for p in sorted((RESULTS / run).glob("*.json")):
@@ -73,6 +80,9 @@ def load(runs):
                 continue
             r = json.loads(p.read_text())
             if "findings" in r:
+                c = reg.get(r["id"], {})
+                r["contradicting"] = c.get("contradicting", r.get("contradicting"))
+                r["task"] = c.get("task", r.get("task"))
                 rows[r["id"]] = r
     return rows
 
@@ -155,9 +165,11 @@ def diff_text(r):
     sets = {c["id"]: c for c in tomllib.loads((EVAL / "s4" / "sets.toml").read_text())["case"]}
     c = sets[r["id"]]
     if c["kind"] == "commit":
-        return subprocess.run(["git", "-C", str(EVAL / ".repos" / c["repo"]), "show", "--format=", "--no-color",
-                               "-U3", c["source"]], capture_output=True, text=True, check=True).stdout
-    text = (EVAL / c["source"]).read_text()
+        # A commit can carry a binary or non-UTF-8 blob (a PDF in the manual); decode leniently.
+        out = subprocess.run(["git", "-C", str(EVAL / ".repos" / c["repo"]), "show", "--format=",
+                              "--no-color", "-U3", c["source"]], capture_output=True, check=True).stdout
+        return out.decode("utf-8", errors="replace")
+    text = (EVAL / c["source"]).read_text(errors="replace")
     i = text.find("diff --git ")
     return text[i:] if i >= 0 else text
 

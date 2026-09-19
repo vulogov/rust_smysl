@@ -1,0 +1,163 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-1-2",
+      "score": 134.40977478027344
+    },
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-3",
+      "score": 133.20179748535156
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 115.57049560546875
+    },
+    {
+      "anchored": true,
+      "label": "r/g5880e472260e-4-1",
+      "score": 108.94844055175781
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 100.21576690673828
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 97.66748046875
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 86.8387680053711
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-1-1",
+      "score": 76.89130401611328
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 70.55451965332031
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-1-1",
+      "score": 62.15053176879883
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-6",
+      "score": 57.98131561279297
+    },
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-2-1",
+      "score": 57.785247802734375
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "xtask/src/citations.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "super::check_ci_covers_the_procedure(&dir).is_ok(),",
+      "kind": "decision",
+      "label": "d/g5880e472260e-2",
+      "reason": "This test uses workspace version 9.9.9 without a 9.9.9.md notes file but still expects success, so a missing current-version notes file no longer errors, reversing the decision.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Error naming the version when current release notes missing\nThe old sort silently read the previous cycle's file and passed when notes were never written. Now a missing notes file for the current version is an explicit error."
+    },
+    {
+      "diff_line": "\"should have fallen back to 1.10.0.md, the numerically newest notes\"",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-2-1",
+      "reason": "The change now falls back to the newest existing notes when the current version's notes are missing, which is the previously rejected alternative of silently falling back to the previous cycle's notes file.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Rejected: silently fall back to the previous cycle's notes file\nThis fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file."
+    },
+    {
+      "diff_line": "fn newest_notes_file(dir: &Path) -> Option<std::path::PathBuf> {",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-1-1",
+      "reason": "The new helper selects the highest release-notes version numerically, implementing the previously rejected alternative of sorting by version to pick the newest.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Rejected: sort filenames numerically / by version to pick the newest\nSorting numerically would fix only the one exposed bug and would leave the guess in place."
+    },
+    {
+      "diff_line": "let dir = std::env::temp_dir().join(\"ucal-procedure-fallback-to-newest\");",
+      "kind": "rejected alternative",
+      "label": "r/gcc3aafefb1da-1-1",
+      "reason": "The added test writes a temporary fixture into std::env::temp_dir() under a fixed name, the approach previously rejected because of race conditions.",
+      "source": "git:cc3aafefb1da326e130fd890c1d575969cee7a2a",
+      "text": "Rejected: Write temp fixture into std::env::temp_dir() under fixed name.\nRace condition: one test truncated the file while the other read it."
+    }
+  ],
+  "fingerprint": "3d2253a8fcef36235a45f26dd92bb753d8b3975efbd6b38338525ea4006b0201",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-10-corpus",
+  "kind": "agent",
+  "pack_tokens": 2996,
+  "pack_units": 130,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 10,
+  "usage": {
+    "completion_tokens": 27270,
+    "prompt_tokens": 13585,
+    "seconds": 372.62216304099996
+  },
+  "verdicts": [
+    {
+      "diff_line": "+            super::check_ci_covers_the_procedure(&dir).is_ok(),",
+      "label": "d/g5880e472260e-2",
+      "line": 88,
+      "reason": "This test uses workspace version 9.9.9 without a 9.9.9.md notes file but still expects success, so a missing current-version notes file no longer errors, reversing the decision.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+            \"should have fallen back to 1.10.0.md, the numerically newest notes\"",
+      "label": "r/g5880e472260e-2-1",
+      "line": 89,
+      "reason": "The change now falls back to the newest existing notes when the current version's notes are missing, which is the previously rejected alternative of silently falling back to the previous cycle's notes file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+fn newest_notes_file(dir: &Path) -> Option<std::path::PathBuf> {",
+      "label": "r/g5880e472260e-1-1",
+      "line": 122,
+      "reason": "The new helper selects the highest release-notes version numerically, implementing the previously rejected alternative of sorting by version to pick the newest.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+        let dir = std::env::temp_dir().join(\"ucal-procedure-fallback-to-newest\");",
+      "label": "r/gcc3aafefb1da-1-1",
+      "line": 60,
+      "reason": "The added test writes a temporary fixture into std::env::temp_dir() under a fixed name, the approach previously rejected because of race conditions.",
+      "verdict": "contradicts"
+    }
+  ]
+}

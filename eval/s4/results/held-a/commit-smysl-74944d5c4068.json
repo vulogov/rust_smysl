@@ -1,0 +1,177 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 39.152587890625,
+      "terms": [
+        "corpu:9.56",
+        "corpus:9.56",
+        "doe:4.78",
+        "does:4.78",
+        "never:4.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 18.518796920776367,
+      "terms": [
+        "project:3.13",
+        "thi:3.13",
+        "this:3.13",
+        "test:2.69",
+        "that:2.56"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 18.307207107543945,
+      "terms": [
+        "project:3.09",
+        "thi:3.09",
+        "this:3.09",
+        "test:2.66",
+        "that:2.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 12.951210021972656,
+      "terms": [
+        "without:4.92",
+        "comment:3.48",
+        "was:2.21",
+        "that:1.98",
+        "the:0.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-6",
+      "score": 11.651050567626953,
+      "terms": [
+        "releas:3.62",
+        "release:3.62",
+        "not:2.72",
+        "and:1.30",
+        "the:0.40"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 10.859113693237305,
+      "terms": [
+        "releas:3.37",
+        "release:3.37",
+        "not:2.54",
+        "and:1.21",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 10.815228462219238,
+      "terms": [
+        "than:3.19",
+        "pack:2.37",
+        "exist:1.91",
+        "that:1.91",
+        "and:1.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 9.20692253112793,
+      "terms": [
+        "than:3.37",
+        "exist:2.02",
+        "that:2.02",
+        "and:1.47",
+        "the:0.33"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-5",
+      "score": 7.964409828186035,
+      "terms": [
+        "comment:3.45",
+        "was:2.18",
+        "that:1.95",
+        "the:0.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-3-1",
+      "score": 7.624395370483398,
+      "terms": [
+        "has:4.13",
+        "would:3.11",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-1",
+      "score": 7.482360363006592,
+      "terms": [
+        "pack:2.28",
+        "was:2.00",
+        "exist:1.79",
+        "and:1.07",
+        "the:0.34"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 6.108708381652832,
+      "terms": [
+        "file:2.92",
+        "fil:2.82",
+        "the:0.37"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 150,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    ".github/workflows/published.yml",
+    "Documentation/READINESS.md",
+    "crates/smysl-core/tests/invalid_corpus.rs"
+  ],
+  "findings": [],
+  "fingerprint": "f8a551c8bcd09fe6af72cfd686619d151a3176ed98ec4a3eea02a0b7d2dc132e",
+  "fitting": {
+    "calls": 3,
+    "warnings": [
+      "18 recorded unit(s) judged in 3 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-74944d5c4068",
+  "kind": "commit",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 24,
+    "predicted_tokens": 17312,
+    "prompt_tokens": 11594,
+    "seconds": 46.029527708
+  },
+  "verdicts": []
+}

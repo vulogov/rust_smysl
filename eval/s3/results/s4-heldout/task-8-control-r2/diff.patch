@@ -1,0 +1,314 @@
+ Documentation/CLI.md     |  36 ++++++----
+ crates/ucal/src/clock.rs | 172 ++++++++++++++++++++++++++++++++++++++---------
+ crates/ucal/src/lib.rs   |   4 +-
+ 3 files changed, 169 insertions(+), 43 deletions(-)
+
+diff --git a/Documentation/CLI.md b/Documentation/CLI.md
+index 8dbbc41..e73dc67 100644
+--- a/Documentation/CLI.md
++++ b/Documentation/CLI.md
+@@ -2165,21 +2165,33 @@ there is a face that goes back in time.
+ The rule is:
+ 
+ ```
+-reading = max(wall_now, anchor + monotonic_elapsed)
++oscillator = last + (monotonic_elapsed - elapsed_at_last)
++reading    = min(max(wall_now, oscillator), oscillator + advance / 4)
+ ```
+ 
+-- Ordinarily the two agree within the clock's quantum and either wins.
+-- A **backward step** loses to the monotonic branch, which keeps advancing at the
++where `advance` is the monotonic time since the previous reading.
++
++- Ordinarily the wall clock sits within the clock's quantum of the oscillator,
++  inside the cap, and the reading is the wall clock.
++- A **backward step** loses to the oscillator branch, which keeps advancing at the
+   oscillator's rate rather than freezing until the wall clock catches up.
+-- A **forward step** wins, because a forward jump is a correction arriving, and
+-  refusing it would prefer this process's opinion of the time to the system's.
+-
+-So a reading never goes backwards and the clock still tracks the system forwards.
+-Neither property is a claim about accuracy, and a session reading lands on
+-exactly the same rung a raw one does. Over a long run the two branches diverge by
+-the rate difference between the oscillator and whatever disciplines the wall
+-clock; `max` bounds the result by whichever is ahead, and that bound is the
+-honest statement of what a session clock costs.
++- A **forward step** is followed but **slewed**: one reading advances by at most
++  1.25 times the monotonic time since the last one. The correction is still
++  accepted, and is spread over the readings that follow rather than landing in
++  one. A face reading the clock twenty times a second sees hands run a quarter
++  fast for a while and not a jump — two seconds of step takes eight seconds to
++  absorb, and until then the reading is behind the system clock by the part not
++  yet spread.
++
++So a reading never goes backwards, never advances faster than the cap, and
++converges on the system clock forwards. The cap is a rate and not a fixed step
++because the gap between two readings is the caller's: one taken an hour after
++the last can still advance by an hour. Nothing here is a claim about accuracy,
++and a session reading lands on exactly the same rung a raw one does. Over a long
++run the two branches diverge by the rate difference between the oscillator and
++whatever disciplines the wall clock; the reading follows whichever is ahead, at
++no more than the cap, and that is the honest statement of what a session clock
++costs.
+ 
+ **`features[]` names every optional feature this crate has**, and did not until
+ 1.9.0: it listed four and the crate had eight, so a binary built with
+diff --git a/crates/ucal/src/clock.rs b/crates/ucal/src/clock.rs
+index 797e2a0..3cacdf3 100644
+--- a/crates/ucal/src/clock.rs
++++ b/crates/ucal/src/clock.rs
+@@ -79,6 +79,14 @@ pub fn finest_tier_for(q: &Ticks) -> Option<Tier> {
+     })
+ }
+ 
++/// How much faster than the oscillator one reading may advance, as a divisor.
++///
++/// A reading may advance by the monotonic time since the previous one plus that
++/// time divided by this, so `4` is at most 1.25 times real time while a forward
++/// step from the system clock is being absorbed. A `Ticks` division rather than a
++/// ratio of floats, because Rule E forbids a float anywhere in a shipped crate.
++pub const SLEW_DIVISOR: u64 = 4;
++
+ /// One process, one clock.
+ ///
+ /// # What this is for, which is not precision
+@@ -96,31 +104,47 @@ pub fn finest_tier_for(q: &Ticks) -> Option<Tier> {
+ /// # The rule
+ ///
+ /// ```text
+-/// reading = max(wall_now, anchor + monotonic_elapsed)
++/// oscillator = last + (monotonic_elapsed - elapsed_at_last)
++/// reading    = min(max(wall_now, oscillator), oscillator + advance / SLEW_DIVISOR)
+ /// ```
+ ///
+-/// - **Ordinarily** the two agree to within the clock's quantum and either wins.
+-/// - **A backward step** loses to the monotonic branch, which keeps advancing at
++/// where `advance` is the monotonic time since the previous reading.
++///
++/// - **Ordinarily** the wall clock sits within the clock's quantum of the
++///   oscillator, inside the cap, and the reading is the wall clock.
++/// - **A backward step** loses to the oscillator branch, which keeps advancing at
+ ///   the oscillator's rate rather than freezing until the wall clock catches up.
+-/// - **A forward step** wins, because a forward jump is a correction arriving and
+-///   refusing it would be preferring this process's opinion to the system's.
++/// - **A forward step** is followed, but *slewed*: one reading may advance by at
++///   most `1 + 1/SLEW_DIVISOR` times the monotonic time that has passed since the
++///   last one. A correction is still arriving and is still accepted; it is spread
++///   over the readings that follow rather than landing in one. A face reading the
++///   clock twenty times a second sees hands that run a quarter fast for a while,
++///   and not a jump.
++///
++/// So a reading never goes backwards, never advances faster than the cap, and
++/// converges on the system clock forwards. Those are the three properties; none
++/// is a claim about accuracy.
+ ///
+-/// So a reading never goes backwards, and the clock still tracks the system
+-/// forwards. Those are the two properties; neither is a claim about accuracy.
++/// The cap is a rate and not a fixed step because the gap between two readings is
++/// the caller's, not this type's: a reading taken an hour after the last has to be
++/// able to advance by an hour.
+ ///
+ /// # What it does not do
+ ///
+ /// It does not make a reading finer, more accurate, or traceable to anything.
+ /// Over a long run the monotonic branch and the wall branch diverge by the rate
+ /// difference between the oscillator and whatever disciplines the wall clock —
+-/// `max` bounds the result by whichever is ahead, and that bound is the honest
+-/// statement of what a session clock costs.
++/// the reading follows whichever is ahead, at no more than the cap, and that is
++/// the honest statement of what a session clock costs. While a step is being
++/// absorbed the reading is *behind* the system clock by the part not yet spread.
+ #[derive(Clone, Debug)]
+ pub struct Session {
+     /// The wall reading this session was anchored at.
+     anchor: Ticks,
+     /// The largest reading handed out so far.
+     last: Ticks,
++    /// Monotonic elapsed at the reading that produced `last`.
++    last_elapsed: Ticks,
+ }
+ 
+ impl Session {
+@@ -129,6 +153,7 @@ impl Session {
+         Session {
+             anchor: wall.ticks().clone(),
+             last: wall.ticks().clone(),
++            last_elapsed: <Ticks as TickInt>::zero(),
+         }
+     }
+ 
+@@ -136,27 +161,46 @@ impl Session {
+     /// the anchor.
+     ///
+     /// Pure: no clock is read here, which is what lets a test drive a wall clock
+-    /// backwards and check that the answer does not follow it.
++    /// backwards or forwards and check that the answer does not follow it.
++    ///
++    /// A `monotonic_elapsed` smaller than the previous call's is treated as no
++    /// time having passed: this type sells monotonicity, and a caller handing
++    /// back an earlier elapsed must not be able to take it away.
+     pub fn reading(
+         &mut self,
+         wall_now: &Instant<UC1>,
+         monotonic_elapsed: &Ticks,
+     ) -> Result<Instant<UC1>, TimeError> {
+-        let projected = self
+-            .anchor
+-            .try_add(monotonic_elapsed)
++        let elapsed = if monotonic_elapsed > &self.last_elapsed {
++            monotonic_elapsed.clone()
++        } else {
++            self.last_elapsed.clone()
++        };
++        let advance = elapsed
++            .try_sub(&self.last_elapsed)
++            .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++        // The reading if the wall clock were ignored: the last one, carried
++        // forward at the oscillator's rate. It cannot be below `last`.
++        let oscillator = self
++            .last
++            .try_add(&advance)
+             .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
+-        // The largest of the three. `last` is belt and braces: the first two
+-        // cannot go backwards on their own, and a caller handing back a smaller
+-        // elapsed would make them, and this type sells monotonicity.
++        // The furthest one reading may go: what the oscillator says, plus a
++        // fraction of the time that passed.
++        let (allowance, _) = advance.quot_rem(&<Ticks as TickInt>::from_u64(SLEW_DIVISOR));
++        let ceiling = oscillator
++            .try_add(&allowance)
++            .ok_or_else(|| TimeError::new(ucal_core::Code::E0021))?;
++
+         let mut best = wall_now.ticks().clone();
+-        if projected > best {
+-            best = projected;
++        if oscillator > best {
++            best = oscillator;
+         }
+-        if self.last > best {
+-            best = self.last.clone();
++        if best > ceiling {
++            best = ceiling;
+         }
+         self.last = best.clone();
++        self.last_elapsed = elapsed;
+         Instant::from_ticks(best)
+     }
+ 
+@@ -499,23 +543,91 @@ mod tests {
+         );
+     }
+ 
+-    /// A forward step is a correction arriving, and is accepted.
++    /// **A forward step is followed, but one reading does not take all of it.**
+     ///
+-    /// Refusing it would be preferring this process's opinion of the time to the
+-    /// system's, which is not a trade a clock gets to make on its reader's
+-    /// behalf.
++    /// Refusing a correction would be preferring this process's opinion of the
++    /// time to the system's, so it is absorbed; landing it in one reading is a
++    /// face whose hands jump, so it is spread.
+     #[test]
+-    fn a_forward_step_is_accepted() {
++    fn a_forward_step_is_capped_in_one_reading() {
+         let mut s = Session::anchored_at(&at(100));
+         s.reading(&at(101), &ns(1_000_000_000)).expect("a reading");
+-        let jumped = s
+-            .reading(&at(160), &ns(2_000_000_000))
++        // The wall clock jumps sixty seconds; one second of monotonic time passes.
++        let r = s
++            .reading(&at(161), &ns(2_000_000_000))
+             .expect("a reading");
++        let most = at(102).ticks().try_add(&ns(1_000_000_000 / SLEW_DIVISOR as u128)).expect("in range");
+         assert_eq!(
+-            jumped.ticks().to_dec_string(),
+-            at(160).ticks().to_dec_string(),
+-            "a forward correction was refused"
++            r.ticks().to_dec_string(),
++            most.to_dec_string(),
++            "one reading advanced by more than a second and a quarter"
+         );
++        assert!(r.ticks() < at(161).ticks(), "the jump landed in one reading");
++    }
++
++    /// The cap is on the step, not on where the reading ends up: it keeps
++    /// closing on the wall clock, arrives, and then tracks it exactly.
++    #[test]
++    fn a_forward_step_is_absorbed_over_the_readings_that_follow() {
++        let mut s = Session::anchored_at(&at(100));
++        let tenth = 100_000_000u128;
++        let cap = ns(tenth + tenth / SLEW_DIVISOR as u128);
++        let mut prev = at(100).ticks().clone();
++        let mut caught_up_at = None;
++        for i in 1..=100u128 {
++            let elapsed = ns(i * tenth);
++            // The wall clock stepped forward two seconds at the start and has run
++            // true since.
++            let wall_ticks = at(102).ticks().try_add(&elapsed).expect("in range");
++            let wall = Instant::from_ticks(wall_ticks).expect("in the domain");
++            let r = s.reading(&wall, &elapsed).expect("a reading");
++            let step = r.ticks().try_sub(&prev).expect("monotone");
++            assert!(step <= cap, "reading {i} advanced by {}", step.to_dec_string());
++            if r.ticks() == wall.ticks() {
++                caught_up_at.get_or_insert(i);
++            } else {
++                assert!(
++                    caught_up_at.is_none(),
++                    "reading {i} fell off the wall clock after catching it"
++                );
++            }
++            prev = r.ticks().clone();
++        }
++        // Two seconds at a quarter of real time per second is eight seconds, so
++        // eighty readings of a tenth.
++        assert_eq!(caught_up_at, Some(80));
++    }
++
++    /// A reading that catches up stops being capped.
++    #[test]
++    fn a_small_forward_step_is_followed_exactly_once_inside_the_cap() {
++        let mut s = Session::anchored_at(&at(100));
++        // Wall is a tenth of a second ahead of the oscillator over ten seconds.
++        let wall = Instant::from_ticks(
++            at(110).ticks().try_add(&ns(100_000_000)).expect("in range"),
++        )
++        .expect("in the domain");
++        let r = s.reading(&wall, &ns(10_000_000_000)).expect("a reading");
++        assert_eq!(r.ticks().to_dec_string(), wall.ticks().to_dec_string());
++    }
++
++    /// After a forward step is absorbed, a backward step must still not stall the
++    /// reading: the oscillator branch carries on from where the reading is.
++    #[test]
++    fn a_backward_step_after_a_slew_still_advances() {
++        let mut s = Session::anchored_at(&at(100));
++        let a = s.reading(&at(200), &ns(1_000_000_000)).expect("a reading");
++        let b = s.reading(&at(150), &ns(2_000_000_000)).expect("a reading");
++        assert!(b.ticks() > a.ticks(), "the reading stalled");
++    }
++
++    /// A caller handing back an earlier elapsed cannot move the reading back.
++    #[test]
++    fn an_earlier_elapsed_does_not_move_the_reading_back() {
++        let mut s = Session::anchored_at(&at(100));
++        let a = s.reading(&at(110), &ns(10_000_000_000)).expect("a reading");
++        let b = s.reading(&at(90), &ns(5_000_000_000)).expect("a reading");
++        assert_eq!(a.ticks().to_dec_string(), b.ticks().to_dec_string());
+     }
+ 
+     /// Monotone over a walk that steps backwards repeatedly.
+diff --git a/crates/ucal/src/lib.rs b/crates/ucal/src/lib.rs
+index bef39bc..e5ddc1c 100644
+--- a/crates/ucal/src/lib.rs
++++ b/crates/ucal/src/lib.rs
+@@ -1830,7 +1830,9 @@ pub fn cmd_to_civil(
+ /// The current instant, through the **session clock**.
+ ///
+ /// One process, one clock: a reading never goes backwards past an earlier one,
+-/// however the system clock is disciplined underneath. See [`clock::Session`]
++/// however the system clock is disciplined underneath, and a forward step in the
++/// system clock is spread over the readings after it rather than taken in one.
++/// See [`clock::Session`]
+ /// for the rule and for what it deliberately does not claim. [`wall_instant`]
+ /// is the raw reading.
+ ///

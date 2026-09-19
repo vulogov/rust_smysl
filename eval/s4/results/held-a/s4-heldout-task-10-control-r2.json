@@ -1,0 +1,278 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g5880e472260e-4-1",
+      "score": 133.16981506347656,
+      "terms": [
+        "som:14.16",
+        "some:14.16",
+        "nam:10.17",
+        "path:7.08",
+        "back:5.90"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-1-2",
+      "score": 115.8187255859375,
+      "terms": [
+        "releas:11.07",
+        "release:11.07",
+        "notes:10.39",
+        "release_not:7.99",
+        "release_notes:7.99"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-3",
+      "score": 99.09934997558594,
+      "terms": [
+        "notes:8.71",
+        "sort:5.60",
+        "current:5.26",
+        "version:4.76",
+        "fil:4.35"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-1-1",
+      "score": 88.64308166503906,
+      "terms": [
+        "dir:16.85",
+        "nam:9.76",
+        "env:8.42",
+        "temp_dir:8.42",
+        "temp:8.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 84.45155334472656,
+      "terms": [
+        "som:10.11",
+        "some:10.11",
+        "notes:8.84",
+        "nam:8.73",
+        "path:6.66"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 78.26837921142578,
+      "terms": [
+        "notes:9.78",
+        "nam:9.24",
+        "releas:8.81",
+        "release:8.81",
+        "current:5.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 72.66842651367188,
+      "terms": [
+        "notes:9.43",
+        "fall:8.22",
+        "bump:6.40",
+        "bumped:6.40",
+        "back:6.18"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 70.89274597167969,
+      "terms": [
+        "releas:10.76",
+        "release:10.76",
+        "notes:10.10",
+        "release_not:7.60",
+        "release_notes:7.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 68.16032409667969,
+      "terms": [
+        "notes:8.34",
+        "newest:8.06",
+        "sort:5.96",
+        "filenam:5.57",
+        "guess:4.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-6-1",
+      "score": 59.15074157714844,
+      "terms": [
+        "releas:9.26",
+        "release:9.26",
+        "notes:8.70",
+        "adjacent:6.58",
+        "sort:6.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g21665b3aac9b-9-2",
+      "score": 50.728633880615234,
+      "terms": [
+        "releas:9.97",
+        "release:9.97",
+        "failure:6.77",
+        "hav:6.77",
+        "have:6.77"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g8fdb9b3edb7c-2-1",
+      "score": 49.569034576416016,
+      "terms": [
+        "expect:12.12",
+        "write:7.76",
+        "writ:6.44",
+        "any:5.80",
+        "when:3.51"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "xtask/src/citations.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "/// **A version bumped without its notes is an error, not a fallback.**",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-4-1",
+      "reason": "The comment now states that a missing notes file for the current version falls back to the newest notes, contradicting the previous rejection.",
+      "source": "xtask/src/citations.rs@5880e472260e",
+      "text": "Rejected: assert only that some error came back and the message named the version\nThe loose assertion passed even with the check disabled because read_to_string also fails and names the path containing the version."
+    },
+    {
+      "diff_line": "fn a_missing_notes_file_for_the_current_version_is_refused() {",
+      "kind": "decision",
+      "label": "d/g5880e472260e-3",
+      "reason": "The test function name now indicates that it checks for fallback behavior, contradicting the decision to replace old version-sort tests with current-version and missing-notes tests.",
+      "source": "xtask/src/citations.rs@5880e472260e",
+      "text": "Replace old version-sort tests with current-version and missing-notes tests\nOld tests checked that sorting by version picks 1.10.0 and that stray files sort first. New tests assert the current version's notes file exists and that a missing file is refused."
+    },
+    {
+      "diff_line": "assert!(",
+      "kind": "decision",
+      "label": "d/g5880e472260e-4",
+      "reason": "The test now checks for a different diagnostic message, contradicting the decision to make the missing-notes test strict about the diagnostic.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Make missing-notes test strict about the diagnostic\nAsserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic."
+    },
+    {
+      "diff_line": "/// **A version bumped without its notes is an error, not a fallback.**",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-2-1",
+      "reason": "The comment now states that a missing notes file will fall back to the newest notes, which contradicts the recorded rejection of silently falling back.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Rejected: silently fall back to the previous cycle's notes file\nThis fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file."
+    },
+    {
+      "diff_line": "///",
+      "kind": "prerequisite",
+      "label": "p/g5880e472260e-6-1",
+      "reason": "The comment now states that a missing notes file will fall back to the newest notes, which contradicts the recorded constraint that release notes for the current cycle are kept in a specific file.",
+      "source": "",
+      "text": "Release notes for the current 1.10.0 cycle are kept in Documentation/Release_Notes/1.10.0.md."
+    },
+    {
+      "diff_line": "pub fn check_ci_covers_the_procedure(root: &Path) -> Result<usize, Vec<String>> {",
+      "kind": "decision",
+      "label": "d/g5880e472260e-1",
+      "reason": "The comment now states that the notes for the version being built are used only when they exist, which contradicts the recorded decision to read notes for the version being built rather than the newest sorted file.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Read notes for version being built rather than newest sorted file\nSorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing."
+    }
+  ],
+  "fingerprint": "4ee908b21dd77faf987cc431a5beda7d969ad7968dbf97816346cb0aea756823",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-10-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1492,
+  "pack_units": 69,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 10,
+  "usage": {
+    "completion_tokens": 676,
+    "predicted_tokens": 20667,
+    "prompt_tokens": 14033,
+    "seconds": 84.064054206
+  },
+  "verdicts": [
+    {
+      "diff_line": "/// **A version bumped without its notes is an error, not a fallback.**",
+      "label": "r/g5880e472260e-4-1",
+      "line": 9,
+      "reason": "The comment now states that a missing notes file for the current version falls back to the newest notes, contradicting the previous rejection.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "fn a_missing_notes_file_for_the_current_version_is_refused() {",
+      "label": "d/g5880e472260e-3",
+      "line": 15,
+      "reason": "The test function name now indicates that it checks for fallback behavior, contradicting the decision to replace old version-sort tests with current-version and missing-notes tests.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "assert!(e.iter().any(|m| m.contains(\"a cycle's notes\")), \"expected the missing-notes diagnostic, got: {e:?}\")",
+      "label": "d/g5880e472260e-4",
+      "line": 103,
+      "reason": "The test now checks for a different diagnostic message, contradicting the decision to make the missing-notes test strict about the diagnostic.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// **A version bumped without its notes falls back to the newest notes.**",
+      "label": "r/g5880e472260e-2-1",
+      "line": 9,
+      "reason": "The comment now states that a missing notes file will fall back to the newest notes, which contradicts the recorded rejection of silently falling back.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "/// **A version bumped without its notes falls back to the newest notes.**",
+      "label": "p/g5880e472260e-6-1",
+      "line": 46,
+      "reason": "The comment now states that a missing notes file will fall back to the newest notes, which contradicts the recorded constraint that release notes for the current cycle are kept in a specific file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "// **The notes for the version being built** when they exist.",
+      "label": "d/g5880e472260e-1",
+      "line": 140,
+      "reason": "The comment now states that the notes for the version being built are used only when they exist, which contradicts the recorded decision to read notes for the version being built rather than the newest sorted file.",
+      "verdict": "contradicts"
+    }
+  ]
+}

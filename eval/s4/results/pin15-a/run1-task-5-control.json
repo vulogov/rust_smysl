@@ -1,0 +1,109 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 88.57662963867188
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-10-1",
+      "score": 71.91559600830078
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-9",
+      "score": 66.76239776611328
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-12",
+      "score": 65.76806640625
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 62.58152770996094
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-12-1",
+      "score": 61.26970291137695
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-8",
+      "score": 61.135108947753906
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-19",
+      "score": 60.061546325683594
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 58.5914306640625
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-17-1",
+      "score": 58.0753173828125
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-23-1",
+      "score": 57.07135772705078
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 54.880615234375
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "crates/smysl-graph/src/lib.rs",
+    "crates/smysl-graph/src/lineage.rs",
+    "src/lib.rs",
+    "src/main.rs",
+    "tests/cli-surface.txt",
+    "tests/cmd_trace.rs",
+    "tests/public-api-counts.txt",
+    "tests/public-api-pure.txt",
+    "tests/public-api.txt"
+  ],
+  "findings": [],
+  "fingerprint": "10fd3a6f2aabca0d538a04774bfac1fc7bfec4655816d9b1ce38f4800d89ef40",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-5-control",
+  "kind": "agent",
+  "pack_tokens": 3000,
+  "pack_units": 128,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 5,
+  "usage": {
+    "completion_tokens": 32,
+    "prompt_tokens": 30585,
+    "seconds": 139.048679876
+  },
+  "verdicts": []
+}

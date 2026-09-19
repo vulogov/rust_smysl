@@ -1,0 +1,5 @@
+You are working in a checkout of the `smysl` Rust repository (the current directory).
+
+Task: Add a `fmt --check` test for a document that is not canonically formatted.
+
+Implement the task completely, with tests where they belong, and make sure `cargo test -q -p smysl --tests --no-fail-fast` and `cargo test -q -p smysl-core --no-fail-fast` pass. Do not commit.

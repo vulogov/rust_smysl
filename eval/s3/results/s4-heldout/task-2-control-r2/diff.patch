@@ -1,0 +1,209 @@
+ CHANGELOG.md                        |   4 +-
+ Documentation/manual/appendices.typ |   2 +-
+ src/main.rs                         |  14 ++--
+ tests/cmd_check_default.rs          | 127 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 141 insertions(+), 6 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..4ac4c54 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,9 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++- `smysl check` with no path checks `.smysl/store` rather than reading standard input. `--store`
++  and explicit paths still win, and `smysl check -` still reads stdin, so a pipeline that spelled
++  the dash out is unaffected; one that relied on the bare form must now say `-`.
+ 
+ ---
+ 
+diff --git a/Documentation/manual/appendices.typ b/Documentation/manual/appendices.typ
+index 56c4fff..8e26469 100644
+--- a/Documentation/manual/appendices.typ
++++ b/Documentation/manual/appendices.typ
+@@ -73,7 +73,7 @@ These apply to every subcommand, in any position on the command line.
+     ([`--as`], [`SCHEMA` (repeatable)], [Report fidelity for a consumer implementing these schemas.]),
+     ([`--granularity`], [—], [Report the granularity distribution of the store.]),
+     ([`--pass`], [`NAME` (repeatable)], [Run only these passes.]),
+-    ([`FILE …`], [positional, 0 or more], [Stores to check; `-` or none reads stdin (rule P).]),
++    ([`FILE …`], [positional, 0 or more], [Stores to check; none checks `.smysl/store`, `-` reads stdin (rule P).]),
+   ),
+ )
+ 
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..1a00efd 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -217,7 +217,7 @@ fn cli() -> Command {
+                     Arg::new("files")
+                         .num_args(0..)
+                         .value_name("FILE")
+-                        .help("Stores to check; `-` or none reads stdin (rule P)"),
++                        .help("Stores to check; none checks `.smysl/store`, `-` reads stdin (rule P)"),
+                 ),
+             "diff" => sub
+                 .arg(
+@@ -1006,8 +1006,14 @@ fn finish_over(bar: Bar, n: usize, verb: &str) {
+     }
+ }
+ 
++/// The store `smysl check` reads when it is given neither a path nor `--store`. Standard
++/// input is still available, but by asking for it with `-`.
++const DEFAULT_STORE: &str = ".smysl/store";
++
+ /// `smysl check` - run the check pipeline (§23.1).
+ ///
++/// With no path it checks `.smysl/store` under the current directory.
++///
+ /// Exits 3 on any error-severity diagnostic, and `--strict` promotes warnings to that
+ /// threshold. `check` verifies consistency, never correctness (N13): it can tell you a
+ /// body reaches for a unit it never declared, not whether the claim is true.
+@@ -1023,10 +1029,10 @@ fn cmd_check(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+         .get_many::<String>("files")
+         .map(|v| v.cloned().collect())
+         .unwrap_or_else(|| {
+-            global
++            vec![global
+                 .get_one::<String>("store")
+-                .map(|s| vec![s.clone()])
+-                .unwrap_or_else(|| vec!["-".to_string()])
++                .cloned()
++                .unwrap_or_else(|| DEFAULT_STORE.to_string())]
+         });
+ 
+     // `--as` names the schemas a consumer implements; the kernel is always implied.
+diff --git a/tests/cmd_check_default.rs b/tests/cmd_check_default.rs
+new file mode 100644
+index 0000000..9e4dc81
+--- /dev/null
++++ b/tests/cmd_check_default.rs
+@@ -0,0 +1,127 @@
++//! `smysl check` with no path checks `.smysl/store`.
++//!
++//! The default used to be standard input, which made a bare `smysl check` hang on a terminal
++//! and left a project with no way to say "check my store" without spelling out where it lives.
++//! Stdin is still there, but by asking for it with `-`.
++
++#![cfg(feature = "cli")]
++
++use std::io::Write;
++use std::path::{Path, PathBuf};
++use std::process::{Command, Stdio};
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++
++const SUCCESS: i32 = 0;
++const FAILURE: i32 = 1;
++const CHECK_ERRORS: i32 = 3;
++
++/// The corpus documents are read, never written, so they are addressed from the manifest
++/// directory even though the binary runs from a scratch directory.
++const CLEAN: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/fixtures/corpus/F1-incident.smy");
++const BROKEN: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/fixtures/corpus/F6-adversarial.smy");
++
++struct Out {
++    stdout: String,
++    stderr: String,
++    code: i32,
++}
++
++/// Run from `dir`, with `stdin` supplied when given and closed otherwise, so a regression
++/// to reading standard input ends in an empty store rather than a hung test.
++fn run_in(dir: &Path, args: &[&str], stdin: Option<&[u8]>) -> Out {
++    let mut child = Command::new(BIN)
++        .current_dir(dir)
++        .args(args)
++        .stdin(Stdio::piped())
++        .stdout(Stdio::piped())
++        .stderr(Stdio::piped())
++        .spawn()
++        .expect("the binary under test must run");
++    let mut pipe = child.stdin.take().expect("piped stdin");
++    if let Some(bytes) = stdin {
++        pipe.write_all(bytes).expect("write stdin");
++    }
++    drop(pipe);
++    let o = child.wait_with_output().expect("wait");
++    Out {
++        stdout: String::from_utf8_lossy(&o.stdout).into_owned(),
++        stderr: String::from_utf8_lossy(&o.stderr).into_owned(),
++        code: o.status.code().unwrap_or(-1),
++    }
++}
++
++/// A project directory of this test's own, with `.smysl/store` holding a copy of `fixture`
++/// when one is given.
++fn project(name: &str, fixture: Option<&str>) -> PathBuf {
++    let dir = std::env::temp_dir().join(format!("smysl-check-default-{name}-{}", std::process::id()));
++    let _ = std::fs::remove_dir_all(&dir);
++    std::fs::create_dir_all(dir.join(".smysl")).expect("project dir");
++    if let Some(f) = fixture {
++        std::fs::copy(f, dir.join(".smysl/store")).expect("copy fixture");
++    }
++    dir
++}
++
++#[test]
++fn no_path_checks_the_project_store() {
++    let dir = project("clean", Some(CLEAN));
++    let out = run_in(&dir, &["check"], None);
++    assert_eq!(out.code, SUCCESS, "stderr: {}", out.stderr);
++    assert!(
++        out.stdout.contains(".smysl/store"),
++        "the summary should name the store it read: {}",
++        out.stdout
++    );
++}
++
++#[test]
++fn no_path_reports_the_project_stores_errors() {
++    let dir = project("broken", Some(BROKEN));
++    let out = run_in(&dir, &["check"], None);
++    assert_eq!(out.code, CHECK_ERRORS, "stderr: {}", out.stderr);
++}
++
++/// The default store is not read *as well as* standard input, and input on stdin does not
++/// override it: what is piped in here is broken, what is on disk is clean.
++#[test]
++fn no_path_ignores_stdin() {
++    let dir = project("ignores-stdin", Some(CLEAN));
++    let broken = std::fs::read(BROKEN).expect("read fixture");
++    let out = run_in(&dir, &["check"], Some(&broken));
++    assert_eq!(out.code, SUCCESS, "stderr: {}", out.stderr);
++}
++
++#[test]
++fn a_dash_still_reads_stdin() {
++    let dir = project("dash", Some(CLEAN));
++    let broken = std::fs::read(BROKEN).expect("read fixture");
++    let out = run_in(&dir, &["check", "-"], Some(&broken));
++    assert_eq!(out.code, CHECK_ERRORS, "stderr: {}", out.stderr);
++}
++
++#[test]
++fn an_explicit_path_wins_over_the_default() {
++    let dir = project("explicit", Some(BROKEN));
++    let out = run_in(&dir, &["check", CLEAN], None);
++    assert_eq!(out.code, SUCCESS, "stderr: {}", out.stderr);
++}
++
++#[test]
++fn the_store_flag_wins_over_the_default() {
++    let dir = project("flag", Some(BROKEN));
++    let out = run_in(&dir, &["--store", CLEAN, "check"], None);
++    assert_eq!(out.code, SUCCESS, "stderr: {}", out.stderr);
++}
++
++#[test]
++fn a_missing_default_store_is_a_failure_that_names_it() {
++    let dir = project("missing", None);
++    let out = run_in(&dir, &["check"], None);
++    assert_eq!(out.code, FAILURE, "stdout: {}", out.stdout);
++    assert!(
++        out.stderr.contains(".smysl/store"),
++        "the error should name the path it looked for: {}",
++        out.stderr
++    );
++}

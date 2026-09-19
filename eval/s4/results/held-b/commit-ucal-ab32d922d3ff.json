@@ -1,0 +1,186 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-9",
+      "score": 59.737239837646484,
+      "terms": [
+        "mor:15.98",
+        "more:15.98",
+        "thi:9.97",
+        "this:9.97",
+        "one:3.67"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 48.858219146728516,
+      "terms": [
+        "thi:9.26",
+        "this:9.26",
+        "for:6.86",
+        "sam:4.08",
+        "same:4.08"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-10",
+      "score": 45.02898406982422,
+      "terms": [
+        "thi:10.04",
+        "this:10.04",
+        "sam:4.43",
+        "same:4.43",
+        "ucal:3.84"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g449b762e3cca-6-1",
+      "score": 39.017635345458984,
+      "terms": [
+        "ther:6.43",
+        "there:6.43",
+        "years:6.18",
+        "year:5.02",
+        "are:4.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-6",
+      "score": 37.155029296875,
+      "terms": [
+        "there:6.58",
+        "ther:5.47",
+        "years:5.26",
+        "year:5.21",
+        "are:3.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-9-1",
+      "score": 36.031517028808594,
+      "terms": [
+        "thi:9.54",
+        "this:9.54",
+        "rather:4.96",
+        "than:4.60",
+        "one:3.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g21665b3aac9b-3",
+      "score": 33.694480895996094,
+      "terms": [
+        "cosmo:6.46",
+        "interval:6.46",
+        "noth:5.09",
+        "nothing:5.09",
+        "all:4.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 33.541542053222656,
+      "terms": [
+        "built:8.03",
+        "for:6.51",
+        "rather:5.78",
+        "than:5.37",
+        "from:2.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-2-1",
+      "score": 33.38463592529297,
+      "terms": [
+        "rather:6.43",
+        "exact:6.18",
+        "answer:6.12",
+        "than:5.97",
+        "interval:5.06"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-6-1",
+      "score": 32.935691833496094,
+      "terms": [
+        "year:5.27",
+        "ther:4.81",
+        "there:4.81",
+        "years:4.63",
+        "are:3.41"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g21665b3aac9b-7-1",
+      "score": 31.02770233154297,
+      "terms": [
+        "for:7.84",
+        "cosmo:5.76",
+        "years:5.76",
+        "other:5.56",
+        "year:4.16"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-5",
+      "score": 30.49535369873047,
+      "terms": [
+        "rather:6.67",
+        "than:6.20",
+        "noth:5.84",
+        "nothing:5.84",
+        "error:3.76"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "Documentation/Proposals/S5-more-for-physicists.md"
+  ],
+  "findings": [],
+  "fingerprint": "205cba4cb7fa95bf7076411e97b6bd6fe4ca32dea2fa4b47c1da892eb82879f2",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-ucal-ab32d922d3ff",
+  "kind": "commit",
+  "pack_tokens": 1491,
+  "pack_units": 72,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 20944,
+    "prompt_tokens": 14760,
+    "seconds": 58.261653375
+  },
+  "verdicts": []
+}

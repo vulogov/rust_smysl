@@ -1,0 +1,355 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 126.99437713623047,
+      "terms": [
+        "src:60.92",
+        "fixtures:3.89",
+        "with:3.88",
+        "fixtur:3.48",
+        "that:2.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 97.12850952148438,
+      "terms": [
+        "smysl:35.71",
+        "tests:10.08",
+        "versions:10.01",
+        "cor:5.81",
+        "core:5.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 89.29871368408203,
+      "terms": [
+        "smysl:34.50",
+        "api:6.86",
+        "cor:6.41",
+        "core:6.41",
+        "public:5.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 84.14895629882812,
+      "terms": [
+        "smysl:36.03",
+        "output:8.28",
+        "verify:7.02",
+        "test:5.66",
+        "let:5.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-4-1",
+      "score": 84.02364349365234,
+      "terms": [
+        "ingest:39.43",
+        "smysl:38.31",
+        "the:2.42",
+        "to:2.23",
+        "and:1.64"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "score": 78.68658447265625,
+      "terms": [
+        "smysl:37.84",
+        "provider:30.61",
+        "cargo:4.41",
+        "check:3.11",
+        "the:2.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 78.37328338623047,
+      "terms": [
+        "smysl:40.22",
+        "tests:12.97",
+        "test:8.07",
+        "path:5.42",
+        "cargo:5.19"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-1-2",
+      "score": 77.13255310058594,
+      "terms": [
+        "smysl:39.56",
+        "tests:12.76",
+        "test:7.94",
+        "path:5.33",
+        "cargo:5.14"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 76.89838409423828,
+      "terms": [
+        "smysl:39.32",
+        "ingest:33.41",
+        "the:2.48",
+        "and:1.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-4",
+      "score": 74.87885284423828,
+      "terms": [
+        "ingest:32.02",
+        "smysl:31.11",
+        "test:6.24",
+        "with:3.26",
+        "not:2.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-8-1",
+      "score": 68.26338195800781,
+      "terms": [
+        "smysl:37.79",
+        "versions:8.53",
+        "test:6.11",
+        "assert:5.09",
+        "new:4.18"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-2-2",
+      "score": 64.8934326171875,
+      "terms": [
+        "test:7.34",
+        "makefil:7.17",
+        "makefile:7.17",
+        "counts:6.38",
+        "cli:5.23"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    ".github/workflows/ci.yml",
+    "CHANGELOG.md",
+    "Cargo.toml",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/manual/ch09-10-attest-providers.typ",
+    "Makefile",
+    "crates/smysl-core/src/error.rs",
+    "crates/smysl-ingest/src/lib.rs",
+    "crates/smysl-ingest/src/prompt.rs",
+    "crates/smysl-ingest/src/schema.rs",
+    "crates/smysl-ingest/tests/gate.rs",
+    "crates/smysl-provider/src/map/anthropic.rs",
+    "crates/smysl-provider/src/map/gemini.rs",
+    "crates/smysl-provider/src/map/openai_compat.rs",
+    "fixtures/schema/unit.json",
+    "scripts/verify-dep-versions.py",
+    "src/main.rs",
+    "tests/cli-surface.txt",
+    "tests/public-api-counts.txt"
+  ],
+  "findings": [
+    {
+      "diff_line": "- run: python3 scripts/verify-spec-tables.py",
+      "kind": "decision",
+      "label": "d/g4968383dc452-1",
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "source": "nodejs/README.md@4968383dc452",
+      "text": "Upgrade nodejs conformance target from C-Read to C-Produce.\nTo provide a fourth independent derivation of uids and a third witness for \u00a72.3 beyond the Rust, strengthening the evidence that the specification is sufficient."
+    },
+    {
+      "diff_line": "- run: python3 scripts/verify-spec-tables.py",
+      "kind": "decision",
+      "label": "d/g4968383dc452-12",
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to correct README claims that tables were asserted against document.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Correct README claims that tables were asserted against document.\nThe tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document."
+    },
+    {
+      "diff_line": "- run: python3 scripts/verify-spec-tables.py",
+      "kind": "decision",
+      "label": "d/g4968383dc452-15",
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to revise gate 7 blocked command explanation.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Revise gate 7 blocked command explanation, no longer 'decision about book'.\nThe block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision."
+    },
+    {
+      "diff_line": "- run: python3 scripts/verify-spec-tables.py",
+      "kind": "decision",
+      "label": "d/g4968383dc452-16",
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to hold beta.smy repair rather than guess missing stanza.",
+      "source": "git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5",
+      "text": "Hold beta.smy repair rather than guess missing stanza.\nThe missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair."
+    },
+    {
+      "diff_line": "- run: python3 scripts/verify-spec-tables.py",
+      "kind": "decision",
+      "label": "d/g4968383dc452-17",
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to do not implement rule M in outside readers.",
+      "source": "CHANGELOG.md@4968383dc452",
+      "text": "Do not implement rule M in outside readers.\nRule M is checkable against a store, not against a unit; a validate claiming to enforce it would be a check that cannot fail."
+    },
+    {
+      "diff_line": "- run: python3 scripts/verify-spec-tables.py",
+      "kind": "decision",
+      "label": "d/g4968383dc452-21",
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to do not apply 22% artefact fraction to other modules.",
+      "source": "Documentation/READINESS.md@4968383dc452",
+      "text": "Do not apply 22% artefact fraction to other modules.\nOne module evidence is not generalizable; applying the fraction would repeat the error of quoting a number without its configuration."
+    },
+    {
+      "diff_line": "- **Internal requirements name 1.3.0.** Every `[workspace.dependencies]` entry for a sibling crate",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-12",
+      "reason": "The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision to record the version-trap defect as fixed in 0.14.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Update format spec \u00a78.5 to record the version-trap defect as fixed in 0.14.\nThe trap was invisible until it bit; the spec should now state the fix so the historical warning is replaced with the actual current behavior."
+    },
+    {
+      "diff_line": "would resolve the new `smysl-ingest` against it and fail to build. Nothing here could see it,",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-14",
+      "reason": "The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\u00a78.2 requires readers to refuse a version absent from their list. Flipping the writer before 0.14 is in the field would make every other implementation reject the output."
+    },
+    {
+      "diff_line": "would resolve the new `smysl-ingest` against it and fail to build. Nothing here could see it,",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-15",
+      "reason": "The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision not to add version lists to python/, nodejs/, go/ implementations.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Do not add version lists to python/, nodejs/, go/ implementations.\nAll three read CBOR only and the wire carries no version string, so no surface parser ever sees a @doc header there. The migration plan's assumption was wrong."
+    },
+    {
+      "diff_line": "configuration allowing more. `IngestOptions::max_output` defaults to `0`, meaning the provider's;",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-6",
+      "reason": "The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision to pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.\n`fmt` is the round trip a user runs on purpose and would have been the first place the relabelling bit. Using the declared version preserves the document's self-description."
+    }
+  ],
+  "fingerprint": "d783ac92596b319e111cf6914d7f62f7dced8340117953fae2ea5205408d52cd",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-f74047490c4f",
+  "kind": "commit",
+  "pack_tokens": 1496,
+  "pack_units": 64,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 1303,
+    "predicted_tokens": 55813,
+    "prompt_tokens": 55752,
+    "seconds": 344.239868625
+  },
+  "verdicts": [
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a",
+      "label": "d/g4968383dc452-1",
+      "line": 7,
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to upgrade nodejs conformance target from C-Read to C-Produce.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a",
+      "label": "d/g4968383dc452-12",
+      "line": 7,
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to correct README claims that tables were asserted against document.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a",
+      "label": "d/g4968383dc452-15",
+      "line": 7,
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to revise gate 7 blocked command explanation.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a",
+      "label": "d/g4968383dc452-16",
+      "line": 7,
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to hold beta.smy repair rather than guess missing stanza.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a",
+      "label": "d/g4968383dc452-17",
+      "line": 7,
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to do not implement rule M in outside readers.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a",
+      "label": "d/g4968383dc452-21",
+      "line": 7,
+      "reason": "The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to do not apply 22% artefact fraction to other modules.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a requirement left at 1.1.0 while `smysl-ingest` calls a 1.3 item is invisible until a consumer's lockfile pairs the new crate with an old sibling.",
+      "label": "d/g69ea5c05d859-12",
+      "line": 34,
+      "reason": "The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision to record the version-trap defect as fixed in 0.14.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a requirement left at 1.1.0 while `smysl-ingest` calls a 1.3 item is invisible until a consumer's lockfile pairs the new crate with an old sibling.",
+      "label": "d/g69ea5c05d859-14",
+      "line": 37,
+      "reason": "The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a requirement left at 1.1.0 while `smysl-ingest` calls a 1.3 item is invisible until a consumer's lockfile pairs the new crate with an old sibling.",
+      "label": "d/g69ea5c05d859-15",
+      "line": 37,
+      "reason": "The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision not to add version lists to python/, nodejs/, go/ implementations.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+  # Internal requirements name the workspace version. Every build here uses paths, so a requirement left at 1.1.0 while `smysl-ingest` calls a 1.3 item is invisible until a consumer's lockfile pairs the new crate with an old sibling.",
+      "label": "d/g69ea5c05d859-6",
+      "line": 42,
+      "reason": "The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision to pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.",
+      "verdict": "contradicts"
+    }
+  ]
+}

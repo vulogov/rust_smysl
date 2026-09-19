@@ -1,0 +1,289 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 148.16981506347656,
+      "terms": [
+        "session:17.03",
+        "anchor:9.73",
+        "tim:9.01",
+        "time:9.01",
+        "start:7.54"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-2",
+      "score": 138.33453369140625,
+      "terms": [
+        "session:17.53",
+        "tim:11.30",
+        "time:11.30",
+        "base:9.26",
+        "instant:8.92"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g449b762e3cca-10",
+      "score": 127.91502380371094,
+      "terms": [
+        "state:10.04",
+        "anchor:9.63",
+        "stat:9.11",
+        "ucal:7.69",
+        "in:5.65"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 126.85002136230469,
+      "terms": [
+        "state:9.26",
+        "anchor:9.15",
+        "stat:8.40",
+        "ucal:7.09",
+        "in:5.21"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 125.45455932617188,
+      "terms": [
+        "session:16.42",
+        "clock:8.00",
+        "let:5.50",
+        "wall:5.22",
+        "doe:4.65"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-9",
+      "score": 124.23448944091797,
+      "terms": [
+        "session:16.42",
+        "clock:8.00",
+        "in:6.75",
+        "cli:6.24",
+        "its:6.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-6",
+      "score": 123.63028717041016,
+      "terms": [
+        "session:17.71",
+        "now:15.74",
+        "state:10.90",
+        "stat:9.89",
+        "anchor:8.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-1",
+      "score": 92.04972076416016,
+      "terms": [
+        "session:16.81",
+        "tim:10.83",
+        "time:10.83",
+        "clock:7.97",
+        "wid:7.97"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-7",
+      "score": 80.57341766357422,
+      "terms": [
+        "now:17.74",
+        "session:11.55",
+        "instant:9.41",
+        "clock:7.52",
+        "now_instant:6.67"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 77.57413482666016,
+      "terms": [
+        "session:15.03",
+        "instant:7.65",
+        "clock:7.50",
+        "tim:7.40",
+        "time:7.40"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-7-2",
+      "score": 76.23237609863281,
+      "terms": [
+        "now:18.01",
+        "session:17.07",
+        "instant:8.68",
+        "clock:7.64",
+        "now_instant:6.77"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-6-1",
+      "score": 62.93632507324219,
+      "terms": [
+        "anchor:8.97",
+        "expect:6.23",
+        "failure:6.23",
+        "lock:6.23",
+        "failur:5.96"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 188,
+  "diff_truncated": true,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+        "label": "d/g449b762e3cca-10",
+        "line": 5,
+        "reason": "This line contradicts the decision 'Refuse calendars with no anchor' by stating that the anchor is taken when the program starts.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+        "label": "r/g449b762e3cca-10-1",
+        "line": 5,
+        "reason": "This line contradicts the rejected alternative 'Allow the inverse for calendars with no anchor' by stating that the anchor is taken when the program starts.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+        "label": "r/g2074788f713e-4-1",
+        "line": 5,
+        "reason": "This line contradicts the rejected alternative 'Have Session::reading read the wall clock itself' by stating that the anchor is taken when the program starts.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+        "label": "d/g2074788f713e-9",
+        "line": 5,
+        "reason": "This line contradicts the decision 'Document the session clock and its rule in CLI.md and release notes' by stating that the anchor is taken when the program starts.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    }
+  ],
+  "files": [
+    "Documentation/CLI.md",
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/main.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "The anchor is taken **when the program starts**, first thing in `main`, and not",
+      "kind": "rejected alternative",
+      "label": "r/g2074788f713e-6-2",
+      "reason": "This line contradicts the rejected alternative 'Anchor the session at process start-up.' by stating that the anchor is taken when the program starts.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "Rejected: Anchor the session at process start-up.\nA command that never asks the time should not read a clock, and most do not."
+    },
+    {
+      "diff_line": "///",
+      "kind": "prerequisite",
+      "label": "p/g2074788f713e-2-2",
+      "reason": "This line contradicts the constraint that 'std::time::Instant::elapsed() gives monotonic duration from the session base.' by changing the anchoring mechanism.",
+      "source": "crates/ucal/src/clock.rs@2074788f713e",
+      "text": "`std::time::Instant::elapsed()` gives monotonic duration from the session base."
+    }
+  ],
+  "fingerprint": "11657f3312dfcc8e316854eadcf90add9793852565f8e737498809ff593b63f2",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-7-control-r1",
+  "kind": "agent",
+  "pack_tokens": 1500,
+  "pack_units": 73,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 7,
+  "usage": {
+    "completion_tokens": 713,
+    "predicted_tokens": 25379,
+    "prompt_tokens": 17247,
+    "seconds": 100.55234629099999
+  },
+  "verdicts": [
+    {
+      "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+      "label": "r/g2074788f713e-6-2",
+      "line": 9,
+      "reason": "This line contradicts the rejected alternative 'Anchor the session at process start-up.' by stating that the anchor is taken when the program starts.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+/// Anchored by [`anchor`] when the program starts, and by [`session_now`] on the first reading if nothing did \u2014 a library caller has no `main` to anchor from.",
+      "label": "p/g2074788f713e-2-2",
+      "line": 30,
+      "reason": "This line contradicts the constraint that 'std::time::Instant::elapsed() gives monotonic duration from the session base.' by changing the anchoring mechanism.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+      "label": "d/g449b762e3cca-10",
+      "line": 5,
+      "reason": "This line contradicts the decision 'Refuse calendars with no anchor' by stating that the anchor is taken when the program starts.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+      "label": "r/g449b762e3cca-10-1",
+      "line": 5,
+      "reason": "This line contradicts the rejected alternative 'Allow the inverse for calendars with no anchor' by stating that the anchor is taken when the program starts.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+      "label": "r/g2074788f713e-4-1",
+      "line": 5,
+      "reason": "This line contradicts the rejected alternative 'Have Session::reading read the wall clock itself' by stating that the anchor is taken when the program starts.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+The anchor is taken **when the program starts**, first thing in `main`, and not when a command first asks the time.",
+      "label": "d/g2074788f713e-9",
+      "line": 5,
+      "reason": "This line contradicts the decision 'Document the session clock and its rule in CLI.md and release notes' by stating that the anchor is taken when the program starts.",
+      "verdict": "contradicts"
+    }
+  ]
+}

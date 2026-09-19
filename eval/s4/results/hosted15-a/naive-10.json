@@ -1,0 +1,163 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-1-2",
+      "score": 128.05360412597656
+    },
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-3",
+      "score": 105.42601776123047
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 88.06613159179688
+    },
+    {
+      "anchored": true,
+      "label": "r/g5880e472260e-4-1",
+      "score": 86.14713287353516
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 77.3563232421875
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 59.94269943237305
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 59.611785888671875
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-4-1",
+      "score": 59.447288513183594
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 53.74814224243164
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-6",
+      "score": 46.31557846069336
+    },
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-2-1",
+      "score": 44.03306579589844
+    },
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-2-2",
+      "score": 44.03306579589844
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 49,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "xtask/src/citations.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "if !newest.exists() {",
+      "kind": "decision",
+      "label": "d/g5880e472260e-2",
+      "reason": "The change removes the explicit error when the current version's release notes are missing and instead falls back to older sorted notes, reversing the decision that a missing current notes file is an explicit error.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Error naming the version when current release notes missing\nThe old sort silently read the previous cycle's file and passed when notes were never written. Now a missing notes file for the current version is an explicit error."
+    },
+    {
+      "diff_line": "files.sort();",
+      "kind": "decision",
+      "label": "d/g5880e472260e-1",
+      "reason": "The change re-introduces sorting release note filenames to pick the newest sorted file as a fallback, undoing the decision to read the version being built rather than the newest sorted file.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Read notes for version being built rather than newest sorted file\nSorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing."
+    },
+    {
+      "diff_line": "// When the current version's notes are missing, fall back to the newest notes.",
+      "kind": "rejected alternative",
+      "label": "r/g5880e472260e-2-1",
+      "reason": "The change adopts the rejected alternative by silently falling back to the previous cycle's notes when the current version's notes are missing.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Rejected: silently fall back to the previous cycle's notes file\nThis fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file."
+    },
+    {
+      "diff_line": "\"the workspace is at {version} and {} does not exist; a cycle's notes \\",
+      "kind": "decision",
+      "label": "d/g5880e472260e-4",
+      "reason": "The change removes the specific missing-notes diagnostic that the strict test required, so the decision is undone.",
+      "source": "git:5880e472260eb32c58821c7fe4a7497154d590a8",
+      "text": "Make missing-notes test strict about the diagnostic\nAsserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic."
+    }
+  ],
+  "fingerprint": "e2cac24ee18876263f72da2d03877da2ff8890265d810d49214fa101b5a1729d",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "naive-10",
+  "kind": "naive",
+  "pack_tokens": 2996,
+  "pack_units": 130,
+  "repo": "ucal",
+  "set": "dev",
+  "task": 10,
+  "usage": {
+    "completion_tokens": 14693,
+    "prompt_tokens": 6446,
+    "seconds": 207.687608832
+  },
+  "verdicts": [
+    {
+      "diff_line": "-    if !newest.exists() {",
+      "label": "d/g5880e472260e-2",
+      "line": 9,
+      "reason": "The change removes the explicit error when the current version's release notes are missing and instead falls back to older sorted notes, reversing the decision that a missing current notes file is an explicit error.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+        files.sort();",
+      "label": "d/g5880e472260e-1",
+      "line": 37,
+      "reason": "The change re-introduces sorting release note filenames to pick the newest sorted file as a fallback, undoing the decision to read the version being built rather than the newest sorted file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+    // When the current version's notes are missing, fall back to the newest notes.",
+      "label": "r/g5880e472260e-2-1",
+      "line": 16,
+      "reason": "The change adopts the rejected alternative by silently falling back to the previous cycle's notes when the current version's notes are missing.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "-            \"the workspace is at {version} and {} does not exist; a cycle's notes \\",
+      "label": "d/g5880e472260e-4",
+      "line": 11,
+      "reason": "The change removes the specific missing-notes diagnostic that the strict test required, so the decision is undone.",
+      "verdict": "contradicts"
+    }
+  ]
+}

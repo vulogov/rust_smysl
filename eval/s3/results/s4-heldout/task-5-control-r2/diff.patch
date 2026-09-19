@@ -1,0 +1,349 @@
+ CHANGELOG.md                                      |   7 +-
+ Documentation/manual/ch11-13-merge-diff-trace.typ |  25 ++++
+ src/main.rs                                       |  78 +++++++++---
+ tests/cli-surface.txt                             |   2 +-
+ tests/trace_default_roots.rs                      | 137 ++++++++++++++++++++++
+ 5 files changed, 233 insertions(+), 16 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..0558126 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,12 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++- `smysl trace` takes its unit as optional. With none it walks from every root of every view —
++  the seed `salience` already defaults to — and reports the union, a unit reached from two roots
++  appearing once at its nearest depth. `trace STORE` is now a complete command; a lone argument
++  is read as the store unless it is spelled like a uid or label and names no file. A store that
++  declares no roots is refused (exit 1) rather than answered with an empty walk. No library
++  change: the facade is untouched.
+ 
+ ---
+ 
+diff --git a/Documentation/manual/ch11-13-merge-diff-trace.typ b/Documentation/manual/ch11-13-merge-diff-trace.typ
+index 6685a9f..cda916d 100644
+--- a/Documentation/manual/ch11-13-merge-diff-trace.typ
++++ b/Documentation/manual/ch11-13-merge-diff-trace.typ
+@@ -665,6 +665,31 @@ you name, and `c/alpha-scope` is the *target* of that edge, not its source.
+ Naming the successor, not the superseded unit, is what makes the ancestry
+ walk.
+ 
++#section("No unit named: start from the roots")
++
++The unit is optional. `smysl trace` with only a store walks from every root
++of every view — the same seed `salience` uses when it is not given one — and
++prints the union, so a unit two roots both rest on appears once, at its
++nearest depth. On `F1-incident.smy`, whose one root is `f/root-cause`, it is
++the six-unit walk above without typing the uid:
++
++#screen(caption: "$ smysl trace fixtures/corpus/F1-incident.smy")[
++```
++b3:js4xzessu5zwjpv2rawtugnuvj (root)
++  b3:cvhirtgs2mpvli2ethhyeo32uf (grounds)
++  b3:wo4t2c46lq45fnakd6tajlgcac (grounds)
++    b3:ekitkvj75uvgzxpvq3ad2nrv3b (deps)
++    b3:izyuzlt42mqcvgdfb4nfpllxyq (grounds)
++    b3:re42iey2e7syg6zp73tfrlqbvh (grounds)
++fixtures/corpus/F1-incident.smy: 6 unit(s) over 2 step(s)
++```
++]
++
++A lone argument is read as the store, unless it is spelled like a uid or a
++label and no such file exists — then it is a unit whose store is missing, and
++the usage error says so. A store that declares no roots has nowhere to start;
++`trace` exits `1` and asks for a unit rather than printing an empty walk.
++
+ #section("Bounding the walk: --depth")
+ 
+ An unbounded trace walks to the roots of whatever it is following — fine for
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..f8f99a9 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -246,7 +246,11 @@ fn cli() -> Command {
+                         .help("One store for --hop, two to compare"),
+                 ),
+             "trace" => sub
+-                .arg(Arg::new("uid").required(true).value_name("UID"))
++                .arg(
++                    Arg::new("uid")
++                        .value_name("UID")
++                        .help("Unit to walk from, by uid or label; the store's view roots if omitted"),
++                )
+                 .arg(
+                     Arg::new("depth")
+                         .long("depth")
+@@ -1481,8 +1485,25 @@ fn uid_array<'a>(uids: impl IntoIterator<Item = &'a Uid>) -> String {
+ }
+ 
+ /// `smysl trace` - walk a unit's ancestry (§23.1). The direct answer to F3.
++///
++/// With no unit named it walks from every root of every view, the seed `salience` uses, and
++/// reports the union: a unit reachable from two roots appears once, at its nearest depth.
+ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+-    let Some(path) = store_arg(m, global) else {
++    let mut uid_arg = m.get_one::<String>("uid").cloned();
++    let mut store_path = store_arg(m, global);
++    // The unit is optional, so `trace STORE` has one positional and it is the store. Only when
++    // no `--store` was given, and only when it cannot be read as a unit: an existing file (or
++    // `-`) is a store, a uid or label spelling is a unit whose store is missing, and anything
++    // else is a store path that does not exist, which `load_store` will say.
++    if store_path.is_none() {
++        if let Some(only) = uid_arg.as_deref() {
++            let is_unit = UidPrefix::parse(only).is_ok() || smysl::Label::new(only).is_ok();
++            if only == "-" || std::path::Path::new(only).is_file() || !is_unit {
++                store_path = uid_arg.take();
++            }
++        }
++    }
++    let Some(path) = store_path else {
+         eprintln!("smysl trace: no store given");
+         return ExitCode::Usage;
+     };
+@@ -1493,11 +1514,24 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             return ExitCode::Failure;
+         }
+     };
+-    let target = match resolve(&store, m.get_one::<String>("uid").expect("required")) {
+-        Ok(u) => u,
+-        Err(e) => {
+-            eprintln!("smysl trace: {e}");
+-            return e.code;
++    let targets: Vec<Uid> = match &uid_arg {
++        Some(raw) => match resolve(&store, raw) {
++            Ok(u) => vec![u],
++            Err(e) => {
++                eprintln!("smysl trace: {e}");
++                return e.code;
++            }
++        },
++        None => {
++            let roots: Vec<Uid> = smysl::view_roots(&store).into_iter().collect();
++            if roots.is_empty() {
++                eprintln!(
++                    "smysl trace: {path} declares no view roots, so there is nowhere to start; \
++                     name a unit by uid or label"
++                );
++                return ExitCode::Failure;
++            }
++            roots
+         }
+     };
+ 
+@@ -1510,12 +1544,28 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+     };
+     let depth = m.get_one::<String>("depth").and_then(|s| s.parse().ok());
+ 
+-    let l = smysl::trace(&store, target, kind, depth);
++    // Each root's walk keeps its own `depth` and `via`; where walks overlap, the nearer
++    // reach wins. Ties go to the earlier root, and the walk order is the canonical uid order.
++    let mut reached: std::collections::BTreeMap<Uid, smysl::LineageNode> = Default::default();
++    for target in targets {
++        for n in smysl::trace(&store, target, kind, depth).nodes {
++            match reached.get(&n.uid) {
++                Some(seen) if seen.depth <= n.depth => {}
++                _ => {
++                    reached.insert(n.uid, n);
++                }
++            }
++        }
++    }
++    let mut nodes = reached.into_values().collect::<Vec<_>>();
++    nodes.sort_by_key(|n| (n.depth, n.uid));
++    let units = nodes.len();
++    let steps = nodes.iter().map(|n| n.depth).max().unwrap_or(0);
++
+     if global.get_flag("json") {
+         // The tree's shape is what a caller wants, so `depth` and `via` travel per node
+         // rather than being encoded as indentation a machine would have to count.
+-        let nodes: Vec<String> = l
+-            .nodes
++        let nodes: Vec<String> = nodes
+             .iter()
+             .map(|n| {
+                 let hop = n
+@@ -1539,13 +1589,13 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+             .collect();
+         println!(
+             "{{\"units\":{},\"steps\":{},\"nodes\":[{}]}}",
+-            l.len(),
+-            l.max_depth(),
++            units,
++            steps,
+             nodes.join(",")
+         );
+         return ExitCode::Success;
+     }
+-    for n in &l.nodes {
++    for n in &nodes {
+         let indent = "  ".repeat(n.depth as usize);
+         let hop = n.hop.map(|h| format!(" @hop{h}")).unwrap_or_default();
+         let agents = if m.get_flag("agents") && !n.agents.is_empty() {
+@@ -1556,7 +1606,7 @@ fn cmd_trace(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+         };
+         println!("{indent}{} ({}){hop}{agents}", n.uid, n.via.as_str());
+     }
+-    println!("{path}: {} unit(s) over {} step(s)", l.len(), l.max_depth());
++    println!("{path}: {units} unit(s) over {steps} step(s)");
+     ExitCode::Success
+ }
+ 
+diff --git a/tests/cli-surface.txt b/tests/cli-surface.txt
+index 80f3e52..52ce1e1 100644
+--- a/tests/cli-surface.txt
++++ b/tests/cli-surface.txt
+@@ -111,7 +111,7 @@ diff       --quiet
+ diff       --verbose
+ diff       --seed-check
+ diff       --help
+-trace      <UID>
++trace      [UID]
+ trace      [PATH]
+ trace      --config
+ trace      --depth
+diff --git a/tests/trace_default_roots.rs b/tests/trace_default_roots.rs
+new file mode 100644
+index 0000000..d1b05cf
+--- /dev/null
++++ b/tests/trace_default_roots.rs
+@@ -0,0 +1,137 @@
++//! `smysl trace` with no unit walks from the store's roots.
++//!
++//! The unit was required until 1.4, so asking "what does this store rest on" meant first finding
++//! the root's uid — which `view --roots` or the document header already says. The default is the
++//! same seed `salience` uses: every root of every view.
++//!
++//! Making the unit optional made the first positional ambiguous, since `trace STORE` has one
++//! argument and it is the store. Those cases are pinned here as well.
++
++#![cfg(feature = "cli")]
++
++use std::path::PathBuf;
++use std::process::{Command, Output};
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++const STORE: &str = "fixtures/corpus/F1-incident.smy";
++/// F1's declared root (`roots: [f/root-cause]`), and the uid it binds.
++const ROOT_LABEL: &str = "f/root-cause";
++
++fn run<S: AsRef<std::ffi::OsStr>>(args: &[S]) -> Output {
++    Command::new(BIN)
++        .args(["--format", "surface"])
++        .args(args)
++        .output()
++        .expect("the binary under test must run")
++}
++
++fn stdout(o: &Output) -> String {
++    String::from_utf8_lossy(&o.stdout).into_owned()
++}
++
++fn stderr(o: &Output) -> String {
++    String::from_utf8_lossy(&o.stderr).into_owned()
++}
++
++/// A scratch `.smy` file, named for the test that wants it.
++fn write(name: &str, body: &str) -> PathBuf {
++    let dir = std::env::temp_dir().join(format!("smysl-trace-roots-{}", std::process::id()));
++    std::fs::create_dir_all(&dir).unwrap();
++    let path = dir.join(name);
++    std::fs::write(&path, body).unwrap();
++    path
++}
++
++#[test]
++fn no_unit_traces_from_the_declared_root() {
++    // Premise: F1 declares exactly one root. Otherwise the equality below could hold for the
++    // wrong reason.
++    let explicit = run(&["trace", ROOT_LABEL, STORE]);
++    assert!(explicit.status.success(), "{}", stderr(&explicit));
++
++    let default = run(&["trace", STORE]);
++    assert!(default.status.success(), "{}", stderr(&default));
++    assert_eq!(stdout(&default), stdout(&explicit));
++    assert!(stdout(&default).contains("6 unit(s) over 2 step(s)"));
++}
++
++#[test]
++fn the_default_takes_the_same_flags_and_the_global_store() {
++    for flags in [&["--parents"][..], &["--both"], &["--depth", "1"]] {
++        let mut with_root = vec!["trace"];
++        with_root.extend(flags);
++        let mut without = with_root.clone();
++        with_root.extend([ROOT_LABEL, STORE]);
++        without.push(STORE);
++        assert_eq!(
++            stdout(&run(&with_root)),
++            stdout(&run(&without)),
++            "{flags:?}"
++        );
++    }
++
++    let by_flag = run(&["--store", STORE, "trace"]);
++    assert!(by_flag.status.success(), "{}", stderr(&by_flag));
++    assert_eq!(stdout(&by_flag), stdout(&run(&["trace", STORE])));
++
++    let json = run(&["--json", "trace", STORE]);
++    assert!(stdout(&json).starts_with("{\"units\":6,\"steps\":2,\"nodes\":["));
++}
++
++#[test]
++fn a_named_unit_still_wins_over_the_roots() {
++    let out = run(&["trace", "c/pool-saturation", STORE]);
++    assert!(stdout(&out).contains("2 unit(s) over 1 step(s)"));
++}
++
++#[test]
++fn several_roots_are_walked_together_and_a_shared_unit_appears_once() {
++    let store = write(
++        "two-roots.smy",
++        "@doc smysl/0.1 {\n  id: v/two\n  intent: t\n  lang: en\n  granularity: { profile: default }\n  roots: [c/a, c/b]\n}\n\n\
++         @evidence e/shared { status: measured, source: { kind: metric, ref: \"m\", captured: 2026-07-22 } }\n~ Shared evidence.\n\n\
++         @claim c/a { status: inferred, grounds: [e/shared] }\n~ First.\n\n\
++         @claim c/b { status: inferred, grounds: [e/shared, c/a] }\n~ Second.\n",
++    );
++    let out = run(&["trace", store.to_str().unwrap()]);
++    assert!(out.status.success(), "{}", stderr(&out));
++    let text = stdout(&out);
++    // Two roots, and `c/a` is one of them even though `c/b` also reaches it a step down.
++    assert_eq!(text.matches("(root)").count(), 2, "{text}");
++    assert_eq!(text.matches("(grounds)").count(), 1, "{text}");
++    assert!(text.contains("3 unit(s) over 1 step(s)"), "{text}");
++}
++
++#[test]
++fn a_store_with_no_roots_says_so_rather_than_printing_nothing() {
++    let store = write(
++        "no-roots.smy",
++        "@doc smysl/0.1 {\n  id: v/none\n  intent: t\n  lang: en\n  granularity: { profile: default }\n}\n\n\
++         @claim c/a { status: asserted }\n~ Alone.\n",
++    );
++    let out = run(&["trace", store.to_str().unwrap()]);
++    assert_eq!(out.status.code(), Some(1), "{}", stderr(&out));
++    assert!(
++        stderr(&out).contains("declares no view roots"),
++        "{}",
++        stderr(&out)
++    );
++    assert!(stdout(&out).is_empty());
++}
++
++#[test]
++fn a_lone_argument_is_a_store_unless_it_reads_as_a_unit() {
++    // A unit with no store is still a usage error, as it was when the unit was required.
++    let uid = run(&["trace", "b3:cvhirtgs2mpvli2ethhyeo32uf"]);
++    assert_eq!(uid.status.code(), Some(2));
++    assert!(stderr(&uid).contains("no store given"));
++
++    let label = run(&["trace", "c/pool-saturation"]);
++    assert_eq!(label.status.code(), Some(2));
++    assert!(stderr(&label).contains("no store given"));
++
++    // A path that does not exist is reported as a path, not as a missing store.
++    let missing = run(&["trace", "no-such-store.smy"]);
++    assert_eq!(missing.status.code(), Some(1));
++    assert!(stderr(&missing).contains("no-such-store.smy"));
++}

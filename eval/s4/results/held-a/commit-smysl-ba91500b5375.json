@@ -1,0 +1,279 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 56.42937469482422,
+      "terms": [
+        "rather:5.66",
+        "nothing:4.79",
+        "than:4.36",
+        "output:4.24",
+        "which:4.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-16",
+      "score": 56.12218475341797,
+      "terms": [
+        "semver:10.01",
+        "breaking:9.85",
+        "change:4.57",
+        "thi:4.57",
+        "this:4.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 54.5367317199707,
+      "terms": [
+        "binary:5.13",
+        "rather:4.54",
+        "make:4.31",
+        "output:4.31",
+        "cargo:3.90"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 52.981903076171875,
+      "terms": [
+        "anthropic:6.51",
+        "against:5.30",
+        "had:5.25",
+        "its:5.08",
+        "gat:5.05"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-14",
+      "score": 51.86802673339844,
+      "terms": [
+        "publish:6.83",
+        "published:6.83",
+        "befor:4.89",
+        "before:4.89",
+        "every:4.14"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-5",
+      "score": 48.40950393676758,
+      "terms": [
+        "what:7.27",
+        "make:3.85",
+        "surfac:3.56",
+        "surface:3.56",
+        "mak:3.32"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-7",
+      "score": 47.00902557373047,
+      "terms": [
+        "declaring:6.48",
+        "every:5.06",
+        "declar:4.21",
+        "for:4.13",
+        "which:3.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-2",
+      "score": 45.21407699584961,
+      "terms": [
+        "what:10.02",
+        "from:3.82",
+        "sam:3.60",
+        "same:3.60",
+        "two:3.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 44.50358581542969,
+      "terms": [
+        "breaking:7.77",
+        "public:5.04",
+        "change:3.60",
+        "chang:3.10",
+        "break:3.02"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-1",
+      "score": 44.45749282836914,
+      "terms": [
+        "binary:4.90",
+        "tests:4.05",
+        "for:3.70",
+        "becaus:3.55",
+        "because:3.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-4",
+      "score": 44.292232513427734,
+      "terms": [
+        "make:5.17",
+        "becaus:4.42",
+        "because:4.42",
+        "gate:4.42",
+        "thi:4.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-15",
+      "score": 43.851593017578125,
+      "terms": [
+        "migration:4.74",
+        "thre:4.74",
+        "three:4.74",
+        "list:3.78",
+        "read:3.56"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "+Nothing here breaks anything. `SEMVER_BREAKING` is empty and an entry in it now means a 2.0, which is a different bar from every cycle before it.",
+        "label": "d/g69ea5c05d859-16",
+        "line": 14,
+        "reason": "The change states that nothing breaks anything and SEMVER_BREAKING is empty, which contradicts the decision to not treat this as a breaking change or require a major version bump.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    }
+  ],
+  "files": [
+    "CHANGELOG.md"
+  ],
+  "findings": [
+    {
+      "diff_line": "## Unreleased \u2014 0.13.0",
+      "kind": "decision",
+      "label": "d/g87345653cdf3-10",
+      "reason": "The change updates the version number from 0.13.0 to 1.1.0, which contradicts the decision that asserts on transcript count rather than just MISMATCHED presence in doc output test.",
+      "source": "tests/doc_output.rs@87345653cdf3",
+      "text": "Assert on transcript count rather than just MISMATCHED presence in doc output test\nThe first version asserted only that MISMATCHED appeared, which ran 0 transcripts satisfied; the count assertion ensures a gate that cannot confuse nothing wrong with nothing checked."
+    },
+    {
+      "diff_line": "transcripts and its skip rules pass straight over the `cargo` ones, so nothing had ever",
+      "kind": "decision",
+      "label": "d/g87345653cdf3-7",
+      "reason": "The change introduces a new gate 'make doc-cargo' which replays the manual's smysl transcripts, contradicting the decision to make verify-doc-output.py binary path overridable via SMYSL_BIN.",
+      "source": "scripts/verify-doc-output.py@87345653cdf3",
+      "text": "Make verify-doc-output.py binary path overridable via SMYSL_BIN\nThis lets the new cargo test pass the binary cargo built for it, so mutation testing exercises the mutated binary rather than a stale one."
+    },
+    {
+      "diff_line": "defects by reading OpenAI's documentation, applied to Anthropic's.",
+      "kind": "decision",
+      "label": "d/g0bc1aeb96d6b-1",
+      "reason": "The change introduces Gate 4's Anthropic half, which contradicts the decision to gate `report_against` and its tests on `gemini` or `anthropic` features.",
+      "source": "git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e",
+      "text": "Gate `report_against` and its tests on `gemini` or `anthropic` features\nThe function is only reached from the feature-gated `gemini` and `anthropic` mappers, so builds without those features had an unused function and CI's `-D warnings` failed."
+    },
+    {
+      "diff_line": "three test files that drive the binary. The remaining `cmd_providers` entry is the",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-14",
+      "reason": "The change states that the format is smysl/1.0 and the writer emits the version a document arrived as, which contradicts the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\u00a78.2 requires readers to refuse a version absent from their list. Flipping the writer before 0.14 is in the field would make every other implementation reject the output."
+    },
+    {
+      "diff_line": "score by 97 mutants** by depending on repository fixtures: `cargo-mutants` reuses build",
+      "kind": "decision",
+      "label": "d/g69ea5c05d859-5",
+      "reason": "The change states that the writer emits the version a document arrived as, which contradicts the decision to add format_version to WriteContext and make write_surface emit it instead of FORMAT_VERSIONS_SUPPORTED[0].",
+      "source": "git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e",
+      "text": "Add format_version to WriteContext and make write_surface emit it instead of FORMAT_VERSIONS_SUPPORTED[0].\nThe writer should rebuild the header from what the parsed document carried, not from a build-time constant that relabels documents when more than one version is supported."
+    }
+  ],
+  "fingerprint": "fa8bc39817eda21062fe6ad9b9c0c205720dd2683da3d0df52a0cb1b6e58287d",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-ba91500b5375",
+  "kind": "commit",
+  "pack_tokens": 1494,
+  "pack_units": 49,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 853,
+    "predicted_tokens": 26570,
+    "prompt_tokens": 17134,
+    "seconds": 106.918129459
+  },
+  "verdicts": [
+    {
+      "diff_line": "-## Unreleased \u2014 0.13.0",
+      "label": "d/g87345653cdf3-10",
+      "line": 9,
+      "reason": "The change updates the version number from 0.13.0 to 1.1.0, which contradicts the decision that asserts on transcript count rather than just MISMATCHED presence in doc output test.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+Nothing here breaks anything. `SEMVER_BREAKING` is empty and an entry in it now means a 2.0, which is a different bar from every cycle before it.",
+      "label": "d/g69ea5c05d859-16",
+      "line": 14,
+      "reason": "The change states that nothing breaks anything and SEMVER_BREAKING is empty, which contradicts the decision to not treat this as a breaking change or require a major version bump.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+- **`make doc-cargo`**, a new gate. `verify-doc-output.py` replays the manual's `smysl` transcripts and its skip rules pass straight over the `cargo` ones, so nothing had ever checked those \u2014 and 0.14 found three stale claims, every one in a block this now covers.",
+      "label": "d/g87345653cdf3-7",
+      "line": 19,
+      "reason": "The change introduces a new gate 'make doc-cargo' which replays the manual's smysl transcripts, contradicting the decision to make verify-doc-output.py binary path overridable via SMYSL_BIN.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+- **Gate 4's Anthropic half**, as far as it goes without a key. The same method that found two defects by reading OpenAI's documentation, applied to Anthropic's.",
+      "label": "d/g0bc1aeb96d6b-1",
+      "line": 25,
+      "reason": "The change introduces Gate 4's Anthropic half, which contradicts the decision to gate `report_against` and its tests on `gemini` or `anthropic` features.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+It waited a release on purpose. \u00a78.2 requires a reader to refuse a version absent from its list, so a writer emitting `smysl/1.0` before a release that reads it is in the field produces",
+      "label": "d/g69ea5c05d859-14",
+      "line": 32,
+      "reason": "The change states that the format is smysl/1.0 and the writer emits the version a document arrived as, which contradicts the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+The writer should rebuild the header from what the parsed document carried, not from a build-time constant that relabels documents when more than one version is supported.",
+      "label": "d/g69ea5c05d859-5",
+      "line": 37,
+      "reason": "The change states that the writer emits the version a document arrived as, which contradicts the decision to add format_version to WriteContext and make write_surface emit it instead of FORMAT_VERSIONS_SUPPORTED[0].",
+      "verdict": "contradicts"
+    }
+  ]
+}

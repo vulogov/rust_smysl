@@ -1,0 +1,219 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-17",
+      "score": 79.87342834472656,
+      "terms": [
+        "stor:13.61",
+        "store:9.86",
+        "check:7.31",
+        "rul:6.22",
+        "rule:6.22"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 75.79086303710938,
+      "terms": [
+        "stor:16.33",
+        "store:11.84",
+        "under:5.74",
+        "tests:3.82",
+        "with:2.89"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 73.93077087402344,
+      "terms": [
+        "stor:17.91",
+        "store:12.98",
+        "rul:5.97",
+        "rule:5.97"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-5",
+      "score": 62.225807189941406,
+      "terms": [
+        "pip:13.74",
+        "check:8.98",
+        "non:8.19",
+        "pipe:8.03",
+        "errors:6.32"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-9",
+      "score": 49.99516677856445,
+      "terms": [
+        "stor:13.45",
+        "store:9.75",
+        "code:7.18",
+        "cod:6.58",
+        "assert:4.97"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-5-1",
+      "score": 49.62047576904297,
+      "terms": [
+        "pip:15.96",
+        "check:9.57",
+        "pipe:8.56",
+        "errors:7.00",
+        "error:6.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 49.216217041015625,
+      "terms": [
+        "stor:14.22",
+        "store:10.30",
+        "code:7.43",
+        "cod:6.81",
+        "assert:5.14"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-6-1",
+      "score": 49.06465148925781,
+      "terms": [
+        "stdin:8.17",
+        "check:7.86",
+        "given:7.02",
+        "when:4.55",
+        "path:4.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-9-1",
+      "score": 46.530189514160156,
+      "terms": [
+        "stor:18.35",
+        "store:13.30",
+        "code:7.77",
+        "cod:7.12"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g90ec2f781421-6-1",
+      "score": 44.55922317504883,
+      "terms": [
+        "check:10.07",
+        "given:9.01",
+        "stdin:7.95",
+        "when:5.84",
+        "path:5.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 44.372005462646484,
+      "terms": [
+        "check:5.51",
+        "reads:4.35",
+        "input:3.98",
+        "checks:3.61",
+        "when:3.19"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-5",
+      "score": 42.13987350463867,
+      "terms": [
+        "arg:8.19",
+        "args:8.19",
+        "bar:5.61",
+        "bare:5.61",
+        "name:5.61"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 203,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/manual/appendices.typ",
+    "src/main.rs",
+    "tests/cmd_check_default.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "and explicit paths still win, and `smysl check -` still reads stdin, so a pipeline that spelled",
+      "kind": "rejected alternative",
+      "label": "r/g90ec2f781421-6-1",
+      "reason": "The change modifies the behavior of `smysl check` so that it checks `.smysl/store` by default when no path is provided, which contradicts the rejected alternative that inherited stdin from the terminal would hang instead of failing.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "Rejected: inherit stdin from the terminal for dispatch test commands\nfmt and check read stdin when given no path; inherited terminal would hang instead of failing."
+    },
+    {
+      "diff_line": "and explicit paths still win, and `smysl check -` still reads stdin, so a pipeline that spelled",
+      "kind": "prerequisite",
+      "label": "p/g90ec2f781421-6-1",
+      "reason": "The change modifies the behavior of `smysl check` so that it checks `.smysl/store` by default when no path is provided, which contradicts the constraint that fmt and check read stdin when given no path, so inherited terminal would hang.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "fmt and check read stdin when given no path, so inherited terminal would hang."
+    }
+  ],
+  "fingerprint": "beb9e10750d52aacd2c70d659d8678a2b27092d080b0a2c5ac5c648ac44fc37c",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "s4-heldout-task-2-control-r2",
+  "kind": "agent",
+  "pack_tokens": 1500,
+  "pack_units": 63,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 2,
+  "usage": {
+    "completion_tokens": 326,
+    "predicted_tokens": 23673,
+    "prompt_tokens": 16880,
+    "seconds": 81.27910875
+  },
+  "verdicts": [
+    {
+      "diff_line": "+    ([`FILE \u2026`], [positional, 0 or more], [Stores to check; none checks `.smysl/store`, `-` reads stdin (rule P).]),",
+      "label": "r/g90ec2f781421-6-1",
+      "line": 11,
+      "reason": "The change modifies the behavior of `smysl check` so that it checks `.smysl/store` by default when no path is provided, which contradicts the rejected alternative that inherited stdin from the terminal would hang instead of failing.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "+    ([`FILE \u2026`], [positional, 0 or more], [Stores to check; none checks `.smysl/store`, `-` reads stdin (rule P).]),",
+      "label": "p/g90ec2f781421-6-1",
+      "line": 11,
+      "reason": "The change modifies the behavior of `smysl check` so that it checks `.smysl/store` by default when no path is provided, which contradicts the constraint that fmt and check read stdin when given no path, so inherited terminal would hang.",
+      "verdict": "contradicts"
+    }
+  ]
+}

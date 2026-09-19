@@ -1,0 +1,327 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "score": 50.38723373413086,
+      "terms": [
+        "provider:18.67",
+        "smysl:16.56",
+        "being:5.52",
+        "cargo:5.52",
+        "check:3.35"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 29.530370712280273,
+      "terms": [
+        "gat:4.77",
+        "tests:4.28",
+        "report:3.38",
+        "mapper:3.29",
+        "mappers:3.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-1-1",
+      "score": 27.96066665649414,
+      "terms": [
+        "gat:4.76",
+        "mapper:4.76",
+        "mappers:4.76",
+        "from:4.19",
+        "only:3.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 25.030616760253906,
+      "terms": [
+        "change:5.50",
+        "never:5.50",
+        "recorded:4.09",
+        "chang:3.67",
+        "not:3.06"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 17.068265914916992,
+      "terms": [
+        "noth:3.82",
+        "nothing:3.82",
+        "for:2.87",
+        "not:2.63",
+        "record:2.09"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 15.21438217163086,
+      "terms": [
+        "cannot:3.72",
+        "with:3.72",
+        "that:3.32",
+        "test:2.67",
+        "and:0.99"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 15.056638717651367,
+      "terms": [
+        "cannot:3.67",
+        "with:3.67",
+        "that:3.31",
+        "test:2.64",
+        "and:0.98"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 11.46742057800293,
+      "terms": [
+        "than:3.99",
+        "for:2.87",
+        "that:2.63",
+        "and:1.29",
+        "the:0.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 10.96107006072998,
+      "terms": [
+        "noth:3.82",
+        "nothing:3.82",
+        "record:2.53",
+        "the:0.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 10.245615005493164,
+      "terms": [
+        "than:3.79",
+        "for:2.72",
+        "that:2.49",
+        "and:1.25"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-6",
+      "score": 10.08598518371582,
+      "terms": [
+        "for:3.07",
+        "not:2.82",
+        "record:2.24",
+        "and:1.14",
+        "the:0.83"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 9.203512191772461,
+      "terms": [
+        "are:4.88",
+        "was:3.51",
+        "the:0.82"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 171,
+  "diff_truncated": false,
+  "dropped": [
+    {
+      "verdict": {
+        "diff_line": "| `provider::stream` \u2192 later narrowed to `Stream` alone | `ollama_live.rs` drives a real streaming response. Hiding the whole module also hid `StreamMsg`, which is contract \u2014 see S6.",
+        "label": "p/g0bc1aeb96d6b-2-1",
+        "line": 5,
+        "reason": "The change narrows the `stream` module to just `Stream`, hiding `StreamMsg`, which contradicts the prerequisite that `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "| `provider::stream` \u2192 later narrowed to `Stream` alone | `ollama_live.rs` drives a real streaming response. Hiding the whole module also hid `StreamMsg`, which is contract \u2014 see S6.",
+        "label": "d/g0bc1aeb96d6b-1",
+        "line": 5,
+        "reason": "The change narrows the `stream` module to just `Stream`, hiding `StreamMsg`, which contradicts the decision to gate `report_against` and its tests on `gemini` or `anthropic` features.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "| `provider::stream` \u2192 later narrowed to `Stream` alone | `ollama_live.rs` drives a real streaming response. Hiding the whole module also hid `StreamMsg`, which is contract \u2014 see S6.",
+        "label": "p/g0bc1aeb96d6b-1-1",
+        "line": 5,
+        "reason": "The change narrows the `stream` module to just `Stream`, hiding `StreamMsg`, which contradicts the prerequisite that `report_against` is only reached from the `gemini` and `anthropic` mappers, both feature-gated.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    },
+    {
+      "verdict": {
+        "diff_line": "| `provider::stream` | `ollama_live.rs` drives a real streaming response. `StreamMsg` stays contract via the root `pub use`; only the module path went.",
+        "label": "d/g0bc1aeb96d6b-2",
+        "line": 5,
+        "reason": "The change removes the comment about `StreamMsg` staying contract, contradicting the decision to leave the `jitter` unused failure unrepaired.",
+        "verdict": "contradicts"
+      },
+      "why": "neither the line number nor the quote is a line of the diff"
+    }
+  ],
+  "files": [
+    "Documentation/ROAD_TO_1.0.md",
+    "Makefile",
+    "crates/smysl-provider/src/lib.rs",
+    "crates/smysl-provider/src/stream.rs",
+    "tests/public-api-counts.txt"
+  ],
+  "findings": [
+    {
+      "diff_line": "| `provider::stream` | `ollama_live.rs` drives a real streaming response. `StreamMsg` stays contract via the root `pub use`; only the module path went. |",
+      "kind": "decision",
+      "label": "d/ga18e230ae345-1",
+      "reason": "The change hides the entire `stream` module, contradicting the decision to remove the local-improvement pass.",
+      "source": "git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa",
+      "text": "Remove the local-improvement pass (\u00a718.3 step 3).\nIt was making packs worse; across 28,000 generated packs it changed 26 and 22 were worse by the value function it exists to maximise."
+    },
+    {
+      "diff_line": "**Result, with S2:** `smysl-provider` 988 \u2192 **716**, `smysl-ingest` 751 \u2192 **541**. **482 items",
+      "kind": "decision",
+      "label": "d/ga18e230ae345-4",
+      "reason": "The change updates the golden file count, contradicting the decision to decline updating the golden file.",
+      "source": "git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa",
+      "text": "Decline to update the golden file.\nThe golden file is byte-identical after the removal; no selections moved, so there is nothing to record."
+    },
+    {
+      "diff_line": "**S6 \u2014 land it as a break.**",
+      "kind": "decision",
+      "label": "d/ga18e230ae345-5",
+      "reason": "The change adds a comment explaining the removal, contradicting the decision to add a comment explaining the removal.",
+      "source": "crates/smysl-pack/src/solve.rs@a18e230ae345",
+      "text": "Add a comment explaining the removal in place of the loop.\nTo document why the pass was removed, including the measurements that justified it."
+    },
+    {
+      "diff_line": "#   And in 0.13, S2 and S4 of the road to 1.0: `runtime`, `stream` and the five concrete",
+      "kind": "prerequisite",
+      "label": "p/g0bc1aeb96d6b-1-2",
+      "reason": "The change updates the count from 988 to 716, contradicting the constraint that CI sets `-D warnings`, which refuses an unused function.",
+      "source": "git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e",
+      "text": "CI sets `-D warnings`, which refuses an unused function"
+    },
+    {
+      "diff_line": "#   mappers are `#[doc(hidden)]`; `http` and `map::auth` are `pub(crate)`. 988 items to 678.",
+      "kind": "prerequisite",
+      "label": "p/g0bc1aeb96d6b-2-2",
+      "reason": "The change updates the count from 988 to 716, contradicting the constraint that the `jitter` unused failure is outside CI's matrix.",
+      "source": "git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e",
+      "text": "The `jitter` unused failure is outside CI's matrix"
+    }
+  ],
+  "fingerprint": "53849838db31c182fba3e282677ca69f830db9fcd2ab227d865663aed49635b8",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-1041018f862b",
+  "kind": "commit",
+  "pack_tokens": 1365,
+  "pack_units": 40,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 1283,
+    "predicted_tokens": 29044,
+    "prompt_tokens": 20386,
+    "seconds": 141.168624793
+  },
+  "verdicts": [
+    {
+      "diff_line": "| `provider::stream` \u2192 later narrowed to `Stream` alone | `ollama_live.rs` drives a real streaming response. Hiding the whole module also hid `StreamMsg`, which is contract \u2014 see S6.",
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "line": 5,
+      "reason": "The change narrows the `stream` module to just `Stream`, hiding `StreamMsg`, which contradicts the prerequisite that `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| `provider::stream` \u2192 later narrowed to `Stream` alone | `ollama_live.rs` drives a real streaming response. Hiding the whole module also hid `StreamMsg`, which is contract \u2014 see S6.",
+      "label": "d/g0bc1aeb96d6b-1",
+      "line": 5,
+      "reason": "The change narrows the `stream` module to just `Stream`, hiding `StreamMsg`, which contradicts the decision to gate `report_against` and its tests on `gemini` or `anthropic` features.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| `provider::stream` \u2192 later narrowed to `Stream` alone | `ollama_live.rs` drives a real streaming response. Hiding the whole module also hid `StreamMsg`, which is contract \u2014 see S6.",
+      "label": "p/g0bc1aeb96d6b-1-1",
+      "line": 5,
+      "reason": "The change narrows the `stream` module to just `Stream`, hiding `StreamMsg`, which contradicts the prerequisite that `report_against` is only reached from the `gemini` and `anthropic` mappers, both feature-gated.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| `provider::stream` | `ollama_live.rs` drives a real streaming response. `StreamMsg` stays contract via the root `pub use`; only the module path went.",
+      "label": "d/g0bc1aeb96d6b-2",
+      "line": 5,
+      "reason": "The change removes the comment about `StreamMsg` staying contract, contradicting the decision to leave the `jitter` unused failure unrepaired.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "| `provider::stream` \u2192 later narrowed to `Stream` alone | `ollama_live.rs` drives a real streaming response. Hiding the whole module also hid `StreamMsg`, which is contract \u2014 see S6.",
+      "label": "d/ga18e230ae345-1",
+      "line": 9,
+      "reason": "The change hides the entire `stream` module, contradicting the decision to remove the local-improvement pass.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "**Result, with S2:** `smysl-provider` 988 \u2192 **716**, `smysl-ingest` 751 \u2192 **541**. **482 items out of the contract** across the two crates, and the facade unchanged at 243 throughout \u2014",
+      "label": "d/ga18e230ae345-4",
+      "line": 19,
+      "reason": "The change updates the golden file count, contradicting the decision to decline updating the golden file.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "**S6 \u2014 land it as a break.** \u2705 *audited in 0.13.0; emptying the list needs publication*",
+      "label": "d/ga18e230ae345-5",
+      "line": 27,
+      "reason": "The change adds a comment explaining the removal, contradicting the decision to add a comment explaining the removal.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "#   And in 0.13, S2 and S4 of the road to 1.0: `runtime`, `Stream` and the five concrete mappers are `#[doc(hidden)]`; `http` and `map::auth` are `pub(crate)`. 988 items to 716.",
+      "label": "p/g0bc1aeb96d6b-1-2",
+      "line": 107,
+      "reason": "The change updates the count from 988 to 716, contradicting the constraint that CI sets `-D warnings`, which refuses an unused function.",
+      "verdict": "contradicts"
+    },
+    {
+      "diff_line": "#   And in 0.13, S2 and S4 of the road to 1.0: `runtime`, `Stream` and the five concrete mappers are `#[doc(hidden)]`; `http` and `map::auth` are `pub(crate)`. 988 items to 716.",
+      "label": "p/g0bc1aeb96d6b-2-2",
+      "line": 108,
+      "reason": "The change updates the count from 988 to 716, contradicting the constraint that the `jitter` unused failure is outside CI's matrix.",
+      "verdict": "contradicts"
+    }
+  ]
+}

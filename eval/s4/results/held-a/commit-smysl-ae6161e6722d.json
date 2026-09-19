@@ -1,0 +1,185 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 51.66134262084961,
+      "terms": [
+        "with:5.58",
+        "rather:5.31",
+        "count:5.11",
+        "assert:5.05",
+        "nothing:4.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 46.99666976928711,
+      "terms": [
+        "measur:6.95",
+        "measured:6.95",
+        "with:6.12",
+        "two:4.54",
+        "that:4.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 46.54483413696289,
+      "terms": [
+        "measur:6.90",
+        "measured:6.90",
+        "with:6.04",
+        "two:4.48",
+        "that:4.22"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 43.660125732421875,
+      "terms": [
+        "smysl:8.77",
+        "tests:8.21",
+        "unit:5.34",
+        "with:4.66",
+        "non:3.36"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 43.37660598754883,
+      "terms": [
+        "smysl:8.84",
+        "let:4.51",
+        "rather:4.26",
+        "one:3.86",
+        "thi:3.86"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-1",
+      "score": 37.38789367675781,
+      "terms": [
+        "smysl:10.10",
+        "befor:4.67",
+        "before:4.67",
+        "both:4.12",
+        "first:3.91"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-1-1",
+      "score": 35.994476318359375,
+      "terms": [
+        "smysl:8.78",
+        "befor:4.77",
+        "before:4.77",
+        "both:4.21",
+        "new:3.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 35.086753845214844,
+      "terms": [
+        "smysl:8.47",
+        "detect:5.52",
+        "detected:5.52",
+        "count:4.51",
+        "new:4.34"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-7",
+      "score": 33.679473876953125,
+      "terms": [
+        "with:6.71",
+        "count:4.87",
+        "for:4.37",
+        "which:3.56",
+        "one:3.40"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-15",
+      "score": 33.19082260131836,
+      "terms": [
+        "ever:5.83",
+        "thre:4.46",
+        "three:4.46",
+        "all:4.21",
+        "read:3.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-16",
+      "score": 32.1284065246582,
+      "terms": [
+        "thi:4.60",
+        "this:4.60",
+        "are:3.49",
+        "exhaustiv:3.10",
+        "exhaustive:3.10"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-7-1",
+      "score": 31.78745460510254,
+      "terms": [
+        "smysl:9.53",
+        "mutant:6.65",
+        "target:4.88",
+        "non:3.42",
+        "would:3.00"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 276,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "Documentation/READINESS.md",
+    "crates/smysl-graph/src/merge/mod.rs",
+    "crates/smysl-graph/tests/predicates.rs"
+  ],
+  "findings": [],
+  "fingerprint": "873bde39dd7e4d2ab920ef3a8945d1b6f70407f3574dbf3e6d12726b4fde3bc2",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 32768 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-ae6161e6722d",
+  "kind": "commit",
+  "pack_tokens": 1494,
+  "pack_units": 50,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 37343,
+    "prompt_tokens": 24963,
+    "seconds": 105.976000376
+  },
+  "verdicts": []
+}

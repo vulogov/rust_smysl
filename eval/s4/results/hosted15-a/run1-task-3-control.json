@@ -1,0 +1,121 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-4-1",
+      "score": 132.5176239013672
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-4",
+      "score": 104.73929595947266
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 99.64523315429688
+    },
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-6-1",
+      "score": 96.54066467285156
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-6",
+      "score": 95.24971008300781
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 76.44393157958984
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 63.67473220825195
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-7-1",
+      "score": 57.49476623535156
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 52.36964797973633
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-17",
+      "score": 52.36964797973633
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-19",
+      "score": 52.36964797973633
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-5",
+      "score": 52.36964797973633
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 231,
+  "diff_truncated": false,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md",
+    "crates/smysl-provider/src/usage.rs",
+    "src/main.rs",
+    "tests/dispatch.rs"
+  ],
+  "findings": [
+    {
+      "diff_line": "let mut ledger = smysl::Ledger::open(ledger_path(global));",
+      "kind": "prerequisite",
+      "label": "p/g90ec2f781421-4-1",
+      "reason": "This change makes usage open the ledger via ledger_path, which resolves under the home directory, so usage no longer writes .smysl/usage.log in the working directory as the prerequisite states.",
+      "source": "tests/dispatch.rs@90ec2f781421",
+      "text": "ingest and usage write to .smysl in the working directory, so a shared checkout would be dirtied."
+    }
+  ],
+  "fingerprint": "4f4fb6cf4138ed008e7cd56b6a549b04f5d8da1d59d100117c95c230fc8a6268",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 65536 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "run1-task-3-control",
+  "kind": "agent",
+  "pack_tokens": 3000,
+  "pack_units": 131,
+  "repo": "smysl",
+  "set": "dev",
+  "task": 3,
+  "usage": {
+    "completion_tokens": 9975,
+    "prompt_tokens": 18297,
+    "seconds": 143.865933
+  },
+  "verdicts": [
+    {
+      "diff_line": "+        let mut ledger = smysl::Ledger::open(ledger_path(global));",
+      "label": "p/g90ec2f781421-4-1",
+      "line": 180,
+      "reason": "This change makes usage open the ledger via ledger_path, which resolves under the home directory, so usage no longer writes .smysl/usage.log in the working directory as the prerequisite states.",
+      "verdict": "contradicts"
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 56.42937469482422,
+      "terms": [
+        "rather:5.66",
+        "nothing:4.79",
+        "than:4.36",
+        "output:4.24",
+        "which:4.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-16",
+      "score": 56.12218475341797,
+      "terms": [
+        "semver:10.01",
+        "breaking:9.85",
+        "change:4.57",
+        "thi:4.57",
+        "this:4.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 54.5367317199707,
+      "terms": [
+        "binary:5.13",
+        "rather:4.54",
+        "make:4.31",
+        "output:4.31",
+        "cargo:3.90"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 52.981903076171875,
+      "terms": [
+        "anthropic:6.51",
+        "against:5.30",
+        "had:5.25",
+        "its:5.08",
+        "gat:5.05"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-14",
+      "score": 51.86802673339844,
+      "terms": [
+        "publish:6.83",
+        "published:6.83",
+        "befor:4.89",
+        "before:4.89",
+        "every:4.14"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-5",
+      "score": 48.40950393676758,
+      "terms": [
+        "what:7.27",
+        "make:3.85",
+        "surfac:3.56",
+        "surface:3.56",
+        "mak:3.32"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-7",
+      "score": 47.00902557373047,
+      "terms": [
+        "declaring:6.48",
+        "every:5.06",
+        "declar:4.21",
+        "for:4.13",
+        "which:3.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-2",
+      "score": 45.21407699584961,
+      "terms": [
+        "what:10.02",
+        "from:3.82",
+        "sam:3.60",
+        "same:3.60",
+        "two:3.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 44.50358581542969,
+      "terms": [
+        "breaking:7.77",
+        "public:5.04",
+        "change:3.60",
+        "chang:3.10",
+        "break:3.02"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-1",
+      "score": 44.45749282836914,
+      "terms": [
+        "binary:4.90",
+        "tests:4.05",
+        "for:3.70",
+        "becaus:3.55",
+        "because:3.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-4",
+      "score": 44.292232513427734,
+      "terms": [
+        "make:5.17",
+        "becaus:4.42",
+        "because:4.42",
+        "gate:4.42",
+        "thi:4.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-15",
+      "score": 43.851593017578125,
+      "terms": [
+        "migration:4.74",
+        "thre:4.74",
+        "three:4.74",
+        "list:3.78",
+        "read:3.56"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "dropped": [],
+  "files": [
+    "CHANGELOG.md"
+  ],
+  "findings": [],
+  "fingerprint": "fa8bc39817eda21062fe6ad9b9c0c205720dd2683da3d0df52a0cb1b6e58287d",
+  "fitting": {
+    "calls": 4,
+    "warnings": [
+      "24 recorded unit(s) judged in 4 calls: this model takes about 16384 tokens, and each call sees only its own units"
+    ]
+  },
+  "id": "commit-smysl-ba91500b5375",
+  "kind": "commit",
+  "pack_tokens": 1494,
+  "pack_units": 49,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null,
+  "usage": {
+    "completion_tokens": 32,
+    "predicted_tokens": 26570,
+    "prompt_tokens": 17134,
+    "seconds": 76.0559825
+  },
+  "verdicts": []
+}

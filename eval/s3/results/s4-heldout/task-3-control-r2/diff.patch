@@ -1,0 +1,319 @@
+ CHANGELOG.md                                      |   8 +-
+ Documentation/manual/appendices.typ               |   4 +-
+ Documentation/manual/ch09-10-attest-providers.typ |   8 +-
+ crates/smysl-provider/src/usage.rs                |  38 +++++++-
+ src/main.rs                                       |  13 ++-
+ tests/cmd_usage.rs                                | 105 ++++++++++++++++++++++
+ tests/dispatch.rs                                 |   9 +-
+ 7 files changed, 172 insertions(+), 13 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 604f55f..763e05e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,7 +9,13 @@ and the facade asserts the two are independent.
+ 
+ ## Unreleased — 1.4.0
+ 
+-Nothing yet.
++### The usage ledger is per user, not per project
++
++`ingest` and `usage` now keep the ledger at `~/.smysl/usage.log` (`%USERPROFILE%` where `HOME`
++is unset), so `smysl usage` totals what a person has spent across every project instead of one
++checkout. Without a home directory it falls back to the project's `.smysl/usage.log`. A ledger
++already sitting in a project's `.smysl/` is no longer read; append it to the home one if the
++history matters. Adds `Ledger::user_path` and `Ledger::path_in_home`.
+ 
+ ---
+ 
+diff --git a/Documentation/manual/appendices.typ b/Documentation/manual/appendices.typ
+index 56c4fff..07026c1 100644
+--- a/Documentation/manual/appendices.typ
++++ b/Documentation/manual/appendices.typ
+@@ -655,7 +655,9 @@ and this page for a quick reminder of what the word means.
+ 
+ #term("Ledger")[
+   A local, append-only record of what was called, how many tokens it cost, and under what
+-  recipe — never the content itself. `usage` reads it back; `usage --reset` discards it.
++  recipe — never the content itself. It lives in your home directory, `~/.smysl/usage.log`,
++  so it totals every project you run smysl in. `usage` reads it back; `usage --reset`
++  discards it.
+ ]
+ 
+ #term("Label binding")[
+diff --git a/Documentation/manual/ch09-10-attest-providers.typ b/Documentation/manual/ch09-10-attest-providers.typ
+index 1ea1c5f..c139674 100644
+--- a/Documentation/manual/ch09-10-attest-providers.typ
++++ b/Documentation/manual/ch09-10-attest-providers.typ
+@@ -596,7 +596,7 @@ sentence rather than an empty table:
+ 
+ #screen(caption: "$ smysl usage")[
+ ```
+-./.smysl/usage.log: no model calls recorded
++/home/you/.smysl/usage.log: no model calls recorded
+ ```
+ ]
+ 
+@@ -628,7 +628,7 @@ ollama                        1 call(s)          0 in          0 out
+ ```
+ 
+ ```
+-$ cat .smysl/usage.log
++$ cat ~/.smysl/usage.log
+ {"at":1785224107272,"provider":"ollama","model":"","task":"content-ingest",
+  "in":0,"out":0,"estimated":false,"retries":0,
+  "recipe":"b3:livso2vmtfwpz3qwrjvmn3ni32"}
+@@ -645,7 +645,7 @@ Read this honestly rather than generalising it: in this build, `ingest` is
+ the command that writes the ledger from the CLI. `attest`'s own report
+ carries a token total too (the `N token(s)` in its final summary line from
+ Chapter 11), but that total is not currently appended to
+-`.smysl/usage.log` the way an `ingest` call's is. If you are reconciling
++`~/.smysl/usage.log` the way an `ingest` call's is. If you are reconciling
+ `usage` totals against a batch of `attest` runs, the ledger will
+ under-report them — the number to trust for `attest`'s own cost, today, is
+ the summary line `attest` prints for itself, not `usage --by task`.
+@@ -680,7 +680,7 @@ the whole ledger — every entry, and the file itself:
+ 
+ ```
+ $ smysl usage --reset
+-./.smysl/usage.log: discarded 1 entr(ies)
++/home/you/.smysl/usage.log: discarded 1 entr(ies)
+ ```
+ 
+ A ledger is informational rather than authoritative — it never blocks a
+diff --git a/crates/smysl-provider/src/usage.rs b/crates/smysl-provider/src/usage.rs
+index 7ac6228..da80c36 100644
+--- a/crates/smysl-provider/src/usage.rs
++++ b/crates/smysl-provider/src/usage.rs
+@@ -1,4 +1,4 @@
+-//! The usage ledger (§7.3 `.smysl/usage.log`, §29).
++//! The usage ledger (§7.3 `.smysl/usage.log`, §29), kept in the user's home directory.
+ //!
+ //! Counts, models, task, and recipe. **Never prompt or completion text** - the ledger is
+ //! written on every model call and read by anyone auditing cost, so putting content in it
+@@ -286,9 +286,29 @@ impl Ledger {
+         Ledger::default()
+     }
+ 
+-    /// Where a project's ledger lives, relative to its root.
++    /// Where the ledger lives, relative to the directory that holds it: the user's home.
+     pub const PATH: &'static str = ".smysl/usage.log";
+ 
++    /// The user's ledger, `~/.smysl/usage.log`, or `None` when no home directory is known.
++    ///
++    /// One ledger per user rather than per project: cost is something a person accrues
++    /// across everything they run, and a per-project file can only ever answer "what did
++    /// this checkout spend".
++    pub fn user_path() -> Option<PathBuf> {
++        let home = std::env::var_os("HOME")
++            .filter(|h| !h.is_empty())
++            .or_else(|| std::env::var_os("USERPROFILE"));
++        Ledger::path_in_home(home)
++    }
++
++    /// [`Ledger::PATH`] under a home directory. An empty home is no home: joining onto `""`
++    /// would put the ledger in the current directory, which is the per-project behaviour
++    /// this replaces.
++    pub fn path_in_home(home: Option<std::ffi::OsString>) -> Option<PathBuf> {
++        home.filter(|h| !h.is_empty())
++            .map(|h| PathBuf::from(h).join(Ledger::PATH))
++    }
++
+     /// Read a ledger, tolerating a truncated or partly corrupt file.
+     ///
+     /// A ledger is informational, so an unreadable line is skipped rather than fatal:
+@@ -630,4 +650,18 @@ mod tests {
+     fn the_ledger_path_is_the_documented_one() {
+         assert_eq!(Ledger::PATH, ".smysl/usage.log");
+     }
++
++    #[test]
++    fn the_user_ledger_is_under_the_home_directory() {
++        assert_eq!(
++            Ledger::path_in_home(Some("/home/ada".into())),
++            Some(PathBuf::from("/home/ada/.smysl/usage.log"))
++        );
++    }
++
++    #[test]
++    fn no_home_means_no_user_ledger() {
++        assert_eq!(Ledger::path_in_home(None), None);
++        assert_eq!(Ledger::path_in_home(Some("".into())), None);
++    }
+ }
+diff --git a/src/main.rs b/src/main.rs
+index 3a35e8d..bd23132 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -2950,6 +2950,15 @@ fn project_file(global: &ArgMatches, name: &str) -> std::path::PathBuf {
+     root_beside(global.get_one::<String>("store").map(String::as_str)).join(name)
+ }
+ 
++/// The usage ledger: `~/.smysl/usage.log`, shared by every project.
++///
++/// Falls back to the project's own `.smysl/` when no home directory is known, because a
++/// ledger is informational and must not be the reason a command cannot run.
++#[cfg(feature = "providers")]
++fn ledger_file(global: &ArgMatches) -> std::path::PathBuf {
++    smysl::Ledger::user_path().unwrap_or_else(|| project_file(global, smysl::Ledger::PATH))
++}
++
+ /// The directory a sidecar belongs in, given `--store`.
+ ///
+ /// Separated from the two helpers that call it because they take an `ArgMatches`, which is
+@@ -3220,7 +3229,7 @@ fn cmd_ingest(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+ 
+     // The ledger records counts, models, task and recipe - never content (§29).
+     if let Some(provider) = &report.provider {
+-        let mut ledger = smysl::Ledger::open(project_file(global, smysl::Ledger::PATH));
++        let mut ledger = smysl::Ledger::open(ledger_file(global));
+         let entry = smysl::LedgerEntry::new(
+             now_millis(),
+             provider.clone(),
+@@ -3494,7 +3503,7 @@ fn cmd_providers(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+ /// `smysl usage` - the token ledger (§23.1). Informational; caps never block.
+ #[cfg(feature = "providers")]
+ fn cmd_usage(m: &ArgMatches, global: &ArgMatches) -> ExitCode {
+-    let path = project_file(global, smysl::Ledger::PATH);
++    let path = ledger_file(global);
+     let mut ledger = smysl::Ledger::open(&path);
+ 
+     if m.get_flag("reset") {
+diff --git a/tests/cmd_usage.rs b/tests/cmd_usage.rs
+new file mode 100644
+index 0000000..9b5e8a3
+--- /dev/null
++++ b/tests/cmd_usage.rs
+@@ -0,0 +1,105 @@
++//! `smysl usage` reads one ledger per user, `~/.smysl/usage.log`, not one per project.
++//!
++//! The ledger was resolved against the store's directory, so a person running smysl in five
++//! checkouts had five ledgers and no way to ask what they had spent.
++
++#![cfg(all(feature = "cli", feature = "providers"))]
++
++use std::path::{Path, PathBuf};
++use std::process::Command;
++
++const BIN: &str = env!("CARGO_BIN_EXE_smysl");
++
++const ENTRY: &str = r#"{"at":1700,"provider":"ollama","model":"m","task":"attest","in":30,"out":12,"estimated":false,"retries":0}"#;
++
++fn scratch(name: &str) -> PathBuf {
++    let dir = std::env::temp_dir().join(format!("smysl-usage-{name}-{}", std::process::id()));
++    let _ = std::fs::remove_dir_all(&dir);
++    std::fs::create_dir_all(&dir).unwrap();
++    dir
++}
++
++fn usage(home: &Path, cwd: &Path, args: &[&str]) -> String {
++    let out = Command::new(BIN)
++        .arg("usage")
++        .args(args)
++        .env("HOME", home)
++        .env_remove("USERPROFILE")
++        .current_dir(cwd)
++        .output()
++        .unwrap();
++    assert!(
++        out.status.success(),
++        "{}",
++        String::from_utf8_lossy(&out.stderr)
++    );
++    String::from_utf8_lossy(&out.stdout).into_owned()
++}
++
++fn seed(home: &Path) -> PathBuf {
++    let ledger = home.join(".smysl/usage.log");
++    std::fs::create_dir_all(ledger.parent().unwrap()).unwrap();
++    std::fs::write(&ledger, format!("{ENTRY}\n")).unwrap();
++    ledger
++}
++
++#[test]
++fn the_ledger_is_read_from_the_home_directory() {
++    let root = scratch("read");
++    let (home, project) = (root.join("home"), root.join("project"));
++    std::fs::create_dir_all(&project).unwrap();
++    seed(&home);
++
++    let out = usage(&home, &project, &[]);
++    assert!(out.contains("ollama"), "{out}");
++    assert!(out.contains("42 tokens"), "{out}");
++}
++
++#[test]
++fn two_projects_see_the_same_ledger() {
++    let root = scratch("shared");
++    let home = root.join("home");
++    seed(&home);
++    for name in ["one", "two"] {
++        let project = root.join(name);
++        std::fs::create_dir_all(&project).unwrap();
++        assert!(usage(&home, &project, &[]).contains("42 tokens"), "{name}");
++    }
++}
++
++#[test]
++fn an_empty_ledger_names_the_home_path_and_leaves_the_project_alone() {
++    let root = scratch("empty");
++    let (home, project) = (root.join("home"), root.join("project"));
++    std::fs::create_dir_all(&project).unwrap();
++
++    let out = usage(&home, &project, &[]);
++    assert!(
++        out.contains(".smysl/usage.log: no model calls recorded"),
++        "{out}"
++    );
++    assert!(out.contains(home.to_str().unwrap()), "{out}");
++    assert!(!project.join(".smysl").exists());
++}
++
++#[test]
++fn a_project_local_ledger_is_no_longer_read() {
++    let root = scratch("local");
++    let (home, project) = (root.join("home"), root.join("project"));
++    std::fs::create_dir_all(&home).unwrap();
++    seed(&project);
++
++    assert!(usage(&home, &project, &[]).contains("no model calls recorded"));
++}
++
++#[test]
++fn reset_discards_the_home_ledger() {
++    let root = scratch("reset");
++    let (home, project) = (root.join("home"), root.join("project"));
++    std::fs::create_dir_all(&project).unwrap();
++    let ledger = seed(&home);
++
++    let out = usage(&home, &project, &["--reset"]);
++    assert!(out.contains("discarded 1"), "{out}");
++    assert!(!ledger.exists());
++}
+diff --git a/tests/dispatch.rs b/tests/dispatch.rs
+index 5904afd..b65b4ed 100644
+--- a/tests/dispatch.rs
++++ b/tests/dispatch.rs
+@@ -98,9 +98,9 @@ fn minimal_args(command: &str) -> Vec<&'static str> {
+ 
+ /// A directory of this command's own, because several of them write.
+ ///
+-/// `ingest` appends to `.smysl/staged.smy` and `usage` to `.smysl/usage.log`, both resolved
+-/// against the working directory. Running the twenty-two in a checkout leaves two untracked
+-/// files behind — which is not hypothetical: probing this by hand did exactly that, and the
++/// `ingest` appends to `.smysl/staged.smy`, resolved against the working directory, and
++/// `usage` reads `~/.smysl/usage.log`, so `HOME` is redirected to the same place. Running the
++/// twenty-two in a checkout left untracked files behind — which is not hypothetical: probing this by hand did exactly that, and the
+ /// `usage` invocation then read a ledger the `ingest` invocation had just written. A test that
+ /// dirties the tree is one step from a test that depends on the tree.
+ fn scratch(name: &str) -> PathBuf {
+@@ -118,6 +118,9 @@ fn dispatch(command: &str) -> String {
+         .arg(command)
+         .args(minimal_args(command))
+         .current_dir(scratch(command))
++        // The ledger is in the home directory, so point that somewhere disposable too.
++        .env("HOME", scratch(command))
++        .env("USERPROFILE", scratch(command))
+         .stdin(Stdio::null())
+         .output()
+         .expect("the binary under test must run");
