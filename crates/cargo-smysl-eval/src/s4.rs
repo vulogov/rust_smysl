@@ -538,9 +538,9 @@ pub fn judge(
         usage.seconds += u.seconds;
     }
     if unusable > 0 {
-        fitting
-            .warnings
-            .push(format!("{unusable} call(s) answered in an unreadable shape and found nothing"));
+        fitting.warnings.push(format!(
+            "{unusable} call(s) answered in an unreadable shape and found nothing"
+        ));
     }
     Ok((verdicts, usage, fitting))
 }

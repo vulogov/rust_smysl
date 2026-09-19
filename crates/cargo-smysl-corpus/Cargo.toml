@@ -12,6 +12,7 @@ repository.workspace   = true
 # `model`/`ingest` features.
 [dependencies]
 smysl = { workspace = true }
+thiserror = { workspace = true }
 serde = { workspace = true }
 
 [dev-dependencies]

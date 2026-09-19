@@ -5,6 +5,8 @@
 //! without a model or a network.
 
 pub mod build;
+pub mod query;
+pub mod store;
 
 pub use build::{
     build, code_schema, Batch, BuildError, CommitText, Extraction, QuoteTally, KIND_KEY,

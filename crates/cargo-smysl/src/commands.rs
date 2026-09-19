@@ -1,5 +1,8 @@
 use std::path::Path;
 
+use cargo_smysl_corpus::query::dependents_of;
+use cargo_smysl_corpus::store::Corpus;
+
 use crate::cli::{Command, SmyslArgs};
 use crate::exit;
 
@@ -8,12 +11,73 @@ pub fn run(args: SmyslArgs) -> u8 {
         Command::Doctor => doctor(&args),
         Command::Facts { .. } => not_yet("facts", "Phase 2 — facts and extraction"),
         Command::Extract { .. } => not_yet("extract", "Phase 2 — facts and extraction"),
-        Command::Why { .. } => not_yet("why", "Phase 1 — smysl integration and data model"),
+        Command::Why { item } => why(&args, item),
         Command::Check => not_yet("check", "Phase 1 — smysl integration and data model"),
         Command::Evidence { .. } => not_yet("evidence", "Phase 3 — verdicts and test evidence"),
         Command::Stale { .. } => not_yet("stale", "a later phase (item 5, staleness)"),
         Command::Review => not_yet("review", "Phase 3 — verdicts and test evidence"),
     }
+}
+
+/// `why <label>`: what rests on a recorded unit — the decisions it conditions and what those cause.
+///
+/// The corpus is read from `.smysl` beside the workspace root. A label that names no unit, or more than
+/// one, is an error rather than an empty answer: silence would read as "nothing depends on this".
+fn why(args: &SmyslArgs, item: &str) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl why: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let corpus = Corpus::at(&root);
+    let store = match corpus.load() {
+        Ok(store) => store,
+        Err(e) => {
+            eprintln!("cargo smysl why: {e}");
+            return exit::FAILURE;
+        }
+    };
+    if store.units().count() == 0 {
+        eprintln!(
+            "cargo smysl why: no corpus at {} — nothing has been recorded yet",
+            corpus.dir().display()
+        );
+        return exit::FAILURE;
+    }
+    match dependents_of(&store, item) {
+        Err(e) => {
+            eprintln!("cargo smysl why: {e}");
+            exit::FAILURE
+        }
+        Ok(dependents) if dependents.is_empty() => {
+            println!("{item}: nothing recorded rests on it");
+            exit::OK
+        }
+        Ok(dependents) => {
+            println!("{item}: {} unit(s) rest on it", dependents.len());
+            for d in dependents {
+                let name = d
+                    .labels
+                    .first()
+                    .map(|l| l.as_str().to_string())
+                    .unwrap_or_else(|| d.uid.short());
+                println!("  {name}  {} ({})\n      {}", d.schema, d.status, d.gist);
+            }
+            exit::OK
+        }
+    }
+}
+
+/// The workspace root, the way cargo sees it.
+fn workspace_root(args: &SmyslArgs) -> Result<std::path::PathBuf, String> {
+    let mut cmd = cargo_metadata::MetadataCommand::new();
+    if let Some(path) = &args.manifest_path {
+        cmd.manifest_path(path);
+    }
+    let metadata = cmd.no_deps().exec().map_err(|e| e.to_string())?;
+    Ok(metadata.workspace_root.into_std_path_buf())
 }
 
 fn not_yet(name: &str, phase: &str) -> u8 {

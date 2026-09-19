@@ -25,3 +25,6 @@ cargo-smysl-evidence = { workspace = true }
 smysl                = { workspace = true }
 clap                 = { workspace = true }
 cargo_metadata       = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

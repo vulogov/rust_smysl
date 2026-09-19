@@ -377,9 +377,18 @@ Full write-up and caveats: `eval/s4-protocol.md`, "Result". Frozen configuration
 
 ## 5. Phase 1 — smysl integration and data model
 
-**State:** the corpus crate builds and stages units (D2, D5), declares `x.code/v1`, and holds its
-round-trip, merge and label guarantees on real extractions. Remaining: store I/O (per-commit surface and
-merged CBOR), and the "what depends on X" query.
+**Done (2026-09-19).** The corpus crate builds and stages units (D2, D5), declares `x.code/v1`, writes
+`.smysl/commits/<sha12>.smy` per commit and merges into `.smysl/store.cbor`, and answers what rests on a
+unit. `cargo smysl why <label>` is the first command past `doctor` that does its job.
+
+- **The documents are the record; the store is derived.** `Corpus::rebuild` reconstructs the store from the
+  surface documents, because surface text outlives a reader older than the writer and a store file does not.
+- **Recording is idempotent:** the second recording of a commit adds nothing (rule U, held by a test).
+- **`why` refuses to be silent:** an unbound or malformed label, or a missing corpus, is an error, because
+  an empty answer would read as "nothing depends on this".
+- **Both "done when" criteria hold**, on every research extraction of every repository: stores check clean
+  under `fine`, and "what depends on prerequisite X" returns the decision it conditions and what that
+  decision causes (`crates/cargo-smysl-corpus/tests/store.rs`).
 
 - `corpus` crate:
   - build units per D2 with tool-assigned sources and labels (D5);
