@@ -3,3 +3,9 @@
 //!
 //! No single run raises a status. SUPPORTED needs full coverage by structural facts and two
 //! independent runs agreeing, or a person; everything else attaches evidence or goes to review.
+
+pub mod check;
+pub mod judge;
+
+pub use check::{check, Change, Finding, Outcome, Settings, DEFAULT_SYSTEM};
+pub use judge::{Charged, Judge, JudgeError, Provider, ProviderJudge, RawVerdict};

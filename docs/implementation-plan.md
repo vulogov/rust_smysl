@@ -95,6 +95,7 @@ it starts is the `cargo` that invoked it (`$CARGO`).
 | D13 | **Test evidence:** link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with `--locked`, the features its `cfg` requires, and `--exact`; import results with `from_csv` as `measured` `data` units; `backs` / `rebuts` for verifies, `x.code/exercises` for exercises. Prerequisite statuses never change from test results alone. Every link edge carries an attestation naming who asserted it (the linking model, or a person), and a `backs` edge is pending until a person confirms it (D15) | test-evidence run: 53 tests, 50 passed, attested stores; S1: 3 of 17 "verifies" links wrong, 1 vacuous test |
 | D14 | **Candidate tests are deterministic** (BM25 over test name, calls, assertions and doc; bonus for touched files and claim-named items); the model only classifies | test-linking run: 17 verifies / 42 exercises across 60 prerequisites |
 | D16 | **The model is the operator's choice, never the tool's.** Provider (`ollama`, any OpenAI-compatible endpoint), model, endpoint, key variable, context window and the system prompt come from flags, the environment or configuration, with sensible defaults and the prompt tunable per provider; a run records which it used. The default is local (Ollama), so the tool costs nothing to try | S4: the detector runs on a local 7B model and on a hosted one, with the same code |
+| D18 | **The model client is our own, and the default build has no network stack.** `check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`), written out rather than pulled in; a hosted provider over TLS is the `hosted` feature, off by default. This settles item 7: smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway. `check` ships **advisory** — findings print, the exit code stays 0 unless `--strict`, which exits 5 | S4: measured recall 0.38 and 13% of ordinary commits flagged on a local 14B; the self-contained objective; the CI rule that keeps `ureq`, `rustls`, `tokio` and `smysl-provider` out of the default tree |
 | D17 | **The prompt is fitted to the provider, and a split is reported.** `check` sizes each request to what the model takes (context limit less the room the answer needs), splits the units it judges only when they do not fit, and says so — a model judging six units at a time sees less than one judging sixty, and a user who is not told cannot read the result. The same warning covers a truncated diff | S4: a 7B local model at 16k answered badly on ~50 units and usefully on 6; the shipped command must make that visible |
 | D15 | **Review is recorded with smysl 1.4.0's edge lifecycle, never by deleting or rewriting.** Each edge has an identity (rid). **Confirm:** a person's attestation on the edge (`human:<name>`). **Reject:** a `Withdrawal`, whose reason unit says why; the edge stays in the log and is no longer followed, packed or counted. **Close a disagreement:** a `Resolution` naming the contention or the unthreaded `rebuts` edge, with a note unit; it records that review happened and decides nothing. **Queue:** open contentions, unresolved `rebuts` edges, and `backs` / `x.code/exercises` edges with no person's attestation and no withdrawal. Two-run agreement (D12) counts attestations from independent runs on the same rid wherever both endpoints are stable units (test readings, decisions, anchors); for model-worded prerequisites, whose uids differ between runs, agreement stays at the verdict level | smysl dev/1.4.0 `09271ab` (spec draft 1.4); S1 outcome; stability experiment |
 
@@ -417,9 +418,8 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
   - quote checking per D8;
   - extract-once cache keyed by commit and recipe (D7);
   - labels and sources per D5.
-- **Decision at phase start (item 7):** own model client vs smysl's `model` feature. The multi-pass
-  schemas do not fit `PromptOverride`'s `units` array, which argues for an own client that hands units
-  to `stage`.
+- **Item 7, settled (D18):** our own client. The default build carries no network stack; `hosted` adds TLS
+  for a paid provider. `extract` will use the same client.
 - **Done when:** on the S0 set, prerequisite precision is at least the research pro run's (~75%
   genuine), with a measured recall figure; facts regenerate byte-identically.
 
@@ -441,10 +441,11 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
   - edges per D13, each attested by who asserted it (the linking model's agent id and recipe);
   - the mutation gate as S1 decided;
   - the static vacuity check.
-- `check` (after S4): the S4 detector ported to the `cargo smysl check` command under the self-contained
-  rule, **advisory by default** with `--strict` to block, its measured figures in its help, and the
-  provider, model, prompt and token cost as settings (D16, D17). The model client is the one open design
-  item (§6, item 7).
+- `check` (done, 2026-09-19): the S4 detector is `cargo smysl check` in `cargo-smysl-verdict`, advisory
+  with `--strict` to block, its measured figures in its help, and provider, model, endpoint, window,
+  token cost and prompt as settings (D16, D17, D18). It reads a commit (`rev`), a patch (`--patch`) or
+  stdin, builds its own unified diff with `imara-diff`, and its deterministic half is tested against a
+  scripted judge, with no model and no network.
 - **Done when:**
   - `check` reproduces its S4 held-out figures from the shipped binary;
   - on the S0 set, no single-run status raise;

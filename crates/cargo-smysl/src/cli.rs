@@ -44,8 +44,47 @@ pub enum Command {
         /// Item path or label, e.g. `crate::cli::cli` or `d/g90ec2f7-1`.
         item: String,
     },
-    /// Check the corpus: smysl rules, label ambiguity, declared extensions.
-    Check,
+    /// Report what a change contradicts in the recorded corpus.
+    ///
+    /// Advisory: findings are printed and the exit code stays 0 unless `--strict` is given. Measured on
+    /// held-out data with a local 14B: recall 0.38, and 13% of ordinary commits drew a flag
+    /// (docs/implementation-plan.md §4, S4).
+    Check {
+        /// Commit to check; defaults to `HEAD`.
+        rev: Option<String>,
+        /// A unified diff to check instead of a commit; `-` reads stdin.
+        #[arg(long, conflicts_with = "rev")]
+        patch: Option<String>,
+        /// Exit 5 when there are findings, for a hook or a CI step.
+        #[arg(long)]
+        strict: bool,
+        /// Machine-readable output.
+        #[arg(long)]
+        json: bool,
+        /// `ollama`, or `openai` for any OpenAI-compatible endpoint.
+        #[arg(long, env = "SMYSL_CHECK_PROVIDER", default_value = "ollama")]
+        provider: String,
+        #[arg(long, env = "SMYSL_CHECK_MODEL", default_value = "qwen2.5-coder:14b")]
+        model: String,
+        #[arg(
+            long,
+            env = "SMYSL_CHECK_ENDPOINT",
+            default_value = "http://localhost:11434/api/chat"
+        )]
+        endpoint: String,
+        /// Environment variable holding the provider's key, for one that needs it.
+        #[arg(long, env = "SMYSL_CHECK_KEY_VAR", default_value = "")]
+        key_var: String,
+        /// Context window this model takes, prompt and answer together.
+        #[arg(long, env = "SMYSL_CHECK_WINDOW", default_value_t = 32768)]
+        window: u32,
+        /// Characters per token for this model's tokenizer.
+        #[arg(long, env = "SMYSL_CHECK_CHARS_PER_TOKEN", default_value_t = 2.0)]
+        chars_per_token: f32,
+        /// A file holding the judgement prompt, replacing the built-in one.
+        #[arg(long, env = "SMYSL_CHECK_PROMPT_FILE")]
+        prompt_file: Option<PathBuf>,
+    },
     /// Link prerequisites to tests, run them at the commit, and record measured evidence.
     Evidence {
         /// Commit or revision.

@@ -2,6 +2,7 @@ use std::path::Path;
 
 use cargo_smysl_corpus::query::dependents_of;
 use cargo_smysl_corpus::store::Corpus;
+use cargo_smysl_verdict::{Change, Provider, ProviderJudge, Settings};
 
 use crate::cli::{Command, SmyslArgs};
 use crate::exit;
@@ -12,7 +13,34 @@ pub fn run(args: SmyslArgs) -> u8 {
         Command::Facts { .. } => not_yet("facts", "Phase 2 — facts and extraction"),
         Command::Extract { .. } => not_yet("extract", "Phase 2 — facts and extraction"),
         Command::Why { item } => why(&args, item),
-        Command::Check => not_yet("check", "Phase 1 — smysl integration and data model"),
+        Command::Check {
+            rev,
+            patch,
+            strict,
+            json,
+            provider,
+            model,
+            endpoint,
+            key_var,
+            window,
+            chars_per_token,
+            prompt_file,
+        } => check(
+            &args,
+            CheckArgs {
+                rev: rev.as_deref(),
+                patch: patch.as_deref(),
+                strict: *strict,
+                json: *json,
+                provider,
+                model,
+                endpoint,
+                key_var,
+                window: *window,
+                chars_per_token: *chars_per_token,
+                prompt_file: prompt_file.as_deref(),
+            },
+        ),
         Command::Evidence { .. } => not_yet("evidence", "Phase 3 — verdicts and test evidence"),
         Command::Stale { .. } => not_yet("stale", "a later phase (item 5, staleness)"),
         Command::Review => not_yet("review", "Phase 3 — verdicts and test evidence"),
@@ -68,6 +96,142 @@ fn why(args: &SmyslArgs, item: &str) -> u8 {
             exit::OK
         }
     }
+}
+
+struct CheckArgs<'a> {
+    rev: Option<&'a str>,
+    patch: Option<&'a str>,
+    strict: bool,
+    json: bool,
+    provider: &'a str,
+    model: &'a str,
+    endpoint: &'a str,
+    key_var: &'a str,
+    window: u32,
+    chars_per_token: f32,
+    prompt_file: Option<&'a Path>,
+}
+
+/// `check`: what this change contradicts in the corpus.
+///
+/// Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the
+/// measured precision does not support blocking by default (S4).
+fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl check: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let store = match Corpus::at(&root).load() {
+        Ok(s) if s.units().count() > 0 => s,
+        Ok(_) => {
+            eprintln!("cargo smysl check: no corpus recorded yet; nothing to check against");
+            return exit::FAILURE;
+        }
+        Err(e) => {
+            eprintln!("cargo smysl check: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let diff = match read_change(&root, c.rev, c.patch) {
+        Ok(d) => d,
+        Err(e) => {
+            eprintln!("cargo smysl check: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let mut settings = Settings {
+        window: c.window,
+        chars_per_token: c.chars_per_token,
+        ..Settings::default()
+    };
+    if let Some(path) = c.prompt_file {
+        match std::fs::read_to_string(path) {
+            Ok(text) => settings.system = Some(text),
+            Err(e) => {
+                eprintln!("cargo smysl check: {}: {e}", path.display());
+                return exit::FAILURE;
+            }
+        }
+    }
+    let judge = ProviderJudge {
+        provider: Provider {
+            kind: c.provider.to_string(),
+            endpoint: c.endpoint.to_string(),
+            model: c.model.to_string(),
+            key_var: c.key_var.to_string(),
+            window: c.window,
+            answer_tokens: settings.answer_tokens,
+            ..Provider::local(c.model)
+        },
+    };
+    let change = Change::from_diff(&diff, &settings);
+    let outcome = cargo_smysl_verdict::check(&store, &change, &judge, &settings);
+
+    if c.json {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&outcome).unwrap_or_default()
+        );
+    } else {
+        for w in &outcome.warnings {
+            eprintln!("cargo smysl check: {w}");
+        }
+        if outcome.findings.is_empty() {
+            println!(
+                "nothing recorded is contradicted ({} unit(s) judged, {})",
+                outcome.units_judged, outcome.judge
+            );
+        } else {
+            println!(
+                "{} finding(s) against {} unit(s) judged, {}:\n",
+                outcome.findings.len(),
+                outcome.units_judged,
+                outcome.judge
+            );
+            for f in &outcome.findings {
+                println!("{} {}  ({})", f.label, f.kind, f.source);
+                for line in f.text.lines() {
+                    println!("    {line}");
+                }
+                println!("  at: {}", f.diff_line);
+                println!("  because: {}\n", f.reason);
+            }
+            if !c.strict {
+                println!(
+                    "advisory: `check` reports, it does not block. `--strict` exits 5 on findings."
+                );
+            }
+        }
+    }
+    outcome.exit_code(c.strict)
+}
+
+/// The change to check: a commit, a patch file, or stdin.
+fn read_change(root: &Path, rev: Option<&str>, patch: Option<&str>) -> Result<String, String> {
+    if let Some(p) = patch {
+        if p == "-" {
+            let mut text = String::new();
+            std::io::Read::read_to_string(&mut std::io::stdin(), &mut text)
+                .map_err(|e| format!("stdin: {e}"))?;
+            return Ok(text);
+        }
+        return std::fs::read_to_string(p).map_err(|e| format!("{p}: {e}"));
+    }
+    let commit = cargo_smysl_git::read_commit(root, rev.unwrap_or("HEAD"))
+        .map_err(|e| format!("reading {}: {e}", rev.unwrap_or("HEAD")))?;
+    let mut out = String::new();
+    for file in &commit.files {
+        out.push_str(&cargo_smysl_verdict::check::unified(
+            &file.path,
+            file.before.as_deref().unwrap_or(""),
+            file.after.as_deref().unwrap_or(""),
+            3,
+        ));
+    }
+    Ok(out)
 }
 
 /// The workspace root, the way cargo sees it.

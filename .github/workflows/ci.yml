@@ -61,7 +61,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - name: no provider layer or network stack in the binary's tree
+      # D18: the default install speaks plain HTTP to a local model, so it needs no TLS stack at all.
+      # `--features hosted` is the opt-in for a paid provider, and may carry one.
+      - name: no provider layer or network stack in the default binary
         run: |
           if cargo tree -p cargo-smysl -e normal --locked | grep -E "smysl-provider|ureq|tokio|rustls"; then
             echo "cargo-smysl must stay self-contained and model-free at the smysl layer"; exit 1

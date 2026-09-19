@@ -8,4 +8,21 @@ license.workspace      = true
 authors.workspace      = true
 repository.workspace   = true
 
+[features]
+default = []
+# Hosted providers need TLS; the default build has no network stack at all, which is what the
+# self-contained objective and the CI rule mean (D18).
+hosted = ["dep:ureq"]
+
 [dependencies]
+cargo-smysl-corpus = { workspace = true }
+serde              = { workspace = true }
+serde_json         = { workspace = true }
+thiserror          = { workspace = true }
+ureq               = { version = "2", features = ["json"], optional = true }
+imara-diff         = "0.2"
+smysl = { workspace = true, features = ["stage"] }
+
+[dev-dependencies]
+cargo-smysl-corpus.workspace = true
+serde_json.workspace = true
