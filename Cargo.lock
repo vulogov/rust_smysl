@@ -180,6 +180,7 @@ dependencies = [
  "cargo-smysl-verdict",
  "cargo_metadata",
  "clap",
+ "serde_json",
  "smysl",
 ]
 
@@ -190,6 +191,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smysl",
+ "thiserror",
 ]
 
 [[package]]
