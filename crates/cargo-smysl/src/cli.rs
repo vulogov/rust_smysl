@@ -127,10 +127,34 @@ pub enum Command {
         #[arg(long, env = "SMYSL_CHECK_PROMPT_FILE")]
         prompt_file: Option<PathBuf>,
     },
-    /// Link prerequisites to tests, run them at the commit, and record measured evidence.
+    /// Check a recorded claim against the code, and say what may be concluded (D11, D12).
+    ///
+    /// One claim at a time, with its own retrieved facts. A single run never raises a status: the verdict
+    /// says what is covered, what is not, and what a second run or a person would settle.
     Evidence {
-        /// Commit or revision.
-        rev: Option<String>,
+        /// The claim's label, e.g. `p/g90ec2f781421-8-1`.
+        label: String,
+        /// Names this run, so two runs can be told apart when agreement is counted.
+        #[arg(long, default_value = "run-1")]
+        run: String,
+        /// Also shortlist the tests that might bear on it (D14).
+        #[arg(long)]
+        tests: bool,
+        /// `ollama`, or `openai` for any OpenAI-compatible endpoint.
+        #[arg(long, env = "SMYSL_CHECK_PROVIDER", default_value = "ollama")]
+        provider: String,
+        #[arg(long, env = "SMYSL_CHECK_MODEL", default_value = "qwen2.5-coder:14b")]
+        model: String,
+        #[arg(
+            long,
+            env = "SMYSL_CHECK_ENDPOINT",
+            default_value = "http://localhost:11434/api/chat"
+        )]
+        endpoint: String,
+        #[arg(long, env = "SMYSL_CHECK_KEY_VAR", default_value = "")]
+        key_var: String,
+        #[arg(long, env = "SMYSL_CHECK_WINDOW", default_value_t = 32768)]
+        window: u32,
     },
     /// Report reasoning whose code has moved since it was recorded.
     Stale {

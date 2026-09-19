@@ -4,6 +4,8 @@ use cargo_smysl_corpus::query::dependents_of;
 use cargo_smysl_corpus::store::Corpus;
 use cargo_smysl_extract::{Cache as ExtractionCache, Recipe};
 use cargo_smysl_facts::{builds, coverage, render, select, Around, Cache, Coverage};
+use cargo_smysl_verdict::matching::{match_claim, retrieve, Retrieval};
+use cargo_smysl_verdict::policy::decide;
 use cargo_smysl_verdict::review::{close, confirm, describe, person, queue, reject};
 use cargo_smysl_verdict::{Change, Provider, ProviderJudge, Settings};
 
@@ -84,7 +86,29 @@ pub fn run(args: SmyslArgs) -> u8 {
                 prompt_file: prompt_file.as_deref(),
             },
         ),
-        Command::Evidence { .. } => not_yet("evidence", "Phase 3 — verdicts and test evidence"),
+        Command::Evidence {
+            label,
+            run,
+            tests,
+            provider,
+            model,
+            endpoint,
+            key_var,
+            window,
+        } => evidence(
+            &args,
+            label,
+            run,
+            *tests,
+            ExtractHow {
+                recipe: "",
+                provider,
+                model,
+                endpoint,
+                key_var,
+                window: *window,
+            },
+        ),
         Command::Stale { .. } => not_yet("stale", "a later phase (item 5, staleness)"),
         Command::Review {
             as_person,
@@ -347,6 +371,152 @@ fn walk(root: &Path, dir: &Path, out: &mut Vec<(String, String)>) {
             }
         }
     }
+}
+
+/// `evidence <label>`: check one recorded claim against the code (D11, D12).
+fn evidence(
+    args: &SmyslArgs,
+    label: &str,
+    run: &str,
+    shortlist_tests: bool,
+    how: ExtractHow<'_>,
+) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let store = match Corpus::at(&root).load() {
+        Ok(s) if s.units().count() > 0 => s,
+        Ok(_) => {
+            eprintln!("cargo smysl evidence: no corpus recorded yet");
+            return exit::FAILURE;
+        }
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            return exit::FAILURE;
+        }
+    };
+    // The claim is the recorded unit's own words, not the caller's paraphrase.
+    let claim = match claim_text(&store, label) {
+        Ok(text) => text,
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            return exit::FAILURE;
+        }
+    };
+    println!("{label}: {claim}\n");
+
+    let sources = match sources_at(&root, None, &[]) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let cache = Cache::at(&root);
+    let mut all = Vec::new();
+    for (path, source) in &sources {
+        match cache.facts_of(path, source) {
+            Ok(facts) => all.extend(facts),
+            Err(e) => eprintln!("cargo smysl evidence: {e}"),
+        }
+    }
+    if shortlist_tests {
+        let picked = cargo_smysl_evidence::candidates(&all, &claim, &[], 5);
+        println!("tests that might bear on it:");
+        for c in &picked {
+            println!(
+                "  {} ({}:{})  shared: {}",
+                c.label,
+                c.file,
+                c.line,
+                c.shared.join(", ")
+            );
+        }
+        if picked.is_empty() {
+            println!("  (none)");
+        }
+        println!();
+    }
+
+    let retrieval = Retrieval {
+        run: run.to_string(),
+        ..Retrieval::default()
+    };
+    let shown = retrieve(&claim, &all, &retrieval);
+    println!(
+        "{} structural fact(s) and {} prose fact(s) retrieved",
+        shown.structural.len(),
+        shown.prose.len()
+    );
+    let judge = ProviderJudge {
+        provider: Provider {
+            kind: how.provider.to_string(),
+            endpoint: how.endpoint.to_string(),
+            model: how.model.to_string(),
+            key_var: how.key_var.to_string(),
+            window: how.window,
+            ..Provider::local(how.model)
+        },
+    };
+    let matched = match match_claim(&claim, &shown, &judge, &retrieval) {
+        Ok(m) => m,
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            return exit::FAILURE;
+        }
+    };
+    for invented in &matched.invented {
+        eprintln!("cargo smysl evidence: dropped a citation of {invented}, which was not shown");
+    }
+    // One run, so the policy will not raise a status — and says so rather than implying more.
+    let normative = claim_is_normative(&store, label);
+    let decision = decide(std::slice::from_ref(&matched.judgement), normative, false);
+    println!("\ncovered:");
+    for part in &matched.judgement.covered {
+        println!("  {part}");
+    }
+    if matched.judgement.covered.is_empty() {
+        println!("  (nothing)");
+    }
+    if !matched.judgement.uncovered.is_empty() {
+        println!("uncovered:");
+        for part in &matched.judgement.uncovered {
+            println!("  {part}");
+        }
+    }
+    println!("\nverdict: {:?} — {}", decision.verdict, decision.because);
+    exit::OK
+}
+
+/// The recorded claim's own text.
+fn claim_text(store: &smysl::Store, label: &str) -> Result<String, String> {
+    let label =
+        smysl::Label::new(label.to_string()).map_err(|_| format!("{label} is not a label"))?;
+    let uid = smysl::resolve_label(store, &label).map_err(|e| e.to_string())?;
+    let unit = store.get(&uid).ok_or("the label names no unit")?;
+    Ok(match &unit.core.body {
+        Some(body) => format!("{} {}", unit.core.gist, body),
+        None => unit.core.gist.clone(),
+    })
+}
+
+/// A prerequisite the extraction marked normative reaches `ImplementedBy` at most (D12).
+fn claim_is_normative(store: &smysl::Store, label: &str) -> bool {
+    let Ok(label) = smysl::Label::new(label.to_string()) else {
+        return false;
+    };
+    let Ok(uid) = smysl::resolve_label(store, &label) else {
+        return false;
+    };
+    store
+        .get(&uid)
+        .and_then(|u| u.core.payload.as_ref())
+        .map(|p| String::from_utf8_lossy(p).contains("normative"))
+        .unwrap_or(false)
 }
 
 /// `review`: what waits for a person, and what their answer records (D15).
