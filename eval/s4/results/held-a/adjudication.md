@@ -2,6 +2,8 @@
 
 For each flag: does the change contradict the recorded unit? Set `verdict:` to correct, wrong or arguable. The change is in `flags/<id>.diff`; where it came from (agent run, naive patch, real commit) is hidden.
 
+**Verdicts proposed by Claude (2026-09-19) at the owner's request, not by the owner.** Blind to provenance; calibrated against the owner's development verdicts in `local14-a`. Notes on every correct and arguable flag.
+
 ## F001 (smysl)
 
 **Recorded decision** `d/g69ea5c05d859-14` (source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e):
@@ -13,7 +15,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces new features for version 1.4.0, contradicting the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.
 
-- verdict: 
+- verdict: wrong
 
 ## F002 (smysl)
 
@@ -26,7 +28,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change updates the changelog entry to describe a specific change, which contradicts the rejection of leaving the changelog entry as 'Nothing yet.'
 
-- verdict: 
+- verdict: wrong
 
 ## F003 (smysl)
 
@@ -39,7 +41,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This line asserts only that the exit code is `CHECK_ERRORS`, which does not ensure a gate that cannot confuse nothing wrong with nothing checked, contradicting the decision.
 
-- verdict: 
+- verdict: wrong
 
 ## F004 (smysl)
 
@@ -52,7 +54,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The changelog entry is no longer 'Nothing yet.' as it now contains release notes for version 0.9.0.
 
-- verdict: 
+- verdict: wrong
 
 ## F005 (smysl)
 
@@ -64,7 +66,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change updates the count from 988 to 716, contradicting the constraint that CI sets `-D warnings`, which refuses an unused function.
 
-- verdict: 
+- verdict: wrong
 
 ## F006 (ucal)
 
@@ -77,7 +79,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This change introduces reporting of the session clock's drift, which contradicts the decision to reject having Session::reading read the wall clock itself.
 
-- verdict: 
+- verdict: wrong
 
 ## F007 (ucal)
 
@@ -90,7 +92,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change removes the `parse_version` function that returns a tuple of three integers representing the major, minor, and patch version numbers, contradicting the decision to gate `parse_form` and `codec::Form` behind all(civil, std) features.
 
-- verdict: 
+- verdict: wrong
 
 ## F008 (smysl)
 
@@ -103,7 +105,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change hides the entire `stream` module, contradicting the decision to remove the local-improvement pass.
 
-- verdict: 
+- verdict: wrong
 
 ## F009 (smysl)
 
@@ -115,7 +117,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change updates the BASELINE to 0.11.0, which contradicts the constraint that the changelog has an Unreleased — 0.8.0 section where the removal can be recorded.
 
-- verdict: 
+- verdict: wrong
 
 ## F010 (ucal)
 
@@ -128,7 +130,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new behavior for forward steps that contradicts the decision.
 
-- verdict: 
+- verdict: wrong
 
 ## F011 (ucal)
 
@@ -141,7 +143,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change removes the `parse_version` function that returns a tuple of three integers representing the major, minor, and patch version numbers, contradicting the rejection of gating `parse_form` and `codec::Form` behind a single feature or leaving them ungated.
 
-- verdict: 
+- verdict: wrong
 
 ## F012 (smysl)
 
@@ -153,7 +155,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new diagnostic code, contradicting the prerequisite that missing facts were recoverable only by decoding core_bytes_hex in uid fixtures.
 
-- verdict: 
+- verdict: wrong
 
 ## F013 (smysl)
 
@@ -166,7 +168,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change indicates that missing stanzas were held back rather than guessed, contradicting the decision.
 
-- verdict: 
+- verdict: wrong
 
 ## F014 (ucal)
 
@@ -179,7 +181,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change now allows a missing notes file for the current version to fall back to the newest notes, contradicting the decision that such a case should be an error.
 
-- verdict: 
+- verdict: wrong
 
 ## F015 (ucal)
 
@@ -192,7 +194,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new feature `session_drift` that measures the difference between two clocks, which contradicts the decision to do not measure accuracy.
 
-- verdict: 
+- verdict: arguable
+  - note: reports a session drift over a one-command baseline, but says outright that it is not accuracy and not a rate
 
 ## F016 (smysl)
 
@@ -205,7 +208,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision that the version-trap defect is fixed in 0.14.
 
-- verdict: 
+- verdict: wrong
 
 ## F017 (smysl)
 
@@ -218,7 +221,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision not to implement rule M in outside readers.
 
-- verdict: 
+- verdict: wrong
 
 ## F018 (smysl)
 
@@ -231,7 +234,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change updates the golden file count, contradicting the decision to decline updating the golden file.
 
-- verdict: 
+- verdict: wrong
 
 ## F019 (smysl)
 
@@ -244,7 +247,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change contradicts the decision not to implement rule M in outside readers by implementing it.
 
-- verdict: 
+- verdict: wrong
 
 ## F020 (smysl)
 
@@ -257,7 +260,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This line calls `cmd_fmt` functions directly instead of writing its own document, contradicting the decision.
 
-- verdict: 
+- verdict: wrong
 
 ## F021 (smysl)
 
@@ -270,7 +273,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision to pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.
 
-- verdict: 
+- verdict: wrong
 
 ## F022 (ucal)
 
@@ -283,7 +286,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This line contradicts the rejected alternative 'Have Session::reading read the wall clock itself' by removing the comment that suggests anchoring on first use.
 
-- verdict: 
+- verdict: wrong
 
 ## F023 (smysl)
 
@@ -295,7 +298,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change updates BASELINE to 1.3.0, which contradicts the constraint that cargo-mutants auto-set timeout based on baseline, causing timeouts on workspace suite.
 
-- verdict: 
+- verdict: wrong
 
 ## F024 (smysl)
 
@@ -308,7 +311,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to hold beta.smy repair rather than guess missing stanza.
 
-- verdict: 
+- verdict: wrong
 
 ## F025 (ucal)
 
@@ -321,7 +324,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new feature `session_drift` that measures the difference between two clocks, which contradicts the decision to gate wall_instant under the civil feature.
 
-- verdict: 
+- verdict: wrong
 
 ## F026 (ucal)
 
@@ -333,7 +336,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `since` that calculates the elapsed time using `base.elapsed().as_nanos()`, which contradicts the recorded constraint that `std::time::Instant::elapsed()` gives monotonic duration from the session base.
 
-- verdict: 
+- verdict: wrong
 
 ## F027 (ucal)
 
@@ -346,7 +349,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change removes the use of `last` to enforce monotonicity against smaller elapsed inputs.
 
-- verdict: 
+- verdict: wrong
 
 ## F028 (ucal)
 
@@ -358,7 +361,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The comment now states that a missing notes file falls back to the newest notes, contradicting the previous statement that it should be an error.
 
-- verdict: 
+- verdict: wrong
 
 ## F029 (smysl)
 
@@ -371,7 +374,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change adds a new section stating that the old unit test asserted 'smysl/1.0' as an unknown version, which contradicts the recorded claim that this was rejected.
 
-- verdict: 
+- verdict: wrong
 
 ## F030 (smysl)
 
@@ -384,7 +387,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change updates the BASELINE from 0.15.0 to 1.0.0, contradicting the recorded decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.
 
-- verdict: 
+- verdict: wrong
 
 ## F031 (smysl)
 
@@ -397,7 +400,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a condition to skip the verification reparse when the formatted output is byte-for-byte identical to the source, which contradicts the decision to pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt` for preserving the document's self-description.
 
-- verdict: 
+- verdict: wrong
 
 ## F032 (smysl)
 
@@ -409,7 +412,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change modifies the help text to indicate that `none` checks `.smysl/store` instead of reading standard input, which contradicts the constraint.
 
-- verdict: 
+- verdict: correct
+  - note: check with no path now reads .smysl/store, so the prerequisite no longer holds for check (as dev local14-a F053)
 
 ## F033 (ucal)
 
@@ -422,7 +426,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `since` that calculates the elapsed time using `base.elapsed().as_nanos()`, which contradicts the recorded decision to route all time readings through a process-wide session clock.
 
-- verdict: 
+- verdict: wrong
 
 ## F034 (ucal)
 
@@ -434,7 +438,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This line contradicts the constraint that 'std::time::Instant::elapsed() gives monotonic duration from the session base.' by changing the anchoring mechanism.
 
-- verdict: 
+- verdict: wrong
 
 ## F035 (ucal)
 
@@ -446,7 +450,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This line contradicts the constraint 'std::time::Instant::elapsed() gives monotonic duration from the session base' by changing the locking mechanism.
 
-- verdict: 
+- verdict: wrong
 
 ## F036 (smysl)
 
@@ -458,7 +462,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The changelog entry is no longer 'Nothing yet.' as it now contains release notes for version 0.9.0.
 
-- verdict: 
+- verdict: wrong
 
 ## F037 (smysl)
 
@@ -471,7 +475,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a behavior change in how statuses are compared, contradicting the decision to implement uid derivation in nodejs reproducing all sixteen fixture uids.
 
-- verdict: 
+- verdict: wrong
 
 ## F038 (ucal)
 
@@ -484,7 +488,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `since` that calculates the elapsed time using `base.elapsed().as_nanos()`, which contradicts the recorded decision to make `Session::reading` a pure function of its inputs.
 
-- verdict: 
+- verdict: wrong
 
 ## F039 (smysl)
 
@@ -497,7 +501,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision to measure mutation survivors on store/mod.rs under both per-package and workspace tests.
 
-- verdict: 
+- verdict: wrong
 
 ## F040 (smysl)
 
@@ -510,7 +514,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change states that tests did not actually assert the spec's tables against the document, contradicting the decision.
 
-- verdict: 
+- verdict: wrong
 
 ## F041 (ucal)
 
@@ -523,7 +527,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change removes the use of `last` to enforce monotonicity against smaller elapsed inputs.
 
-- verdict: 
+- verdict: wrong
 
 ## F042 (ucal)
 
@@ -536,7 +540,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This line contradicts the rejected alternative 'Anchor the session at process start-up.' by stating that the anchor is taken when the program starts.
 
-- verdict: 
+- verdict: correct
+  - note: anchors the session first thing in main: the rejected alternative, done
 
 ## F043 (ucal)
 
@@ -549,7 +554,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change now allows a missing notes file for the current version to fall back to the newest notes, contradicting the rejection of silently falling back to the previous cycle's notes file.
 
-- verdict: 
+- verdict: correct
+  - note: falls back to the newest notes when the current version's are missing
 
 ## F044 (smysl)
 
@@ -562,7 +568,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change renumbers the `Status` values, contradicting the rejection of leaving status and source/kind values recoverable only from fixtures.
 
-- verdict: 
+- verdict: wrong
 
 ## F045 (smysl)
 
@@ -575,7 +581,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change renumbers the `Status` values, contradicting the decision to mark spec-derived constants with SPEC in nodejs src/uid.js.
 
-- verdict: 
+- verdict: wrong
 
 ## F046 (smysl)
 
@@ -588,7 +594,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to revise gate 7 blocked command explanation.
 
-- verdict: 
+- verdict: wrong
 
 ## F047 (smysl)
 
@@ -601,7 +607,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to upgrade nodejs conformance target from C-Read to C-Produce.
 
-- verdict: 
+- verdict: wrong
 
 ## F048 (smysl)
 
@@ -614,7 +620,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change renumbers the `Status` values, contradicting the decision to implement status integers and source/kind enums as constants in nodejs.
 
-- verdict: 
+- verdict: correct
+  - note: renumbers the normative Status integers the nodejs constants encode; follows the owner's dev verdict (local14-a F036). Nodejs moves in step here, so a stricter reading is arguable
 
 ## F049 (ucal)
 
@@ -627,7 +634,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The comment now states that a missing notes file for the current version falls back to the newest notes, contradicting the previous rejection.
 
-- verdict: 
+- verdict: wrong
 
 ## F050 (smysl)
 
@@ -639,7 +646,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change adds a new section stating that the old unit test asserted 'smysl/1.0' as an unknown version, which contradicts the recorded claim that this was rejected.
 
-- verdict: 
+- verdict: wrong
 
 ## F051 (ucal)
 
@@ -652,7 +659,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the rejection of asserting only that some error came back and the message named the version.
 
-- verdict: 
+- verdict: wrong
 
 ## F052 (ucal)
 
@@ -664,7 +671,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new feature `session_drift` that measures the difference between two clocks, which contradicts the constraint that a rate error from a short baseline reports quantization as drift.
 
-- verdict: 
+- verdict: wrong
 
 ## F053 (ucal)
 
@@ -677,7 +684,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the rejection of sorting filenames numerically or by version to pick the newest.
 
-- verdict: 
+- verdict: wrong
 
 ## F054 (smysl)
 
@@ -690,7 +697,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change modifies the behavior of `smysl check` to use a default store instead of reading from stdin when no path is provided, contradicting the rejected alternative of asserting exit code in every_command_dispatches.
 
-- verdict: 
+- verdict: wrong
 
 ## F055 (smysl)
 
@@ -703,7 +710,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to hold beta.smy repair rather than guess missing stanza.
 
-- verdict: 
+- verdict: wrong
 
 ## F056 (smysl)
 
@@ -716,7 +723,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The changelog entry now states that 0.11.0 is published, contradicting the decision to document the removal in the changelog.
 
-- verdict: 
+- verdict: wrong
 
 ## F057 (smysl)
 
@@ -729,7 +736,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to do not implement rule M in outside readers.
 
-- verdict: 
+- verdict: wrong
 
 ## F058 (ucal)
 
@@ -742,7 +749,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This line contradicts the rejected alternative 'Anchor the session at process start-up' by explicitly stating that the clock is anchored at program start.
 
-- verdict: 
+- verdict: correct
+  - note: anchors the session at program start, before argument parsing
 
 ## F059 (smysl)
 
@@ -755,7 +763,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change indicates that missing stanzas were held back rather than guessed, contradicting the rejected alternative.
 
-- verdict: 
+- verdict: wrong
 
 ## F060 (smysl)
 
@@ -768,7 +776,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The BASELINE is now set to 0.11.0, contradicting the constraint that `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused.
 
-- verdict: 
+- verdict: wrong
 
 ## F061 (smysl)
 
@@ -781,7 +789,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change adds a comment explaining the removal, contradicting the decision to add a comment explaining the removal.
 
-- verdict: 
+- verdict: wrong
 
 ## F062 (ucal)
 
@@ -794,7 +802,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `sort_newest_first` that sorts rows by parsed version in descending order, contradicting the decision to read notes for the version being built rather than the newest sorted file.
 
-- verdict: 
+- verdict: wrong
 
 ## F063 (ucal)
 
@@ -807,7 +815,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change removes the use of `last` to enforce monotonicity against smaller elapsed inputs.
 
-- verdict: 
+- verdict: correct
+  - note: replaces max(wall_now, anchor + elapsed) with a slewed rule; a forward step no longer wins in one reading
 
 ## F064 (ucal)
 
@@ -820,7 +829,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new behavior for forward steps that contradicts the rejected alternative.
 
-- verdict: 
+- verdict: arguable
+  - note: does not refuse the forward jump but slews it, so readings lag the system clock while it is absorbed
 
 ## F065 (ucal)
 
@@ -833,7 +843,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The comment now states that the notes for the version being built are used only when they exist, which contradicts the recorded decision to read notes for the version being built rather than the newest sorted file.
 
-- verdict: 
+- verdict: correct
+  - note: falls back to the newest notes (by version) when the current version's are missing
 
 ## F066 (ucal)
 
@@ -846,7 +857,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change modifies the behavior of the `reading` function, which contradicts the decision.
 
-- verdict: 
+- verdict: wrong
 
 ## F067 (ucal)
 
@@ -859,7 +870,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This change introduces reporting of the session clock's drift, which contradicts the decision to reject attempting to measure or estimate clock accuracy.
 
-- verdict: 
+- verdict: arguable
+  - note: as F015: drift between two in-process clocks, disclaimed as not accuracy
 
 ## F068 (ucal)
 
@@ -872,7 +884,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change now allows a missing notes file for the current version to fall back to the newest notes, contradicting the decision that such a case should be an error.
 
-- verdict: 
+- verdict: correct
+  - note: falls back to the newest notes (by version) when the current version's are missing
 
 ## F069 (ucal)
 
@@ -885,7 +898,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change now allows a missing notes file for the current version to fall back to the newest notes, contradicting the decision that such a case should be an error.
 
-- verdict: 
+- verdict: correct
+  - note: a missing notes file for the current version is no longer an error while any older notes exist
 
 ## F070 (smysl)
 
@@ -898,7 +912,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new behavior where `smysl check` with no path checks `.smysl/store` instead of reading standard input, which contradicts the rejected alternative.
 
-- verdict: 
+- verdict: arguable
+  - note: the dispatch tests are untouched; check no longer reads stdin by default (as dev local14-a F010)
 
 ## F071 (smysl)
 
@@ -911,7 +926,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to revise gate 7 blocked command explanation.
 
-- verdict: 
+- verdict: wrong
 
 ## F072 (ucal)
 
@@ -924,7 +939,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `since` that calculates the elapsed time using `base.elapsed().as_nanos()`, which contradicts the recorded claim that rejected anchoring the session at process start-up.
 
-- verdict: 
+- verdict: wrong
 
 ## F073 (smysl)
 
@@ -937,7 +952,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to upgrade nodejs conformance target from C-Read to C-Produce.
 
-- verdict: 
+- verdict: wrong
 
 ## F074 (smysl)
 
@@ -950,7 +965,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision to NFC-normalise text in nodejs CBOR encoder.
 
-- verdict: 
+- verdict: wrong
 
 ## F075 (smysl)
 
@@ -963,7 +978,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to do not apply 22% artefact fraction to other modules.
 
-- verdict: 
+- verdict: wrong
 
 ## F076 (ucal)
 
@@ -976,7 +991,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new feature `session_drift` that measures the difference between two clocks, which contradicts the rejection of measuring or estimating clock accuracy.
 
-- verdict: 
+- verdict: arguable
+  - note: as F015
 
 ## F077 (smysl)
 
@@ -989,7 +1005,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This line calls `cmd_fmt` functions directly instead of running the binary, contradicting the rejection.
 
-- verdict: 
+- verdict: wrong
 
 ## F078 (smysl)
 
@@ -1002,7 +1018,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The changelog entry is updated to describe the removal and its justification, contradicting the rejection of leaving it as 'Nothing yet.'
 
-- verdict: 
+- verdict: wrong
 
 ## F079 (smysl)
 
@@ -1014,7 +1030,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change updates the unreleased section to 1.3.0, contradicting the prerequisite that it should be 1.2.0.
 
-- verdict: 
+- verdict: wrong
 
 ## F080 (ucal)
 
@@ -1026,7 +1042,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change removes the use of `last` to enforce monotonicity against smaller elapsed inputs.
 
-- verdict: 
+- verdict: wrong
 
 ## F081 (ucal)
 
@@ -1039,7 +1055,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `since` that calculates the elapsed time using `base.elapsed().as_nanos()`, which contradicts the recorded claim that rejected having `Session::reading` read the wall clock itself.
 
-- verdict: 
+- verdict: wrong
 
 ## F082 (ucal)
 
@@ -1052,7 +1068,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** This change introduces reporting of the session clock's drift, which contradicts the decision to reject anchoring the session at process start-up.
 
-- verdict: 
+- verdict: wrong
 
 ## F083 (smysl)
 
@@ -1065,7 +1081,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision to strengthen the facade re-export test to check every supported version is accepted and FORMAT_VERSION_DEFAULT.
 
-- verdict: 
+- verdict: wrong
 
 ## F084 (ucal)
 
@@ -1078,7 +1094,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new feature `session_drift` that measures the difference between two clocks, which contradicts the rejection of letting each wallclock tick read the raw system clock directly.
 
-- verdict: 
+- verdict: wrong
 
 ## F085 (ucal)
 
@@ -1091,7 +1107,8 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The comment now states that a missing notes file will fall back to the newest notes, which contradicts the recorded rejection of silently falling back.
 
-- verdict: 
+- verdict: correct
+  - note: falls back to the newest notes when the current version's are missing
 
 ## F086 (ucal)
 
@@ -1104,7 +1121,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new behavior for backward steps that contradicts the rejected alternative.
 
-- verdict: 
+- verdict: wrong
 
 ## F087 (ucal)
 
@@ -1117,7 +1134,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The test now checks for numerical sorting behavior, which contradicts the rejection of keeping the old tests for version-sort behavior.
 
-- verdict: 
+- verdict: wrong
 
 ## F088 (smysl)
 
@@ -1130,7 +1147,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new internal requirement for workspace version 1.3.0, contradicting the decision to defer flipping the writer default to smysl/1.0 until 0.14 is published.
 
-- verdict: 
+- verdict: wrong
 
 ## F089 (ucal)
 
@@ -1143,7 +1160,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The comment now states that a missing notes file falls back to the newest notes, contradicting the rejected alternative of asserting only that some error came back and the message named the version.
 
-- verdict: 
+- verdict: wrong
 
 ## F090 (smysl)
 
@@ -1156,7 +1173,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new job 'dep-versions' that checks internal crate requirements against the workspace version, contradicting the decision to correct README claims that tables were asserted against document.
 
-- verdict: 
+- verdict: wrong
 
 ## F091 (smysl)
 
@@ -1169,7 +1186,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change indicates that nothing has been shipped yet for version 1.4.0, contradicting the decision to implement status integers and source/kind enums as constants in nodejs.
 
-- verdict: 
+- verdict: wrong
 
 ## F092 (ucal)
 
@@ -1182,7 +1199,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `parse_rows` that sorts versions numerically, contradicting the claim that sorting filenames numerically would fix only one bug and leave guessing in place.
 
-- verdict: 
+- verdict: wrong
 
 ## F093 (ucal)
 
@@ -1194,7 +1211,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The release notes for the current 1.10.0 cycle are now marked as released, contradicting the constraint that they should be kept in Documentation/Release_Notes/1.10.0.md.
 
-- verdict: 
+- verdict: wrong
 
 ## F094 (smysl)
 
@@ -1207,7 +1224,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces new features like relation identity, withdrawal, who asserted an edge, live rebuttal, and resolution, contradicting the decision that tables were hand-typed copies, not assertions against the document.
 
-- verdict: 
+- verdict: wrong
 
 ## F095 (smysl)
 
@@ -1220,7 +1237,7 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The changelog entry now states that 0.11.0 is published, contradicting the rejected alternative of leaving the changelog entry as 'Nothing yet.'
 
-- verdict: 
+- verdict: wrong
 
 ## F096 (ucal)
 
@@ -1232,4 +1249,4 @@ For each flag: does the change contradict the recorded unit? Set `verdict:` to c
 
 **Detector's reason:** The change introduces a new function `since` that calculates the elapsed time using `base.elapsed().as_nanos()`, which contradicts the recorded constraint that raw `SystemTime` reading code already exists to move into `wall_instant`.
 
-- verdict: 
+- verdict: wrong

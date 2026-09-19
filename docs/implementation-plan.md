@@ -15,10 +15,11 @@ repository's history; every "settled" item below cites the experiment that settl
 >   corpus in essay-style repositories. Kept as information about that usage pattern. It moves findings
 >   out of the prompt and onto the change (§4, S3).
 > - **S4, done (2026-09-19): `check` ships advisory.** On a free local model it finds 0.38 of the
->   contradictions on held-out data and flags 13% of ordinary commits, so it exits 0 with findings unless
->   `--strict` is given, and its documentation carries the measured figures (§4, S4). The deterministic
->   half — retrieval, packing, validation, determinism — holds; the judgement is model-bound, and a hosted
->   model reached 0.75 recall and ~0.89 precision on the same pipeline.
+>   contradictions on held-out data, flags 13% of ordinary commits, and 10 of its 96 held-out flags were
+>   correct (precision 0.10, against a bound of 0.80). All three bounds missed: it exits 0 with findings
+>   unless `--strict` is given, and its documentation carries the measured figures (§4, S4). The
+>   deterministic half — retrieval, packing, validation, determinism — holds; the judgement is model-bound,
+>   and a hosted model reached 0.75 recall and ~0.89 precision on the same pipeline.
 > - **Next:** Phase 1's remaining store work, then Phase 3 ports `check` into the shipped binary.
 
 **What the tool is:** a cargo subcommand that records *why* Rust code changed — the decisions a
@@ -360,10 +361,14 @@ Full write-up and caveats: `eval/s4-protocol.md`, "Result". Frozen configuration
 |---|---|---|---|
 | Recall by pattern, agreed over two passes | 0.58–0.65 | **0.38** | ≥ 0.70 |
 | Real commits flagged | 0 of 11 | **9 of 69** | ≤ 10% wrongly |
-| Precision | 0.29 (owner-adjudicated) | pending | ≥ 0.80 |
+| Precision | 0.29 (owner-adjudicated) | **0.10** (10 of 96; 5 arguable) | ≥ 0.80 |
 
-- **`check` ships advisory:** exit 0 with findings unless `--strict`, with these figures in its help. Two
-  bounds are missed before precision is counted, so the adjudication changes how useful it is, not the mode.
+- **`check` ships advisory:** exit 0 with findings unless `--strict`, with these figures in its help. All
+  three bounds are missed on the free local configuration; the adjudication (closed 2026-09-19, blind)
+  settles how the output must be described rather than the mode.
+- **Precision did not carry over from development:** 0.29 there, 0.10 on held-out data, same configuration.
+  The development figure was tuned against and is not a prediction — a lesson for any later measurement
+  here.
 - **What works:** the deterministic steps. Candidates, packing, label and quote validation, determinism; on
   the held-out set validation dropped 33 verdicts whose label or quote did not check out.
 - **What does not:** the judgement, on a 7B or 14B local model. The same pipeline on `deepseek-v4-pro` gave
@@ -541,8 +546,9 @@ goes.
 - **Agents do not act on context they are given** (S3: 1 of 14 corpus-arm summaries mentioned it) and
   rewrite tests that stand in their way (S3 run1). A report is only acted on where something reads its
   exit code.
-- **A model-judged check has a false-flag rate.** Measured: 13% of ordinary commits flagged on held-out
-  data with a local 14B, which is why `check` is advisory. A stronger model roughly halves the flags and
+- **A model-judged check has a false-flag rate, and it is large on a free model.** Measured on held-out
+  data with a local 14B: 13% of ordinary commits flagged, and 10 of 96 flags correct. That is why `check`
+  is advisory and describes itself as a prompt to look. A stronger model roughly halves the flags and
   triples the precision, at a price per run.
 - **A provider can truncate a prompt silently.** Found only in the owner's Ollama log. The tool now counts
   tokens as the provider charges them, caps the diff at half the window, records predicted against charged,

@@ -1078,7 +1078,9 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
             }
             if !c.strict {
                 println!(
-                    "advisory: `check` reports, it does not block. `--strict` exits 5 on findings."
+                    "advisory: `check` reports, it does not block. `--strict` exits 5 on findings.\n\
+                     measured on a local 14B: about 1 flag in 10 was correct, and it finds about a\n\
+                     third of real contradictions. Read a finding as a place to look."
                 );
             }
         }

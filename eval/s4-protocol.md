@@ -174,11 +174,19 @@ Measured on the frozen configuration (`s4/frozen.txt`): local Ollama `Qwen2.5-Co
 | Recall by pattern, agreed | 0.58–0.65 | **0.38** (5/13) | ≥ 0.70 |
 | Flags, agreed | 75–76 | **96** | — |
 | Real commits flagged | 0 of 11 | **9 of 69 (13%)** | ≤ 10% wrongly |
-| Precision | 0.29 (owner-adjudicated, 76 flags) | pending (`results/held-a/adjudication.md`) | ≥ 0.80 |
+| Precision | 0.29 (owner-adjudicated, 76 flags) | **0.10** (10 of 96; 5 arguable) | ≥ 0.80 |
+
+Adjudication closed 2026-09-19 (`results/held-a/adjudication.md`, 96 agreed flags, blind to provenance):
+**10 correct, 5 arguable, 81 wrong.** All three bounds are missed on the frozen local configuration.
 
 **`check` ships advisory**, per §4: it exits 0 with findings unless `--strict` is given, and its
-documentation states these figures. Two bounds are missed before precision is counted, so the outcome does
-not depend on the adjudication; precision fixes how useful the advisory output is, not the decision.
+documentation states these figures. The mode did not depend on the adjudication — two bounds were already
+missed — but the precision figure settles how the output must be described: on a local 14B, nine flags in
+ten are wrong, so `check` is a prompt to look, not a claim that something is wrong.
+
+**Precision does not survive the move off the development set**: 0.29 there, 0.10 here, on the same
+configuration. The development figure was tuned against, and is not a prediction. Any later claim about
+this pipeline needs its own held-out set.
 
 ### What the measurement established
 

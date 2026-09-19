@@ -11,9 +11,10 @@
 //!    of the diff it was shown.
 //! 5. **Report** — findings, and an exit code.
 //!
-//! Measured on held-out data with a local 14B: recall 0.38, and 13% of ordinary commits drew a flag, so
-//! `check` is advisory by default (`Outcome::exit_code`). A stronger model reaches 0.75 recall and ~0.89
-//! precision on the same pipeline.
+//! Measured on held-out data with a local 14B: recall 0.38, 13% of ordinary commits drew a flag, and 10
+//! of 96 flags were correct (precision 0.10). So `check` is advisory by default (`Outcome::exit_code`)
+//! and says what it is: a prompt to look, not a claim that something is wrong. A stronger model reaches
+//! 0.75 recall and ~0.89 precision on the same pipeline.
 
 use std::collections::{BTreeMap, BTreeSet};
 

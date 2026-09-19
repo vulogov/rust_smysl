@@ -89,7 +89,8 @@ pub enum Command {
     /// Report what a change contradicts in the recorded corpus.
     ///
     /// Advisory: findings are printed and the exit code stays 0 unless `--strict` is given. Measured on
-    /// held-out data with a local 14B: recall 0.38, and 13% of ordinary commits drew a flag
+    /// held-out data with a local 14B: recall 0.38, precision 0.10 (10 of 96 flags correct), and 13% of
+    /// ordinary commits drew a flag
     /// (docs/implementation-plan.md §4, S4).
     Check {
         /// Commit to check; defaults to `HEAD`.
