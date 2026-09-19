@@ -29,5 +29,6 @@ __pycache__/
 eval/.s4work/
 eval/s4/results/*/flags/
 
-# Derived, regenerable, and never part of the corpus (D9)
-.smysl/facts/
+# This repository's own corpus: written by trial runs of the tool against itself, and not a record we
+# publish. The facts under it are derived and regenerable anyway (D9).
+.smysl/
