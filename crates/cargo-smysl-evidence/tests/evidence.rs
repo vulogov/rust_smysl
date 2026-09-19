@@ -352,7 +352,7 @@ mod vacuity {
     use cargo_smysl_evidence::vacuous;
     use cargo_smysl_facts::{facts, Fact};
 
-    fn test_named<'a>(source: &'a str, name: &str) -> cargo_smysl_facts::item::Function {
+    fn test_named(source: &str, name: &str) -> cargo_smysl_facts::item::Function {
         facts("t.rs", source)
             .unwrap()
             .into_iter()
