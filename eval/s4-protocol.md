@@ -162,3 +162,53 @@ This measures how an agent uses the report. The tool's acceptance does not depen
 - **Held-out agent runs:** 24 runs at about $1.50, about $36.
 - **Detector calls:** about 200 diffs at DeepSeek prices, a few dollars.
 - **Owner adjudication:** one line per flag.
+
+## Result (2026-09-19): advisory
+
+Measured on the frozen configuration (`s4/frozen.txt`): local Ollama `Qwen2.5-Coder:14b`, smysl 1.6.0,
+12 candidates, a 3 000-model-token pack with `reserving`, 24 units judged in chunks of 6, two passes
+(order seeds 0 and 5) with a flag counted only when both report it.
+
+| Measure | Development (35 diffs) | Held-out (93) | Bound |
+|---|---|---|---|
+| Recall by pattern, agreed | 0.58–0.65 | **0.38** (5/13) | ≥ 0.70 |
+| Flags, agreed | 75–76 | **96** | — |
+| Real commits flagged | 0 of 11 | **9 of 69 (13%)** | ≤ 10% wrongly |
+| Precision | 0.29 (owner-adjudicated, 76 flags) | pending (`results/held-a/adjudication.md`) | ≥ 0.80 |
+
+**`check` ships advisory**, per §4: it exits 0 with findings unless `--strict` is given, and its
+documentation states these figures. Two bounds are missed before precision is counted, so the outcome does
+not depend on the adjudication; precision fixes how useful the advisory output is, not the decision.
+
+### What the measurement established
+
+- **The deterministic half works.** Candidates, packing, label and quote validation and the determinism
+  check all hold: repeated runs give identical candidates, packs and fingerprints, and validation dropped
+  33 `contradicts` verdicts on the held-out set whose label or quoted line did not check out.
+- **The judgement is the weak link, and it is model-bound.** Same retrieval, same packs, same prompt:
+  the local 14B gave recall 0.65 and precision 0.29 on development; `deepseek-v4-pro` gave 0.75 and ~0.89
+  on the flags already adjudicated, for about $2 a pass. The owner's budget decision (2026-09-17) is local,
+  so the shipped default is local and advisory.
+- **Two-pass agreement is a real filter**: 170 and 192 flags became 96, and it removed every false flag on
+  a real commit in development. It costs recall (7/13 → 5/13 held-out).
+- **Retrieval-side filtering is not.** `Hit::terms` (smysl 1.6, R22) let this be tested directly: the
+  strongest term behind a correct flag and behind a wrong one overlap almost completely (median 14.7 vs
+  11.7), so a threshold removes at best 4 of 32 wrong flags before it costs correct ones.
+- **A stricter prompt made it worse**, not better: recall 0.30, and it dropped 10 of the owner's 22 correct
+  flags while removing 35 of 48 wrong ones. Reverted; the protocol's one rework is spent.
+- **smysl gained R10, R12, R15–R24 from this work**, all but the deliberately deferred ones implemented in
+  1.4.0, 1.5.0 and 1.6.0.
+
+### Caveats a reader should have
+
+- **The held-out agent diffs are less finished than the development ones**: the same tasks and harness
+  produced a median of 21 turns against 50, and 12 of 24 left a failing test (all the same test, the manual
+  transcript check). Their oracle labels are unaffected, but the two sets are not drawn from the same
+  distribution.
+- **Two cases answered in an unreadable shape** and are recorded as finding nothing, rather than dropped.
+- **Tasks 6, 10 and 12 have no such prerequisite in the corpus at all** (an extraction miss, measured in
+  `validation/step4-run-corpus.md`), so no detector could hit them; recall is reported over the tasks whose
+  prerequisite is present.
+- **Prompt truncation was real and rare.** A single call exceeded the 16k window on one large commit per
+  development run, silently, until the owner's Ollama log showed it. The configuration now counts tokens as
+  the provider charges them, caps the diff at half the window, and fails loudly if a provider truncates.

@@ -1,7 +1,7 @@
 # rust_smysl — implementation plan (draft)
 
 **Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle
-and acceptance, S3 result, acceptance reframed, S4, pin to smysl 1.4.0). Written from the research experiments in this
+and acceptance, S3 result, acceptance reframed, S4 result, pin to smysl 1.6.0). Written from the research experiments in this
 repository's history; every "settled" item below cites the experiment that settled it.
 
 > **Where the project stands (2026-09-17).**
@@ -14,8 +14,12 @@ repository's history; every "settled" item below cites the experiment that settl
 >   violations without, 12 with, over 14 pairs), and git history answered "why" questions as well as the
 >   corpus in essay-style repositories. Kept as information about that usage pattern. It moves findings
 >   out of the prompt and onto the change (§4, S3).
-> - **Next: S4,** functional acceptance of `cargo smysl check`, which reports what a change contradicts
->   (`eval/s4-protocol.md`). Phase 1 continues alongside it.
+> - **S4, done (2026-09-19): `check` ships advisory.** On a free local model it finds 0.38 of the
+>   contradictions on held-out data and flags 13% of ordinary commits, so it exits 0 with findings unless
+>   `--strict` is given, and its documentation carries the measured figures (§4, S4). The deterministic
+>   half — retrieval, packing, validation, determinism — holds; the judgement is model-bound, and a hosted
+>   model reached 0.75 recall and ~0.89 precision on the same pipeline.
+> - **Next:** Phase 1's remaining store work, then Phase 3 ports `check` into the shipped binary.
 
 **What the tool is:** a cargo subcommand that records *why* Rust code changed — the decisions a
 change makes, what had to be true for them (prerequisites), what was rejected, and what follows —
@@ -347,6 +351,28 @@ already holds.
     most one step reworked against a fresh held-out set.
 - **Information, not gated:** a third S3 arm with `check` as a Stop hook (silent vs disclosed violations).
 
+#### S4 result (2026-09-19): advisory
+
+Full write-up and caveats: `eval/s4-protocol.md`, "Result". Frozen configuration: `eval/s4/frozen.txt`.
+
+| Measure | Development | Held-out | Bound |
+|---|---|---|---|
+| Recall by pattern, agreed over two passes | 0.58–0.65 | **0.38** | ≥ 0.70 |
+| Real commits flagged | 0 of 11 | **9 of 69** | ≤ 10% wrongly |
+| Precision | 0.29 (owner-adjudicated) | pending | ≥ 0.80 |
+
+- **`check` ships advisory:** exit 0 with findings unless `--strict`, with these figures in its help. Two
+  bounds are missed before precision is counted, so the adjudication changes how useful it is, not the mode.
+- **What works:** the deterministic steps. Candidates, packing, label and quote validation, determinism; on
+  the held-out set validation dropped 33 verdicts whose label or quote did not check out.
+- **What does not:** the judgement, on a 7B or 14B local model. The same pipeline on `deepseek-v4-pro` gave
+  0.75 recall and ~0.89 precision at about $2 a pass — the difference is the model, not the retrieval.
+- **Levers measured:** two-pass agreement halves flags and costs some recall (kept); a term-weight filter
+  does not separate correct from wrong flags (rejected, kept as a setting defaulting to off); a stricter
+  prompt lost more correct flags than wrong ones (reverted).
+- **Consequence for the plan:** `check` is worth shipping as a reviewer's aid and a `--strict` gate for
+  those who choose a stronger model. It is not the automatic guard the S3 narrowing hoped for.
+
 ---
 
 ## 5. Phase 1 — smysl integration and data model
@@ -407,7 +433,9 @@ merged CBOR), and the "what depends on X" query.
   - the mutation gate as S1 decided;
   - the static vacuity check.
 - `check` (after S4): the S4 detector ported to the `cargo smysl check` command under the self-contained
-  rule, shipped as a gate or advisory as S4 decided, with its measured figures in its help.
+  rule, **advisory by default** with `--strict` to block, its measured figures in its help, and the
+  provider, model, prompt and token cost as settings (D16, D17). The model client is the one open design
+  item (§6, item 7).
 - **Done when:**
   - `check` reproduces its S4 held-out figures from the shipped binary;
   - on the S0 set, no single-run status raise;
@@ -455,8 +483,12 @@ goes.
 - **Agents do not act on context they are given** (S3: 1 of 14 corpus-arm summaries mentioned it) and
   rewrite tests that stand in their way (S3 run1). A report is only acted on where something reads its
   exit code.
-- **A model-judged check has a false-flag rate.** S4 measures it. Advisory shipping is the fallback, not a
-  failure.
+- **A model-judged check has a false-flag rate.** Measured: 13% of ordinary commits flagged on held-out
+  data with a local 14B, which is why `check` is advisory. A stronger model roughly halves the flags and
+  triples the precision, at a price per run.
+- **A provider can truncate a prompt silently.** Found only in the owner's Ollama log. The tool now counts
+  tokens as the provider charges them, caps the diff at half the window, records predicted against charged,
+  and fails rather than answer from a truncated prompt.
 
 ## 10. smysl requests (not blocking)
 
