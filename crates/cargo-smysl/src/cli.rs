@@ -140,6 +140,10 @@ pub enum Command {
         /// Also shortlist the tests that might bear on it (D14).
         #[arg(long)]
         tests: bool,
+        /// Run those tests, record what they did, and propose the edges (D13). Every edge waits for a
+        /// person: `cargo smysl review`.
+        #[arg(long, requires = "tests")]
+        link: bool,
         /// `ollama`, or `openai` for any OpenAI-compatible endpoint.
         #[arg(long, env = "SMYSL_CHECK_PROVIDER", default_value = "ollama")]
         provider: String,
@@ -155,6 +159,9 @@ pub enum Command {
         key_var: String,
         #[arg(long, env = "SMYSL_CHECK_WINDOW", default_value_t = 32768)]
         window: u32,
+        /// Characters per token for this model, used to keep the prompt inside the window.
+        #[arg(long, env = "SMYSL_CHECK_CHARS_PER_TOKEN", default_value_t = 2.0)]
+        chars_per_token: f32,
     },
     /// Report reasoning whose code has moved since it was recorded.
     Stale {

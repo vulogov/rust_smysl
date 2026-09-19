@@ -449,7 +449,13 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
 ## 7. Phase 3 — verdicts and test evidence
 
 - `verdict` crate:
-  - per-prerequisite retrieval (D11): **still open**, and the one piece that needs the model;
+  - **per-prerequisite retrieval and matching (D11), done 2026-09-19:** 30 structural facts and 10 prose
+    facts per claim, shown apart and judged one claim at a time, with every citation validated against
+    what was shown — a part covered only by facts the model invented is uncovered, and a contradiction
+    counts only when it names a fact that exists. The prompt is fitted to the model in front of it (D17):
+    the facts get half the window, each fact is cut to its first lines, and what did not fit is reported.
+    Measured here: forty facts rendered in full killed a local 14B runner outright; fitted, the same claim
+    answers in under a minute.
   - **the D12 policy, done 2026-09-19:** a single run never raises a status; `Supported` needs every part
     covered by structural facts *and* two independent runs that each saw it covered, or a person's word.
     Coverage that only adds up across runs is not agreement — one run saw what the other missed, which is
@@ -462,6 +468,9 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
     with a note to close. Nothing is deleted or rewritten; a withdrawn edge stays in the log and stops
     being followed.
 - `evidence` crate (**candidates, runner, import and edges done 2026-09-19**):
+  - **classification and linking, done 2026-09-19:** `cargo smysl evidence <label> --tests --link`
+    classifies the shortlist (a test name the model invents is dropped, unsure becomes `exercises`), runs
+    those tests, imports the readings and proposes the edges — each waiting for a person (D15).
   - **candidates (D14):** a deterministic shortlist by lexical overlap between the claim and what a test
     *is* — its name, calls, assertions, doc — rarer terms weighing more, with a bonus for a test in a
     touched file. The model classifies the shortlist; it never goes looking, because a model asked to

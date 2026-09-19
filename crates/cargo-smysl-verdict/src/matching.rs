@@ -28,6 +28,11 @@ pub struct Retrieval {
     pub prose: usize,
     /// Names the run, so two runs can be told apart when the policy counts agreement (D12).
     pub run: String,
+    /// Lines of one fact the model is shown. A function's rendering lists every call it makes, and
+    /// thirty of those is a prompt no local model survives: measured, a 14B runner died on it.
+    pub lines_per_fact: usize,
+    /// Characters the facts may occupy in total, whatever the counts allow.
+    pub max_chars: usize,
 }
 
 impl Default for Retrieval {
@@ -38,7 +43,26 @@ impl Default for Retrieval {
             structural: 30,
             prose: 10,
             run: "run-1".into(),
+            lines_per_fact: 12,
+            max_chars: 24_000,
         }
+    }
+}
+
+impl Retrieval {
+    /// Sized to the model in front of us (D17): the facts may fill half the window, the rest belongs to
+    /// the system prompt, the claim and the answer. A small window also shortens each fact, because
+    /// twenty facts of one line each are worth more to a matcher than two facts in full.
+    pub fn fitted(window_tokens: u32, chars_per_token: f32) -> Retrieval {
+        let chars = (f64::from(window_tokens) * f64::from(chars_per_token) / 2.0) as usize;
+        let mut r = Retrieval {
+            max_chars: chars.max(2_000),
+            ..Retrieval::default()
+        };
+        if chars < 12_000 {
+            r.lines_per_fact = 6;
+        }
+        r
     }
 }
 
@@ -46,28 +70,52 @@ impl Default for Retrieval {
 pub struct Shown<'a> {
     pub structural: Vec<&'a Fact>,
     pub prose: Vec<&'a Fact>,
+    /// How each fact is cut down for the prompt.
+    pub limits: (usize, usize),
 }
 
 impl Shown<'_> {
+    /// How many of the retrieved facts actually reached the prompt.
+    pub fn shown_count(&self) -> usize {
+        self.names().len()
+    }
+
     pub fn is_empty(&self) -> bool {
         self.structural.is_empty() && self.prose.is_empty()
     }
 
-    /// The text the model reads: structural facts first, prose last and marked.
+    /// The text the model reads: structural facts first, prose last and marked, each cut to
+    /// `lines_per_fact` and the whole to `max_chars`. A fact that does not fit is left out rather than
+    /// half shown, and its name is never offered, so a citation of it cannot validate.
     pub fn text(&self) -> String {
+        let (lines, max_chars) = self.limits;
         let mut out = String::new();
         for (n, fact) in self.structural.iter().enumerate() {
-            out.push_str(&format!("F{}: {}\n\n", n + 1, render(fact)));
+            let block = format!("F{}: {}\n\n", n + 1, brief(fact, lines));
+            if out.len() + block.len() > max_chars {
+                break;
+            }
+            out.push_str(&block);
         }
         for (n, fact) in self.prose.iter().enumerate() {
-            out.push_str(&format!("P{}: {}\n\n", n + 1, render(fact)));
+            let block = format!("P{}: {}\n\n", n + 1, brief(fact, lines));
+            if out.len() + block.len() > max_chars {
+                break;
+            }
+            out.push_str(&block);
         }
         out
     }
 
+    /// The names that appear in `text`, which are the only citations that may validate.
     fn names(&self) -> BTreeSet<String> {
-        let structural = (1..=self.structural.len()).map(|n| format!("F{n}"));
-        let prose = (1..=self.prose.len()).map(|n| format!("P{n}"));
+        let text = self.text();
+        let structural = (1..=self.structural.len())
+            .map(|n| format!("F{n}"))
+            .filter(|name| text.contains(&format!("{name}: ")));
+        let prose = (1..=self.prose.len())
+            .map(|n| format!("P{n}"))
+            .filter(|name| text.contains(&format!("{name}: ")));
         structural.chain(prose).collect()
     }
 }
@@ -99,7 +147,25 @@ pub fn retrieve<'a>(claim: &str, facts: &'a [Fact], r: &Retrieval) -> Shown<'a> 
             break;
         }
     }
-    Shown { structural, prose }
+    Shown {
+        structural,
+        prose,
+        limits: (r.lines_per_fact, r.max_chars),
+    }
+}
+
+/// One fact, cut to its first `lines` lines: the signature and what it does first, the long tail of calls
+/// dropped with a note so the reader knows something was left out.
+fn brief(fact: &Fact, lines: usize) -> String {
+    let full = render(fact);
+    let mut kept: Vec<&str> = full.lines().take(lines).collect();
+    let dropped = full.lines().count().saturating_sub(kept.len());
+    let note;
+    if dropped > 0 {
+        note = format!("  … {dropped} more line(s) not shown");
+        kept.push(&note);
+    }
+    kept.join("\n")
 }
 
 /// A fact that is only what someone wrote about the code (D10).

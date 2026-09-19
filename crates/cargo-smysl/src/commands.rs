@@ -90,16 +90,20 @@ pub fn run(args: SmyslArgs) -> u8 {
             label,
             run,
             tests,
+            link,
             provider,
             model,
             endpoint,
             key_var,
             window,
+            chars_per_token,
         } => evidence(
             &args,
             label,
             run,
             *tests,
+            *link,
+            *chars_per_token,
             ExtractHow {
                 recipe: "",
                 provider,
@@ -379,6 +383,8 @@ fn evidence(
     label: &str,
     run: &str,
     shortlist_tests: bool,
+    link_tests: bool,
+    chars_per_token: f32,
     how: ExtractHow<'_>,
 ) -> u8 {
     let root = match workspace_root(args) {
@@ -424,6 +430,16 @@ fn evidence(
             Err(e) => eprintln!("cargo smysl evidence: {e}"),
         }
     }
+    let judge = ProviderJudge {
+        provider: Provider {
+            kind: how.provider.to_string(),
+            endpoint: how.endpoint.to_string(),
+            model: how.model.to_string(),
+            key_var: how.key_var.to_string(),
+            window: how.window,
+            ..Provider::local(how.model)
+        },
+    };
     if shortlist_tests {
         let picked = cargo_smysl_evidence::candidates(&all, &claim, &[], 5);
         println!("tests that might bear on it:");
@@ -435,16 +451,28 @@ fn evidence(
                 c.line,
                 c.shared.join(", ")
             );
+            // S1's cheap check: an edge resting on a test that cannot fail is worthless.
+            if let Some(f) = all.iter().find_map(|f| match f {
+                cargo_smysl_facts::Fact::Function(x) if x.label() == c.label => Some(x),
+                _ => None,
+            }) {
+                for reason in cargo_smysl_evidence::vacuous(f) {
+                    println!("      warning: {reason}");
+                }
+            }
         }
         if picked.is_empty() {
             println!("  (none)");
         }
         println!();
+        if link_tests {
+            return link_evidence(&root, &store, label, &claim, &picked, &all, &judge);
+        }
     }
 
     let retrieval = Retrieval {
         run: run.to_string(),
-        ..Retrieval::default()
+        ..Retrieval::fitted(how.window, chars_per_token)
     };
     let shown = retrieve(&claim, &all, &retrieval);
     println!(
@@ -452,16 +480,19 @@ fn evidence(
         shown.structural.len(),
         shown.prose.len()
     );
-    let judge = ProviderJudge {
-        provider: Provider {
-            kind: how.provider.to_string(),
-            endpoint: how.endpoint.to_string(),
-            model: how.model.to_string(),
-            key_var: how.key_var.to_string(),
-            window: how.window,
-            ..Provider::local(how.model)
-        },
-    };
+    // D17: what did not fit is said out loud, never dropped quietly.
+    let (kept, asked) = (
+        shown.shown_count(),
+        shown.structural.len() + shown.prose.len(),
+    );
+    if kept < asked {
+        eprintln!(
+            "cargo smysl evidence: warning: {} of {asked} retrieved fact(s) did not fit a {}-token \
+             window and were left out",
+            asked - kept,
+            how.window
+        );
+    }
     let matched = match match_claim(&claim, &shown, &judge, &retrieval) {
         Ok(m) => m,
         Err(e) => {
@@ -492,6 +523,148 @@ fn evidence(
     exit::OK
 }
 
+/// Run the shortlisted tests, record what they did, and propose the edges (D13).
+///
+/// Nothing here concludes anything: the readings are measurements, and every edge waits for a person.
+fn link_evidence(
+    root: &Path,
+    store: &smysl::Store,
+    label: &str,
+    claim: &str,
+    shortlist: &[cargo_smysl_evidence::Candidate],
+    facts: &[cargo_smysl_facts::Fact],
+    judge: &ProviderJudge,
+) -> u8 {
+    if shortlist.is_empty() {
+        println!("no test to run");
+        return exit::OK;
+    }
+    let (classified, invented) =
+        match cargo_smysl_evidence::classify(claim, shortlist, facts, judge) {
+            Ok(x) => x,
+            Err(e) => {
+                eprintln!("cargo smysl evidence: {e}");
+                return exit::FAILURE;
+            }
+        };
+    for name in &invented {
+        eprintln!("cargo smysl evidence: dropped {name}, which was not on the shortlist");
+    }
+    let wanted: Vec<&cargo_smysl_evidence::Classified> = classified
+        .iter()
+        .filter(|c| c.kind != cargo_smysl_evidence::link::Kind::Unrelated)
+        .collect();
+    if wanted.is_empty() {
+        println!("no test bears on this claim");
+        return exit::OK;
+    }
+    for c in &wanted {
+        println!("  {:?}: {} — {}", c.kind, c.test, c.because);
+    }
+
+    let plan = cargo_smysl_evidence::Plan {
+        tests: wanted.iter().map(|c| c.test.clone()).collect(),
+        ..cargo_smysl_evidence::Plan::default()
+    };
+    println!("\nrunning: cargo {}", plan.args().join(" "));
+    let head = cargo_smysl_git::read_commit(root, "HEAD")
+        .map(|c| c.sha)
+        .unwrap_or_else(|_| "unknown".into());
+    let readings = match cargo_smysl_evidence::run(root, &plan, &head) {
+        Ok(r) => r,
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            return exit::FAILURE;
+        }
+    };
+    if readings.is_empty() {
+        eprintln!("cargo smysl evidence: the tests produced no reading; nothing is recorded");
+        return exit::FAILURE;
+    }
+    for r in &readings {
+        println!("  {} {} ({}s)", r.outcome, r.test, r.run_seconds);
+    }
+
+    let imported = match cargo_smysl_evidence::import(&readings, "cargo test") {
+        Ok(i) => i,
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let Ok(claim_label) = smysl::Label::new(label.to_string()) else {
+        eprintln!("cargo smysl evidence: {label} is not a label");
+        return exit::FAILURE;
+    };
+    let Ok(claim_uid) = smysl::resolve_label(store, &claim_label) else {
+        eprintln!("cargo smysl evidence: {label} names no unit");
+        return exit::FAILURE;
+    };
+    // A reading's unit, by the test it is about, so an edge names the measurement and not the test.
+    let by_test: Vec<(String, smysl::Uid)> = imported
+        .units
+        .iter()
+        .zip(&readings)
+        .map(|(unit, reading)| (reading.test.clone(), smysl::canonical_uid(unit)))
+        .collect();
+    let links: Vec<cargo_smysl_evidence::Link> = wanted
+        .iter()
+        .filter_map(|c| {
+            by_test
+                .iter()
+                .find(|(test, _)| test.ends_with(&c.test) || c.test.ends_with(test))
+                .map(|(_, uid)| cargo_smysl_evidence::Link {
+                    reading: *uid,
+                    claim: claim_uid,
+                    kind: c.kind,
+                })
+        })
+        .collect();
+    let outcome = |uid: smysl::Uid| -> Option<cargo_smysl_evidence::Reading> {
+        by_test
+            .iter()
+            .position(|(_, u)| *u == uid)
+            .map(|i| readings[i].clone())
+    };
+    let proposer = match smysl::AgentId::new(format!("model:{}", agent_name(&judge.provider.model)))
+    {
+        Ok(a) => a,
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let edges = match cargo_smysl_evidence::edges(&links, &outcome, &proposer) {
+        Ok(e) => e,
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let mut records: Vec<smysl::Record> = store.iter().cloned().collect();
+    records.extend(imported.records());
+    records.extend(edges.iter().cloned());
+    let corpus = Corpus::at(root);
+    match corpus.save_records(&records) {
+        Ok(()) => {
+            let proposed = edges
+                .iter()
+                .filter(|r| matches!(r, smysl::Record::Relation(_)))
+                .count();
+            println!(
+                "\n{} reading(s) recorded, {proposed} edge(s) proposed — each waits for a person: \
+                 cargo smysl review",
+                readings.len()
+            );
+            exit::OK
+        }
+        Err(e) => {
+            eprintln!("cargo smysl evidence: {e}");
+            exit::FAILURE
+        }
+    }
+}
+
 /// The recorded claim's own text.
 fn claim_text(store: &smysl::Store, label: &str) -> Result<String, String> {
     let label =
@@ -505,6 +678,21 @@ fn claim_text(store: &smysl::Store, label: &str) -> Result<String, String> {
 }
 
 /// A prerequisite the extraction marked normative reaches `ImplementedBy` at most (D12).
+/// A model's name as an agent id may carry: `qwen2.5-coder:14b` names a tag with a colon, and an agent
+/// id keeps one colon for its kind, so the rest become dashes. The name still reads as the model.
+fn agent_name(model: &str) -> String {
+    model
+        .chars()
+        .map(|c| {
+            if c.is_alphanumeric() || "-._".contains(c) {
+                c
+            } else {
+                '-'
+            }
+        })
+        .collect()
+}
+
 fn claim_is_normative(store: &smysl::Store, label: &str) -> bool {
     let Ok(label) = smysl::Label::new(label.to_string()) else {
         return false;

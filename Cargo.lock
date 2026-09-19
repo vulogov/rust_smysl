@@ -214,6 +214,7 @@ name = "cargo-smysl-evidence"
 version = "0.1.0"
 dependencies = [
  "cargo-smysl-corpus",
+ "cargo-smysl-extract",
  "cargo-smysl-facts",
  "serde",
  "serde_json",
@@ -260,6 +261,7 @@ version = "0.1.0"
 dependencies = [
  "cargo-smysl-corpus",
  "cargo-smysl-extract",
+ "cargo-smysl-facts",
  "imara-diff",
  "serde",
  "serde_json",

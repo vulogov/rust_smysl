@@ -219,3 +219,24 @@ fn a_claim_nothing_bears_on_is_not_asked_about_at_all() {
         Verdict::Unknown
     );
 }
+
+#[test]
+fn a_small_window_shortens_the_facts_and_leaves_the_rest_out() {
+    let all = facts("src/main.rs", SOURCE).unwrap();
+    let tiny = Retrieval {
+        max_chars: 400,
+        ..Retrieval::fitted(1_024, 1.0)
+    };
+    let shown = retrieve("the ledger is beside the store", &all, &tiny);
+    let text = shown.text();
+    assert!(text.len() <= 400, "the prompt is held to the window");
+    assert!(
+        shown.shown_count() <= shown.structural.len() + shown.prose.len(),
+        "only what fits is named"
+    );
+    // A citation of a fact that was cut is not a citation of anything.
+    let judge = scripted(r#"{"covered":[{"part":"all of it","facts":["F30"]}]}"#);
+    let m = match_claim("the ledger is beside the store", &shown, &judge, &tiny).unwrap();
+    assert_eq!(m.invented, vec!["F30".to_string()]);
+    assert!(m.judgement.covered.is_empty());
+}

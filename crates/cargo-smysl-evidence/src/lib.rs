@@ -5,11 +5,13 @@
 //! than delegated to an external cargo-mutants binary.
 
 pub mod candidate;
+pub mod classify;
 pub mod link;
 pub mod run;
 pub mod vacuity;
 
 pub use candidate::{candidates, tests, Candidate};
+pub use classify::{classify, Classified};
 pub use link::{edges, Kind, Link, LinkError};
 pub use run::{import, readings, run, Plan, Reading, RunError};
 pub use vacuity::vacuous;

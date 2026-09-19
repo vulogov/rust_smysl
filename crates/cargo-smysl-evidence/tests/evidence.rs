@@ -415,3 +415,86 @@ mod tests {
         );
     }
 }
+
+/// D13/D14: the shortlist is the tool's, the classification is the model's, and it is a proposal.
+mod classify {
+    use std::cell::RefCell;
+
+    use cargo_smysl_evidence::candidates;
+    use cargo_smysl_evidence::classify::classify;
+    use cargo_smysl_evidence::link::Kind;
+    use cargo_smysl_extract::{Charged, Judge, JudgeError};
+    use cargo_smysl_facts::facts;
+
+    struct Scripted {
+        answer: String,
+        asked: RefCell<Vec<String>>,
+    }
+
+    impl Judge for Scripted {
+        fn describe(&self) -> String {
+            "scripted".into()
+        }
+        fn ask_text(&self, _s: &str, user: &str) -> Result<(String, Charged), JudgeError> {
+            self.asked.borrow_mut().push(user.to_string());
+            Ok((self.answer.clone(), Charged::default()))
+        }
+    }
+
+    fn scripted(answer: &str) -> Scripted {
+        Scripted {
+            answer: answer.into(),
+            asked: RefCell::new(Vec::new()),
+        }
+    }
+
+    #[test]
+    fn the_model_answers_for_the_tests_it_was_given_and_nothing_else() {
+        let all = facts("src/main.rs", super::SOURCE).unwrap();
+        let claim = "the ledger is resolved beside the store";
+        let shortlist = candidates(&all, claim, &[], 3);
+        let judge = scripted(
+            r#"{"links":[
+                {"test":"tests::a_sidecar_sits_beside_its_store","kind":"verifies","because":"it asserts the path"},
+                {"test":"tests::a_test_that_was_never_shown","kind":"verifies","because":"invented"}
+            ]}"#,
+        );
+        let (classified, invented) = classify(claim, &shortlist, &all, &judge).unwrap();
+        assert_eq!(classified.len(), 1, "{classified:?}");
+        assert_eq!(classified[0].kind, Kind::Verifies);
+        assert_eq!(
+            invented,
+            vec!["tests::a_test_that_was_never_shown".to_string()]
+        );
+
+        let asked = judge.asked.borrow();
+        assert!(asked[0].starts_with("CLAIM: the ledger"), "{}", asked[0]);
+        assert!(
+            asked[0].contains("tests::a_sidecar_sits_beside_its_store"),
+            "the tests are named and described: {}",
+            asked[0]
+        );
+    }
+
+    #[test]
+    fn an_empty_shortlist_costs_no_call() {
+        let all = facts("src/main.rs", super::SOURCE).unwrap();
+        let judge = scripted("{}");
+        let (classified, _) = classify("nothing in common", &[], &all, &judge).unwrap();
+        assert!(classified.is_empty());
+        assert!(judge.asked.borrow().is_empty());
+    }
+
+    #[test]
+    fn an_unreadable_kind_is_unrelated_rather_than_a_guess() {
+        let all = facts("src/main.rs", super::SOURCE).unwrap();
+        let claim = "the ledger is resolved beside the store";
+        let shortlist = candidates(&all, claim, &[], 3);
+        let judge = scripted(&format!(
+            r#"{{"links":[{{"test":"{}","kind":"probably verifies?","because":"unsure"}}]}}"#,
+            shortlist[0].label
+        ));
+        let (classified, _) = classify(claim, &shortlist, &all, &judge).unwrap();
+        assert_eq!(classified[0].kind, Kind::Unrelated);
+    }
+}
