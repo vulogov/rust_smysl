@@ -5,7 +5,9 @@
 //! independent runs agreeing, or a person; everything else attaches evidence or goes to review.
 
 pub mod check;
+pub mod review;
 
 pub use check::{check, Change, Finding, Outcome, Settings, DEFAULT_SYSTEM};
+pub use review::{close, confirm, describe, person, queue, reject, ReviewError};
 // The model client lives in `cargo-smysl-extract` (D18): one client, two callers.
 pub use cargo_smysl_extract::{Charged, Judge, JudgeError, Provider, ProviderJudge, RawVerdict};

@@ -112,6 +112,14 @@ impl Corpus {
         Ok(Store::from_records(records))
     }
 
+    /// Write records straight to the store, for a caller that appended to what it loaded — review, which
+    /// adds attestations, withdrawals and resolutions rather than staging a batch.
+    pub fn save_records(&self, records: &[Record]) -> Result<(), StoreError> {
+        let path = self.store_path();
+        std::fs::create_dir_all(&self.dir).map_err(|e| StoreError::Io(self.dir.clone(), e))?;
+        std::fs::write(&path, to_cbor_seq(records)).map_err(|e| StoreError::Io(path, e))
+    }
+
     fn save(&self, store: &Store) -> Result<(), StoreError> {
         let path = self.store_path();
         std::fs::create_dir_all(&self.dir).map_err(|e| StoreError::Io(self.dir.clone(), e))?;

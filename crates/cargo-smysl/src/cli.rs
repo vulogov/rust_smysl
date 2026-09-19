@@ -137,6 +137,28 @@ pub enum Command {
         /// Revision range, e.g. `v1.2.0..HEAD`.
         range: Option<String>,
     },
-    /// Work through verdicts waiting for a person.
-    Review,
+    /// Work through what is waiting for a person, and record the answer (D15).
+    ///
+    /// Nothing is deleted or rewritten: confirming writes an attestation, rejecting a withdrawal with a
+    /// unit saying why, closing a resolution with a note.
+    Review {
+        /// Who is reviewing; their answer is attributed to them, not to the tool.
+        #[arg(long, env = "SMYSL_REVIEW_AS")]
+        as_person: Option<String>,
+        /// Act on the item at this position in the queue.
+        #[arg(long, requires = "as_person")]
+        item: Option<usize>,
+        /// Confirm it.
+        #[arg(long, requires = "item", conflicts_with_all = ["reject", "close"])]
+        confirm: bool,
+        /// Reject it, with the reason.
+        #[arg(long, requires = "item", conflicts_with = "close")]
+        reject: Option<String>,
+        /// Close a disagreement, with a note.
+        #[arg(long, requires = "item")]
+        close: Option<String>,
+        /// Include what has already been dealt with.
+        #[arg(long)]
+        all: bool,
+    },
 }

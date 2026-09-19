@@ -452,10 +452,12 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
   - per-prerequisite retrieval (D11);
   - matching with parts, coverage and normative flag;
   - the D12 policy including two-run agreement;
-  - a review queue built from the store (D15): open contentions, unresolved `rebuts` edges, and
-    `backs` / `x.code/exercises` edges with no person's attestation and no withdrawal;
-  - `cargo smysl review` writes the outcome as records: an attestation to confirm, a `Withdrawal` to
-    reject, a `Resolution` to close a disagreement, each with a unit saying why.
+  - **the review queue (D15), done 2026-09-19:** smysl's `review_with`, asked to expect confirmation for
+    the edges this tool proposes (`backs`, `x.code/exercises`) from a person — a model attesting its own
+    proposal is not a review, which a test holds. `cargo smysl review` lists what waits and records the
+    answer: an attestation to confirm, a `Withdrawal` with a unit saying why to reject, a `Resolution`
+    with a note to close. Nothing is deleted or rewritten; a withdrawn edge stays in the log and stops
+    being followed.
 - `evidence` crate:
   - test candidates (D14) and linking;
   - the cargo test runner (`--locked`, `cfg` features, bin-only crates, ignored tests recorded as

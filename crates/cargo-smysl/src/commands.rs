@@ -4,6 +4,7 @@ use cargo_smysl_corpus::query::dependents_of;
 use cargo_smysl_corpus::store::Corpus;
 use cargo_smysl_extract::{Cache as ExtractionCache, Recipe};
 use cargo_smysl_facts::{builds, coverage, render, select, Around, Cache, Coverage};
+use cargo_smysl_verdict::review::{close, confirm, describe, person, queue, reject};
 use cargo_smysl_verdict::{Change, Provider, ProviderJudge, Settings};
 
 use crate::cli::{Command, SmyslArgs};
@@ -85,7 +86,22 @@ pub fn run(args: SmyslArgs) -> u8 {
         ),
         Command::Evidence { .. } => not_yet("evidence", "Phase 3 — verdicts and test evidence"),
         Command::Stale { .. } => not_yet("stale", "a later phase (item 5, staleness)"),
-        Command::Review => not_yet("review", "Phase 3 — verdicts and test evidence"),
+        Command::Review {
+            as_person,
+            item,
+            confirm,
+            reject,
+            close,
+            all,
+        } => review(
+            &args,
+            as_person.as_deref(),
+            *item,
+            *confirm,
+            reject.as_deref(),
+            close.as_deref(),
+            *all,
+        ),
     }
 }
 
@@ -329,6 +345,102 @@ fn walk(root: &Path, dir: &Path, out: &mut Vec<(String, String)>) {
                 Ok(text) => out.push((rel, text)),
                 Err(e) => eprintln!("cargo smysl facts: {rel}: {e} (skipped)"),
             }
+        }
+    }
+}
+
+/// `review`: what waits for a person, and what their answer records (D15).
+fn review(
+    args: &SmyslArgs,
+    as_person: Option<&str>,
+    item: Option<usize>,
+    do_confirm: bool,
+    do_reject: Option<&str>,
+    do_close: Option<&str>,
+    all: bool,
+) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl review: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let corpus = Corpus::at(&root);
+    let store = match corpus.load() {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("cargo smysl review: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let items = queue(&store);
+    let waiting: Vec<_> = items.iter().filter(|i| !i.resolved).collect();
+
+    let Some(position) = item else {
+        if waiting.is_empty() && !all {
+            println!("nothing is waiting for a person");
+            return exit::OK;
+        }
+        println!("{} item(s) waiting:", waiting.len());
+        for (n, i) in waiting.iter().enumerate() {
+            println!("  {n}: {}", describe(i));
+        }
+        if all {
+            for i in items.iter().filter(|i| i.resolved) {
+                println!("  (dealt with) {}", describe(i));
+            }
+        }
+        println!(
+            "\nanswer one with: cargo smysl review --as-person NAME --item N \\\n               --confirm | --reject \"why\" | --close \"note\""
+        );
+        return exit::OK;
+    };
+    let Some(subject) = waiting.get(position) else {
+        eprintln!(
+            "cargo smysl review: no item {position}; {} are waiting",
+            waiting.len()
+        );
+        return exit::FAILURE;
+    };
+    let who = match as_person.map(person) {
+        Some(Ok(who)) => who,
+        Some(Err(e)) => {
+            eprintln!("cargo smysl review: {e}");
+            return exit::FAILURE;
+        }
+        None => {
+            eprintln!("cargo smysl review: --as-person is required to answer an item");
+            return exit::FAILURE;
+        }
+    };
+    let records = match (do_confirm, do_reject, do_close) {
+        (true, _, _) => confirm(subject, &who),
+        (_, Some(why), _) => reject(subject, &who, why),
+        (_, _, Some(note)) => close(subject, &who, note),
+        _ => {
+            eprintln!("cargo smysl review: say what to do: --confirm, --reject or --close");
+            return exit::FAILURE;
+        }
+    };
+    let records = match records {
+        Ok(r) => r,
+        Err(e) => {
+            eprintln!("cargo smysl review: {e}");
+            return exit::FAILURE;
+        }
+    };
+    // Append, never rewrite: the store is a log.
+    let mut all_records: Vec<smysl::Record> = store.iter().cloned().collect();
+    all_records.extend(records.iter().cloned());
+    match corpus.save_records(&all_records) {
+        Ok(()) => {
+            println!("{}: {} record(s) written", describe(subject), records.len());
+            exit::OK
+        }
+        Err(e) => {
+            eprintln!("cargo smysl review: {e}");
+            exit::FAILURE
         }
     }
 }
