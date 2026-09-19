@@ -449,9 +449,12 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
 ## 7. Phase 3 — verdicts and test evidence
 
 - `verdict` crate:
-  - per-prerequisite retrieval (D11);
-  - matching with parts, coverage and normative flag;
-  - the D12 policy including two-run agreement;
+  - per-prerequisite retrieval (D11): **still open**, and the one piece that needs the model;
+  - **the D12 policy, done 2026-09-19:** a single run never raises a status; `Supported` needs every part
+    covered by structural facts *and* two independent runs that each saw it covered, or a person's word.
+    Coverage that only adds up across runs is not agreement — one run saw what the other missed, which is
+    what the rule exists to catch. Prose-only coverage is `ProseOnly`, a normative rule reaches
+    `ImplementedBy` at most, and a contradiction goes to review rather than to a status.
   - **the review queue (D15), done 2026-09-19:** smysl's `review_with`, asked to expect confirmation for
     the edges this tool proposes (`backs`, `x.code/exercises`) from a person — a model attesting its own
     proposal is not a review, which a test holds. `cargo smysl review` lists what waits and records the
@@ -471,8 +474,12 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
     a disagreement rather than support; `exercises` → `x.code/exercises`, which is navigation; unrelated →
     nothing. A reading never taken is not evidence either way. Every edge carries an attestation naming
     the model that proposed it, so review can tell a proposal from a confirmation.
-  - Still open here: the mutation gate as S1 decided, the static vacuity check, and wiring
-    `cargo smysl evidence`.
+  - **the static vacuity check (S1), done:** a test whose assertion compares a thing with itself, asserts
+    a literal truth, or has no assertion at all cannot fail, so an edge resting on it is worthless. It
+    reports only what it can prove from the tokens: silence means "nothing proved", not "this test is
+    good".
+  - Still open here: the mutation gate (S1 made it opt-in and it needs an in-process implementation), and
+    wiring `cargo smysl evidence`.
 - `check` (done, 2026-09-19): the S4 detector is `cargo smysl check` in `cargo-smysl-verdict`, advisory
   with `--strict` to block, its measured figures in its help, and provider, model, endpoint, window,
   token cost and prompt as settings (D16, D17, D18). It reads a commit (`rev`), a patch (`--patch`) or

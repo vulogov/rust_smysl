@@ -346,3 +346,72 @@ mod links {
         assert_eq!(Kind::parse("probably related?"), Kind::Unrelated);
     }
 }
+
+/// S1: the cheap check that ships — a test that cannot fail.
+mod vacuity {
+    use cargo_smysl_evidence::vacuous;
+    use cargo_smysl_facts::{facts, Fact};
+
+    fn test_named<'a>(source: &'a str, name: &str) -> cargo_smysl_facts::item::Function {
+        facts("t.rs", source)
+            .unwrap()
+            .into_iter()
+            .find_map(|f| match f {
+                Fact::Function(x) if x.name == name => Some(x),
+                _ => None,
+            })
+            .unwrap()
+    }
+
+    const SOURCE: &str = r#"
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn compares_a_thing_with_itself() {
+        assert_eq!(session.anchor, session.anchor);
+    }
+
+    #[test]
+    fn asserts_a_literal_truth() {
+        assert!(true);
+    }
+
+    #[test]
+    fn has_no_assertion_at_all() {
+        let session = Session::default();
+        session.advance(60);
+    }
+
+    #[test]
+    fn actually_checks_something() {
+        assert_eq!(root_beside(Some("store.smy")), ".");
+    }
+}
+"#;
+
+    #[test]
+    fn an_assertion_comparing_a_thing_with_itself_cannot_fail() {
+        let reasons = vacuous(&test_named(SOURCE, "compares_a_thing_with_itself"));
+        assert_eq!(reasons.len(), 1, "{reasons:?}");
+        assert!(
+            reasons[0].contains("compares a thing with itself"),
+            "{reasons:?}"
+        );
+    }
+
+    #[test]
+    fn so_can_a_literal_truth_and_a_test_with_no_assertion() {
+        assert!(
+            vacuous(&test_named(SOURCE, "asserts_a_literal_truth"))[0].contains("literal truth")
+        );
+        assert!(vacuous(&test_named(SOURCE, "has_no_assertion_at_all"))[0].contains("no assertion"));
+    }
+
+    #[test]
+    fn a_real_assertion_is_reported_as_nothing_proved() {
+        assert!(
+            vacuous(&test_named(SOURCE, "actually_checks_something")).is_empty(),
+            "silence here means 'nothing proved', not 'this test is good'"
+        );
+    }
+}

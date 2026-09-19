@@ -7,7 +7,9 @@
 pub mod candidate;
 pub mod link;
 pub mod run;
+pub mod vacuity;
 
 pub use candidate::{candidates, tests, Candidate};
 pub use link::{edges, Kind, Link, LinkError};
 pub use run::{import, readings, run, Plan, Reading, RunError};
+pub use vacuity::vacuous;
