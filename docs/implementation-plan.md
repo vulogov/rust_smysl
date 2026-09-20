@@ -1,8 +1,10 @@
 # rust_smysl — implementation plan (draft)
 
 **Status:** draft, 2026-09-16; updated 2026-09-17 (smysl 1.3 pin, S1 result, smysl 1.4.0 edge lifecycle
-and acceptance, S3 result, acceptance reframed, S4 result, pin to smysl 1.6.0). Written from the research experiments in this
-repository's history; every "settled" item below cites the experiment that settled it.
+and acceptance, S3 result, acceptance reframed, S4 result, pin to smysl 1.6.0); **reassessed 2026-09-20**
+(S0 labelled and scored; what this project measures narrowed to the tool — see D19). Written from the
+research experiments in this repository's history; every "settled" item below cites the experiment that
+settled it.
 
 > **Where the project stands (2026-09-17).**
 > - **The tool's promise is that it operates as designed.** It makes no promise about how an agent or a
@@ -20,7 +22,20 @@ repository's history; every "settled" item below cites the experiment that settl
 >   unless `--strict` is given, and its documentation carries the measured figures (§4, S4). The
 >   deterministic half — retrieval, packing, validation, determinism — holds; the judgement is model-bound,
 >   and a hosted model reached 0.75 recall and ~0.89 precision on the same pipeline.
-> - **Next:** Phase 1's remaining store work, then Phase 3 ports `check` into the shipped binary.
+> - **S0, done (2026-09-20): the extraction figures exist, and they are figures about models.** Six
+>   commits labelled blind (73 decisions, 68 prerequisites, 29 alternatives) and three research systems
+>   adjudicated: decisions 82–100% precision, prerequisites 41–88% with recall moving inversely,
+>   alternatives 31–79%. The plan's own bar — "the pro run's ~75% genuine prerequisites" — was 61% once
+>   the labels were blind.
+> - **Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool.** Every
+>   figure this project has produced separates into two parts: what the code does, which is ours and is
+>   testable without a model, and how well a model answers, which is the operator's choice. A fourth
+>   extraction run and a 93-case model reproduction were **stopped mid-flight** because they would have
+>   restated a known fact (a local 14B is weaker than a hosted model) at the cost of GPU hours and a
+>   day of the owner's adjudication. What those runs did find — three real defects — came from warnings
+>   and errors in the first two commits, not from any score.
+> - **Next:** the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own
+>   benchmark (§8, item 11) so model choice is an informed decision by whoever installs this.
 
 **What the tool is:** a cargo subcommand that records *why* Rust code changed — the decisions a
 change makes, what had to be true for them (prerequisites), what was rejected, and what follows —
@@ -98,6 +113,7 @@ it starts is the `cargo` that invoked it (`$CARGO`).
 | D16 | **The model is the operator's choice, never the tool's.** Provider (`ollama`, any OpenAI-compatible endpoint), model, endpoint, key variable, context window and the system prompt come from flags, the environment or configuration, with sensible defaults and the prompt tunable per provider; a run records which it used. The default is local (Ollama), so the tool costs nothing to try | S4: the detector runs on a local 7B model and on a hosted one, with the same code |
 | D18 | **The model client is our own, and the default build has no network stack.** `check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`), written out rather than pulled in; a hosted provider over TLS is the `hosted` feature, off by default. This settles item 7: smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway. `check` ships **advisory** — findings print, the exit code stays 0 unless `--strict`, which exits 5 | S4: measured recall 0.38 and 13% of ordinary commits flagged on a local 14B; the self-contained objective; the CI rule that keeps `ureq`, `rustls`, `tokio` and `smysl-provider` out of the default tree |
 | D17 | **The prompt is fitted to the provider, and a split is reported.** `check` sizes each request to what the model takes (context limit less the room the answer needs), splits the units it judges only when they do not fit, and says so — a model judging six units at a time sees less than one judging sixty, and a user who is not told cannot read the result. The same warning covers a truncated diff | S4: a 7B local model at 16k answered badly on ~50 units and usefully on 6; the shipped command must make that visible |
+| D19 | **Quality is model-bound, so the tool is measured without a model and the operator measures their own.** What this project owns is testable with no model at all: quotes checked against the commit, labels and sources assigned by the tool, facts regenerating identically, the prompt fitted to the window, a truncated or salvaged answer reported, candidates and packs identical across implementations. What a model contributes is measured **once per model**, published with the model named, and never quoted as a property of the tool. The evaluation set ships as a command an operator runs against their own commits and their own model (§8, item 11); this project does not add model columns to its own table beyond the ones that taught it something | S4: precision 0.10 local against ~0.89 hosted, same code; S0: three systems at 41–88% prerequisite precision, same code; the three extraction defects of 2026-09-20 were found by warnings, not by a score |
 | D15 | **Review is recorded with smysl 1.4.0's edge lifecycle, never by deleting or rewriting.** Each edge has an identity (rid). **Confirm:** a person's attestation on the edge (`human:<name>`). **Reject:** a `Withdrawal`, whose reason unit says why; the edge stays in the log and is no longer followed, packed or counted. **Close a disagreement:** a `Resolution` naming the contention or the unthreaded `rebuts` edge, with a note unit; it records that review happened and decides nothing. **Queue:** open contentions, unresolved `rebuts` edges, and `backs` / `x.code/exercises` edges with no person's attestation and no withdrawal. Two-run agreement (D12) counts attestations from independent runs on the same rid wherever both endpoints are stable units (test readings, decisions, anchors); for model-worded prerequisites, whose uids differ between runs, agreement stays at the verdict level | smysl dev/1.4.0 `09271ab` (spec draft 1.4); S1 outcome; stability experiment |
 
 ---
@@ -215,10 +231,15 @@ Known weak spots, all in extraction rather than smysl:
 - **Measure (updated after S3):** by `check` (S4). A later change that contradicts each arm's recorded
   prerequisites is checked against each arm's corpus, and the arm whose corpus lets `check` find more
   contradictions, at equal precision, wins. Label scoring is added only if S0 is labelled by then.
-- **Blocked on the instrument (2026-09-19).** S4 measured `check` at recall 0.38 and precision 0.10 on a
-  free local model. An instrument that is wrong nine times in ten cannot separate two arms that differ by
-  less than that, so S2 as written needs either the S0 labels or a hosted model for the scoring pass.
-  **S0 comes first.**
+- **Reassessed 2026-09-20: S2 is deferred, and it is not on the path to anything.** Two reasons, and
+  neither is about how it would turn out.
+  - **The instrument cannot do it.** `check` on a free local model is right about one flag in ten; it
+    cannot separate two arms that differ by less than that. Scoring by S0 labels instead needs twenty
+    changes implemented twice, labelled blind — days of the owner's time.
+  - **Nothing waits on the answer.** S2 was to order Phase 4: capture path first, or input sources
+    first. Under D19 the next work is the tool-side acceptance and the operator's own benchmark, and
+    both are wanted whichever arm would have won. The ordering question can be asked again when someone
+    has a repository and a model to ask it about.
 
 ### S3 — does packed rationale change what an agent does? (done: information)
 
@@ -449,30 +470,32 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
     still deferred.
 - **Item 7, settled (D18):** our own client. The default build carries no network stack; `hosted` adds TLS
   for a paid provider. `extract` will use the same client.
-- **Done when:** on the S0 set, prerequisite precision is at least the research pro run's (~75%
-  genuine), with a measured recall figure; facts regenerate byte-identically.
-  - **Facts regenerate byte-identically: held by a test.**
-  - **Measured 2026-09-20**, the owner having labelled the six studied commits (73 decisions, 68
-    prerequisites, 29 alternatives) blind and adjudicated all three research systems:
+- **Done when (restated 2026-09-20, D19):** the tool-side properties hold, each provable without a model,
+  and the model-side figures are published with the model named rather than treated as a bar to clear.
+  - **Tool-side, and held by tests:** facts regenerate byte-identically; the tool assigns every label,
+    source and status (D5); a quote absent from the commit caps its unit at `speculative` (D8); the
+    commit shown to the model is fitted to that model's window rather than to a constant (D17); an input
+    that had to be cut and an answer that had to be salvaged are both reported; one commit failing does
+    not abandon a run.
+  - **Model-side, measured once and named** (blind labels, six commits, 2026-09-20):
 
     | System | decision P / R | prerequisite P / R | alternative P / R |
     |---|---|---|---|
-    | `research-deepseek-v2` | 82% / 67% | **41%** / 59% | 31% / 69% |
-    | `research-flash-v2` | 100% / 37% | **88%** / 22% | 79% / 52% |
-    | `research-pro-v2` | 96% / 63% | **61%** / 54% | 42% / 69% |
+    | `research-deepseek-v2` | 82% / 67% | 41% / 59% | 31% / 69% |
+    | `research-flash-v2` | 100% / 37% | 88% / 22% | 79% / 52% |
+    | `research-pro-v2` | 96% / 63% | 61% / 54% | 42% / 69% |
 
-    **Decisions are the reliable kind**: every system is at or above 82% precision on them, and the
-    disagreement between systems is recall, not correctness. **Prerequisites are not**: the kind the whole
-    design rests on scores 41% on the model that finds the most of them, and the one that reaches 88%
-    finds only a fifth. **Alternatives are the worst by precision**, 31–79%, which matches what the
-    extraction does: it reads a rejected option into any sentence that mentions one.
-  - **The bar itself was optimistic.** This plan set the bound at "the research pro run's ~75% genuine
-    prerequisites". Under blind labels that same run scores **61%**. The 75% came from reading the
-    extractions and judging them plausible, which is the error S0 exists to prevent: it measures agreement
-    with the reader, not with the commit.
-  - **The bound is not met, and the shipped path is not measured yet.** The tool's own extraction has
-    still to be scored against these labels as a fourth system. That is the next measurement here, and it
-    is cheap now that the instrument exists.
+    Decisions are the reliable kind; the systems differ in recall, not correctness. Prerequisites — what
+    the design rests on — are not: the system finding most of them is right 41% of the time, the one
+    right 88% of the time finds a fifth. Alternatives have the worst precision of the three.
+  - **The old bar was measuring the reader.** It asked for "the research pro run's ~75% genuine
+    prerequisites". Blind, that run is 61%. The 75% came from reading extractions and finding them
+    plausible, which is what S0 exists to prevent.
+  - **The fourth column was dropped, deliberately.** Extracting the same six commits with the shipped
+    code on a local 14B was begun and stopped: it would have said that a 14B is weaker than a hosted
+    model, which S4 had already measured twice, at the cost of the owner adjudicating a fourth system.
+    What that run found instead — a fixed 40 000-character input, a commit lost to a cut-off answer, a
+    run abandoned by one failure — is in the list above, as properties with tests.
 
 ## 7. Phase 3 — verdicts and test evidence
 
@@ -522,9 +545,18 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
   token cost and prompt as settings (D16, D17, D18). It reads a commit (`rev`), a patch (`--patch`) or
   stdin, builds its own unified diff with `imara-diff`, and its deterministic half is tested against a
   scripted judge, with no model and no network.
-- **Done when:**
-  - `check` reproduces its S4 held-out figures from the shipped binary;
-  - on the S0 set, no single-run status raise;
+- **Done when (restated 2026-09-20, D19):**
+  - **the shipped `check` agrees with the harness it was ported from, in everything that does not need a
+    model — done 2026-09-20.** Over the 92 held-out cases with a corpus: the diff shown is identical in
+    92, the candidates and their order in 91, the set of packed units in 70, and the 22 that differ
+    differ only in consequence units, which are never judged, where the solver is choosing between units
+    of equal standing. This found three port defects — the pack ordered by uid instead of label, the
+    edges between packed units dropped, a file header not counted against the diff cap — and it costs
+    nothing to repeat, so it stays as the check against drift;
+  - **a model-run reproduction of the S4 figures is not required.** It was begun, twice, and stopped: on
+    a model measured at 0.10 precision the numbers would be dominated by that model's sampling, and the
+    deterministic comparison above is what actually catches a broken port;
+  - a single run never raises a status (held by the policy tests);
   - wrong `backs` edges are withdrawn (by review or the mutation gate) or pending in the queue, never
     followed by packing or `why`;
   - every reading traces to `tool:smysl-import`.
@@ -545,6 +577,7 @@ goes.
 | 6 | **Storage:** `.smysl/` layout, surface vs CBOR in git, merge driver using smysl merge, growth over hundreds of commits, compaction | Phase 5 | Phase 5 |
 | 8 | **Cost and privacy:** per-commit token budget and price; model routing (small model for decisions/alternatives, pro for prerequisites); quota handling; local model viability | Phase 6 | **Phase 4** |
 | 9 | **Evaluation:** grow S0 into a regression suite run on every prompt or model change | continuous | continuous |
+| 11 | **The operator's own benchmark (D19):** `cargo smysl bench` — label a handful of your own commits, run your own provider and model, get your own precision and recall per kind. It is the S0 kit (`worklist`, `adjudicate`, `score`) behind a command in the shipped tool, with the figures measured here as a reference table beside it. It is the honest answer to "how good is this?", because the answer is a property of the model the operator chose | **Phase 4** | **Phase 4** |
 
 
 
@@ -573,6 +606,14 @@ goes.
   data with a local 14B: 13% of ordinary commits flagged, and 10 of 96 flags correct. That is why `check`
   is advisory and describes itself as a prompt to look. A stronger model roughly halves the flags and
   triples the precision, at a price per run.
+- **Measuring a model is not measuring the tool.** Every quality figure this project has produced moves
+  with the model: the same code scored 0.10 and ~0.89 precision in `check`, and 41% to 88% on
+  prerequisites in extraction. A figure quoted without its model is not a claim about this tool (D19).
+- **A long unattended run reports liveness, not results.** Three times here: a dead process reported as
+  running, 93 cases spent producing nothing because the binary had been replaced under them, and two
+  extraction processes writing one directory so that the output mixed two builds and had to be thrown
+  away. The driver now proves its binary runs and stops when the first case answers nothing; the rest is
+  procedure — one writer per output directory, and read the output, not the process table.
 - **A provider can truncate a prompt silently.** Found only in the owner's Ollama log. The tool now counts
   tokens as the provider charges them, caps the diff at half the window, records predicted against charged,
   and fails rather than answer from a truncated prompt.
