@@ -51,6 +51,19 @@ enum Cmd {
     /// that are ancestors of the task base) and write a packed context per task and per question to
     /// eval/s3/context/.
     S3Context,
+    /// Export S4 cases as trees the shipped `cargo smysl check` can read: a `.smysl/` corpus and the
+    /// change, one directory per case. The reproduction of the held-out figures runs against these.
+    S4Export {
+        /// dev or heldout.
+        #[arg(long)]
+        set: String,
+        /// Where the case directories go.
+        #[arg(long)]
+        to: PathBuf,
+        /// Only these case ids.
+        #[arg(long)]
+        id: Vec<String>,
+    },
     /// S4 detector (eval/s4-protocol.md): check each diff of a set against the corpus of its base's
     /// ancestors, writing eval/s4/results/RUN/ID.json. Existing results are kept (resume).
     S4Check(Box<S4Args>),
@@ -148,6 +161,7 @@ fn main() -> ExitCode {
         Cmd::Stage { system } => stage_system(&cli.eval_dir, system),
         Cmd::S3Context => s3_context(&cli.eval_dir),
         Cmd::S4Check(args) => s4_check(&cli.eval_dir, args),
+        Cmd::S4Export { set, to, id } => s4_export(&cli.eval_dir, set, to, id),
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,
@@ -773,57 +787,20 @@ struct S4Case {
     contradicting: Option<bool>,
 }
 
-fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
-    #[derive(serde::Deserialize)]
-    struct Sets {
-        case: Vec<S4Case>,
-    }
-    let sets: Sets = toml::from_str(&read(&eval.join("s4/sets.toml"))?)
-        .map_err(|e| format!("sets.toml: {e}"))?;
-    let cases: Vec<S4Case> = sets
-        .case
-        .into_iter()
-        .filter(|c| c.set == a.set && (a.id.is_empty() || a.id.contains(&c.id)))
-        .collect();
-    let params = s4::Params {
-        candidates: a.candidates,
-        budget: a.budget,
-        diff_lines: a.diff_lines,
-        file_lines: a.file_lines,
-        query_terms: a.query_terms,
-        model: a.model.clone(),
-        provider: a.provider.clone(),
-        endpoint: a.endpoint.clone(),
-        key_var: a.key_var.clone(),
-        num_ctx: a.num_ctx,
-        chunk: a.chunk,
-        context_limit: a.context_limit.unwrap_or(a.num_ctx),
-        reserve_output: a.reserve_output,
-        chars_per_token: a.chars_per_token,
-        min_term_weight: a.min_term_weight,
-        judge_limit: a.judge_limit,
-        order_seed: a.order_seed,
-        system: match &a.prompt_file {
-            Some(f) => read(f)?,
-            None => s4::DEFAULT_SYSTEM.to_string(),
-        },
-        system_source: match &a.prompt_file {
-            Some(f) => f.display().to_string(),
-            None => "built-in default".into(),
-        },
-    };
+/// The corpora and diffs a set of S4 cases is checked against: one corpus per distinct set of ancestor
+/// commits, and the change each case carries (a commit's diff, or a written patch).
+///
+/// Shared by the harness and the export, so a run of the shipped binary is measured against exactly the
+/// corpus the harness used, and a difference in the figures is a difference in `check`.
+struct S4Corpora {
+    corpora: BTreeMap<(String, Vec<String>), s3::Corpus>,
+    key_of: BTreeMap<String, (String, Vec<String>)>,
+    texts: BTreeMap<String, String>,
+}
+
+fn s4_corpora(eval: &Path, cases: &[S4Case]) -> Result<S4Corpora, String> {
     let reg = s3::read_registry(&eval.join("s3/tasks.toml"))?;
     let set = commits(eval)?;
-    let out = eval.join("s4/results").join(&a.run);
-    std::fs::create_dir_all(&out).map_err(|e| e.to_string())?;
-    let head = git(&eval.join(".."), &["rev-parse", "HEAD"]).unwrap_or_default();
-    std::fs::write(
-        out.join("params.json"),
-        serde_json::to_string_pretty(&serde_json::json!({"params": params, "tool_commit": head.trim(), "set": a.set, "no_model": a.no_model}))
-            .unwrap(),
-    )
-    .map_err(|e| e.to_string())?;
-
     // Extracted S0 commits per repository, and a corpus per distinct set of ancestors.
     let mut dirs: BTreeMap<String, PathBuf> = BTreeMap::new();
     let mut extracted: BTreeMap<String, Vec<(String, cargo_smysl_corpus::Extraction)>> =
@@ -849,7 +826,7 @@ fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
     let mut corpora: BTreeMap<(String, Vec<String>), s3::Corpus> = BTreeMap::new();
     let mut key_of: BTreeMap<String, (String, Vec<String>)> = BTreeMap::new();
     let mut texts: BTreeMap<String, String> = BTreeMap::new();
-    for c in &cases {
+    for c in cases {
         let dir = dirs
             .get(&c.repo)
             .ok_or_else(|| format!("no clone for {}", c.repo))?;
@@ -893,6 +870,125 @@ fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
         key_of.insert(c.id.clone(), key);
         texts.insert(c.id.clone(), text);
     }
+    Ok(S4Corpora {
+        corpora,
+        key_of,
+        texts,
+    })
+}
+
+/// Write each case as a small tree: a stub package so `cargo metadata` finds a workspace root the way
+/// the shipped tool does, a `.smysl/` store holding exactly the corpus the harness used, and the change
+/// as a patch file. What the shipped binary then does is its own; that is the point of the exercise.
+fn s4_export(eval: &Path, set: &str, to: &Path, ids: &[String]) -> Result<(), String> {
+    let cases = s4_cases(eval, set, ids)?;
+    let built = s4_corpora(eval, &cases)?;
+    std::fs::create_dir_all(to).map_err(|e| e.to_string())?;
+    let mut written = 0;
+    for c in &cases {
+        let Some(text) = built.texts.get(&c.id) else {
+            continue;
+        };
+        let key = &built.key_of[&c.id];
+        let corpus = &built.corpora[key];
+        let dir = to.join(&c.id);
+        std::fs::create_dir_all(dir.join("src")).map_err(|e| e.to_string())?;
+        std::fs::write(
+            dir.join("Cargo.toml"),
+            format!(
+                "# Written by `smysl-eval s4-export`: a stub package, so the shipped tool finds a\n\
+                 # workspace root. The corpus under .smysl/ is what is being checked.\n\
+                 # `[workspace]` makes it a root of its own: the export usually lands inside another\n\
+                 # workspace, and cargo refuses a package that believes it is in one it is not in.\n\
+                 [workspace]\n\n[package]\nname = \"s4-{}\"\nversion = \"0.0.0\"\nedition = \"2021\"\n",
+                c.id.to_lowercase()
+            ),
+        )
+        .map_err(|e| e.to_string())?;
+        std::fs::write(dir.join("src/lib.rs"), "").map_err(|e| e.to_string())?;
+        let records: Vec<smysl::Record> = corpus.store.iter().cloned().collect();
+        cargo_smysl_corpus::store::Corpus::at(&dir)
+            .save_records(&records)
+            .map_err(|e| e.to_string())?;
+        std::fs::write(dir.join("change.diff"), text).map_err(|e| e.to_string())?;
+        std::fs::write(
+            dir.join("case.json"),
+            serde_json::to_string_pretty(&serde_json::json!({
+                "id": c.id, "set": c.set, "repo": c.repo, "kind": c.kind,
+                "task": c.task, "contradicting": c.contradicting, "corpus_commits": key.1,
+            }))
+            .unwrap(),
+        )
+        .map_err(|e| e.to_string())?;
+        written += 1;
+    }
+    println!(
+        "s4-export {set}: {written} case(s) under {}\n\
+         each is checked with: cargo smysl check --patch change.diff --json",
+        to.display()
+    );
+    Ok(())
+}
+
+/// The cases of one set, optionally narrowed to some ids.
+fn s4_cases(eval: &Path, set: &str, ids: &[String]) -> Result<Vec<S4Case>, String> {
+    #[derive(serde::Deserialize)]
+    struct Sets {
+        case: Vec<S4Case>,
+    }
+    let sets: Sets = toml::from_str(&read(&eval.join("s4/sets.toml"))?)
+        .map_err(|e| format!("sets.toml: {e}"))?;
+    Ok(sets
+        .case
+        .into_iter()
+        .filter(|c| c.set == set && (ids.is_empty() || ids.contains(&c.id)))
+        .collect())
+}
+
+fn s4_check(eval: &Path, a: &S4Args) -> Result<(), String> {
+    let cases = s4_cases(eval, &a.set, &a.id)?;
+    let params = s4::Params {
+        candidates: a.candidates,
+        budget: a.budget,
+        diff_lines: a.diff_lines,
+        file_lines: a.file_lines,
+        query_terms: a.query_terms,
+        model: a.model.clone(),
+        provider: a.provider.clone(),
+        endpoint: a.endpoint.clone(),
+        key_var: a.key_var.clone(),
+        num_ctx: a.num_ctx,
+        chunk: a.chunk,
+        context_limit: a.context_limit.unwrap_or(a.num_ctx),
+        reserve_output: a.reserve_output,
+        chars_per_token: a.chars_per_token,
+        min_term_weight: a.min_term_weight,
+        judge_limit: a.judge_limit,
+        order_seed: a.order_seed,
+        system: match &a.prompt_file {
+            Some(f) => read(f)?,
+            None => s4::DEFAULT_SYSTEM.to_string(),
+        },
+        system_source: match &a.prompt_file {
+            Some(f) => f.display().to_string(),
+            None => "built-in default".into(),
+        },
+    };
+    let out = eval.join("s4/results").join(&a.run);
+    std::fs::create_dir_all(&out).map_err(|e| e.to_string())?;
+    let head = git(&eval.join(".."), &["rev-parse", "HEAD"]).unwrap_or_default();
+    std::fs::write(
+        out.join("params.json"),
+        serde_json::to_string_pretty(&serde_json::json!({"params": params, "tool_commit": head.trim(), "set": a.set, "no_model": a.no_model}))
+            .unwrap(),
+    )
+    .map_err(|e| e.to_string())?;
+
+    let S4Corpora {
+        corpora,
+        key_of,
+        texts,
+    } = s4_corpora(eval, &cases)?;
     println!(
         "s4-check {}: {} case(s), {} corpus variant(s), results in {}",
         a.set,
