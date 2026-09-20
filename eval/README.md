@@ -8,11 +8,17 @@ and a scorer that turns an extraction into precision and recall per item kind.
 
 ```sh
 cargo run -p cargo-smysl-eval -- templates           # write label templates (skips files that exist)
+cargo run -p cargo-smysl-eval -- worklist --studied  # labelling order, and a reading sheet per commit
 # label eval/labels/<repo>/<sha>.toml by hand, then set status = "done"
 cargo run -p cargo-smysl-eval -- adjudicate <system>  # pair extracted items with label items
 # fill `match` in eval/adjudications/<system>/<repo>/<sha>.toml
 cargo run -p cargo-smysl-eval -- score <system>       # precision / recall per kind, per repo, overall
 ```
+
+**One commit is one document.** `worklist` writes `eval/labels/<repo>/<sha>.diff` beside each label file:
+why the commit is in the set, its message, then its diff, so labelling needs nothing else open. The
+sheets are regenerable and not committed. `--studied` lists the six commits the research already
+extracted — each of those, once labelled, scores three systems at once.
 
 **Label blind.** Write a commit's labels before looking at any extraction of that commit. Extractions
 of the studied commits are in `extractions/`, so do not open that directory until the labels you

@@ -30,6 +30,16 @@ struct Cli {
 enum Cmd {
     /// Write a label template for every commit that has no label file yet.
     Templates,
+    /// S0 labelling order, and a reading sheet (message and diff) beside each unfinished label file.
+    Worklist {
+        /// Only the commits the research already extracted, which can be scored the moment they are
+        /// labelled.
+        #[arg(long)]
+        studied: bool,
+        /// Lines of one file's diff on the sheet before it is cut.
+        #[arg(long, default_value_t = 400)]
+        file_lines: usize,
+    },
     /// Write or refresh adjudication files for a system's extractions of labelled commits.
     Adjudicate { system: String },
     /// Score a system: precision and recall per kind, per repository, and overall.
@@ -129,6 +139,10 @@ fn main() -> ExitCode {
     let cli = Cli::parse();
     let result = match &cli.command {
         Cmd::Templates => templates(&cli.eval_dir),
+        Cmd::Worklist {
+            studied,
+            file_lines,
+        } => worklist(&cli.eval_dir, *studied, *file_lines),
         Cmd::Adjudicate { system } => adjudicate(&cli.eval_dir, system),
         Cmd::Score { system } => score_system(&cli.eval_dir, system),
         Cmd::Stage { system } => stage_system(&cli.eval_dir, system),
@@ -260,6 +274,142 @@ fn templates(eval: &Path) -> Result<(), String> {
     }
     println!("templates: {written} written, {kept} already present");
     Ok(())
+}
+
+/// The labelling order, and the text to label from.
+///
+/// Labelling is the owner's time, and the cost of it is switching windows: the message in one place, the
+/// diff in another, the definitions in a third. So each unfinished commit gets a `<sha>.diff` sheet
+/// beside its label file holding the message and the diff as one document, and the order puts the
+/// studied commits first — those already have extractions, so each one labelled turns into a score.
+///
+/// The sheets are reading material, not labels: they are regenerated freely, and they say nothing about
+/// any extraction, because a label written after reading a model's answer measures agreement, not
+/// quality.
+fn worklist(eval: &Path, studied_only: bool, file_lines: usize) -> Result<(), String> {
+    let set = commits(eval)?;
+    let systems = extraction_systems(eval);
+    let mut rows: Vec<(bool, &Commit, bool, usize)> = Vec::new();
+    for c in &set.commits {
+        let is_studied = c.stratum == "studied";
+        if studied_only && !is_studied {
+            continue;
+        }
+        let done = label_is_done(eval, c);
+        let extracted = systems
+            .iter()
+            .filter(|sys| {
+                eval.join("extractions")
+                    .join(sys)
+                    .join(&c.repo)
+                    .join(format!("{}.json", c.sha))
+                    .exists()
+            })
+            .count();
+        rows.push((is_studied, c, done, extracted));
+    }
+    // Studied first, then the ones with the most extractions waiting on them.
+    rows.sort_by(|a, b| {
+        b.0.cmp(&a.0)
+            .then(b.3.cmp(&a.3))
+            .then(a.1.sha.cmp(&b.1.sha))
+    });
+
+    let (mut written, mut done_count) = (0, 0);
+    for (is_studied, c, done, extracted) in &rows {
+        if *done {
+            done_count += 1;
+            println!("done     {:>6} {:<6}", c.sha, c.repo);
+            continue;
+        }
+        let repo = set
+            .repos
+            .get(&c.repo)
+            .ok_or_else(|| format!("unknown repo {}", c.repo))?;
+        let dir = repo_dir(eval, &c.repo, &repo.url)?;
+        let full = git(&dir, &["rev-parse", &format!("{}^{{commit}}", c.sha)])?
+            .trim()
+            .to_string();
+        let sheet = sheet_text(&dir, &full, c, file_lines)?;
+        let path = label_path(eval, c).with_extension("diff");
+        std::fs::create_dir_all(path.parent().unwrap()).map_err(|e| e.to_string())?;
+        std::fs::write(&path, sheet).map_err(|e| e.to_string())?;
+        written += 1;
+        println!(
+            "todo     {:>6} {:<6} {:<8} {} extraction(s) waiting  ->  {}",
+            c.sha,
+            c.repo,
+            if *is_studied { "studied" } else { "new" },
+            extracted,
+            path.display()
+        );
+    }
+    println!(
+        "\n{done_count} labelled, {written} sheet(s) written. Label the file beside each sheet \
+         (`<sha>.toml`), set status = \"done\", then: cargo run -p cargo-smysl-eval -- score <system>"
+    );
+    Ok(())
+}
+
+/// One commit as a single document: why it is in the set, its message, then its diff, each file cut to
+/// `file_lines` with a note saying what was cut. A cut file is named, so nothing disappears silently.
+fn sheet_text(dir: &Path, full: &str, c: &Commit, file_lines: usize) -> Result<String, String> {
+    let message = git(dir, &["show", "-s", "--format=%B", full])?;
+    let stat = git(dir, &["show", "--stat=100", "--format=", full])?;
+    let diff = git(dir, &["show", "--format=", "--unified=3", full])?;
+    let mut body = String::new();
+    for chunk in diff.split("\ndiff --git ") {
+        let chunk = if body.is_empty() {
+            chunk.to_string()
+        } else {
+            format!("diff --git {chunk}")
+        };
+        let lines: Vec<&str> = chunk.lines().collect();
+        if lines.len() > file_lines {
+            let head = lines[..file_lines].join("\n");
+            body.push_str(&format!(
+                "{head}\n… {} more line(s) of this file not shown; read them with \
+                 `git -C eval/.repos/{} show {full}`\n\n",
+                lines.len() - file_lines,
+                c.repo
+            ));
+        } else {
+            body.push_str(&chunk);
+            body.push('\n');
+        }
+    }
+    Ok(format!(
+        "S0 reading sheet — {repo} {sha}\n\
+         Why this commit is in the set: {why}\n\
+         Label in {sha}.toml. Definitions and boundary cases: eval/README.md.\n\
+         Label blind: do not open eval/extractions/ for this commit first.\n\
+         \n=== message ===\n\n{message}\n=== files ===\n\n{stat}\n=== diff ===\n\n{body}",
+        repo = c.repo,
+        sha = c.sha,
+        why = c.why,
+    ))
+}
+
+/// Which systems have extractions at all, so the worklist can say what a label would score.
+fn extraction_systems(eval: &Path) -> Vec<String> {
+    let Ok(dir) = std::fs::read_dir(eval.join("extractions")) else {
+        return Vec::new();
+    };
+    let mut out: Vec<String> = dir
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_dir())
+        .map(|e| e.file_name().to_string_lossy().into_owned())
+        .collect();
+    out.sort();
+    out
+}
+
+fn label_is_done(eval: &Path, c: &Commit) -> bool {
+    std::fs::read_to_string(label_path(eval, c))
+        .ok()
+        .and_then(|t| toml::from_str::<toml::Value>(&t).ok())
+        .and_then(|v| v.get("status").and_then(|s| s.as_str().map(str::to_string)))
+        .is_some_and(|s| s == "done")
 }
 
 fn done_labels(eval: &Path) -> Result<Vec<(Commit, Option<LabelFile>)>, String> {
