@@ -22,6 +22,7 @@ serde_json = { workspace = true }
 toml       = "1"
 cargo-smysl-corpus = { workspace = true }
 cargo-smysl-git    = { workspace = true }
+cargo-smysl-bench  = { workspace = true }
 cargo-smysl-extract = { workspace = true }
 smysl              = { workspace = true }
 # S4 only: the detector's model client (development tooling, never in the shipped tree).

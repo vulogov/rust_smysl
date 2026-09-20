@@ -24,6 +24,9 @@ cargo-smysl-git      = { workspace = true }
 cargo-smysl-verdict  = { workspace = true }
 serde_json           = { workspace = true }
 cargo-smysl-evidence = { workspace = true }
+cargo-smysl-bench    = { workspace = true }
+# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON.
+toml                 = "1"
 smysl                = { workspace = true }
 clap                 = { workspace = true }
 cargo_metadata       = { workspace = true }

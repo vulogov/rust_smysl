@@ -1,6 +1,7 @@
 use std::collections::BTreeSet;
 use std::path::Path;
 
+use crate::cli;
 use cargo_smysl_corpus::query::dependents_of;
 use cargo_smysl_corpus::store::Corpus;
 use cargo_smysl_extract::{Cache as ExtractionCache, Recipe};
@@ -122,6 +123,7 @@ pub fn run(args: SmyslArgs) -> u8 {
                 window: *window,
             },
         ),
+        Command::Bench { step } => bench(&args, step),
         Command::Stale { .. } => not_yet("stale", "a later phase (item 5, staleness)"),
         Command::Review {
             as_person,
@@ -1391,4 +1393,292 @@ fn rust_files(dir: &Path) -> Vec<std::path::PathBuf> {
     }
     out.sort();
     out
+}
+
+// -------------------------------------------------------------------------------------------------
+// bench: measuring extraction against a person's labels (D19)
+// -------------------------------------------------------------------------------------------------
+
+/// Where a benchmark keeps its files: beside the corpus, because it is about this repository.
+fn bench_dir(root: &Path) -> std::path::PathBuf {
+    root.join(".smysl").join("bench")
+}
+
+fn bench(args: &SmyslArgs, step: &cli::BenchStep) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl bench: {e}");
+            return exit::FAILURE;
+        }
+    };
+    match step {
+        cli::BenchStep::Init {
+            revs,
+            last,
+            file_lines,
+            force,
+        } => bench_init(&root, revs, *last, *file_lines, *force),
+        cli::BenchStep::Status => bench_status(&root),
+        cli::BenchStep::Adjudicate { recipe } => bench_adjudicate(&root, recipe),
+        cli::BenchStep::Score { recipe } => bench_score(&root, recipe),
+    }
+}
+
+/// Write a sheet and a template per commit. An existing template is kept unless `--force`: it may hold
+/// an afternoon's work.
+fn bench_init(root: &Path, revs: &[String], last: usize, file_lines: usize, force: bool) -> u8 {
+    let dir = bench_dir(root);
+    if let Err(e) = std::fs::create_dir_all(&dir) {
+        eprintln!("cargo smysl bench: {}: {e}", dir.display());
+        return exit::FAILURE;
+    }
+    let chosen: Vec<String> = if revs.is_empty() {
+        (0..last).map(|n| format!("HEAD~{n}")).collect()
+    } else {
+        revs.to_vec()
+    };
+    let repo = root
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "repository".into());
+    let (mut written, mut kept) = (0, 0);
+    for rev in &chosen {
+        let (sha, template, reading) =
+            match cargo_smysl_bench::sheet::of_commit(root, &repo, rev, file_lines) {
+                Ok(x) => x,
+                Err(e) => {
+                    eprintln!("cargo smysl bench: {rev}: {e}");
+                    continue;
+                }
+            };
+        let label = dir.join(format!("{sha}.toml"));
+        if label.exists() && !force {
+            kept += 1;
+        } else if let Err(e) = std::fs::write(&label, template) {
+            eprintln!("cargo smysl bench: {}: {e}", label.display());
+            return exit::FAILURE;
+        } else {
+            written += 1;
+        }
+        let sheet = dir.join(format!("{sha}.diff"));
+        if let Err(e) = std::fs::write(&sheet, reading) {
+            eprintln!("cargo smysl bench: {}: {e}", sheet.display());
+            return exit::FAILURE;
+        }
+    }
+    println!(
+        "{written} template(s) written, {kept} kept, in {}\n\
+         read <sha>.diff, fill in <sha>.toml, set status = \"done\", then: cargo smysl bench status",
+        dir.display()
+    );
+    exit::OK
+}
+
+/// The labels, and what each one is waiting for.
+fn bench_status(root: &Path) -> u8 {
+    let labels = match bench_labels(root) {
+        Ok(labels) => labels,
+        Err(e) => {
+            eprintln!("cargo smysl bench: {e}");
+            return exit::FAILURE;
+        }
+    };
+    if labels.is_empty() {
+        println!("no labels yet: cargo smysl bench init");
+        return exit::OK;
+    }
+    let (mut done, mut todo) = (0, 0);
+    for (sha, label) in &labels {
+        if label.is_done() {
+            done += 1;
+            let counts = cargo_smysl_bench::Kind::ALL
+                .iter()
+                .map(|k| format!("{} {:?}", label.items(*k).len(), k))
+                .collect::<Vec<_>>()
+                .join(", ");
+            println!("done  {sha}  {counts}");
+        } else {
+            todo += 1;
+            println!("todo  {sha}  .smysl/bench/{sha}.diff");
+        }
+        if let Err(e) = label.validate() {
+            println!("      warning: {e}");
+        }
+    }
+    println!("\n{done} labelled, {todo} to go");
+    if done > 0 {
+        println!("next: cargo smysl extract <sha> for each, then cargo smysl bench adjudicate");
+    }
+    exit::OK
+}
+
+fn bench_labels(root: &Path) -> Result<Vec<(String, cargo_smysl_bench::LabelFile)>, String> {
+    let dir = bench_dir(root);
+    let entries = match std::fs::read_dir(&dir) {
+        Ok(entries) => entries,
+        Err(_) => return Ok(Vec::new()),
+    };
+    let mut out = Vec::new();
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.extension().map(|e| e != "toml").unwrap_or(true) {
+            continue;
+        }
+        let text =
+            std::fs::read_to_string(&path).map_err(|e| format!("{}: {e}", path.display()))?;
+        let label: cargo_smysl_bench::LabelFile =
+            toml::from_str(&text).map_err(|e| format!("{}: {e}", path.display()))?;
+        let sha = path
+            .file_stem()
+            .map(|s| s.to_string_lossy().into_owned())
+            .unwrap_or_default();
+        out.push((sha, label));
+    }
+    out.sort_by(|a, b| a.0.cmp(&b.0));
+    Ok(out)
+}
+
+/// Pair what the tool extracted with what the person labelled, keeping any pairing already made.
+fn bench_adjudicate(root: &Path, recipe: &str) -> u8 {
+    let labels = match bench_labels(root) {
+        Ok(labels) => labels,
+        Err(e) => {
+            eprintln!("cargo smysl bench: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let cache = ExtractionCache::at(root);
+    let recipe = Recipe {
+        name: recipe.to_string(),
+        ..Recipe::default()
+    };
+    let dir = bench_dir(root);
+    let (mut written, mut unlabelled, mut unextracted) = (0, 0, 0);
+    for (sha, label) in &labels {
+        if !label.is_done() {
+            unlabelled += 1;
+            continue;
+        }
+        let Some(extraction) = cache.read(&label.commit, &recipe) else {
+            unextracted += 1;
+            println!("{sha}: nothing extracted yet: cargo smysl extract {sha}");
+            continue;
+        };
+        let json = match serde_json::to_value(&extraction) {
+            Ok(json) => json,
+            Err(e) => {
+                eprintln!("cargo smysl bench: {sha}: {e}");
+                return exit::FAILURE;
+            }
+        };
+        let items = cargo_smysl_bench::extracted_items(&json);
+        let path = dir.join(format!("{sha}.{}.adjudication.toml", recipe.name));
+        // A pairing already made is kept: this file is the person's work, and rerunning must not undo it.
+        let previous: Option<cargo_smysl_bench::Adjudication> = std::fs::read_to_string(&path)
+            .ok()
+            .and_then(|t| toml::from_str(&t).ok());
+        let adj = cargo_smysl_bench::adjudication(&recipe.name, label, &items, previous.as_ref());
+        let text = match toml::to_string_pretty(&adj) {
+            Ok(text) => text,
+            Err(e) => {
+                eprintln!("cargo smysl bench: {e}");
+                return exit::FAILURE;
+            }
+        };
+        let header = "# Set `match` for each item: a label id of the same kind, or \"none\".\n\
+                      # `suggest` is word overlap, nothing more — it proposes, you decide.\n\n";
+        if let Err(e) = std::fs::write(&path, format!("{header}{text}")) {
+            eprintln!("cargo smysl bench: {}: {e}", path.display());
+            return exit::FAILURE;
+        }
+        written += 1;
+        let pending = adj.items.iter().filter(|i| i.matched.is_empty()).count();
+        println!(
+            "{sha}: {} item(s), {pending} to pair  ->  {}",
+            adj.items.len(),
+            path.display()
+        );
+    }
+    println!(
+        "\n{written} file(s); {unlabelled} label(s) unfinished, {unextracted} commit(s) not extracted"
+    );
+    if written > 0 {
+        println!("set `match` in each, then: cargo smysl bench score");
+    }
+    exit::OK
+}
+
+/// Count. Precision is of what was judged; recall waits until nothing is pending, because a recall
+/// computed over half an adjudication flatters whatever was easy to pair.
+fn bench_score(root: &Path, recipe: &str) -> u8 {
+    let labels = match bench_labels(root) {
+        Ok(labels) => labels,
+        Err(e) => {
+            eprintln!("cargo smysl bench: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let dir = bench_dir(root);
+    let mut totals: std::collections::BTreeMap<cargo_smysl_bench::Kind, cargo_smysl_bench::Tally> =
+        std::collections::BTreeMap::new();
+    let mut scored = 0;
+    for (sha, label) in &labels {
+        if !label.is_done() {
+            continue;
+        }
+        let path = dir.join(format!("{sha}.{recipe}.adjudication.toml"));
+        let Ok(text) = std::fs::read_to_string(&path) else {
+            continue;
+        };
+        let adj: cargo_smysl_bench::Adjudication = match toml::from_str(&text) {
+            Ok(adj) => adj,
+            Err(e) => {
+                eprintln!("cargo smysl bench: {}: {e}", path.display());
+                return exit::FAILURE;
+            }
+        };
+        match cargo_smysl_bench::score(label, &adj) {
+            Ok(tallies) => {
+                for (kind, tally) in tallies {
+                    totals.entry(kind).or_default().add(tally);
+                }
+                scored += 1;
+            }
+            Err(e) => {
+                eprintln!("cargo smysl bench: {e}");
+                return exit::FAILURE;
+            }
+        }
+    }
+    if scored == 0 {
+        println!("nothing to score yet: cargo smysl bench adjudicate");
+        return exit::OK;
+    }
+    let show = |v: Option<f64>| match v {
+        Some(x) => format!("{:.0}%", x * 100.0),
+        None => "—".to_string(),
+    };
+    println!("{scored} commit(s), recipe {recipe}\n");
+    println!(
+        "{:<14}{:>10}{:>8}{:>11}{:>8}{:>9}",
+        "kind", "extracted", "labels", "precision", "recall", "pending"
+    );
+    for (kind, t) in &totals {
+        println!(
+            "{:<14}{:>10}{:>8}{:>11}{:>8}{:>9}",
+            format!("{kind:?}").to_lowercase(),
+            t.extracted,
+            t.labels,
+            show(t.precision()),
+            show(t.recall()),
+            t.pending
+        );
+    }
+    println!(
+        "\nThese are figures about the model you used, on these commits — not about the tool.\n\
+         Measured elsewhere for comparison (docs/implementation-plan.md §6): a hosted pro model reached\n\
+         96% precision on decisions and 61% on prerequisites; a local 14B over-produces both."
+    );
+    exit::OK
 }

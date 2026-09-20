@@ -173,6 +173,7 @@ dependencies = [
 name = "cargo-smysl"
 version = "0.1.0"
 dependencies = [
+ "cargo-smysl-bench",
  "cargo-smysl-corpus",
  "cargo-smysl-evidence",
  "cargo-smysl-extract",
@@ -183,6 +184,17 @@ dependencies = [
  "clap",
  "serde_json",
  "smysl",
+ "toml",
+]
+
+[[package]]
+name = "cargo-smysl-bench"
+version = "0.1.0"
+dependencies = [
+ "cargo-smysl-git",
+ "serde",
+ "serde_json",
+ "toml",
 ]
 
 [[package]]
@@ -199,7 +211,9 @@ dependencies = [
 name = "cargo-smysl-eval"
 version = "0.1.0"
 dependencies = [
+ "cargo-smysl-bench",
  "cargo-smysl-corpus",
+ "cargo-smysl-extract",
  "cargo-smysl-git",
  "clap",
  "serde",

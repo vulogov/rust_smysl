@@ -178,6 +178,15 @@ pub enum Command {
         #[arg(long, env = "SMYSL_CHECK_CHARS_PER_TOKEN", default_value_t = 2.0)]
         chars_per_token: f32,
     },
+    /// Measure extraction against your own labels, on your own commits, with your own model (D19).
+    ///
+    /// How good extraction is depends on the model you chose, so the only figure about your model is one
+    /// you measure. Four steps: `init` writes a reading sheet and a label template per commit, you label
+    /// them, `adjudicate` pairs what the tool extracted with what you labelled, `score` counts.
+    Bench {
+        #[command(subcommand)]
+        step: BenchStep,
+    },
     /// Report reasoning whose code has moved since it was recorded.
     Stale {
         /// Revision range, e.g. `v1.2.0..HEAD`.
@@ -206,5 +215,39 @@ pub enum Command {
         /// Include what has already been dealt with.
         #[arg(long)]
         all: bool,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum BenchStep {
+    /// Write a reading sheet and a label template for each commit, under `.smysl/bench/`.
+    Init {
+        /// Commits to label; defaults to the last `--last` commits.
+        revs: Vec<String>,
+        /// How many recent commits to take when none are named.
+        #[arg(long, default_value_t = 5)]
+        last: usize,
+        /// Lines of one file's diff on the sheet before it is cut.
+        #[arg(long, default_value_t = 400)]
+        file_lines: usize,
+        /// Rewrite a template that already exists, losing what is in it.
+        #[arg(long)]
+        force: bool,
+    },
+    /// What is labelled, what is not, and what each unfinished label would let you score.
+    Status,
+    /// Pair what the tool extracted with what you labelled, for you to confirm.
+    ///
+    /// Reads the extraction the tool cached for each commit (`cargo smysl extract <rev>`), suggests a
+    /// label for each extracted item by word overlap, and leaves `match` for you to set.
+    Adjudicate {
+        /// Which extraction to judge, by the recipe that produced it.
+        #[arg(long, default_value = "v1")]
+        recipe: String,
+    },
+    /// Precision and recall per kind, for your model on your commits.
+    Score {
+        #[arg(long, default_value = "v1")]
+        recipe: String,
     },
 }
