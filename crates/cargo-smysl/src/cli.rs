@@ -150,6 +150,11 @@ pub enum Command {
         /// person: `cargo smysl review`.
         #[arg(long, requires = "tests")]
         link: bool,
+        /// Opt-in mutation gate (S1): change the code this claim is about, this many times, and ask
+        /// whether each linking test notices. A test that notices nothing is recorded as exercising the
+        /// code rather than verifying the claim. Slow: every change reruns the test.
+        #[arg(long, requires = "link", default_value_t = 0, value_name = "CHANGES")]
+        mutate: usize,
         /// `ollama`, or `openai` for any OpenAI-compatible endpoint.
         #[arg(long, env = "SMYSL_CHECK_PROVIDER", default_value = "ollama")]
         provider: String,

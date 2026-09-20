@@ -498,3 +498,109 @@ mod classify {
         assert_eq!(classified[0].kind, Kind::Unrelated);
     }
 }
+
+// ---------------------------------------------------------------------------------------------
+// The opt-in mutation gate (S1)
+// ---------------------------------------------------------------------------------------------
+
+const UNDER_TEST: &str = r#"
+pub fn within(value: usize, limit: usize) -> bool {
+    // A comparison here is the thing a test of this should notice.
+    let ok = value < limit;
+    ok && limit > 0
+}
+
+/// "a string with < and && in it" is prose, not code.
+pub fn described() -> &'static str {
+    "value < limit && limit > 0"
+}
+"#;
+
+#[test]
+fn mutations_are_taken_from_the_function_and_not_from_its_prose() {
+    let all = facts("src/lib.rs", UNDER_TEST).unwrap();
+    let within = all
+        .iter()
+        .find_map(|f| match f {
+            cargo_smysl_facts::Fact::Function(x) if x.name == "within" => Some(x),
+            _ => None,
+        })
+        .expect("the function is a fact");
+    let found = cargo_smysl_evidence::mutants(within, UNDER_TEST, 10);
+    assert!(!found.is_empty(), "a comparison is mutable");
+    for m in &found {
+        assert!(
+            m.line >= within.line && m.line <= within.end,
+            "inside the function: {m:?}"
+        );
+        assert!(
+            !m.before.trim_start().starts_with("//"),
+            "not a comment: {m:?}"
+        );
+        assert!(!m.before.contains('"'), "not a string: {m:?}");
+    }
+    assert!(
+        found.iter().any(|m| m.after.contains("value >= limit")),
+        "the comparison is flipped: {found:?}"
+    );
+}
+
+#[test]
+fn a_test_that_notices_nothing_may_not_back_a_claim() {
+    let mutant = cargo_smysl_evidence::Mutant {
+        file: "src/lib.rs".into(),
+        line: 4,
+        before: "    let ok = value < limit;".into(),
+        after: "    let ok = value >= limit;".into(),
+        operator: "< to >=".into(),
+    };
+    let noticed_nothing = cargo_smysl_evidence::Score {
+        missed: vec![mutant.clone()],
+        ..cargo_smysl_evidence::Score::default()
+    };
+    assert!(!noticed_nothing.backs(), "it did not notice this code");
+    assert!(noticed_nothing.because().contains("passed under all"));
+
+    // Insensitive is not vacuous: S1 measured that refusing these costs more valid edges than it saves.
+    let noticed_some = cargo_smysl_evidence::Score {
+        caught: vec![mutant.clone()],
+        missed: vec![mutant.clone()],
+        ..cargo_smysl_evidence::Score::default()
+    };
+    assert!(noticed_some.backs());
+    assert!(noticed_some.because().contains("1 of 2"));
+
+    // Nothing compiled: the gate has no opinion, and says so rather than refusing.
+    let nothing_viable = cargo_smysl_evidence::Score {
+        unviable: vec![mutant],
+        ..cargo_smysl_evidence::Score::default()
+    };
+    assert!(nothing_viable.backs());
+    assert!(nothing_viable.because().contains("says nothing"));
+}
+
+#[test]
+fn an_interrupted_run_leaves_the_source_as_it_found_it() {
+    let root = std::env::temp_dir().join(format!("smysl-mutate-{}", std::process::id()));
+    let file = root.join("src/lib.rs");
+    std::fs::create_dir_all(file.parent().unwrap()).unwrap();
+    std::fs::write(&file, UNDER_TEST).unwrap();
+    // What an interrupted run leaves behind: a mutated file, and the original beside it.
+    let backup = root.join(".smysl/mutation-backup");
+    std::fs::create_dir_all(&backup).unwrap();
+    std::fs::write(backup.join("src%lib.rs.orig"), UNDER_TEST).unwrap();
+    std::fs::write(&file, "fn mutated() {}").unwrap();
+
+    let said = cargo_smysl_evidence::recover(&root);
+    assert_eq!(std::fs::read_to_string(&file).unwrap(), UNDER_TEST);
+    assert!(
+        said.iter()
+            .any(|s| s.contains("src/lib.rs") && s.contains("restored")),
+        "and it says so: {said:?}"
+    );
+    assert!(
+        !backup.join("src%lib.rs.orig").exists(),
+        "the backup is spent"
+    );
+    std::fs::remove_dir_all(&root).ok();
+}

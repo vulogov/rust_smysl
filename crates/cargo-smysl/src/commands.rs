@@ -1,3 +1,4 @@
+use std::collections::BTreeSet;
 use std::path::Path;
 
 use cargo_smysl_corpus::query::dependents_of;
@@ -93,6 +94,7 @@ pub fn run(args: SmyslArgs) -> u8 {
             run,
             tests,
             link,
+            mutate,
             provider,
             model,
             endpoint,
@@ -105,6 +107,7 @@ pub fn run(args: SmyslArgs) -> u8 {
             run,
             *tests,
             *link,
+            *mutate,
             *chars_per_token,
             ExtractHow {
                 recipe: "",
@@ -386,6 +389,7 @@ fn evidence(
     run: &str,
     shortlist_tests: bool,
     link_tests: bool,
+    mutate: usize,
     chars_per_token: f32,
     how: ExtractHow<'_>,
 ) -> u8 {
@@ -468,7 +472,7 @@ fn evidence(
         }
         println!();
         if link_tests {
-            return link_evidence(&root, &store, label, &claim, &picked, &all, &judge);
+            return link_evidence(&root, &store, label, &claim, &picked, &all, &judge, mutate);
         }
     }
 
@@ -536,6 +540,7 @@ fn link_evidence(
     shortlist: &[cargo_smysl_evidence::Candidate],
     facts: &[cargo_smysl_facts::Fact],
     judge: &ProviderJudge,
+    mutate: usize,
 ) -> u8 {
     if shortlist.is_empty() {
         println!("no test to run");
@@ -562,6 +567,49 @@ fn link_evidence(
     }
     for c in &wanted {
         println!("  {:?}: {} — {}", c.kind, c.test, c.because);
+    }
+
+    // The opt-in gate (S1): does a test that claims to verify this claim notice the code changing?
+    // It only ever refuses a test that noticed nothing, and it says what it did either way.
+    let mut vacuous: BTreeSet<String> = BTreeSet::new();
+    if mutate > 0 {
+        for note in cargo_smysl_evidence::recover(root) {
+            eprintln!("cargo smysl evidence: {note}");
+        }
+        let Some(target) = anchor_function(claim, facts) else {
+            eprintln!(
+                "cargo smysl evidence: no function of this repository answers to the claim, so the \
+                 mutation gate has nothing to change"
+            );
+            return exit::FAILURE;
+        };
+        println!(
+            "\nmutating {}:{} ({}), at most {mutate} change(s) per test",
+            target.file,
+            target.line,
+            target.label()
+        );
+        for c in wanted
+            .iter()
+            .filter(|c| c.kind == cargo_smysl_evidence::link::Kind::Verifies)
+        {
+            let one = cargo_smysl_evidence::Plan {
+                tests: vec![c.test.clone()],
+                ..cargo_smysl_evidence::Plan::default()
+            };
+            match cargo_smysl_evidence::gate(root, target, &one, "", mutate) {
+                Ok(score) => {
+                    println!("  {}: {}", c.test, score.because());
+                    if !score.backs() {
+                        vacuous.insert(c.test.clone());
+                    }
+                }
+                Err(e) => {
+                    eprintln!("cargo smysl evidence: the mutation gate could not run: {e}");
+                    return exit::FAILURE;
+                }
+            }
+        }
     }
 
     let plan = cargo_smysl_evidence::Plan {
@@ -618,7 +666,12 @@ fn link_evidence(
                 .map(|(_, uid)| cargo_smysl_evidence::Link {
                     reading: *uid,
                     claim: claim_uid,
-                    kind: c.kind,
+                    // A test the gate found blind to this code runs it; it does not verify it.
+                    kind: if vacuous.contains(&c.test) {
+                        cargo_smysl_evidence::link::Kind::Exercises
+                    } else {
+                        c.kind
+                    },
                 })
         })
         .collect();
@@ -680,6 +733,22 @@ fn claim_text(store: &smysl::Store, label: &str) -> Result<String, String> {
 }
 
 /// A prerequisite the extraction marked normative reaches `ImplementedBy` at most (D12).
+/// The function the claim is about: the best-scoring structural fact that is not itself a test.
+///
+/// The gate changes this code and asks whether the linked test notices, so choosing it wrongly makes
+/// every answer meaningless. It is the same retrieval the matcher uses, which is why it is the same
+/// function a reader would name.
+fn anchor_function<'a>(
+    claim: &str,
+    facts: &'a [cargo_smysl_facts::Fact],
+) -> Option<&'a cargo_smysl_facts::item::Function> {
+    let shown = retrieve(claim, facts, &Retrieval::default());
+    shown.structural.iter().find_map(|f| match f {
+        cargo_smysl_facts::Fact::Function(x) if !x.is_test() => Some(x),
+        _ => None,
+    })
+}
+
 /// A model's name as an agent id may carry: `qwen2.5-coder:14b` names a tag with a colon, and an agent
 /// id keeps one colon for its kind, so the rest become dashes. The name still reads as the model.
 fn agent_name(model: &str) -> String {

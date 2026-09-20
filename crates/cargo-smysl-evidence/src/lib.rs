@@ -7,11 +7,13 @@
 pub mod candidate;
 pub mod classify;
 pub mod link;
+pub mod mutate;
 pub mod run;
 pub mod vacuity;
 
 pub use candidate::{candidates, tests, Candidate};
 pub use classify::{classify, Classified};
 pub use link::{edges, Kind, Link, LinkError};
+pub use mutate::{gate, mutants, recover, Mutant, Score};
 pub use run::{import, readings, run, Plan, Reading, RunError};
 pub use vacuity::vacuous;
