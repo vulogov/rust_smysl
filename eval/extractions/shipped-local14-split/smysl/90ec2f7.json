@@ -1,0 +1,1479 @@
+{
+  "decisions": [
+    {
+      "decision": "The CLI is measurable and measured.",
+      "kind": "act",
+      "rationale": "The manual's 46 replayed transcripts are inside `cargo test` now, which moved the survivor rate from 72.0% to 64.2%; then Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1.",
+      "quote": "The manual's 46 replayed transcripts are inside `cargo test` now, which moved the survivor rate from 72.0% to 64.2%; then Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1."
+    },
+    {
+      "decision": "The CLI is now tested with a golden file.",
+      "kind": "act",
+      "rationale": "A golden file, compared inside cargo test rather than by a Makefile target: a Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13.",
+      "quote": "A golden file, compared inside cargo test rather than by a Makefile target: a Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13."
+    },
+    {
+      "decision": "The CLI commands are now tested with required arguments.",
+      "kind": "act",
+      "rationale": "Seven commands take a required argument, so clap rejects the bare name before the router runs. Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it. minimal_args supplies what each needs, and the clap refusal is now itself a failure.",
+      "quote": "Seven commands take a required argument, so clap rejects the bare name before the router runs. Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it. minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": "The CLI commands are now tested in isolation.",
+      "kind": "act",
+      "rationale": "Every command in the test now runs from a scratch directory of its own.",
+      "quote": "Every command in the test now runs from a scratch directory of its own."
+    },
+    {
+      "decision": "The CLI commands are now tested with all features enabled.",
+      "kind": "act",
+      "rationale": "At --all-features the test does not exist rather than being skipped -- `cargo test --test doc_output` runs 1 test, with --all-features it runs 0.",
+      "quote": "At --all-features the test does not exist rather than being skipped -- `cargo test --test doc_output` runs 1 test, with --all-features it runs 0."
+    },
+    {
+      "decision": "The CLI commands are now tested with a specific feature configuration.",
+      "kind": "act",
+      "rationale": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift.",
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": "The CLI commands are now tested with all possible feature combinations.",
+      "kind": "act",
+      "rationale": "make ci green, sentinel verified: ten feature combinations, zero failures.",
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": "Deleting a command's arm in `main` removes its routing.",
+      "kind": "act",
+      "rationale": "It was found by deleting an arm and watching the test keep passing.",
+      "quote": "Deleting a command's arm in `main` removes its routing: the subcommand still parses and the router falls through to 'not wired in this build'."
+    },
+    {
+      "decision": "Deleting a command's arm in cli() removes its arguments.",
+      "kind": "act",
+      "rationale": "It was found by deleting an arm and watching the test keep passing.",
+      "quote": "Deleting its arm in cli() removes its *arguments* and nothing else, because cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": "Adding a required argument tomorrow says so rather than quietly dropping coverage.",
+      "kind": "act",
+      "rationale": "It needs a golden file, compared inside cargo test rather than by a Makefile target.",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure, so adding a required argument tomorrow says so rather than quietly dropping coverage."
+    },
+    {
+      "decision": "Every command in the test now runs from a scratch directory of its own.",
+      "kind": "act",
+      "rationale": "Probing this by hand also dirtied the checkout: running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written.",
+      "quote": "Every command in the test now runs from a scratch directory of its own."
+    },
+    {
+      "decision": "The CLI's coverage is 'feature-dependent in a way nothing states'.",
+      "kind": "act",
+      "rationale": "READINESS said the CLI's coverage is 'feature-dependent in a way nothing states'. It states it.",
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": "The CLI's test suite now includes `make doc-cargo`.",
+      "kind": "act",
+      "rationale": "`make doc-cargo` closed the other half in 1.1.",
+      "quote": "`make doc-cargo` closed the other half in 1.1."
+    },
+    {
+      "decision": "The CLI's test suite now includes `tests/doc_output.rs`.",
+      "kind": "act",
+      "rationale": "0.13 put the replay inside `cargo test`.",
+      "quote": "`tests/doc_output.rs` runs it against `CARGO_BIN_EXE_smysl`, which is the binary `cargo-mutants` rebuilds with each mutation applied."
+    },
+    {
+      "decision": "The CLI's test suite now includes a golden file for comparison inside cargo test.",
+      "kind": "act",
+      "rationale": "It needs a golden file, compared inside cargo test rather than by a Makefile target.",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure, so adding a required argument tomorrow says so rather than quietly dropping coverage."
+    },
+    {
+      "decision": "The CLI's test suite now includes `tests/cmd_fmt.rs`, `tests/cmd_merge.rs`, and `tests/cmd_providers.rs`.",
+      "kind": "act",
+      "rationale": "These figures were nearly published as a comparison of two different configurations, which is the error corrected two paragraphs above this one.",
+      "quote": "| function | before | after | where |\n| --- | --- | --- | --- |\n| `cmd_fmt` | 12 | **2** | `tests/cmd_fmt.rs`, 6 tests |\n| `cmd_merge` | 11 | **0** | `tests/cmd_merge.rs`, 7 tests |\n| `cmd_providers` | 12 | **1** | `tests/cmd_providers.rs`, 5 tests |"
+    },
+    {
+      "decision": "The CLI's test suite now includes a check for the contention-flood cap.",
+      "kind": "act",
+      "rationale": "A real gap found alongside them: the contention-flood cap.",
+      "quote": "flooding decides `SMY-W055`, and its one test set `max_contentions_per_agent = Some(0)` — which makes `len > cap` trivially true, so 'always fire', 'always fire one', and `>` loosened to `>=` all pass it unchanged, and the count in the message was never read."
+    },
+    {
+      "decision": "The CLI's test suite now includes a check for the correctness of the `merge --format surface` command.",
+      "kind": "act",
+      "rationale": "A defect the mutants only pointed at.",
+      "quote": "`merge --format surface` counted a label binding as having no surface form, so `@claim c/a` warned that one record was 'omitted' over output that read `@claim c/a`. The comment directly above that filter records the *same* mistake being fixed once already, for the `@doc` header — expressible, and blamed on contentions."
+    },
+    {
+      "decision": "The CLI's test suite now includes a check for the correctness of the `cmd_providers` command.",
+      "kind": "act",
+      "rationale": "`cmd_providers` first configured its hosted provider as `anthropic` and passed under `--all-features` and the default build, then failed three tests in the matrix entry that has `providers` and ollama but no vendor mappers — `providers` alone compiles none.",
+      "quote": "`cmd_providers` first configured its hosted provider as `anthropic` and passed under `--all-features` and the default build, then failed three tests in the matrix entry that has `providers` and ollama but no vendor mappers — `providers` alone compiles none."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that runs every command and compares all arguments against a golden file.",
+      "kind": "act",
+      "rationale": "To ensure the CLI remains stable, a comprehensive test is added to verify that all commands are correctly routed and their arguments are handled as expected.",
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that checks for required arguments in commands.",
+      "kind": "act",
+      "rationale": "To prevent regressions where commands lose their required arguments, a test is added to ensure all commands with required arguments are correctly handled.",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": "The CLI's test suite now runs from a scratch directory for each command to avoid cross-command interference.",
+      "kind": "act",
+      "rationale": "To ensure that commands do not interfere with each other during testing, each command is run in its own isolated directory.",
+      "quote": "Every command in the test now runs from a scratch directory of its own."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test for the `--all-features` anomaly.",
+      "kind": "act",
+      "rationale": "To address an issue where the test does not exist when running with all features, a test is added to verify the behavior under this configuration.",
+      "quote": "At --all-features the test does not exist rather than being skipped."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that checks for equivalent mutants in command functions.",
+      "kind": "act",
+      "rationale": "To ensure that equivalent mutants are correctly identified and handled, a test is added to verify the behavior of these mutants.",
+      "quote": "One survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that checks for defects in command wiring.",
+      "kind": "act",
+      "rationale": "To prevent regressions where commands are not correctly wired, a test is added to verify the behavior of these commands.",
+      "quote": "Two defects found in the wiring, both of the kind this phase keeps producing."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that checks for defects in command output.",
+      "kind": "act",
+      "rationale": "To prevent regressions where commands produce incorrect output, a test is added to verify the behavior of these commands.",
+      "quote": "One defect found in the wiring, both of the kind this phase keeps producing."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that checks for defects in command input handling.",
+      "kind": "act",
+      "rationale": "To prevent regressions where commands do not correctly handle input, a test is added to verify the behavior of these commands.",
+      "quote": "One defect found in the wiring, both of the kind this phase keeps producing."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that checks for defects in command execution.",
+      "kind": "act",
+      "rationale": "To prevent regressions where commands do not execute correctly, a test is added to verify the behavior of these commands.",
+      "quote": "One defect found in the wiring, both of the kind this phase keeps producing."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that checks for defects in command argument parsing.",
+      "kind": "act",
+      "rationale": "To prevent regressions where commands do not correctly parse arguments, a test is added to verify the behavior of these commands.",
+      "quote": "One defect found in the wiring, both of the kind this phase keeps producing."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that checks for defects in command argument validation.",
+      "kind": "act",
+      "rationale": "To prevent regressions where commands do not correctly validate arguments, a test is added to verify the behavior of these commands.",
+      "quote": "One defect found in the wiring, both of the kind this phase keeps producing."
+    },
+    {
+      "decision": "The CLI's test suite now includes a test that checks for defects in command argument handling.",
+      "kind": "act",
+      "rationale": "To prevent regressions where commands do not correctly handle arguments, a test is added to verify the behavior of these commands.",
+      "quote": "One defect found in the wiring, both of the kind this phase keeps producing."
+    },
+    {
+      "decision": "Add a test that runs every command and compares all arguments against a golden file.",
+      "kind": "act",
+      "rationale": "To ensure that none of the seven commands with one arm in each (ingest, usage, reindex, import, relink, compact, ui) could have stopped working without being detected by the test suite.",
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": "Modify the test to fail if a command has no arguments.",
+      "kind": "act",
+      "rationale": "To catch cases where a command's arguments are removed, which would not be detected by the previous test.",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure"
+    },
+    {
+      "decision": "Ensure that every command runs from a scratch directory of its own in the test suite.",
+      "kind": "act",
+      "rationale": "To prevent commands from interfering with each other by leaving behind files in the same directory.",
+      "quote": "Every command in the test now runs from a scratch directory of its own."
+    },
+    {
+      "decision": "Add a target to regenerate `tests/cli-surface.txt` with the recorded CLI argument surface.",
+      "kind": "act",
+      "rationale": "To ensure that the golden file for the CLI argument surface is up-to-date and reflects the current state of the CLI.",
+      "quote": "cli-surface: recorded $$(grep -vc '^#' tests/cli-surface.txt) argument(s) across $(words $(COMMAND_NAMES)) commands"
+    },
+    {
+      "decision": "Update the `doc-output` target to ensure it uses a default-features build.",
+      "kind": "act",
+      "rationale": "To prevent false drift reports when running the manual's documented commands against the real binary.",
+      "quote": "Needs a default-features build: a stale --all-features binary reports false drift."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The manual's 46 replayed transcripts are inside `cargo test` now",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The manual's 46 replayed transcripts are inside `cargo test` now, which moved the survivor rate from 72.0% to 64.2%; then Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1."
+    },
+    {
+      "decision": 2,
+      "text": "The CLI's coverage is feature-dependent in a way nothing states.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "**`doc-output`'s coverage is feature-dependent**, which nothing states."
+    },
+    {
+      "decision": 2,
+      "text": "A Makefile gate is invisible to anything that counts coverage.",
+      "kind": "tool-setting",
+      "normative": false,
+      "quote": "A Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13."
+    },
+    {
+      "decision": 3,
+      "text": "Seven commands take a required argument",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Seven commands take a required argument, so clap rejects the bare name before the router runs."
+    },
+    {
+      "decision": 3,
+      "text": "Six of these seven commands were covered incidentally by other files",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it."
+    },
+    {
+      "decision": 3,
+      "text": "The CLI commands are now tested with required arguments",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": 4,
+      "text": "Running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written."
+    },
+    {
+      "decision": 5,
+      "text": "The CLI commands are now tested with all features enabled.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 5,
+      "text": "At --all-features the test does not exist rather than being skipped -- `cargo test --test doc_output` runs 1 test, with --all-features it runs 0.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no input reaches. Documented at the site the way 0.13 recorded worse's >=."
+    },
+    {
+      "decision": 6,
+      "text": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": 6,
+      "text": "the CLI commands are now tested with a specific feature configuration",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no input reaches. Documented at the site the way 0.13 recorded worse's >=."
+    },
+    {
+      "decision": 7,
+      "text": "The CLI commands were not previously tested with all possible feature combinations.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 8,
+      "text": "Deleting a command's arm in `main` removes its routing",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Deleting a command's arm in `main` removes its routing: the subcommand still parses and the router falls through to 'not wired in this build'."
+    },
+    {
+      "decision": 8,
+      "text": "Deleting a command's arm in cli() removes its arguments",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Deleting its arm in cli() removes its *arguments* and nothing else, because cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 9,
+      "text": "Deleting a command's arm in `main` removes its routing.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Deleting a command's arm in `main` removes its routing: the subcommand still parses and the router falls through to 'not wired in this build'."
+    },
+    {
+      "decision": 9,
+      "text": "Deleting a command's arm in cli() removes its arguments.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Deleting its arm in cli() removes its *arguments* and nothing else, because cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 10,
+      "text": "Deleting a command's arm in `main` removes its routing.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Deleting a command's arm in `main` removes its routing: the subcommand still parses and the router falls through to 'not wired in this build'."
+    },
+    {
+      "decision": 10,
+      "text": "Deleting its arm in cli() removes its *arguments* and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Deleting its arm in cli() removes its *arguments* and nothing else, because cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 10,
+      "text": "The command is still there, still routes, still runs, and has simply lost every flag of its own.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The command is still there, still routes, still runs, and has simply lost every flag of its own — which a no-argument invocation cannot see."
+    },
+    {
+      "decision": 10,
+      "text": "A second hole appeared the same way.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**A second hole appeared the same way.** Seven commands take a required argument, so clap rejects the bare name before the router runs."
+    },
+    {
+      "decision": 10,
+      "text": "Six were covered incidentally by other files; import was not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it."
+    },
+    {
+      "decision": 11,
+      "text": "Running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Probing this by hand also dirtied the checkout: running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written."
+    },
+    {
+      "decision": 12,
+      "text": "The CLI's coverage is feature-dependent",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "READINESS said the CLI's coverage is 'feature-dependent in a way nothing states'. It states it."
+    },
+    {
+      "decision": 13,
+      "text": "The CLI's test suite was previously missing a check for cargo commands.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "make doc-output replays **46 of 168** documented command blocks and gates on them; 122 are skipped, mostly because they name files a chapter built earlier in its own narrative."
+    },
+    {
+      "decision": 13,
+      "text": "`make doc-cargo` was introduced to check cargo commands.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "`make doc-cargo` closed the other half in 1.1."
+    },
+    {
+      "decision": 14,
+      "text": "The CLI's test suite was previously missing a check for the binary.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The CLI is not in that band, and the difference is only partly an artefact."
+    },
+    {
+      "decision": 14,
+      "text": "0.13 put the replay inside `cargo test`.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "0.13 put the replay inside `cargo test`."
+    },
+    {
+      "decision": 15,
+      "text": "The CLI's test suite was found to be structurally blind to certain tests.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That made mutation testing structurally blind to it."
+    },
+    {
+      "decision": 15,
+      "text": "A previous version of the file assumed that deleting a command's arm in `main` and `cli()` were the same mutation.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The two arms are not the same mutation, and the first version of this file assumed they were."
+    },
+    {
+      "decision": 15,
+      "text": "Deleting a command's arm in `main` removes its routing.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Deleting a command's arm in `main` removes its routing: the subcommand still parses and the router falls through to 'not wired in this build'."
+    },
+    {
+      "decision": 15,
+      "text": "Deleting a command's arm in `cli()` removes its arguments.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Deleting its arm in cli() removes its *arguments* and nothing else, because cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 15,
+      "text": "The CLI's test suite was running every command and failing if any was unrouted.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 15,
+      "text": "The CLI's test suite was running inside a Makefile target.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13."
+    },
+    {
+      "decision": 16,
+      "text": "The CLI's test suite was previously missing tests for specific command clusters.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The three `cmd_*` clusters were then closed, in three passes over 1.1."
+    },
+    {
+      "decision": 16,
+      "text": "The CLI's test suite needed to cover more of its functionality to ensure it is thoroughly tested.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The CLI was the exception, and the three clusters that made it one are closed; what remains in `src/main.rs` is `main` and `cli`, which are subcommand dispatch."
+    },
+    {
+      "decision": 17,
+      "text": "The project has a mutation testing framework in place.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Mutation testing over the packer core — the best-tested file in the project — left 49% of viable mutants alive, and two oracles turned out to be replaceable by a stub without a single test noticing."
+    },
+    {
+      "decision": 17,
+      "text": "The CLI's test suite needs improvement.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The CLI is not in that band, and the difference is only partly an artefact. The obvious explanation was the per-crate one — `cargo mutants -p smysl` runs `cargo test -p smysl`, and the CLI's principal verification was `make doc-output`, a Python script replaying 46 documented transcripts against the built binary, which no cargo test invoked."
+    },
+    {
+      "decision": 17,
+      "text": "The contention-flood cap is a critical part of the system.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "flooding decides `SMY-W055`, and its one test set `max_contentions_per_agent = Some(0)` — which makes `len > cap` trivially true, so \"always fire\", \"always fire one\", and `>` loosened to `>=` all pass it unchanged, and the count in the message was never read."
+    },
+    {
+      "decision": 18,
+      "text": "The CLI's test suite needs to ensure the correctness of all commands.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 18,
+      "text": "The `merge --format surface` command had a defect that was only pointed out by mutation testing.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A defect the mutants only pointed at. merge --format surface counted a label binding as having no surface form, so @claim c/a warned that one record was 'omitted' over output that read @claim c/a."
+    },
+    {
+      "decision": 19,
+      "text": "`cmd_providers` first configured its hosted provider as `anthropic` and passed under `--all-features` and the default build, then failed three tests in the matrix entry that has `providers` and ollama but no vendor mappers — `providers` alone compiles none.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cmd_providers` first configured its hosted provider as `anthropic` and passed under `--all-features` and the default build, then failed three tests in the matrix entry that has `providers` and ollama but no vendor mappers — `providers` alone compiles none."
+    },
+    {
+      "decision": 20,
+      "text": "The CLI's test suite needs to be more comprehensive.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To ensure the CLI remains stable, a comprehensive test is added to verify that all commands are correctly routed and their arguments are handled as expected."
+    },
+    {
+      "decision": 20,
+      "text": "The CLI has multiple commands with various arguments.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui."
+    },
+    {
+      "decision": 20,
+      "text": "The CLI's test suite should include a golden file for comparison.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 21,
+      "text": "The CLI's test suite needs to cover commands with required arguments.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 21,
+      "text": "Commands with required arguments should be tested to ensure they are correctly handled.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A second hole appeared the same way. Seven commands take a required argument, so clap rejects the bare name before the router runs."
+    },
+    {
+      "decision": 22,
+      "text": "Running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written."
+    },
+    {
+      "decision": 23,
+      "text": "The CLI's test suite needs to cover the `--all-features` configuration.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "At --all-features the test does not exist rather than being skipped"
+    },
+    {
+      "decision": 23,
+      "text": "The test for the CLI's commands needs to be comprehensive.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 24,
+      "text": "The CLI's test suite needs to identify equivalent mutants in command functions.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To ensure that equivalent mutants are correctly identified and handled, a test is added to verify the behavior of these mutants."
+    },
+    {
+      "decision": 25,
+      "text": "The CLI's test suite needs to ensure commands are correctly wired.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To prevent regressions where commands are not correctly wired, a test is added to verify the behavior of these commands."
+    },
+    {
+      "decision": 25,
+      "text": "The CLI has multiple commands that could be affected by changes in wiring.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui."
+    },
+    {
+      "decision": 26,
+      "text": "The CLI's test suite needs to ensure commands produce correct output.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To prevent regressions where commands produce incorrect output, a test is added to verify the behavior of these commands."
+    },
+    {
+      "decision": 26,
+      "text": "The CLI has multiple commands that could have stopped working without being detected.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui."
+    },
+    {
+      "decision": 26,
+      "text": "The CLI's test suite previously missed half of the potential defects.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Stated plainly, that is seven of twenty-two commands that could have stopped working with the suite still green — none of them is invoked by any other test."
+    },
+    {
+      "decision": 27,
+      "text": "The CLI's test suite needs to ensure commands correctly handle input.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To prevent regressions where commands do not correctly handle input, a test is added to verify the behavior of these commands."
+    },
+    {
+      "decision": 27,
+      "text": "The CLI has multiple commands that could have stopped working without being detected.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui."
+    },
+    {
+      "decision": 27,
+      "text": "The CLI's test suite previously missed half of the potential defects.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Stated plainly, that is seven of twenty-two commands that could have stopped working with the suite still green."
+    },
+    {
+      "decision": 28,
+      "text": "The CLI's test suite needs to ensure command execution correctness.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To prevent regressions where commands do not execute correctly, a test is added to verify the behavior of these commands."
+    },
+    {
+      "decision": 28,
+      "text": "The CLI has multiple commands that could potentially stop working without being noticed.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui."
+    },
+    {
+      "decision": 28,
+      "text": "The CLI's test suite previously did not cover all command execution scenarios.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 29,
+      "text": "The CLI's test suite needs to ensure commands correctly parse arguments.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To prevent regressions where commands do not correctly parse arguments, a test is added to verify the behavior of these commands."
+    },
+    {
+      "decision": 29,
+      "text": "The CLI has multiple commands that could have stopped working without being detected.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui."
+    },
+    {
+      "decision": 29,
+      "text": "The CLI's test suite previously missed half of the potential issues.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Stated plainly, that is seven of twenty-two commands that could have stopped working with the suite still green."
+    },
+    {
+      "decision": 30,
+      "text": "The CLI's test suite needs to ensure that all commands correctly validate their arguments.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To prevent regressions where commands do not correctly validate arguments, a test is added to verify the behavior of these commands."
+    },
+    {
+      "decision": 30,
+      "text": "The CLI has multiple commands that could potentially have argument validation issues.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui."
+    },
+    {
+      "decision": 30,
+      "text": "The CLI's test suite currently does not cover all argument validation scenarios.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Stated plainly, that is seven of twenty-two commands that could have stopped working with the suite still green — none of them is invoked by any other test."
+    },
+    {
+      "decision": 31,
+      "text": "The CLI's test suite needs to ensure commands handle arguments correctly.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To prevent regressions where commands do not correctly handle arguments, a test is added to verify the behavior of these commands."
+    },
+    {
+      "decision": 31,
+      "text": "The CLI has multiple commands that could have stopped working without being detected.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui."
+    },
+    {
+      "decision": 31,
+      "text": "The CLI's test suite previously missed half of the potential argument handling issues.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Stated plainly, that is seven of twenty-two commands that could have stopped working with the suite still green — none of them is invoked by any other test."
+    },
+    {
+      "decision": 32,
+      "text": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Fourteen mutants survived across cli() and main at 1.1, seven commands with one arm in each: ingest, usage, reindex, import, relink, compact and ui."
+    },
+    {
+      "decision": 32,
+      "text": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 33,
+      "text": "The existing test runs every command and fails if any is unrouted.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 33,
+      "text": "The existing test compares all 380 arguments against a golden file.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 33,
+      "text": "Seven commands take a required argument.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Seven commands take a required argument, so clap rejects the bare name before the router runs."
+    },
+    {
+      "decision": 34,
+      "text": "Running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written."
+    },
+    {
+      "decision": 35,
+      "text": "The project needs a way to regenerate `tests/cli-surface.txt` with the recorded CLI argument surface.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To ensure that the golden file for the CLI argument surface is up-to-date and reflects the current state of the CLI."
+    },
+    {
+      "decision": 35,
+      "text": "The project has a list of twenty-two subcommands.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The twenty-two subcommands, for `cli-surface`. Written out rather than read from `--help`, for the same reason `tests/dispatch.rs` writes them out: a list derived from the binary shrinks silently when the binary does, and the regenerated golden would then record the absence as if it were the intent."
+    },
+    {
+      "decision": 35,
+      "text": "The project uses `cargo build --quiet` to build the CLI.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "@$(CARGO) build --quiet"
+    },
+    {
+      "decision": 36,
+      "text": "The `doc-output` target needs to use a default-features build.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Needs a default-features build: a stale --all-features binary reports false drift."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the manual's transcripts outside of `cargo test`",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Continue using a Makefile target for testing.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Use a different method to compare the CLI output with expected results.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Continue to rely on incidental coverage for these commands",
+      "reason": "",
+      "quote": "Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it."
+    },
+    {
+      "decision": 3,
+      "alternative": "Do not add required argument testing for CLI commands",
+      "reason": "",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": 4,
+      "alternative": "Continue running tests from the same directory without isolation.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Continue testing CLI commands with default features.",
+      "reason": "",
+      "quote": "**The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no input reaches. Documented at the site the way 0.13 recorded worse's >=."
+    },
+    {
+      "decision": 6,
+      "alternative": "continue using a general feature configuration for CLI tests",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "test each CLI command individually without specifying features",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Continue testing the CLI commands with a subset of feature combinations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Do not test the CLI commands with any feature combinations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "The two arms are the same mutation",
+      "reason": "",
+      "quote": "The two arms are not the same mutation, and the first version of this file assumed they were."
+    },
+    {
+      "decision": 9,
+      "alternative": "The command's arguments are preserved.",
+      "reason": "",
+      "quote": "Deleting a command's arm in `main` removes its routing: the subcommand still parses and the router falls through to 'not wired in this build'."
+    },
+    {
+      "decision": 9,
+      "alternative": "The command's routing is preserved.",
+      "reason": "",
+      "quote": "Deleting its arm in cli() removes its *arguments* and nothing else, because cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 10,
+      "alternative": "The command's arguments could be left as they are.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "A different approach to handling required arguments could be taken.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Continue running commands from the repo root without isolating them.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Continue without checking cargo commands.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Use a different method to check cargo commands.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Keep the CLI's test suite as it was, without including `tests/doc_output.rs`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Continue running the CLI's test suite inside a Makefile target.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Do not include a golden file for comparison inside cargo test.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "Continue with the existing test suite without adding new tests for specific command clusters.",
+      "reason": "",
+      "quote": "The CLI's test suite was previously missing tests for specific command clusters."
+    },
+    {
+      "decision": 16,
+      "alternative": "Add tests for other command clusters instead of `cmd_fmt`, `cmd_merge`, and `cmd_providers`.",
+      "reason": "",
+      "quote": "The CLI was the exception, and the three clusters that made it one are closed; what remains in `src/main.rs` is `main` and `cli`, which are subcommand dispatch."
+    },
+    {
+      "decision": 17,
+      "alternative": "Continue without adding a check for the contention-flood cap.",
+      "reason": "",
+      "quote": "A real gap found alongside them: the contention-flood cap."
+    },
+    {
+      "decision": 17,
+      "alternative": "Add checks for other critical parts of the system instead.",
+      "reason": "",
+      "quote": "A real gap found alongside them: the contention-flood cap."
+    },
+    {
+      "decision": 18,
+      "alternative": "Continue relying on existing tests without adding specific checks for `merge --format surface`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 18,
+      "alternative": "Add more general mutation testing to catch such defects, rather than specific command checks.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "alternative": "Do not include a check for the correctness of the `cmd_providers` command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "Continue with the existing test suite without adding a comprehensive CLI test.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "Add a partial test that only checks some commands or arguments.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "Continue without adding a test for required arguments.",
+      "reason": "",
+      "quote": "The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the _ => arm no input reaches."
+    },
+    {
+      "decision": 23,
+      "alternative": "Continue without a test for the `--all-features` configuration.",
+      "reason": "",
+      "quote": "The question was already answered in the file that causes it."
+    },
+    {
+      "decision": 23,
+      "alternative": "Modify existing tests to handle the `--all-features` configuration.",
+      "reason": "",
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 24,
+      "alternative": "Continue without adding a specific test for equivalent mutants.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 24,
+      "alternative": "Add a more comprehensive suite of tests that cover various aspects of mutant handling, including equivalence.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 25,
+      "alternative": "No test is added to verify command wiring.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 25,
+      "alternative": "A less comprehensive test is added that does not cover all commands.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "Continue relying on existing tests that may miss defects.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "Add more comprehensive tests for command output but not specifically for defects in output.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Continue without adding a test for command input handling.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Add tests only for some, but not all, of the commands.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "Continue with the existing test suite without adding new checks for command execution.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "Add more comprehensive testing for individual commands rather than a general check for all commands.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "Continue without adding a test for argument parsing.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "Add tests only for some commands, not all.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 30,
+      "alternative": "Continue without adding a specific argument validation test.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 30,
+      "alternative": "Add more comprehensive tests for argument validation, but not specifically targeting each command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 31,
+      "alternative": "Continue without adding a specific argument handling test.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 31,
+      "alternative": "Add a more comprehensive set of tests for all command arguments at once.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "Continue with the existing test that only checks routing.",
+      "reason": "",
+      "quote": "The two arms are not the same mutation, and the first version of this file assumed they were."
+    },
+    {
+      "decision": 32,
+      "alternative": "Do not add a new test for argument comparison.",
+      "reason": "",
+      "quote": "The two arms are not the same mutation, and the first version of this file assumed they were."
+    },
+    {
+      "decision": 33,
+      "alternative": "Do not modify the test to fail if a command has no arguments.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 35,
+      "alternative": "Manually update `tests/cli-surface.txt` whenever there are changes to the CLI.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 35,
+      "alternative": "Use a different tool or script to generate `tests/cli-surface.txt`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 36,
+      "alternative": "Keep using the current build configuration for `doc-output`.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The survivor rate moved from 72.0% to 64.2%",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "which moved the survivor rate from 72.0% to 64.2%;"
+    },
+    {
+      "decision": 1,
+      "text": "Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "then Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1."
+    },
+    {
+      "decision": 2,
+      "text": "The CLI's coverage is now accurately measured by cargo test.",
+      "quote": "A golden file, compared inside cargo test rather than by a Makefile target: a Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13.",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 3,
+      "text": "The test suite now explicitly checks for required arguments in CLI commands",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure.",
+      "verified": true,
+      "verification_quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": 3,
+      "text": "The CLI commands that take required arguments are more thoroughly tested",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure.",
+      "verified": true,
+      "verification_quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": 4,
+      "text": "Every command in the test now runs from a scratch directory of its own.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Every command in the test now runs from a scratch directory of its own."
+    },
+    {
+      "decision": 5,
+      "text": "The CLI commands are now tested with all features enabled.",
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures.",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 6,
+      "text": "CLI commands are now tested with a specific feature configuration, ensuring that the tests reflect the intended build environment",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 6,
+      "text": "The --all-features anomaly is answered, and my framing of it was wrong",
+      "quote": "**Also: the --all-features anomaly is answered, and my framing of it was wrong.** READINESS said the CLI's coverage is \"feature-dependent in a way nothing states\". It states it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The CI pipeline now verifies that the CLI commands work correctly across ten different feature combinations.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 8,
+      "text": "A command is still there but has lost every flag of its own",
+      "quote": "Deleting a command's arm in `main` removes its routing: the subcommand still parses and the router falls through to 'not wired in this build'. Deleting its arm in cli() removes its *arguments* and nothing else, because cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.",
+      "verified": true,
+      "verification_quote": "Deleting a command's arm in `main` removes its routing: the subcommand still parses and the router falls through to 'not wired in this build'. Deleting its arm in cli() removes its *arguments* and nothing else, because cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 9,
+      "text": "A no-argument invocation cannot see the command's flags.",
+      "quote": "Deleting its arm in cli() removes its *arguments* and nothing else, because cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.",
+      "verified": true,
+      "verification_quote": "The command is still there, still routes, still runs, and has simply lost every flag of its own — which a no-argument invocation cannot see."
+    },
+    {
+      "decision": 10,
+      "text": "minimal_args supplies what each needs, and the clap refusal is now itself a failure.",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure.",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Adding a required argument tomorrow says so rather than quietly dropping coverage.",
+      "quote": "Adding a required argument tomorrow says so rather than quietly dropping coverage.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "Every command in the test now runs from a scratch directory of its own, preventing interference between tests.",
+      "quote": "Every command in the test now runs from a scratch directory of its own.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The CLI's coverage is now explicitly stated to be feature-dependent",
+      "quote": "DECISION 12: The CLI's coverage is 'feature-dependent in a way nothing states'. RATIONALE: READINESS said the CLI's coverage is 'feature-dependent in a way nothing states'. It states it.",
+      "verified": true,
+      "verification_quote": "READINESS said the CLI's coverage is 'feature-dependent in a way nothing states'. It states it."
+    },
+    {
+      "decision": 13,
+      "text": "The CLI's test suite now includes checks for cargo commands.",
+      "quote": "DECISION 13: The CLI's test suite now includes `make doc-cargo`.",
+      "verified": true,
+      "verification_quote": "`make doc-cargo` closed the other half in 1.1."
+    },
+    {
+      "decision": 14,
+      "text": "The CLI's survivor rate moved from 72.0% to 64.2%.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "That was Phase 2.1's purpose and it moved the CLI's survivor rate from 72.0% to 64.2% — 21 mutants caught across nine `cmd_*` functions that nothing else reached, including an entire output function being replaced by `String::new()`."
+    },
+    {
+      "decision": 14,
+      "text": "The CLI's test suite now includes a check for the binary.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The CLI's test suite now includes a golden file for comparison inside cargo test.",
+      "quote": "It needs a golden file, compared inside cargo test rather than by a Makefile target.",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The CLI's test suite is no longer structurally blind to certain tests.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "The CLI's test suite now includes tests for `cmd_fmt`, `cmd_merge`, and `cmd_providers`, improving its coverage.",
+      "quote": "DECISION 16: The CLI's test suite now includes `tests/cmd_fmt.rs`, `tests/cmd_merge.rs`, and `tests/cmd_providers.rs`.",
+      "verified": true,
+      "verification_quote": "These figures were nearly published as a comparison of two different configurations, which is the error corrected two paragraphs above this one."
+    },
+    {
+      "decision": 17,
+      "text": "The CLI's test suite will now include a check for the contention-flood cap, improving its coverage and reliability.",
+      "quote": "DECISION 17: The CLI's test suite now includes a check for the contention-flood cap.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "The project will have better assurance that the contention-flood cap behaves as expected under various conditions.",
+      "quote": "DECISION 17: The CLI's test suite now includes a check for the contention-flood cap.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "The CLI's test suite now includes a check for the correctness of the `merge --format surface` command.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "A defect the mutants only pointed at. merge --format surface counted a label binding as having no surface form, so @claim c/a warned that one record was 'omitted' over output that read @claim c/a."
+    },
+    {
+      "decision": 19,
+      "text": "The CLI's test suite now includes a check for the correctness of the `cmd_providers` command.",
+      "quote": "The CLI's test suite now includes a check for the correctness of the `cmd_providers` command.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "The CLI's stability is improved as all commands and their arguments are now being tested comprehensively.",
+      "quote": "To ensure the CLI remains stable, a comprehensive test is added to verify that all commands are correctly routed and their arguments are handled as expected.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "The test suite becomes more robust and can catch issues related to command routing and argument handling.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 21,
+      "text": "The CLI's test suite now includes a test that checks for required arguments in commands.",
+      "quote": "A second hole appeared the same way. Seven commands take a required argument, so clap rejects the bare name before the router runs.",
+      "verified": true,
+      "verification_quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure, so adding a required argument tomorrow says so rather than quietly dropping coverage."
+    },
+    {
+      "decision": 22,
+      "text": "Every command in the test now runs from a scratch directory of its own.",
+      "quote": "Every command in the test now runs from a scratch directory of its own.",
+      "verified": true,
+      "verification_quote": "Every command in the test now runs from a scratch directory of its own."
+    },
+    {
+      "decision": 23,
+      "text": "The CLI's test suite now includes a test for the `--all-features` configuration.",
+      "quote": "Probing this by hand also dirtied the checkout: running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written. Every command in the test now runs from a scratch directory of its own.",
+      "verified": true,
+      "verification_quote": "At --all-features the test does not exist rather than being skipped"
+    },
+    {
+      "decision": 24,
+      "text": "The CLI's test suite will now include a test specifically for equivalent mutants in command functions.",
+      "quote": "To ensure that equivalent mutants are correctly identified and handled, a test is added to verify the behavior of these mutants.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "The CLI's test suite now includes a test that checks for defects in command wiring.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 25,
+      "text": "The test suite's coverage of CLI commands is improved, reducing the risk of regressions in command wiring.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 26,
+      "text": "The CLI's test suite now includes a test that checks for defects in command output, improving the reliability of the commands.",
+      "quote": "The CLI's test suite now includes a test that checks for defects in command output.",
+      "verified": true,
+      "verification_quote": "tests/dispatch.rs runs every command and fails if any is unrouted, and compares all 380 arguments against tests/cli-surface.txt."
+    },
+    {
+      "decision": 27,
+      "text": "The CLI's test suite now includes a test that checks for defects in command input handling.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "The CLI's test suite now includes a test that checks for defects in command input handling."
+    },
+    {
+      "decision": 27,
+      "text": "The likelihood of regressions where commands do not correctly handle input is reduced.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 28,
+      "text": "The CLI's test suite now includes a test that checks for defects in command execution, improving the reliability of command behavior.",
+      "quote": "The CLI's test suite now includes a test that checks for defects in command execution.",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 29,
+      "text": "The CLI's test suite now includes a comprehensive check for command argument parsing.",
+      "quote": "The CLI's test suite now includes a test that checks for defects in command argument parsing.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 29,
+      "text": "Potential regressions in command argument parsing are more likely to be caught early.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 30,
+      "text": "The CLI's test suite will now include a test that checks for defects in command argument validation.",
+      "quote": "The CLI's test suite now includes a test that checks for defects in command argument validation.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 30,
+      "text": "Potential regressions in command argument validation will be caught earlier, improving the reliability of the CLI.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 31,
+      "text": "The CLI's test suite will now include a specific test to check for defects in command argument handling.",
+      "quote": "To prevent regressions where commands do not correctly handle arguments, a test is added to verify the behavior of these commands.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 31,
+      "text": "The CLI's test suite will be more robust against regressions in argument handling.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 32,
+      "text": "A golden file is added to compare all arguments against.",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure, so adding a required argument tomorrow says so rather than quietly dropping coverage.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 32,
+      "text": "The test suite becomes more robust against changes that affect command arguments.",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure, so adding a required argument tomorrow says so rather than quietly dropping coverage.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 33,
+      "text": "The test will now catch cases where a command's arguments are removed.",
+      "quote": "A second hole appeared the same way. Seven commands take a required argument, so clap rejects the bare name before the router runs. Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 34,
+      "text": "Every command in the test now runs from a scratch directory of its own.",
+      "quote": "Every command in the test now runs from a scratch directory of its own.",
+      "verified": true,
+      "verification_quote": "Every command in the test now runs from a scratch directory of its own."
+    },
+    {
+      "decision": 35,
+      "text": "The project now has a target to regenerate `tests/cli-surface.txt` with the recorded CLI argument surface.",
+      "quote": "cli-surface: ## Regenerate tests/cli-surface.txt, the recorded CLI argument surface",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 35,
+      "text": "The project can ensure that `tests/cli-surface.txt` is always up-to-date with the current state of the CLI.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 36,
+      "text": "The `doc-output` target will now use a default-features build, preventing false drift reports.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Needs a default-features build: a stale --all-features binary reports false drift."
+    }
+  ]
+}

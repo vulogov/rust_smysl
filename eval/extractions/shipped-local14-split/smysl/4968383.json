@@ -1,0 +1,1404 @@
+{
+  "decisions": [
+    {
+      "decision": "nodejs/ reaches C-Produce",
+      "kind": "act",
+      "rationale": "The commit introduces a new implementation of the nodejs/ component that reaches C-Produce, which is a gate tied to the format's constants and document.",
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation — and passes the published vectors including the lengths straddling the chunk boundary."
+    },
+    {
+      "decision": "make spec-tables",
+      "kind": "act",
+      "rationale": "A new job is added to parse the spec's tables and compare all four implementations against them, ensuring they are consistent with the specification.",
+      "quote": "Parses the spec's tables rather than quoting them, and compares all four implementations against them in both directions."
+    },
+    {
+      "decision": "Gate 7: 78 -> 85 transcripts",
+      "kind": "act",
+      "rationale": "The commit updates Gate 7 to handle more transcripts, improving the testing coverage for this specific gate.",
+      "quote": "Chapters now replay as chapters: a scratch copy, walked in document order, with `fmt --write` allowed to write."
+    },
+    {
+      "decision": "Mutation figures sized",
+      "kind": "act",
+      "rationale": "The commit introduces a new section to measure the survivor rate of mutation testing, providing insights into the robustness of the codebase.",
+      "quote": "Every survivor rate in gate 5 is the weak per-package claim."
+    },
+    {
+      "decision": "make ci green: 10/10 matrix",
+      "kind": "act",
+      "rationale": "The commit ensures that all CI jobs pass, achieving a green status for the entire CI pipeline.",
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": "doc-gate",
+      "kind": "act",
+      "rationale": "A new job is added to gate the documentation for warnings and broken links, ensuring that the documentation remains high quality.",
+      "quote": "# What docs.rs will render. Gated because publishing made it consequential: a rustdoc warning is a broken link on the page strangers read first."
+    },
+    {
+      "decision": "api",
+      "kind": "act",
+      "rationale": "A new job is added to check the API contract, ensuring that changes in the API are breaking or non-breaking as expected.",
+      "quote": "# The public contract. Three questions in one job, because each gate is blind where another sees."
+    },
+    {
+      "decision": "test-matrix",
+      "kind": "act",
+      "rationale": "A new job is added to test the code with various feature combinations, ensuring that all features work together correctly.",
+      "quote": "# Feature combinations, because the interesting bugs live in the seams between them."
+    },
+    {
+      "decision": "purity",
+      "kind": "act",
+      "rationale": "A new job is added to check the purity of the library, ensuring that it remains synchronous and network-free.",
+      "quote": "# Rules A and B: the library must stay synchronous and network-free."
+    },
+    {
+      "decision": "determinism",
+      "kind": "act",
+      "rationale": "A new job is added to check the determinism of pure operations, ensuring that they are bit-reproducible across locale, timezone, and hash seed.",
+      "quote": "# Rule D: every pure operation is bit-reproducible across locale, timezone, and hash seed."
+    },
+    {
+      "decision": "no-network",
+      "kind": "act",
+      "rationale": "A new job is added to check that pure crates do not acquire network dependencies, ensuring that they remain network-free.",
+      "quote": "# G7 stated as a build failure rather than an intention: if a pure crate ever acquires a network dependency, this job fails instead of the property quietly lapsing."
+    },
+    {
+      "decision": "ollama",
+      "kind": "act",
+      "rationale": "A new job is added to assert the mapper against a real server using Ollama, ensuring that the implementation works with a real provider.",
+      "quote": "# The SM-P13 gate's live half. Ollama is the conformance reference because it is the only provider exercisable without keys, cost, or egress."
+    },
+    {
+      "decision": "`nodejs/` remains C-Read",
+      "kind": "decline",
+      "rationale": "The commit explicitly states that nodejs/ remains at C-Read, which means it does not reach the full verification gate of C-Produce.",
+      "quote": "`nodejs/` remains C-Read."
+    },
+    {
+      "decision": "Gate 4 still wants two keys",
+      "kind": "decline",
+      "rationale": "The commit notes that Gate 4 still requires two keys, indicating that the full verification of this gate is not yet complete.",
+      "quote": "Gate 4 still wants two keys"
+    },
+    {
+      "decision": "Gate 7's remaining 57 commands",
+      "kind": "decline",
+      "rationale": "The commit mentions that Gate 7 has 57 remaining commands, which are not yet fully verified.",
+      "quote": "Gate 7's remaining 57 commands"
+    },
+    {
+      "decision": "59 survivors in `src/main.rs`",
+      "kind": "decline",
+      "rationale": "The commit reports that there are 59 survivors in the main source file, indicating that there is still untested code.",
+      "quote": "59 survivors in `src/main.rs`"
+    },
+    {
+      "decision": "`make doc-cargo`",
+      "kind": "act",
+      "rationale": "A new gate called `make doc-cargo` is added, which replays the manual's smysl transcripts and checks them against cargo.",
+      "quote": "`make doc-cargo`, a new gate."
+    },
+    {
+      "decision": "Gate 4's Anthropic half",
+      "kind": "act",
+      "rationale": "The commit adds a test for Gate 4 related to the Anthropic provider, which helps in verifying the correctness of the format.",
+      "quote": "Gate 4's Anthropic half"
+    },
+    {
+      "decision": "`smysl-provider` recalibrated",
+      "kind": "act",
+      "rationale": "The commit recalibrates the smysl-provider, which is a significant change in the provider's implementation.",
+      "quote": "`smysl-provider` recalibrated"
+    },
+    {
+      "decision": "The `cmd_*` clusters and the command dispatch closed",
+      "kind": "act",
+      "rationale": "The commit closes the `cmd_*` clusters and the command dispatch, which is a significant improvement in the codebase.",
+      "quote": "The `cmd_*` clusters and the command dispatch closed."
+    },
+    {
+      "decision": "make ci green",
+      "kind": "act",
+      "rationale": "The commit ensures that all CI checks pass.",
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": "Gate 4 — a live call to OpenAI and Anthropic — is the waiver",
+      "kind": "decline",
+      "rationale": "The commit explicitly states that Gate 4 is waived.",
+      "quote": "Gate 4 — a live call to OpenAI and Anthropic — is the waiver, and §4 below says what that costs rather than burying it."
+    },
+    {
+      "decision": "comment sweep retired as a primary instrument",
+      "kind": "decline",
+      "rationale": "The commit states that the comment sweep is no longer used as a primary instrument.",
+      "quote": "Sweeping is now what one does to a claim mutation testing has already pointed at."
+    },
+    {
+      "decision": "make doc-output",
+      "kind": "act",
+      "rationale": "The commit introduces a new script that replays documented command blocks and gates on them.",
+      "quote": "`make doc-output` replays **78 of 194** documented command blocks and gates on them;"
+    },
+    {
+      "decision": "Gate 7's larger half now gated",
+      "kind": "act",
+      "rationale": "The commit introduces a new gate that replays the six single-command `cargo` transcripts, checks every version string against the manifest, and compares the one feature table.",
+      "quote": "`make doc-cargo` closed the other half in 1.1."
+    },
+    {
+      "decision": "Gate 7's cheap half now gated",
+      "kind": "act",
+      "rationale": "The commit introduces a new script that replays documented command blocks and gates on them.",
+      "quote": "`make doc-output` replays **78 of 194** documented command blocks and gates on them;"
+    },
+    {
+      "decision": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok",
+      "kind": "act",
+      "rationale": "The commit message states that CI was made green with a specific set of test results.",
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok"
+    },
+    {
+      "decision": "nodejs/ at C-Produce",
+      "kind": "act",
+      "rationale": "The commit message states that nodejs/ now reaches C-Produce, which is a gate that ties the format's constants to the document that defines them.",
+      "quote": "`nodejs/` at C-Produce"
+    },
+    {
+      "decision": "§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust",
+      "kind": "act",
+      "rationale": "The commit adds more implementations for sections 2.1 and 2.3, increasing the number of checks against the format.",
+      "quote": "§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust"
+    },
+    {
+      "decision": "`blake3.js` is hand-rolled",
+      "kind": "act",
+      "rationale": "The commit introduces a hand-rolled implementation of `blake3.js` instead of using a binding to the same C library as the Rust code.",
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": "`uid.js` reproduces all sixteen canonical encodings and uids",
+      "kind": "act",
+      "rationale": "The commit adds a new implementation for `uid.js` that reproduces all sixteen canonical encodings and uids.",
+      "quote": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first"
+    },
+    {
+      "decision": "`make ci green` target",
+      "kind": "act",
+      "rationale": "The commit adds a new target `make ci green` that runs all the necessary checks to ensure CI passes.",
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok"
+    },
+    {
+      "decision": "Pin the toolchain to a specific version",
+      "kind": "act",
+      "rationale": "The commit pins the toolchain to a specific version (`+stable`) to ensure consistency between local checks and CI.",
+      "quote": "TOOLCHAIN ?= +stable"
+    },
+    {
+      "decision": "Add `--timeout` option for `cargo-mutants`",
+      "kind": "act",
+      "rationale": "The commit adds a new option `--timeout` for `cargo-mutants` to explicitly set the timeout for running each mutant.",
+      "quote": "`4 missed, 6 caught, 15 timeouts` reads as nineteen of twenty-three being artefacts. --test-workspace needs an explicit --timeout"
+    },
+    {
+      "decision": "Update the `BASELINE` version",
+      "kind": "act",
+      "rationale": "The commit updates the `BASELINE` version to 1.0.0, ensuring that API breakage checks are performed against the correct version.",
+      "quote": "BASELINE := 1.0.0"
+    },
+    {
+      "decision": "Add `spec-tables` target to CI",
+      "kind": "act",
+      "rationale": "The commit adds the `spec-tables` target to the CI jobs, ensuring that format constants and document definitions are checked against each other.",
+      "quote": "ci: lint doc-gate api-check test-matrix gates conformance fuzz-build doc-cargo spec-tables"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`nodejs/` at C-Produce",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "nodejs/ at C-Produce\n--------------------\n§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust."
+    },
+    {
+      "decision": 1,
+      "text": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 1,
+      "text": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first"
+    },
+    {
+      "decision": 2,
+      "text": "The existing CI jobs did not check if the four implementations were consistent with the specification.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Until now every implementation read SMYSL_FORMAT_SPEC.md only to assert it contained the string \"Deterministic CBOR\" — while READINESS reported the §2.2 and §3.1 tables as checked against the document."
+    },
+    {
+      "decision": 2,
+      "text": "The specification's tables were not being parsed or compared against the implementations.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It found four more on its first run: the masthead read `smysl/0.1` while §8.6 of the same document says `smysl/1.0` is what new documents declare; and go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had."
+    },
+    {
+      "decision": 3,
+      "text": "Gate 7 blocked commands were fixtures keyed by filename when a chapter's state is keyed by position.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The 57 blocked commands were fixtures keyed by filename when a chapter's state is keyed by position."
+    },
+    {
+      "decision": 3,
+      "text": "Two of chapter 1's four states cannot be committed under any arrangement.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two of chapter 1's four states cannot be committed under any arrangement — one is printed as a fragment, one as a diff."
+    },
+    {
+      "decision": 4,
+      "text": "The project has a CI/CD pipeline that includes various checks and tests.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": 4,
+      "text": "The project uses mutation testing to assess the robustness of its codebase.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every survivor rate in gate 5 is the weak per-package claim. Measured on store/mod.rs: 23 survivors per-package, 18 under --test-workspace."
+    },
+    {
+      "decision": 5,
+      "text": "The CI pipeline must have multiple jobs to ensure comprehensive testing.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "name: ci\non:\n  push:"
+    },
+    {
+      "decision": 5,
+      "text": "Each job in the CI pipeline should be independent and test different aspects of the project.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "lint:\n  runs-on: ubuntu-latest\n  steps:"
+    },
+    {
+      "decision": 6,
+      "text": "The project has a CI/CD pipeline defined in .github/workflows/ci.yml",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "name: ci\non:\n  push:"
+    },
+    {
+      "decision": 6,
+      "text": "There was an issue with rustdoc warnings accumulating unnoticed, leading to broken links on the documentation page.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "One of them documented `Usage` as being built through a constructor that does not exist — the \"documentation that matches the binary\" defect, surviving because nothing ever failed on it."
+    },
+    {
+      "decision": 7,
+      "text": "The project needs a way to ensure that changes in the API are either breaking or non-breaking as expected.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A rename shows up in the first; marking a struct `#[non_exhaustive]` only in the second."
+    },
+    {
+      "decision": 7,
+      "text": "The project uses `cargo-public-api` and `cargo-semver-checks` to check API changes.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "uses: taiki-e/install-action@v2\n        with:\n          tool: cargo-public-api,cargo-semver-checks"
+    },
+    {
+      "decision": 7,
+      "text": "The project has a release process that involves checking for API changes.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`--release-type patch` is load bearing. Without it, 0.9 -> 0.10 on a 0.x crate is a breaking-allowed bump and every check is skipped — \"0 checks: 0 pass, 254 skip\", reported as a pass."
+    },
+    {
+      "decision": 8,
+      "text": "The project needs to ensure that all feature combinations work together correctly.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Feature combinations, because the interesting bugs live in the seams between them."
+    },
+    {
+      "decision": 9,
+      "text": "The project needs a way to ensure that its library remains synchronous and network-free.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Rules A and B: the library must stay synchronous and network-free."
+    },
+    {
+      "decision": 10,
+      "text": "The library must stay synchronous and network-free.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Rules A and B: the library must stay synchronous and network-free."
+    },
+    {
+      "decision": 10,
+      "text": "Every pure operation is bit-reproducible across locale, timezone, and hash seed.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Rule D: every pure operation is bit-reproducible across locale, timezone, and hash seed."
+    },
+    {
+      "decision": 11,
+      "text": "The library must stay synchronous and network-free.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Rules A and B: the library must stay synchronous and network-free."
+    },
+    {
+      "decision": 12,
+      "text": "The project needs to ensure that its implementation works with a real provider.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A new job is added to assert the mapper against a real server using Ollama, ensuring that the implementation works with a real provider."
+    },
+    {
+      "decision": 12,
+      "text": "Ollama is the conformance reference because it is the only provider exercisable without keys, cost, or egress.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Ollama is the conformance reference because it is the only provider exercisable without keys, cost, or egress - so this job asserts the mapper against a real server rather than against a remembered API."
+    },
+    {
+      "decision": 13,
+      "text": "`nodejs/` has reached C-Produce",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "nodejs/ at C-Produce"
+    },
+    {
+      "decision": 13,
+      "text": "C-Produce requires four independent derivations and three witnesses beyond the Rust",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust."
+    },
+    {
+      "decision": 13,
+      "text": "`nodejs/` does not reach uid derivation",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "C-Read never reaches uid derivation, because reading a document does not require computing one."
+    },
+    {
+      "decision": 14,
+      "text": "Gate 4 still needs nothing else. Everything reachable by reading has been read.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Gate 4 still wants two keys, and now needs nothing else. Everything reachable by reading has been read, twice, and it found a defect each time."
+    },
+    {
+      "decision": 14,
+      "text": "The project has reached a state where everything that can be checked has been checked.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Everything reachable by reading has been read, twice, and it found a defect each time."
+    },
+    {
+      "decision": 15,
+      "text": "Gate 7 has 57 blocked commands.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The 57 blocked commands were fixtures keyed by filename when a chapter's state is keyed by position."
+    },
+    {
+      "decision": 16,
+      "text": "The project has a mutation testing process to identify untested code.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every crate in the workspace now has a mutation figure, which completes the sweep begun in 0.8."
+    },
+    {
+      "decision": 16,
+      "text": "The project tracks and reports on the number of untested code survivors.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "What it carried, and what each was waiting on:"
+    },
+    {
+      "decision": 17,
+      "text": "`verify-doc-output.py` replays the manual's `smysl` transcripts and its skip rules pass straight over the `cargo` ones, so nothing had ever checked those",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`verify-doc-output.py` replays the manual's `smysl` transcripts and its skip rules pass straight over the `cargo` ones, so nothing had ever checked those"
+    },
+    {
+      "decision": 18,
+      "text": "The project has a readiness gate called Gate 4.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Gate 4 is waived, not closed."
+    },
+    {
+      "decision": 18,
+      "text": "The Anthropic provider needs to be tested against live endpoints.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Anthropic and OpenAI still need a key."
+    },
+    {
+      "decision": 19,
+      "text": "The project has multiple implementations of the same functionality.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "python/ and go/ had reached C-Produce through all four without recording that they guessed."
+    },
+    {
+      "decision": 19,
+      "text": "There are specific checks whose evidence did not come from where it claimed.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Each was found the same way: by asking where a check's evidence actually comes from."
+    },
+    {
+      "decision": 20,
+      "text": "The project has a mutation testing framework that measures the robustness of the code.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every crate in the workspace now has a mutation figure, which completes the sweep begun in 0.8."
+    },
+    {
+      "decision": 20,
+      "text": "The project tracks and measures the number of survivors in mutation testing.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "What it carried, and what each was waiting on:"
+    },
+    {
+      "decision": 21,
+      "text": "All CI checks must pass",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": 22,
+      "text": "Gate 4 requires a live call to OpenAI and Anthropic.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Gate 4 — a live call to OpenAI and Anthropic — is the waiver"
+    },
+    {
+      "decision": 23,
+      "text": "The comment sweep found three real corrections and one clean result.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The comment sweep — 471 comments make a modal claim; narrowing to claims of *comprehensiveness* left 178; the three most load-bearing gave two real corrections and one clean result."
+    },
+    {
+      "decision": 23,
+      "text": "Mutation testing in the same cycles produced defects that reached identity and the wire.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "mutation testing in the same cycles produced defects that reached identity and the wire."
+    },
+    {
+      "decision": 24,
+      "text": "The project has multiple implementations of the format, including `python/`, `nodejs/`, and `go/`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "python/, nodejs/ and go/ had reached C-Produce through all four without recording that they guessed."
+    },
+    {
+      "decision": 24,
+      "text": "The project needs a way to verify that the documentation matches the binary.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`make doc-output` replays **78 of 194** documented command blocks and gates on them;"
+    },
+    {
+      "decision": 24,
+      "text": "The project has a script `verify-doc-output.py` that checks the documentation against the binary.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`verify-doc-output.py` replays the documented `smysl` commands and its skip rules pass straight over the `cargo` ones, which is why every one of the three stale claims 0.14 found by hand was in a block it cannot reach."
+    },
+    {
+      "decision": 25,
+      "text": "Gate 7's blocked commands turn out never to have been a decision about the book.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Each was found the same way: by asking where a check's evidence actually comes from."
+    },
+    {
+      "decision": 25,
+      "text": "The reading found four facts a C-Produce implementer cannot proceed without, none of them in the spec.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It found four more on its first run: the masthead read `smysl/0.1` while §8.6 of the same document says `smysl/1.0` is what new documents declare;"
+    },
+    {
+      "decision": 25,
+      "text": "The script reads `./target/debug/smysl`, and what was on disk was an `--all-features` binary left by unrelated work.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Re-checking it in 1.1 by running `scripts/verify-doc-output.py` directly produced `ran 45, skipped 123`, and 46 was about to be \"corrected\" to 45 across three documents."
+    },
+    {
+      "decision": 26,
+      "text": "`make doc-output` replays **78 of 194** documented command blocks and gates on them; 116 are skipped, mostly because they name files a chapter built earlier in its own narrative.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`make doc-output` replays **78 of 194** documented command blocks and gates on them; 116 are skipped, mostly because they name files a chapter built earlier in its own narrative."
+    },
+    {
+      "decision": 26,
+      "text": "Appendix A, the purity table and the diagnostic registry are cross-checked against the code at every release cut.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Appendix A, the purity table and the diagnostic registry are cross-checked against the code at every release cut."
+    },
+    {
+      "decision": 27,
+      "text": "CI tests were failing before the commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": 28,
+      "text": "`nodejs/` now reaches C-Produce",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "nodejs/ at C-Produce"
+    },
+    {
+      "decision": 28,
+      "text": "C-Produce is a gate that ties the format's constants to the document that defines them",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "a gate ties the format's constants to the document that defines them"
+    },
+    {
+      "decision": 29,
+      "text": "The existing implementation for sections 2.1 and 2.3 in Rust.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 29,
+      "text": "The need for more checks against the format to ensure correctness.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust."
+    },
+    {
+      "decision": 30,
+      "text": "`blake3.js` needs to be implemented in JavaScript.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 30,
+      "text": "The project aims to have consistent implementations across different languages.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 30,
+      "text": "The project needs to ensure that the JavaScript implementation passes the published vectors, including those straddling the chunk boundary.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation — and passes the published vectors including the lengths straddling the chunk boundary."
+    },
+    {
+      "decision": 31,
+      "text": "`nodejs/` reaches C-Produce, a gate ties the format's constants to the document that defines them",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`nodejs/` reaches C-Produce, a gate ties the format's constants to the document that defines them"
+    },
+    {
+      "decision": 31,
+      "text": "Each was found the same way: by asking where a check's evidence actually comes from",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Each was found the same way: by asking where a check's evidence actually comes from"
+    },
+    {
+      "decision": 31,
+      "text": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 31,
+      "text": "`blake3.js` passes the published vectors including the lengths straddling the chunk boundary",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation — and passes the published vectors including the lengths straddling the chunk boundary"
+    },
+    {
+      "decision": 32,
+      "text": "The project needs a way to verify that all checks pass locally before pushing code.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "text": "CI runs several checks including linting, testing, and formatting.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 33,
+      "text": "CI resolves `dtolnay/rust-toolchain@stable` to the newest stable release",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "CI resolves `dtolnay/rust-toolchain@stable` to the newest stable release, so the compiler that lints your code is whatever Rust shipped most recently - not whatever is active here."
+    },
+    {
+      "decision": 33,
+      "text": "The local checks were clean",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "local checks were clean"
+    },
+    {
+      "decision": 33,
+      "text": "CI went red on a push that had been verified twice",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a push that had been verified twice."
+    },
+    {
+      "decision": 34,
+      "text": "The first attempt was invalid and looked like a result: cargo-mutants took its baseline at 1s of tests, auto-set a 20s timeout, then ran each mutant against the 109-second workspace suite.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The first attempt was invalid and looked like a result: cargo-mutants took its baseline at 1s of tests, auto-set a 20s timeout, then ran each mutant against the 109-second workspace suite."
+    },
+    {
+      "decision": 34,
+      "text": "`4 missed, 6 caught, 15 timeouts` reads as nineteen of twenty-three being artefacts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`4 missed, 6 caught, 15 timeouts` reads as nineteen of twenty-three being artefacts."
+    },
+    {
+      "decision": 34,
+      "text": "--test-workspace needs an explicit --timeout.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "--test-workspace needs an explicit --timeout."
+    },
+    {
+      "decision": 35,
+      "text": "The project needs to perform API breakage checks against a specific published version.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Publishing made this consequential: rustdoc warnings are broken links on a page strangers read first, and six had accumulated unnoticed."
+    },
+    {
+      "decision": 35,
+      "text": "The `BASELINE` variable is used to specify the version against which API breakage checks are performed.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "BASELINE := 1.0.0"
+    },
+    {
+      "decision": 36,
+      "text": "The gate 1.2.0 needed and did not have.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The gate 1.2.0 needed and did not have."
+    },
+    {
+      "decision": 36,
+      "text": "Four facts a C-Produce implementer cannot proceed without — the status integers, the source sub-map's layout, the kind enum and the base32 alphabet — were in no section of the spec.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Four facts a C-Produce implementer cannot proceed without — the status integers, the source sub-map's layout, the kind enum and the base32 alphabet — were in no section of the spec."
+    },
+    {
+      "decision": 36,
+      "text": "Three implementations 'agreed' on all four because all three had decoded the same fixture to learn them.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "three implementations 'agreed' on all four because all three had decoded the same fixture to learn them."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "nodejs/ does not reach C-Produce",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Continue relying on manual checks to ensure consistency with the specification.",
+      "reason": "",
+      "quote": "Until now every implementation read SMYSL_FORMAT_SPEC.md only to assert it contained the string \"Deterministic CBOR\" — while READINESS reported the §2.2 and §3.1 tables as checked against the document."
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep the existing number of transcripts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Reduce the number of transcripts to match the previous count.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Continue without measuring mutation testing survivor rates.",
+      "reason": "",
+      "quote": "The first attempt was invalid and looked like a result: cargo-mutants took its baseline at 1s of tests, auto-set a 20s timeout, then ran each mutant against the 109-second workspace suite. `4 missed, 6 caught, 15 timeouts` reads as nineteen of twenty-three being artefacts."
+    },
+    {
+      "decision": 5,
+      "alternative": "Running fewer CI jobs to reduce testing scope.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Combining multiple tests into a single CI job.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Continuing to rely on manual checks for documentation quality.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Adding a separate job specifically for checking rustdoc warnings and broken links.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Manually checking API changes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Using a different tool to check API changes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Continue testing only with default features.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Test feature combinations manually.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "No new job is added, and existing checks are relied upon to ensure purity.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "A different type of check is added to ensure purity, such as a static analysis tool.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "No new job to check determinism.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Using another provider that requires keys, cost, or egress.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Not adding a new job to assert the mapper against a real server.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "`nodejs/` could reach C-Produce by implementing uid derivation",
+      "reason": "",
+      "quote": "nodejs/ at C-Produce"
+    },
+    {
+      "decision": 14,
+      "alternative": "Gate 4 is fully verified with one key.",
+      "reason": "",
+      "quote": "If you have an OpenAI or Anthropic key, running the provider live tests and reporting what came back closes it — and 'it did not work' is more useful still, because the concrete mappers are #[doc(hidden)] and a wrong one is fixable without a 2.0."
+    },
+    {
+      "decision": 15,
+      "alternative": "Continue running the 57 blocked commands as they are.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Splitting them means the chapters naming a different file at each step, which changes what the book teaches.",
+      "reason": "",
+      "quote": "Chapters now replay as chapters: a scratch copy, walked in document order, with `fmt --write` allowed to write."
+    },
+    {
+      "decision": 16,
+      "alternative": "Ignore the untested code survivors.",
+      "reason": "",
+      "quote": "Not done: §2.3 needs an OpenAI and an Anthropic key; 109 `cmd_*` survivors remain in the binary, which cannot break a library API and are safe for a quiet cycle."
+    },
+    {
+      "decision": 17,
+      "alternative": "Continue not checking the cargo transcripts",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "Check other parts of the manual that were previously unchecked",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 18,
+      "alternative": "No test is added for Gate 4 related to the Anthropic provider.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "alternative": "Do not recalibrate smysl-provider.",
+      "reason": "",
+      "quote": "RATIONALE: The commit recalibrates the smysl-provider, which is a significant change in the provider's implementation."
+    },
+    {
+      "decision": 20,
+      "alternative": "Continue to leave the `cmd_*` clusters and command dispatch open.",
+      "reason": "",
+      "quote": "The remaining `cmd_providers` entry is the `#[cfg(not(feature = \"providers\")]` stub of the same name, which no build compiles; the remaining dispatch one is equivalent. Both recorded rather than chased."
+    },
+    {
+      "decision": 22,
+      "alternative": "Implementing a live call to OpenAI and Anthropic.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 23,
+      "alternative": "Continue using the comment sweep as a primary instrument.",
+      "reason": "",
+      "quote": "Sweeping is now what one does to a claim mutation testing has already pointed at."
+    },
+    {
+      "decision": 24,
+      "alternative": "Continue relying on manual checks to ensure documentation matches the binary.",
+      "reason": "",
+      "quote": "The lesson is not 'the number was fine'. It is that **a measurement quoted without its configuration is not a measurement**, which this file already says about the CLI's survivor rate one section up, and which cost a wrong correction here before the check was run the supported way."
+    },
+    {
+      "decision": 25,
+      "alternative": "Continue without gating the larger half of Gate 7.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "Continue relying on manual checks for command blocks.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "Implement a more comprehensive script that checks all command blocks, including those skipped due to file naming conventions.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "`nodejs/` does not reach C-Produce",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "Maintaining the existing single implementation for sections 2.1 and 2.3.",
+      "reason": "",
+      "quote": "The reading found four facts a C-Produce implementer cannot proceed without, none of them in the spec, all recoverable only by decoding a fixture:"
+    },
+    {
+      "decision": 30,
+      "alternative": "Using a binding to the same C library as the Rust code.",
+      "reason": "",
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 31,
+      "alternative": "Do not add `uid.js`",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 31,
+      "alternative": "Add a different implementation for `uid.js` that does not reproduce all sixteen canonical encodings and uids",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "Manually run each CI check separately before pushing.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "Automate the checks but without a single command to verify all of them.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 33,
+      "alternative": "Keep the toolchain version flexible",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 34,
+      "alternative": "Keep the auto-set timeout and do not add a new option.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 35,
+      "alternative": "Keep the `BASELINE` version unchanged.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 35,
+      "alternative": "Set the `BASELINE` version to a different published version.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 36,
+      "alternative": "Continue without adding `spec-tables` target.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 36,
+      "alternative": "Add a different target for checking format constants and document definitions.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "`blake3.js` passes the published vectors including the lengths straddling the chunk boundary",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation — and passes the published vectors including the lengths straddling the chunk boundary."
+    },
+    {
+      "decision": 1,
+      "text": "`uid.js` implements §7's shape clause with `uid()` running it first",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first, so a malformed unit cannot obtain an identity from the package."
+    },
+    {
+      "decision": 2,
+      "text": "The new job will parse the spec's tables and compare all four implementations against them, ensuring they are consistent with the specification.",
+      "quote": "Parses the spec's tables rather than quoting them, and compares all four implementations against them in both directions. 38 comparisons, its own CI job.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The new job will help identify discrepancies between the implementations and the specification.",
+      "quote": "It found four more on its first run: the masthead read `smysl/0.1` while §8.6 of the same document says `smysl/1.0` is what new documents declare; and go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The number of transcripts handled by Gate 7 increases from 78 to 85, improving testing coverage for this gate.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Chapters now replay as chapters: a scratch copy, walked in document order, with `fmt --write` allowed to write. Later states are derived rather than recorded. Reader edits live in edits.json, anchored by prose and never by content, so the body is read out of the chapter at run time and nothing can go stale."
+    },
+    {
+      "decision": 4,
+      "text": "The project now has a more accurate measurement of its codebase's robustness through mutation testing survivor rates.",
+      "quote": "Every survivor rate in gate 5 is the weak per-package claim. Measured on store/mod.rs: 23 survivors per-package, 18 under --test-workspace.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The project can identify areas of its codebase that may need more testing or refactoring based on the mutation testing results.",
+      "quote": "Five of twenty-three were never gaps. The backlog is mostly real; this is one module of one crate and applying the fraction to the other 357 would be the error this file records twice already.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "All CI jobs pass, ensuring the project's stability and correctness across different configurations and environments.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green: 10/10 matrix"
+    },
+    {
+      "decision": 6,
+      "text": "A new CI job named 'doc-gate' is added to check for rustdoc warnings and broken links in the documentation.",
+      "quote": "# What docs.rs will render. Gated because publishing made it consequential: a rustdoc warning is a broken link on the page strangers read first, and six had accumulated unnoticed.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "The 'doc-gate' job ensures that any rustdoc warnings or broken links are caught during CI, preventing them from being published.",
+      "quote": "- run: RUSTDOCFLAGS=\"-D warnings\" cargo doc --workspace --all-features --no-deps",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The project now has an automated way to ensure that changes in the API are either breaking or non-breaking as expected.",
+      "quote": "A rename shows up in the first; marking a struct `#[non_exhaustive]` only in the second.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The project can now catch API changes that were previously missed.",
+      "quote": "The golden file is what caught that, which is why neither gate is redundant.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The project will have a CI job that tests the code with various feature combinations, ensuring that all features work together correctly.",
+      "quote": "Feature combinations, because the interesting bugs live in the seams between them.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The CI pipeline now includes a new job called 'purity' that checks the library for synchronization and network usage.",
+      "quote": "Rules A and B: the library must stay synchronous and network-free.",
+      "verified": true,
+      "verification_quote": "- run: cargo xtask check-purity"
+    },
+    {
+      "decision": 10,
+      "text": "A new CI job named 'determinism' is added to ensure that pure operations are bit-reproducible across locale, timezone, and hash seed.",
+      "quote": "Rule D: every pure operation is bit-reproducible across locale, timezone, and hash seed.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "A new job is added to check that pure crates do not acquire network dependencies.",
+      "quote": "A new job is added to check that pure crates do not acquire network dependencies, ensuring that they remain network-free.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The project now has a CI job that asserts the mapper against a real server using Ollama.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "A new job is added to assert the mapper against a real server using Ollama, ensuring that the implementation works with a real provider."
+    },
+    {
+      "decision": 12,
+      "text": "The project ensures that its implementation works with a real provider.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "A new job is added to assert the mapper against a real server using Ollama, ensuring that the implementation works with a real provider."
+    },
+    {
+      "decision": 13,
+      "text": "`nodejs/` remains at C-Read and does not reach the full verification gate of C-Produce",
+      "quote": "RATIONALE: The commit explicitly states that nodejs/ remains at C-Read, which means it does not reach the full verification gate of C-Produce.",
+      "verified": true,
+      "verification_quote": "nodejs/ at C-Produce\n--------------------\n§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust."
+    },
+    {
+      "decision": 14,
+      "text": "The project will continue to seek additional keys for Gate 4 verification.",
+      "quote": "If you have an OpenAI or Anthropic key, running the provider live tests and reporting what came back closes it — and 'it did not work' is more useful still, because the concrete mappers are #[doc(hidden)] and a wrong one is fixable without a 2.0.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The remaining commands will be held back rather than repaired.",
+      "quote": "Held back rather than repaired — the missing stanza cannot be reconstructed from the page.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The chapters naming a different file at each step, which changes what the book teaches.",
+      "quote": "Splitting them means the chapters naming a different file at each step, which changes what the book teaches.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "The project continues to identify and address untested code.",
+      "quote": "What remains in `src/main.rs` is `main` and `cli` — subcommand dispatch, where a mutant deletes an arm nothing routes to.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "`make doc-cargo` is added as a new gate to replay the manual's smysl transcripts and check them against cargo",
+      "quote": "A new gate called `make doc-cargo` is added, which replays the manual's smysl transcripts and checks them against cargo.",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "Three stale claims in the manual are found and covered by the new gate",
+      "quote": "`verify-doc-output.py` replays the manual's `smysl` transcripts and its skip rules pass straight over the `cargo` ones, so nothing had ever checked those",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "The correctness of the format with respect to the Anthropic provider is verified.",
+      "quote": "The same method that found two defects by reading OpenAI's documentation, applied to Anthropic's.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "The recalibration of smysl-provider may improve its accuracy or performance.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "The recalibration could lead to changes in the provider's behavior, which might affect other parts of the system that rely on it.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "The number of survivors in mutation testing for the command clusters and dispatch decreases.",
+      "quote": "The remaining `cmd_providers` entry is the `#[cfg(not(feature = \"providers\")]` stub of the same name, which no build compiles; the remaining dispatch one is equivalent. Both recorded rather than chased.",
+      "verified": true,
+      "verification_quote": "src/main.rs` went from 99 survivors of 205 viable to **59 of 207** — `cmd_fmt` 12 → 2, `cmd_merge` 11 → 0, `cmd_providers` 12 → 1, and `cli` + `main` 15 → 1"
+    },
+    {
+      "decision": 21,
+      "text": "All CI checks pass",
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok.",
+      "verified": true,
+      "verification_quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": 22,
+      "text": "Gate 4 is waived, meaning it does not need to be completed.",
+      "quote": "Gate 4 — a live call to OpenAI and Anthropic — is the waiver",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "The comment sweep is no longer used as a primary instrument.",
+      "quote": "Sweeping is now what one does to a claim mutation testing has already pointed at.",
+      "verified": true,
+      "verification_quote": "The comment sweep is retired as a primary instrument."
+    },
+    {
+      "decision": 24,
+      "text": "The project now has an automated script `make doc-output` that replays documented command blocks and gates on them.",
+      "quote": "RATIONALE: The commit introduces a new script that replays documented command blocks and gates on them.",
+      "verified": true,
+      "verification_quote": "`make doc-output` replays **78 of 194** documented command blocks and gates on them;"
+    },
+    {
+      "decision": 24,
+      "text": "The project can now automatically verify that the documentation matches the binary, reducing manual errors.",
+      "quote": "RATIONALE: The commit introduces a new script that replays documented command blocks and gates on them.",
+      "verified": true,
+      "verification_quote": "`make doc-output` replays **78 of 194** documented command blocks and gates on them;"
+    },
+    {
+      "decision": 25,
+      "text": "The new gate replays the six single-command `cargo` transcripts, checks every version string against the manifest, and compares the one feature table.",
+      "quote": "`make doc-cargo` closed the other half in 1.1.",
+      "verified": true,
+      "verification_quote": "`make doc-cargo` closed the other half in 1.1."
+    },
+    {
+      "decision": 25,
+      "text": "The script reads `./target/debug/smysl`, and what was on disk was an `--all-features` binary left by unrelated work.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Re-checking it in 1.1 by running `scripts/verify-doc-output.py` directly produced `ran 45, skipped 123`, and 46 was about to be \"corrected\" to 45 across three documents."
+    },
+    {
+      "decision": 26,
+      "text": "The cheap half of Gate 7 is now gated, ensuring that documented command blocks are replayed and checked against the binary output.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "`make doc-output` replays **78 of 194** documented command blocks and gates on them; 116 are skipped, mostly because they name files a chapter built earlier in its own narrative."
+    },
+    {
+      "decision": 26,
+      "text": "The new script `verify-doc-cargo.py` is introduced to replay the six single-command `cargo` transcripts, check version strings against the manifest, and compare feature tables.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "`make doc-cargo` closed the other half in 1.1."
+    },
+    {
+      "decision": 27,
+      "text": "CI tests passed with the specified results.",
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok.",
+      "verified": true,
+      "verification_quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": 28,
+      "text": "The reading found four facts a C-Produce implementer cannot proceed without, none of them in the spec, all recoverable only by decoding a fixture",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "The reading found four facts a C-Produce implementer cannot proceed without, none of them in the spec, all recoverable only by decoding a fixture:"
+    },
+    {
+      "decision": 28,
+      "text": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation",
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 28,
+      "text": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first",
+      "quote": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 29,
+      "text": "Increased confidence in the format's correctness due to multiple independent implementations.",
+      "quote": "§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust.",
+      "verified": true,
+      "verification_quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 30,
+      "text": "The JavaScript implementation will be tested independently, ensuring consistency with other language implementations.",
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 30,
+      "text": "The JavaScript implementation will pass the published vectors, including those straddling the chunk boundary.",
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation — and passes the published vectors including the lengths straddling the chunk boundary.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 31,
+      "text": "`uid.js` now reproduces all sixteen canonical encodings and uids",
+      "quote": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first, so a malformed unit cannot obtain an identity from the package.",
+      "verified": true,
+      "verification_quote": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first, so a malformed unit cannot obtain an identity from the package."
+    },
+    {
+      "decision": 32,
+      "text": "Developers can now easily run all necessary checks with a single command (`make ci green`).",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 32,
+      "text": "This reduces the likelihood of pushing code that fails CI checks.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 33,
+      "text": "Consistency between local checks and CI is ensured",
+      "quote": "Pinning the checks to the same channel removes the surprise.",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 33,
+      "text": "Local stable toolchain level can be updated with `make update`",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 34,
+      "text": "The `cargo-mutants` command now accepts an explicit `--timeout` option to set the timeout for running each mutant.",
+      "quote": "Add `--timeout` option for `cargo-mutants`",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 35,
+      "text": "API breakage checks will now be performed against version 1.0.0.",
+      "quote": "Publishing made this consequential: rustdoc warnings are broken links on a page strangers read first, and six had accumulated unnoticed.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 36,
+      "text": "The CI jobs now include the `spec-tables` target, ensuring that format constants and document definitions are checked against each other.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "ci: lint doc-gate api-check test-matrix gates conformance fuzz-build doc-cargo spec-tables ## Everything CI runs, bar the jobs needing a server"
+    }
+  ]
+}

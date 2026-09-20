@@ -1,0 +1,334 @@
+{
+  "decisions": [
+    {
+      "decision": "Remove the guess rather than sort it correctly",
+      "kind": "act",
+      "rationale": "The fix now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong.",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong."
+    },
+    {
+      "decision": "Do not sort filenames lexicographically",
+      "kind": "decline",
+      "rationale": "Sorting numerically repairs that one bug and leaves the guess in place.",
+      "quote": "The fix is not a better sort. Sorting numerically repairs that one bug and leaves the guess in place."
+    },
+    {
+      "decision": "Do not steal doc comments when inserting items",
+      "kind": "decline",
+      "rationale": "The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented.",
+      "quote": "The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented."
+    },
+    {
+      "decision": "Make tests strict on error messages",
+      "kind": "act",
+      "rationale": "A test that cannot tell the two branches apart is not testing the branch it claims to.",
+      "quote": "It asserted that *some* error came back and that the message named the version — which passed with the check disabled, because `read_to_string` fails too and its message contains the path, and the path contains the version. A test that cannot tell the two branches apart is not testing the branch it claims to."
+    },
+    {
+      "decision": "Do not assume version ordering in the tree",
+      "kind": "decline",
+      "rationale": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string.",
+      "quote": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string."
+    },
+    {
+      "decision": "Do not silently read the wrong file",
+      "kind": "act",
+      "rationale": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written.",
+      "quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written."
+    },
+    {
+      "decision": "Do not leave doc comments stolen",
+      "kind": "decline",
+      "rationale": "The third time in this project that inserting an item above another has stolen its doc comment.",
+      "quote": "The third time in this project that inserting an item above another has stolen its doc comment."
+    },
+    {
+      "decision": "Do not check `FN` (failure modes), `D-N` (the RFC's own decision numbers) or `GE-N` (gated experiments)",
+      "kind": "decline",
+      "rationale": "All three live in tables rather than headings, and a text search for them would report a coverage this does not have. Three checked forms that hold is worth more than six that are half true.",
+      "quote": "It deliberately does **not** check `FN` (failure modes), `D-N` (the RFC's own decision numbers) or `GE-N` (gated experiments)."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The code assumes version ordering in some places.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string, `format!(\"v{version}\")` or an exact manifest match."
+    },
+    {
+      "decision": 1,
+      "text": "The fix had stolen a doc comment.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "And the fix had stolen a doc comment. The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented — the third time in this project that inserting an item above another has taken its doc comment, after data::all in F9 and cmd_cal_validate in F4."
+    },
+    {
+      "decision": 1,
+      "text": "The second test was not strict on its first draft.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The second test was not strict on its first draft. It asserted that some error came back and that the message named the version, which passed with the check disabled: read_to_string fails too, and its message contains the path, and the path contains the version."
+    },
+    {
+      "decision": 2,
+      "text": "The code reads 'the newest release-notes file' by sorting filenames.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames.`"
+    },
+    {
+      "decision": 2,
+      "text": "Sorting filenames lexicographically puts '1.10.0.md' between '1.1.0.md' and '1.2.0.md'.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "which puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md` — so the newest was `1.9.0.md`, and the check began reading the *previous* release's procedure while reporting success."
+    },
+    {
+      "decision": 2,
+      "text": "Sorting numerically repairs that one bug.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 3,
+      "text": "The project has a history of functions losing their doc comments when new items are inserted above them.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The third time in this project that inserting an item above another has stolen its doc comment, after data::all in 1.9.0's F9 and cmd_cal_validate in F4."
+    },
+    {
+      "decision": 4,
+      "text": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 4,
+      "text": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string, `format!(\"v{version}\")` or an exact manifest match."
+    },
+    {
+      "decision": 5,
+      "text": "Nothing else in the tree assumes version ordering",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string, `format!(\"v{version}\")` or an exact manifest match."
+    },
+    {
+      "decision": 6,
+      "text": "The code reads 'the newest release-notes file' by sorting filenames lexicographically.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`check_ci_covers_the_procedure` read \"the newest release-notes file\", picked by sorting filenames."
+    },
+    {
+      "decision": 6,
+      "text": "Sorting filenames lexicographically can lead to incorrect ordering for version numbers.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It picked that file by sorting filenames **lexicographically**, which puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md` — so the newest was `1.9.0.md`, and the check began reading the *previous* release's procedure while reporting success."
+    },
+    {
+      "decision": 6,
+      "text": "A version bumped and its notes never written could lead to silent errors.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version."
+    },
+    {
+      "decision": 7,
+      "text": "The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The third time in this project that inserting an item above another has stolen its doc comment, after data::all in 1.9.0's F9 and cmd_cal_validate in F4."
+    },
+    {
+      "decision": 8,
+      "text": "All three (FN, D-N, GE-N) live in tables rather than headings",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "All three live in tables rather than headings"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Sort numerically",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 2,
+      "alternative": "Sort filenames lexicographically.",
+      "reason": "",
+      "quote": "Sorting numerically repairs that one bug and leaves the guess in place."
+    },
+    {
+      "decision": 3,
+      "alternative": "Continue the practice of losing doc comments when new items are inserted.",
+      "reason": "",
+      "quote": "The third time in this project that inserting an item above another has stolen its doc comment, after data::all in 1.9.0's F9 and cmd_cal_validate in F4."
+    },
+    {
+      "decision": 4,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 4,
+      "alternative": "Keep the original test that asserts some error came back without checking the message content.",
+      "reason": "",
+      "quote": "A test that cannot tell the two branches apart is not testing the branch it claims to."
+    },
+    {
+      "decision": 5,
+      "alternative": "Continue assuming version ordering",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 6,
+      "alternative": "Sort filenames numerically but leave the guess in place.",
+      "reason": "",
+      "quote": "Sorting numerically repairs that one bug and leaves the guess in place."
+    },
+    {
+      "decision": 7,
+      "alternative": "Keep the existing behavior where doc comments might be stolen.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Implement a system to automatically move or merge doc comments when inserting new items.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Check all six forms (§, Rule, D-AN, FN, D-N, GE-N)",
+      "reason": "",
+      "quote": "It deliberately does **not** check `FN` (failure modes), `D-N` (the RFC's own decision numbers) or `GE-N` (gated experiments). All three live in tables rather than headings, and a text search for them would report a coverage this does not have. Three checked forms that hold is worth more than six that are half true."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "No ordering left to get wrong.",
+      "quote": "The fix now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong.",
+      "verified": true,
+      "verification_quote": "There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed. That is an error naming the version now."
+    },
+    {
+      "decision": 1,
+      "text": "Fixed a bug where a version bumped and its notes never written silently read the previous cycle's file and passed.",
+      "quote": "The fix now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong.",
+      "verified": true,
+      "verification_quote": "That is an error naming the version now."
+    },
+    {
+      "decision": 1,
+      "text": "Fixed a bug where the second test was not strict on its first draft.",
+      "quote": "The fix now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong.",
+      "verified": true,
+      "verification_quote": "A test that cannot tell the two branches apart is not testing the branch it claims to."
+    },
+    {
+      "decision": 2,
+      "text": "The check now reads the notes for the version being built, derived from [workspace.package].",
+      "quote": "The check now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "It closes an adjacent failure the sort could not: a version bumped and its notes never written.",
+      "quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The new function's doc comment had swallowed check_ci_covers_the_procedure's, leaving that function undocumented.",
+      "quote": "It did find one thing, in the fix itself — the new function's doc comment had swallowed `check_ci_covers_the_procedure`'s, leaving that function undocumented.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Ensures that functions retain their documentation when new items are inserted.",
+      "quote": "The third time in this project that inserting an item above another has stolen its doc comment, after data::all in 1.9.0's F9 and cmd_cal_validate in F4.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The check now reads the notes for the version being built, derived from [workspace.package].",
+      "quote": "The check now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": true,
+      "verification_quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version."
+    },
+    {
+      "decision": 4,
+      "text": "A new test was added that strictly checks the error message content.",
+      "quote": "A test that cannot tell the two branches apart is not testing the branch it claims to.",
+      "verified": true,
+      "verification_quote": "Two tests, and the first draft of the second one was not strict. It asserted that *some* error came back and that the message named the version — which passed with the check disabled, because `read_to_string` fails too and its message contains the path, and the path contains the version."
+    },
+    {
+      "decision": 5,
+      "text": "The fix had stolen a doc comment",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "And the fix had stolen a doc comment. The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented — the third time in this project that inserting an item above another has taken its doc comment, after data::all in F9 and cmd_cal_validate in F4."
+    },
+    {
+      "decision": 5,
+      "text": "The second test was not strict on its first draft",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "A test that cannot tell the two branches apart is not testing the branch it claims to."
+    },
+    {
+      "decision": 6,
+      "text": "The code now reads the notes for the version being built, derived from `[workspace.package]`.",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed. That is an error naming the version now.",
+      "verified": true,
+      "verification_quote": "The check now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 6,
+      "text": "A version bumped and its notes never written will now result in an error.",
+      "quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version.",
+      "verified": true,
+      "verification_quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version."
+    },
+    {
+      "decision": 7,
+      "text": "The function check_ci_covers_the_procedure will now have its documentation restored.",
+      "quote": "The third time in this project that inserting an item above another has stolen its doc comment, after data::all in 1.9.0's F9 and cmd_cal_validate in F4.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The check focuses on three forms (§, Rule, D-AN) that resolve against headings or bold section markers",
+      "quote": "For each citation *form*, that the target exists in the normative spec:\n\n| form | resolves against |\n|---|---|\n| `§N` / `§N.N` | a heading or bold section marker in `UCAL-1.1.md` |\n| `Rule X` | an entry in `RULES.md` |\n| `D-AN` | a delta record in `SPEC-DELTAS.md` |",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}
