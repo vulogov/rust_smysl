@@ -51,6 +51,36 @@ enum Cmd {
     /// that are ancestors of the task base) and write a packed context per task and per question to
     /// eval/s3/context/.
     S3Context,
+    /// Extract the labelled commits with the shipped extraction code, as a system S0 can score.
+    ///
+    /// The same `cargo_smysl_extract::extract`, the same prompt and the same recipe the command uses;
+    /// what is left out is only the workspace discovery, which S0 does not measure. The clones here are
+    /// bare, so this reads them directly.
+    ExtractShipped {
+        /// Where the extractions go: eval/extractions/SYSTEM.
+        #[arg(long, default_value = "shipped-local14")]
+        system: String,
+        /// Only these commits (short sha).
+        #[arg(long)]
+        sha: Vec<String>,
+        /// Re-extract a commit that already has a file.
+        #[arg(long)]
+        force: bool,
+        #[arg(long, env = "SMYSL_CHECK_PROVIDER", default_value = "ollama")]
+        provider: String,
+        #[arg(long, env = "SMYSL_CHECK_MODEL", default_value = "qwen2.5-coder:14b")]
+        model: String,
+        #[arg(
+            long,
+            env = "SMYSL_CHECK_ENDPOINT",
+            default_value = "http://localhost:11434/api/chat"
+        )]
+        endpoint: String,
+        #[arg(long, env = "SMYSL_CHECK_KEY_VAR", default_value = "")]
+        key_var: String,
+        #[arg(long, env = "SMYSL_CHECK_WINDOW", default_value_t = 32768)]
+        window: u32,
+    },
     /// Export S4 cases as trees the shipped `cargo smysl check` can read: a `.smysl/` corpus and the
     /// change, one directory per case. The reproduction of the held-out figures runs against these.
     S4Export {
@@ -162,6 +192,29 @@ fn main() -> ExitCode {
         Cmd::S3Context => s3_context(&cli.eval_dir),
         Cmd::S4Check(args) => s4_check(&cli.eval_dir, args),
         Cmd::S4Export { set, to, id } => s4_export(&cli.eval_dir, set, to, id),
+        Cmd::ExtractShipped {
+            system,
+            sha,
+            force,
+            provider,
+            model,
+            endpoint,
+            key_var,
+            window,
+        } => extract_shipped(
+            &cli.eval_dir,
+            system,
+            sha,
+            *force,
+            cargo_smysl_extract::Provider {
+                kind: provider.clone(),
+                endpoint: endpoint.clone(),
+                model: model.clone(),
+                key_var: key_var.clone(),
+                window: *window,
+                ..cargo_smysl_extract::Provider::local(model)
+            },
+        ),
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,
@@ -785,6 +838,71 @@ struct S4Case {
     source: String,
     task: Option<u32>,
     contradicting: Option<bool>,
+}
+
+/// Run the shipped extraction over every labelled commit, writing what S0 scores.
+fn extract_shipped(
+    eval: &Path,
+    system: &str,
+    shas: &[String],
+    force: bool,
+    provider: cargo_smysl_extract::Provider,
+) -> Result<(), String> {
+    let set = commits(eval)?;
+    let judge = cargo_smysl_extract::ProviderJudge { provider };
+    let recipe = cargo_smysl_extract::Recipe::default();
+    let (mut done, mut kept) = (0, 0);
+    for (c, label) in done_labels(eval)? {
+        if label.is_none() || (!shas.is_empty() && !shas.contains(&c.sha)) {
+            continue;
+        }
+        let out = eval
+            .join("extractions")
+            .join(system)
+            .join(&c.repo)
+            .join(format!("{}.json", c.sha));
+        if out.exists() && !force {
+            kept += 1;
+            continue;
+        }
+        let repo = set
+            .repos
+            .get(&c.repo)
+            .ok_or_else(|| format!("unknown repo {}", c.repo))?;
+        let dir = repo_dir(eval, &c.repo, &repo.url)?;
+        let commit = cargo_smysl_git::read_commit(&dir, &c.sha).map_err(|e| e.to_string())?;
+        let files: Vec<(String, String)> = commit
+            .files
+            .iter()
+            .map(|f| (f.path.clone(), f.text()))
+            .collect();
+        let input = cargo_smysl_extract::commit_input(&commit.message, &files);
+        let began = std::time::Instant::now();
+        let (extraction, report) = cargo_smysl_extract::extract(&input, &judge, &recipe)
+            .map_err(|e| format!("{} {}: {e}", c.repo, c.sha))?;
+        for w in &report.warnings {
+            println!("  {} {}: {w}", c.repo, c.sha);
+        }
+        std::fs::create_dir_all(out.parent().unwrap()).map_err(|e| e.to_string())?;
+        std::fs::write(
+            &out,
+            serde_json::to_string_pretty(&extraction).map_err(|e| e.to_string())?,
+        )
+        .map_err(|e| e.to_string())?;
+        println!(
+            "{:<6} {:<8} {} decision(s), {} prerequisite(s), {} alternative(s); {} call(s), {}s",
+            c.repo,
+            c.sha,
+            extraction.decisions.len(),
+            extraction.prerequisites.len(),
+            extraction.alternatives.len(),
+            report.calls,
+            began.elapsed().as_secs()
+        );
+        done += 1;
+    }
+    println!("{system}: {done} extracted, {kept} already present");
+    Ok(())
 }
 
 /// The corpora and diffs a set of S4 cases is checked against: one corpus per distinct set of ancestor

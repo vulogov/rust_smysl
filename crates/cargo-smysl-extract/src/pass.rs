@@ -139,6 +139,19 @@ pub struct Report {
 ///
 /// `input` is the commit as the tool read it — message first, then the diff — already the tool's own
 /// reading of git, never the model's.
+/// What the model is shown for one commit: the message, then each file's text, exactly as the shipped
+/// command assembles it.
+///
+/// It lives here rather than in the command so that a measurement of extraction measures the prompt the
+/// tool really sends. A copy in the evaluation would drift, and the drift would be invisible.
+pub fn commit_input(message: &str, files: &[(String, String)]) -> String {
+    let mut input = message.to_string();
+    for (path, text) in files {
+        input.push_str(&format!("\n\n--- {path} ---\n{text}"));
+    }
+    input
+}
+
 pub fn extract(
     input: &str,
     judge: &dyn Judge,

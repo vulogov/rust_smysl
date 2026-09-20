@@ -965,10 +965,12 @@ fn extract(
         }
         None => {
             // What the model sees: the commit as the tool read it, message then diff.
-            let mut input = commit.message.clone();
-            for file in &commit.files {
-                input.push_str(&format!("\n\n--- {} ---\n{}", file.path, file.text()));
-            }
+            let files: Vec<(String, String)> = commit
+                .files
+                .iter()
+                .map(|f| (f.path.clone(), f.text()))
+                .collect();
+            let input = cargo_smysl_extract::commit_input(&commit.message, &files);
             let judge = ProviderJudge {
                 provider: Provider {
                     kind: how.provider.to_string(),
