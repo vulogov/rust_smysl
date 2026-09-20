@@ -10,6 +10,7 @@ score.py reads, and an existing result is kept, so a run can be resumed.
 """
 
 import json
+import os
 import subprocess
 import sys
 import time
@@ -17,7 +18,9 @@ from pathlib import Path
 
 EVAL = Path(__file__).resolve().parent.parent
 ROOT = EVAL.parent
-BINARY = ROOT / "target" / "debug" / "cargo-smysl"
+# The release binary: a reproduction should not be measuring a debug build, and it must not be rebuilt
+# while the run is going — the binary is what is being measured.
+BINARY = Path(os.environ.get("SMYSL_BINARY", ROOT / "target" / "release" / "cargo-smysl"))
 
 
 def main(argv):
@@ -67,6 +70,7 @@ def main(argv):
         result = dict(case)
         result.update(outcome)
         result["seconds"] = round(time.time() - began, 1)
+        result["binary"] = str(BINARY)
         path.write_text(json.dumps(result, indent=2))
         print(f"  {n}/{len(cases)} {case['id']}: {len(outcome.get('findings', []))} finding(s), "
               f"{result['seconds']}s")
