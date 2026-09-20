@@ -71,6 +71,9 @@ pub struct Provider {
     pub window: u32,
     /// Tokens reserved for the answer, and the generation cap.
     pub answer_tokens: u32,
+    /// Characters per token for this model's tokenizer (D16). Code runs about two on Qwen, prose about
+    /// four; a wrong value here is what makes a provider truncate silently.
+    pub chars_per_token: f32,
     pub timeout: Duration,
 }
 
@@ -84,6 +87,7 @@ impl Provider {
             key_var: String::new(),
             window: 32768,
             answer_tokens: 2048,
+            chars_per_token: 2.0,
             timeout: Duration::from_secs(420),
         }
     }
@@ -105,11 +109,22 @@ pub trait Judge {
     /// What the answers are attributed to, for the record.
     fn describe(&self) -> String;
 
+    /// Characters of input this model can be shown, if it is known. A caller that has more than this
+    /// must cut it or split it, and say so (D17). `None` means the judge will not say, and the caller
+    /// keeps its own default.
+    fn input_chars(&self) -> Option<usize> {
+        None
+    }
+
     fn ask(&self, system: &str, user: &str) -> Result<(Vec<RawVerdict>, Charged), JudgeError> {
         let (text, charged) = self.ask_text(system, user)?;
         Ok((parse_answer(&text)?, charged))
     }
 }
+
+/// What the instructions and the answer's shape take, beside the text a caller wants judged. Measured
+/// from the prompts here: the longest is under three thousand characters.
+const FRAMING_CHARS: usize = 4_000;
 
 /// The shipped client.
 pub struct ProviderJudge {
@@ -119,6 +134,18 @@ pub struct ProviderJudge {
 impl Judge for ProviderJudge {
     fn describe(&self) -> String {
         format!("{}:{}", self.provider.kind, self.provider.model)
+    }
+
+    /// The window less the answer's room, as characters, less what the instructions occupy.
+    ///
+    /// A provider whose tokenizer is kinder than `chars_per_token` says simply leaves room unused, which
+    /// is the safe direction: the costly mistake is being shown more than fits, which a provider answers
+    /// by silently dropping the beginning.
+    fn input_chars(&self) -> Option<usize> {
+        let p = &self.provider;
+        let room =
+            f64::from(p.window.saturating_sub(p.answer_tokens)) * f64::from(p.chars_per_token);
+        Some((room as usize).saturating_sub(FRAMING_CHARS).max(2_000))
     }
 
     fn ask_text(&self, system: &str, user: &str) -> Result<(String, Charged), JudgeError> {

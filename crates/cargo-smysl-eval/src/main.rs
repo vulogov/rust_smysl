@@ -852,6 +852,7 @@ fn extract_shipped(
     let judge = cargo_smysl_extract::ProviderJudge { provider };
     let recipe = cargo_smysl_extract::Recipe::default();
     let (mut done, mut kept) = (0, 0);
+    let mut failed: Vec<String> = Vec::new();
     for (c, label) in done_labels(eval)? {
         if label.is_none() || (!shas.is_empty() && !shas.contains(&c.sha)) {
             continue;
@@ -878,8 +879,16 @@ fn extract_shipped(
             .collect();
         let input = cargo_smysl_extract::commit_input(&commit.message, &files);
         let began = std::time::Instant::now();
-        let (extraction, report) = cargo_smysl_extract::extract(&input, &judge, &recipe)
-            .map_err(|e| format!("{} {}: {e}", c.repo, c.sha))?;
+        // One commit failing is not the run failing: the rest are still worth having, and the failure
+        // is named so it can be redone on its own.
+        let (extraction, report) = match cargo_smysl_extract::extract(&input, &judge, &recipe) {
+            Ok(x) => x,
+            Err(e) => {
+                println!("{:<6} {:<8} FAILED: {e}", c.repo, c.sha);
+                failed.push(format!("{} {}", c.repo, c.sha));
+                continue;
+            }
+        };
         for w in &report.warnings {
             println!("  {} {}: {w}", c.repo, c.sha);
         }
@@ -901,7 +910,16 @@ fn extract_shipped(
         );
         done += 1;
     }
-    println!("{system}: {done} extracted, {kept} already present");
+    println!(
+        "{system}: {done} extracted, {kept} already present, {} failed",
+        failed.len()
+    );
+    if !failed.is_empty() {
+        println!("  redo with: smysl-eval extract-shipped --system {system} --sha <sha>");
+        for f in &failed {
+            println!("  {f}");
+        }
+    }
     Ok(())
 }
 

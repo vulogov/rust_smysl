@@ -24,6 +24,9 @@ pub struct Recipe {
     /// Decisions asked for at most; 0 is no limit.
     pub max_decisions: usize,
     /// Characters of the commit (message and diff) the model is shown.
+    /// Characters of the commit the model is shown. `0` means "ask the judge": the window less the
+    /// answer's room (D17), which is what a provider-neutral tool should do. A number here overrides
+    /// that, for a recipe that wants runs comparable across models.
     pub max_input: usize,
 }
 
@@ -32,7 +35,7 @@ impl Default for Recipe {
         Recipe {
             name: "v1".into(),
             max_decisions: 12,
-            max_input: 40_000,
+            max_input: 0,
         }
     }
 }
@@ -158,7 +161,12 @@ pub fn extract(
     recipe: &Recipe,
 ) -> Result<(Extraction, Report), JudgeError> {
     let mut report = Report::default();
-    let shown = truncate(input, recipe.max_input);
+    // D17: the input is fitted to the model in front of us unless the recipe names a size.
+    let room = match recipe.max_input {
+        0 => judge.input_chars().unwrap_or(40_000),
+        n => n,
+    };
+    let mut shown = truncate(input, room);
     if shown.len() < input.len() {
         report.warnings.push(format!(
             "the commit is {} characters; the model was shown the first {}",
@@ -168,7 +176,23 @@ pub fn extract(
     }
 
     report.calls += 1;
-    let answer: DecisionsAnswer = ask(judge, DECISIONS_SYSTEM, &format!("COMMIT:\n{shown}\n"))?;
+    let answer: DecisionsAnswer = match ask(judge, DECISIONS_SYSTEM, &format!("COMMIT:\n{shown}\n"))
+    {
+        Ok(answer) => answer,
+        // An answer that is not the JSON asked for is usually an answer the model ran out of room to
+        // finish: it was given more than it could summarise. Halving what it is shown is the one retry
+        // worth making, and it is said out loud rather than passed off as a clean run.
+        Err(JudgeError::Shape(e)) if shown.len() > 4_000 => {
+            shown = truncate(input, shown.len() / 2);
+            report.warnings.push(format!(
+                "the first answer could not be read ({e}); asked again with the first {} characters",
+                shown.len()
+            ));
+            report.calls += 1;
+            ask(judge, DECISIONS_SYSTEM, &format!("COMMIT:\n{shown}\n"))?
+        }
+        Err(e) => return Err(e),
+    };
     let mut extraction = Extraction::default();
     for (i, d) in answer.decisions.into_iter().enumerate() {
         if recipe.max_decisions > 0 && i >= recipe.max_decisions {
