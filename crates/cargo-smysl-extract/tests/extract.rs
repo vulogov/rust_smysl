@@ -169,6 +169,7 @@ fn what_the_model_returns_is_content_only_the_tool_assigns_the_rest() {
     let batch = cargo_smysl_corpus::build(
         &extraction,
         &cargo_smysl_corpus::CommitText {
+            touched: Vec::new(),
             sha: "90ec2f781421002876548124e9fe02073503372c",
             message: COMMIT,
             files: vec![],

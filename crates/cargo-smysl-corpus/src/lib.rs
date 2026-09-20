@@ -9,7 +9,8 @@ pub mod query;
 pub mod store;
 
 pub use build::{
-    build, code_schema, Batch, BuildError, CommitText, Extraction, QuoteTally, KIND_KEY,
+    build, code_schema, Batch, BuildError, CommitText, Extraction, QuoteTally, TouchedItem,
+    HASH_KEY, KIND_KEY,
 };
 
 use smysl::stage::{prepare_declared, Attest};

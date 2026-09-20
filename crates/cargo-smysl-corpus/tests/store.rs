@@ -24,6 +24,7 @@ fn staged_against(store: &Store, ex: &Extraction, sha: &str) -> Staged {
     let batch = build(
         ex,
         &CommitText {
+            touched: Vec::new(),
             sha,
             message: "",
             files: vec![],

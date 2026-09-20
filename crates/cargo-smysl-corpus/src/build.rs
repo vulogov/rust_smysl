@@ -20,6 +20,8 @@ use crate::{Labels, CODE_SCHEMA_ID, REL_EXERCISES, REL_TOUCHES};
 
 /// Payload key recording what kind of item a unit came from (e.g. `decline`, `existing-behaviour`).
 pub const KIND_KEY: &str = "code:kind";
+/// An anchor's payload key: the item's body hash when the reasoning was recorded.
+pub const HASH_KEY: &str = "code:body_hash";
 
 /// An extraction in the research shape (see `eval/extractions/`).
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
@@ -89,6 +91,28 @@ pub struct CommitText<'a> {
     pub message: &'a str,
     /// `(path, text)` per changed file: the diff's lines for that file, markers stripped.
     pub files: Vec<(&'a str, &'a str)>,
+    /// Code items this commit changed, if the caller worked them out. Each becomes an anchor, and each
+    /// decision quoted from that file is linked to it (D4's `x.code/touches`), so later work can ask
+    /// what a decision rests on rather than only which commit it came from.
+    pub touched: Vec<TouchedItem>,
+}
+
+/// One code item a commit changed: what to anchor, and what it hashed to when the reasoning was
+/// recorded, so staleness is a comparison rather than a guess.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TouchedItem {
+    pub path: String,
+    /// `owner::name`, as the facts see it.
+    pub item: String,
+    /// The body's tokens hashed at this commit.
+    pub body_hash: String,
+}
+
+/// The path a unit's source names, if it names a file rather than the commit.
+fn source_path(batch: &Batch, uid: Uid) -> Option<String> {
+    let core = batch.units.iter().find(|u| canonical_uid(u) == uid)?;
+    let reference = &core.source.as_ref()?.reference;
+    reference.rsplit_once('@').map(|(path, _)| path.to_string())
 }
 
 /// Units, edges and labels ready for `stage`, plus what the build had to do to stay honest.
@@ -180,6 +204,20 @@ struct Builder<'a> {
 }
 
 impl<'a> Builder<'a> {
+    /// An anchor's payload: what the item hashed to when the reasoning was recorded.
+    fn hash_payload(hash: &str) -> Option<Vec<u8>> {
+        if hash.trim().is_empty() {
+            return None;
+        }
+        let span = Span::new(0, 0);
+        let mut o = HObject::default();
+        o.insert(
+            Spanned::new(HASH_KEY.to_string(), span),
+            Spanned::new(HValue::Str(hash.to_string()), span),
+        );
+        object_to_payload(&o)
+    }
+
     fn payload(quote: &str, kind: &str) -> Option<Vec<u8>> {
         let span = Span::new(0, 0);
         let mut o = HObject::default();
@@ -260,6 +298,7 @@ impl<'a> Builder<'a> {
     }
 
     fn edge(&mut self, kind: &str, from: Uid, to: Uid) {
+        // (used for conditions, causes, and a decision's anchor)
         self.batch.relations.push(Relation::new(
             RelKind::parse(kind).expect("valid relation kind"),
             from,
@@ -276,7 +315,9 @@ pub fn build(ex: &Extraction, commit: &CommitText<'_>, run: u32) -> Result<Batch
         batch: Batch::default(),
     };
 
+    // The file each decision's quote was placed in, so an anchor knows which decisions are about it.
     let mut decisions: Vec<(Uid, Status)> = Vec::new();
+    let mut decision_files: Vec<Option<String>> = Vec::new();
     for (i, d) in ex.decisions.iter().enumerate() {
         let n = i as u32 + 1;
         let (status, source) = b.sourced(&d.quote);
@@ -292,8 +333,36 @@ pub fn build(ex: &Extraction, commit: &CommitText<'_>, run: u32) -> Result<Batch
             grounds: vec![],
             payload,
         })?;
+        decision_files.push(source_path(&b.batch, uid));
         decisions.push((uid, status));
     }
+    // Anchors: one per code item this commit changed, and an edge from every decision whose quote was
+    // placed in that item's file. A decision quoted from the message alone anchors to nothing, which is
+    // the honest answer — it says what was decided, not where.
+    for (i, touched) in commit.touched.iter().enumerate() {
+        let n = i as u32 + 1;
+        let label = b.labels.anchor(n);
+        let short: String = commit.sha.chars().take(12).collect();
+        let anchor = b.unit(Spec {
+            kind: KernelType::ArtifactRef,
+            label,
+            text: &format!("{}::{}", touched.path, touched.item),
+            body: None,
+            status: Status::Cited,
+            source: Some(SourceRef::new(
+                SourceKind::File,
+                format!("{}@{short}", touched.path),
+            )),
+            grounds: vec![],
+            payload: Builder::hash_payload(&touched.body_hash),
+        })?;
+        for ((uid, _), file) in decisions.iter().zip(&decision_files) {
+            if file.as_deref() == Some(touched.path.as_str()) {
+                b.edge(REL_TOUCHES, *uid, anchor);
+            }
+        }
+    }
+
     let decision = |b: &mut Builder, idx: usize, what: &str| -> Option<(u32, Uid, Status)> {
         match decisions.get(idx.wrapping_sub(1)) {
             Some(&(uid, status)) => Some((idx as u32, uid, status)),

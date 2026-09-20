@@ -14,6 +14,7 @@ fn corpus() -> Store {
     let batch = build(
         &ex,
         &CommitText {
+            touched: Vec::new(),
             sha: SHA,
             message: "",
             files: vec![],

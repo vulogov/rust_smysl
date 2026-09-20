@@ -639,6 +639,7 @@ fn stage_system(eval: &Path, system: &str) -> Result<(), String> {
             .map(|f| (f.path.clone(), f.text()))
             .collect();
         let commit = cargo_smysl_corpus::CommitText {
+            touched: Vec::new(),
             sha: &data.sha,
             message: &data.message,
             files: texts
@@ -708,6 +709,7 @@ fn commit_batch(
         .map(|f| (f.path.clone(), f.text()))
         .collect();
     let commit = cargo_smysl_corpus::CommitText {
+        touched: Vec::new(),
         sha: &data.sha,
         message: &data.message,
         files: texts

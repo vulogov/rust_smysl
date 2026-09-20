@@ -158,6 +158,7 @@ fn why_reports_what_rests_on_a_prerequisite() {
     let batch = build(
         &ex,
         &CommitText {
+            touched: Vec::new(),
             sha,
             message: "",
             files: vec![],

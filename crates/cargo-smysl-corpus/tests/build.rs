@@ -44,6 +44,7 @@ fn extraction(prerequisite: &str) -> Extraction {
 
 fn commit() -> CommitText<'static> {
     CommitText {
+        touched: Vec::new(),
         sha: "90ec2f781421002876548124",
         message: MESSAGE,
         files: vec![("tests/dispatch.rs", DIFF)],
@@ -156,6 +157,7 @@ fn the_research_extractions_stage_without_errors() {
             let batch = build(
                 &ex,
                 &CommitText {
+                    touched: Vec::new(),
                     sha: &sha,
                     message: "",
                     files: vec![],
@@ -181,4 +183,73 @@ fn the_research_extractions_stage_without_errors() {
         }
     }
     assert_eq!(seen, 6, "the six studied commits");
+}
+
+/// A decision quoted from a file is linked to the items that file's commit changed (D4).
+#[test]
+fn a_decision_is_anchored_to_the_code_its_quote_came_from() {
+    use cargo_smysl_corpus::{TouchedItem, REL_TOUCHES};
+
+    let touched = vec![
+        TouchedItem {
+            path: "tests/dispatch.rs".into(),
+            item: "tests::every_command_dispatches".into(),
+            body_hash: "abcd1234".into(),
+        },
+        // Another file's item: no decision here quotes it, so nothing links to it.
+        TouchedItem {
+            path: "src/main.rs".into(),
+            item: "main".into(),
+            body_hash: "beef5678".into(),
+        },
+    ];
+    let commit = CommitText {
+        touched,
+        sha: "90ec2f781421002876548124",
+        message: MESSAGE,
+        files: vec![("tests/dispatch.rs", DIFF)],
+    };
+    // One decision quoted from the file, one from the message: only the first can be anchored, because
+    // only the first says where in the code it is about. A decision quoted from the message keeps the
+    // commit as its scope, which is what `stale` reports for it.
+    let ex: Extraction = serde_json::from_value(serde_json::json!({
+        "decisions": [
+            {"decision": "Give each test its own scratch directory", "kind": "act", "rationale": "",
+             "quote": "std::env::temp_dir().join(name)"},
+            {"decision": "Add a test that runs every command", "kind": "act", "rationale": "",
+             "quote": "seven commands could have stopped working"}
+        ],
+        "prerequisites": [], "alternatives": [], "consequences": []
+    }))
+    .unwrap();
+    let batch = build(&ex, &commit, 0).unwrap();
+
+    let anchors: Vec<&smysl::UnitCore> = batch
+        .units
+        .iter()
+        .filter(|u| format!("{}", u.schema).contains("artifact-ref"))
+        .collect();
+    assert_eq!(anchors.len(), 2, "one anchor per changed item");
+    assert!(
+        anchors
+            .iter()
+            .any(|u| u.gist.contains("every_command_dispatches")),
+        "an anchor names the item: {:?}",
+        anchors.iter().map(|u| &u.gist).collect::<Vec<_>>()
+    );
+
+    let touches = batch
+        .relations
+        .iter()
+        .filter(|r| r.kind.to_string() == REL_TOUCHES)
+        .count();
+    assert_eq!(
+        touches, 1,
+        "the file-quoted decision is anchored to that file's item, and the message-quoted one to \
+         nothing"
+    );
+
+    // The staged document still checks: anchors and their edges are part of the record, not beside it.
+    let staged = stage(&Store::from_records(Vec::new()), batch, 0);
+    assert!(!staged.has_errors(), "{:?}", staged.report);
 }

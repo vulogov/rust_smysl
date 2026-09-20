@@ -14,6 +14,7 @@ fn staged_store(sha: &str) -> Store {
     let batch = build(
         &ex,
         &CommitText {
+            touched: Vec::new(),
             sha,
             message: "",
             files: vec![],

@@ -1037,6 +1037,7 @@ fn extract(
             .iter()
             .map(|(p, t)| (p.as_str(), t.as_str()))
             .collect(),
+        touched: touched_items(&commit),
     };
     let batch = match cargo_smysl_corpus::build(&extraction, &text, 0) {
         Ok(b) => b,
@@ -1092,6 +1093,46 @@ fn extract(
             exit::FAILURE
         }
     }
+}
+
+/// The code items a commit changed: what an anchor is for (D4).
+///
+/// Deterministic, and the tool's own reading of the code — a model proposes no part of this (D5). An
+/// item counts as touched when its body hashes differently before and after, or when it is new; a file
+/// that only moved around it says nothing.
+fn touched_items(commit: &cargo_smysl_git::CommitData) -> Vec<cargo_smysl_corpus::TouchedItem> {
+    let items = |path: &str, text: &str| -> std::collections::BTreeMap<String, String> {
+        cargo_smysl_facts::facts(path, text)
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|f| match f {
+                cargo_smysl_facts::Fact::Function(x) => Some((x.label(), x.body_hash.clone())),
+                _ => None,
+            })
+            .collect()
+    };
+    let mut out = Vec::new();
+    for file in &commit.files {
+        if !file.path.ends_with(".rs") {
+            continue;
+        }
+        let Some(after) = &file.after else { continue };
+        let was = file
+            .before
+            .as_deref()
+            .map(|text| items(&file.path, text))
+            .unwrap_or_default();
+        for (item, hash) in items(&file.path, after) {
+            if was.get(&item) != Some(&hash) {
+                out.push(cargo_smysl_corpus::TouchedItem {
+                    path: file.path.clone(),
+                    item,
+                    body_hash: hash,
+                });
+            }
+        }
+    }
+    out
 }
 
 struct CheckArgs<'a> {
@@ -1777,12 +1818,20 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
                 }
             }
         }
+        let changes = cargo_smysl_verdict::stale::compare(&recorded, &now);
+        // Which decisions rest on each moved item, when the corpus knows: a decision quoted from a file
+        // carries an `x.code/touches` edge to that file's items (D4). A decision quoted from the message
+        // has the commit as its scope and is named at the commit level, as before.
+        let anchored = anchored_decisions(&store, &corpus.labels(&store), &changes);
         reports.push(cargo_smysl_verdict::stale::Report {
             commit: sha.clone(),
             units: units_of(sha),
-            changes: cargo_smysl_verdict::stale::compare(&recorded, &now),
+            changes,
             unreadable,
         });
+        for (item, labels) in anchored {
+            println!("  {item} is behind: {}", labels.join(", "));
+        }
     }
 
     if json {
@@ -1834,6 +1883,39 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
         reports.len()
     );
     exit::OK
+}
+
+/// The decisions anchored to each moved item, by label.
+///
+/// An anchor's gist is `path::item`, so a moved item is matched by name; the edges are the ones the
+/// corpus recorded, never inferred here.
+fn anchored_decisions(
+    store: &smysl::Store,
+    labels: &std::collections::BTreeMap<smysl::Uid, Vec<smysl::Label>>,
+    changes: &[cargo_smysl_verdict::stale::Change],
+) -> Vec<(String, Vec<String>)> {
+    let mut out = Vec::new();
+    for change in changes {
+        let wanted = format!("{}::{}", change.file, change.label);
+        let anchors: Vec<smysl::Uid> = store
+            .units()
+            .filter(|(_, u)| u.core.gist == wanted)
+            .map(|(uid, _)| *uid)
+            .collect();
+        if anchors.is_empty() {
+            continue;
+        }
+        let named: Vec<String> = store
+            .relations()
+            .filter(|r| r.kind.to_string() == cargo_smysl_corpus::REL_TOUCHES)
+            .filter(|r| anchors.contains(&r.to))
+            .filter_map(|r| labels.get(&r.from)?.first().map(|l| l.to_string()))
+            .collect();
+        if !named.is_empty() {
+            out.push((change.label.clone(), named));
+        }
+    }
+    out
 }
 
 /// Whether `sha` is a descendant of `base`: the corpus holds commits, and `--since` asks for the recent
