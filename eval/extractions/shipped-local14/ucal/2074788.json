@@ -1,0 +1,409 @@
+{
+  "decisions": [
+    {
+      "decision": "Use a session clock for monotonicity rather than precision",
+      "kind": "act",
+      "rationale": "The system clock can step backwards, and interpolating between wall ticks is worth 24/3125 of a rung, which is nothing.",
+      "quote": "Every reading comes from it now, and it exists for monotonicity rather than precision — interpolating between wall ticks is worth 24/3125 of a rung, which is nothing."
+    },
+    {
+      "decision": "Handle backward steps in the wall clock by losing to the monotonic branch",
+      "kind": "act",
+      "rationale": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up.",
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up."
+    },
+    {
+      "decision": "Handle forward steps in the wall clock by accepting them",
+      "kind": "act",
+      "rationale": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's.",
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": "Use OnceLock for initializing state",
+      "kind": "decline",
+      "rationale": "no-panic-in-cli refused an .expect() used to fill the gap where OnceLock's initialiser cannot return a Result — the state is an Option now, anchored where a failure can be returned.",
+      "quote": "no-panic-in-cli refused an .expect() used to fill the gap where OnceLock's initialiser cannot return a Result — the state is an Option now, anchored where a failure can be returned."
+    },
+    {
+      "decision": "Split wall_instant out of now_instant",
+      "kind": "act",
+      "rationale": "And splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup, because Unix time is a UTC label.",
+      "quote": "And splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup, because Unix time is a UTC label."
+    },
+    {
+      "decision": "Use a pure function for the session clock rule",
+      "kind": "act",
+      "rationale": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone."
+    },
+    {
+      "decision": "Verify strict monotonicity by disabling the monotonic branch",
+      "kind": "act",
+      "rationale": "Verified strict by disabling the monotonic branch and watching the reading stall.",
+      "quote": "Verified strict by disabling the monotonic branch and watching the reading stall."
+    },
+    {
+      "decision": "Ensure session reading lands on the same rung as a raw one",
+      "kind": "act",
+      "rationale": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does.",
+      "quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does."
+    },
+    {
+      "decision": "Document every command and global option",
+      "kind": "act",
+      "rationale": "`cargo run -p xtask -- check-docs` fails when a command or global option exists and is undocumented, or is documented and no longer exists.",
+      "quote": "`cargo run -p xtask -- check-docs` fails when a command or global option exists and is undocumented, or is documented and no longer exists."
+    },
+    {
+      "decision": "Ensure every field documented by CLI.md is emitted by some command",
+      "kind": "act",
+      "rationale": "`crates/ucal/tests/manual_fields.rs` fails when a **field** this file documents is emitted by no command, or a field a command emits is documented nowhere.",
+      "quote": "`crates/ucal/tests/manual_fields.rs` fails when a **field** this file documents is emitted by no command, or a field a command emits is documented nowhere."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The system clock can step backwards due to NTP corrections, VM resuming, or operator setting the date.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The system clock is disciplined by something outside this process and can step backwards: NTP correcting a large offset, a VM resuming, an operator setting the date."
+    },
+    {
+      "decision": 1,
+      "text": "Interpolating between wall ticks is worth 24/3125 of a rung, which is considered negligible.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "interpolating between wall ticks is worth 24/3125 of a rung, which is nothing."
+    },
+    {
+      "decision": 2,
+      "text": "The system clock can step backwards due to NTP corrections, VM resuming, or operator setting the date.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The system clock is disciplined by something outside this process and can step backwards: NTP correcting a large offset, a VM resuming, an operator setting the date."
+    },
+    {
+      "decision": 2,
+      "text": "A one-shot command never notices backward steps in the wall clock.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A one-shot command never notices."
+    },
+    {
+      "decision": 3,
+      "text": "The system clock can step backwards due to corrections like NTP or VM resuming.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The system clock is disciplined by something outside this process and can step backwards: NTP correcting a large offset, a VM resuming, an operator setting the date."
+    },
+    {
+      "decision": 3,
+      "text": "A one-shot command never notices backward steps in the wall clock.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A one-shot command never notices."
+    },
+    {
+      "decision": 4,
+      "text": "The system clock can step backwards due to NTP corrections or VM resuming.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The system clock is disciplined by something outside this process and can step backwards: NTP correcting a large offset, a VM resuming, an operator setting the date."
+    },
+    {
+      "decision": 4,
+      "text": "A one-shot command never notices backward steps in the wall clock.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A one-shot command never notices."
+    },
+    {
+      "decision": 5,
+      "text": "The system clock can step backwards due to NTP corrections or VM resuming.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The system clock is disciplined by something outside this process and can step backwards: NTP correcting a large offset, a VM resuming, an operator setting the date."
+    },
+    {
+      "decision": 5,
+      "text": "A one-shot command never notices backward steps in the wall clock.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A one-shot command never notices."
+    },
+    {
+      "decision": 5,
+      "text": "The `wallclock` reads the clock twenty times a second for as long as it is left running.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "wallclock reads the clock twenty times a second for as long as it is left running, and a backward step there is a face that goes back in time."
+    },
+    {
+      "decision": 5,
+      "text": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up."
+    },
+    {
+      "decision": 5,
+      "text": "A forward step wins because a forward jump is a correction arriving.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": 5,
+      "text": "The rule is a pure function of its inputs.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone."
+    },
+    {
+      "decision": 5,
+      "text": "Two lints and one feature combination corrected the implementation on the way.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Two lints and one feature combination corrected the implementation on the way."
+    },
+    {
+      "decision": 6,
+      "text": "The system clock can step backwards due to NTP corrections or VM resuming.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The system clock is disciplined by something outside this process and can step backwards: NTP correcting a large offset, a VM resuming, an operator setting the date."
+    },
+    {
+      "decision": 6,
+      "text": "A one-shot command never notices backward steps in the wall clock.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A one-shot command never notices."
+    },
+    {
+      "decision": 7,
+      "text": "The system clock can step backwards due to NTP corrections, VM resuming, or operator setting the date.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The system clock is disciplined by something outside this process and can step backwards: NTP correcting a large offset, a VM resuming, an operator setting the date."
+    },
+    {
+      "decision": 7,
+      "text": "A backward step in the wall clock should lose to the monotonic branch.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up."
+    },
+    {
+      "decision": 7,
+      "text": "A forward step in the wall clock should win.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": 7,
+      "text": "The rule for determining the reading is a pure function of its inputs.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone."
+    },
+    {
+      "decision": 8,
+      "text": "Every reading comes from a session clock",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every reading comes from it now, and it exists for monotonicity rather than precision"
+    },
+    {
+      "decision": 8,
+      "text": "A raw one refers to a direct reading without session context",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does."
+    },
+    {
+      "decision": 9,
+      "text": "Every command and global option must be documented.",
+      "kind": "normative",
+      "normative": true,
+      "quote": "DECISION 9: Document every command and global option\nRATIONALE: `cargo run -p xtask -- check-docs` fails when a command or global option exists and is undocumented, or is documented and no longer exists."
+    },
+    {
+      "decision": 10,
+      "text": "Every field documented by CLI.md must be emitted by some command",
+      "kind": "normative",
+      "normative": true,
+      "quote": "DECISION 10: Ensure every field documented by CLI.md is emitted by some command"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Use the system clock for both monotonicity and precision.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 1,
+      "alternative": "Use a different method to ensure monotonicity without relying on wall ticks.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Freeze time until the wall clock catches up on a backward step.",
+      "reason": "",
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up."
+    },
+    {
+      "decision": 2,
+      "alternative": "Allow the wall clock to overwrite the monotonic branch on a forward step.",
+      "reason": "",
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": 3,
+      "alternative": "Refuse forward jumps and prefer this process's opinion of the time to the system's.",
+      "reason": "",
+      "quote": "refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": 4,
+      "alternative": "Continue using .expect() to handle initialization failures.",
+      "reason": "",
+      "quote": "no-panic-in-cli refused an .expect() used to fill the gap where OnceLock's initialiser cannot return a Result — the state is an Option now, anchored where a failure can be returned."
+    },
+    {
+      "decision": 5,
+      "alternative": "Keeping `wall_instant` within `now_instant` without splitting.",
+      "reason": "",
+      "quote": "And splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup, because Unix time is a UTC label."
+    },
+    {
+      "decision": 6,
+      "alternative": "Using an impure function for the session clock rule that might rely on external state or have side effects.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Allowing the reading to freeze during a backward step.",
+      "reason": "",
+      "quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up."
+    },
+    {
+      "decision": 7,
+      "alternative": "Preferring the system's opinion of the time over this process's during a forward step.",
+      "reason": "",
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": 8,
+      "alternative": "Allow session readings to land on different rungs compared to raw ones",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The session clock ensures monotonicity by advancing at the oscillator's rate rather than freezing during backward steps.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "A backward step loses to the monotonic branch, which keeps advancing at the oscillator's rate rather than freezing until the wall clock catches up."
+    },
+    {
+      "decision": 1,
+      "text": "Forward steps in the system clock are accepted, as they represent corrections arriving.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": 1,
+      "text": "The implementation can be tested by driving a wall clock backwards repeatedly and asserting that the sequence remains monotone.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone. Verified strict by disabling the monotonic branch and watching the reading stall."
+    },
+    {
+      "decision": 2,
+      "text": "The reading from the wall clock will always be monotonic.",
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "verified": true,
+      "verification_quote": "A test drives a wall clock backwards repeatedly and assert the sequence is still monotone."
+    },
+    {
+      "decision": 2,
+      "text": "A session reading lands on the same rung as a raw one does.",
+      "quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "A forward step in the wall clock is accepted, aligning with system corrections.",
+      "quote": "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's.",
+      "verified": true,
+      "verification_quote": "A forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's."
+    },
+    {
+      "decision": 4,
+      "text": "The initialization process now returns an Option instead of panicking.",
+      "quote": "And splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught: converting a clock reading is a leap-table lookup, because Unix time is a UTC label.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "A test can drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "verified": true,
+      "verification_quote": "Verified strict by disabling the monotonic branch and watching the reading stall."
+    },
+    {
+      "decision": 5,
+      "text": "A session reading lands on the same rung a raw one does.",
+      "quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "A test can drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone.",
+      "verified": true,
+      "verification_quote": "Verified strict by disabling the monotonic branch and watching the reading stall."
+    },
+    {
+      "decision": 7,
+      "text": "Monotonicity is verified by disabling the monotonic branch and watching the reading stall.",
+      "quote": "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone. Verified strict by disabling the monotonic branch and watching the reading stall.",
+      "verified": true,
+      "verification_quote": "Verified strict by disabling the monotonic branch and watching the reading stall."
+    },
+    {
+      "decision": 8,
+      "text": "A test asserts that session readings and raw readings land on the same rung",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does."
+    },
+    {
+      "decision": 9,
+      "text": "`cargo run -p xtask -- check-docs` will fail if any command or global option is undocumented.",
+      "quote": "DECISION 9: Document every command and global option\nRATIONALE: `cargo run -p xtask -- check-docs` fails when a command or global option exists and is undocumented, or is documented and no longer exists.",
+      "verified": true,
+      "verification_quote": "RATIONALE: `cargo run -p xtask -- check-docs` fails when a command or global option exists and is undocumented, or is documented and no longer exists."
+    },
+    {
+      "decision": 10,
+      "text": "`crates/ucal/tests/manual_fields.rs` fails when a **field** this file documents is emitted by no command, or a field a command emits is documented nowhere",
+      "quote": "RATIONALE: `crates/ucal/tests/manual_fields.rs` fails when a **field** this file documents is emitted by no command, or a field a command emits is documented nowhere.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

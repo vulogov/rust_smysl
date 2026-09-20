@@ -1,0 +1,592 @@
+{
+  "decisions": [
+    {
+      "decision": "Remove the guess rather than sort it correctly",
+      "kind": "act",
+      "rationale": "The fix now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not.",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not."
+    },
+    {
+      "decision": "Do not sort filenames lexicographically",
+      "kind": "decline",
+      "rationale": "Sorting numerically repairs that one bug and leaves the guess in place. The check now reads the notes for the version being built, derived from [workspace.package] — no ordering, nothing to get wrong.",
+      "quote": "The fix is not a better sort. Sorting numerically repairs that one bug and leaves the guess in place."
+    },
+    {
+      "decision": "Do not steal doc comments when inserting items",
+      "kind": "decline",
+      "rationale": "The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented — the third time in this project that inserting an item above another has stolen its doc comment.",
+      "quote": "The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented."
+    },
+    {
+      "decision": "Make tests strict on their first draft",
+      "kind": "act",
+      "rationale": "A test that cannot tell the two branches apart is not testing the branch it claims to.",
+      "quote": "A test that cannot tell the two branches apart is not testing the branch it claims to."
+    },
+    {
+      "decision": "Do not assume version ordering in the tree",
+      "kind": "decline",
+      "rationale": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string.",
+      "quote": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string."
+    },
+    {
+      "decision": "Do not sort release-notes filenames lexicographically",
+      "kind": "decline",
+      "rationale": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md` and check_ci_covers_the_procedure began reading the previous release's verification block while reporting success.",
+      "quote": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md` and check_ci_covers_the_procedure began reading the previous release's verification block while reporting success."
+    },
+    {
+      "decision": "Do not allow unparseable names to become the newest",
+      "kind": "decline",
+      "rationale": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself.",
+      "quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself."
+    },
+    {
+      "decision": "Do not sort release-notes filenames lexicographically",
+      "kind": "decline",
+      "rationale": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md` and check_ci_covers_the_procedure began reading the previous release's verification block while reporting success.",
+      "quote": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md` and check_ci_covers_the_procedure began reading the previous release's verification block while reporting success."
+    },
+    {
+      "decision": "Do not allow unparseable names to become the newest",
+      "kind": "decline",
+      "rationale": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself.",
+      "quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself."
+    },
+    {
+      "decision": "Do not sort release-notes filenames lexicographically",
+      "kind": "decline",
+      "rationale": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md` and check_ci_covers_the_procedure began reading the previous release's verification block while reporting success.",
+      "quote": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md` and check_ci_covers_the_procedure began reading the previous release's verification block while reporting success."
+    },
+    {
+      "decision": "Do not allow unparseable names to become the newest",
+      "kind": "decline",
+      "rationale": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself.",
+      "quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself."
+    },
+    {
+      "decision": "Do not sort release-notes filenames lexicographically",
+      "kind": "decline",
+      "rationale": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md` and check_ci_covers_the_procedure began reading the previous release's verification block while reporting success.",
+      "quote": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md` and check_ci_covers_the_procedure began reading the previous release's verification block while reporting success."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The code picked the newest release-notes file by sorting filenames lexicographically.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames.`"
+    },
+    {
+      "decision": 1,
+      "text": "Sorting numerically repairs the bug but leaves the guess in place.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 1,
+      "text": "Nothing else in the tree assumes version ordering.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string, `format!(\"v{version}\")` or an exact manifest match."
+    },
+    {
+      "decision": 2,
+      "text": "The code picked the newest release-notes file by sorting filenames lexicographically.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames."
+    },
+    {
+      "decision": 2,
+      "text": "Sorting numerically repairs the bug where 1.10.0 was sorted before 1.9.0.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 2,
+      "text": "There is no ordering left to get wrong when reading the notes for the version being built.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The check now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 3,
+      "text": "The new function's documentation swallowed check_ci_covers_the_procedure's",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented."
+    },
+    {
+      "decision": 3,
+      "text": "This is the third time in this project that inserting an item above another has stolen its doc comment",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The third time in this project that inserting an item above another has stolen its doc comment, after data::all in 1.9.0's F9 and cmd_cal_validate in F4."
+    },
+    {
+      "decision": 4,
+      "text": "The second test was not strict on its first draft.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The second test was not strict on its first draft. It asserted that some error came back and that the message named the version, which passed with the check disabled: read_to_string fails too, and its message contains the path, and the path contains the version."
+    },
+    {
+      "decision": 5,
+      "text": "Nothing else in the tree assumes version ordering",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Nothing else in the tree assumes version ordering — every other site treats a version as an opaque string."
+    },
+    {
+      "decision": 6,
+      "text": "The project reads 'the newest release-notes file' by sorting filenames.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames."
+    },
+    {
+      "decision": 6,
+      "text": "Sorting filenames lexicographically puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md`."
+    },
+    {
+      "decision": 6,
+      "text": "The check began reading the previous release's procedure while reporting success.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure began reading the *previous* release's procedure while reporting success."
+    },
+    {
+      "decision": 7,
+      "text": "The code picks the newest release-notes file by sorting filenames.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames."
+    },
+    {
+      "decision": 7,
+      "text": "Sorting filenames lexicographically can put a newer version between older ones.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It picked that file by sorting filenames **lexicographically**, which puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md` — so the newest was `1.9.0.md`, and the check began reading the *previous* release's procedure while reporting success."
+    },
+    {
+      "decision": 7,
+      "text": "Sorting filenames numerically can correctly identify the newest version.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Sorted by parsed version now, with an unparseable name sorting *first* so a stray file cannot become 'the newest' and redirect the check to itself."
+    },
+    {
+      "decision": 8,
+      "text": "The project reads 'the newest release-notes file' by sorting filenames.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames."
+    },
+    {
+      "decision": 8,
+      "text": "Sorting filenames lexicographically puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md`."
+    },
+    {
+      "decision": 8,
+      "text": "The check began reading the previous release's procedure while reporting success.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure began reading the *previous* release's procedure while reporting success."
+    },
+    {
+      "decision": 9,
+      "text": "The code picks the newest release-notes file by sorting filenames.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames."
+    },
+    {
+      "decision": 9,
+      "text": "Sorting filenames lexicographically can put a newer version between older ones.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It picked that file by sorting filenames **lexicographically**, which puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md` — so the newest was `1.9.0.md`, and the check began reading the *previous* release's procedure while reporting success."
+    },
+    {
+      "decision": 9,
+      "text": "Sorting filenames numerically can correctly identify the newest version.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Sorted by parsed version now, with an unparseable name sorting *first* so a stray file cannot become 'the newest' and redirect the check to itself."
+    },
+    {
+      "decision": 10,
+      "text": "The project reads 'the newest release-notes file' by sorting filenames.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames."
+    },
+    {
+      "decision": 10,
+      "text": "Sorting filenames lexicographically puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md`."
+    },
+    {
+      "decision": 10,
+      "text": "The check began reading the previous release's procedure while reporting success.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure began reading the *previous* release's procedure while reporting success."
+    },
+    {
+      "decision": 11,
+      "text": "The code picks the newest release-notes file by sorting filenames.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames."
+    },
+    {
+      "decision": 11,
+      "text": "Sorting filenames lexicographically can put a newer version between older ones.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It picked that file by sorting filenames **lexicographically**, which puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md` — so the newest was `1.9.0.md`, and the check began reading the *previous* release's procedure while reporting success."
+    },
+    {
+      "decision": 11,
+      "text": "Sorting filenames numerically can correctly identify the newest version.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Sorted by parsed version now, with an unparseable name sorting *first* so a stray file cannot become 'the newest' and redirect the check to itself."
+    },
+    {
+      "decision": 12,
+      "text": "The project reads 'the newest release-notes file' by sorting filenames.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure read \"the newest release-notes file\", picked by sorting filenames."
+    },
+    {
+      "decision": 12,
+      "text": "Sorting filenames lexicographically puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A lexicographic sort of release-notes filenames puts `1.10.0.md` between `1.1.0.md` and `1.2.0.md`, so the 'newest' file was `1.9.0.md`."
+    },
+    {
+      "decision": 12,
+      "text": "The check began reading the previous release's procedure while reporting success.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check_ci_covers_the_procedure began reading the *previous* release's procedure while reporting success."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Sort numerically",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 1,
+      "alternative": "Keep the guess",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 2,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "Sorting numerically repairs that one bug and leaves the guess in place. The check now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep the existing documentation",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Move the stolen documentation to a more appropriate location",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Keep the test as it is",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Make tests more strict on their first draft",
+      "reason": "",
+      "quote": "The second test was not strict on its first draft. It asserted that some error came back and that the message named the version, which passed with the check disabled: read_to_string fails too, and its message contains the path, and the path contains the version."
+    },
+    {
+      "decision": 5,
+      "alternative": "Continue assuming version ordering",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Sort filenames numerically.",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 6,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed."
+    },
+    {
+      "decision": 7,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 7,
+      "alternative": "Allow unparseable names to become the newest.",
+      "reason": "",
+      "quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself."
+    },
+    {
+      "decision": 8,
+      "alternative": "Sort filenames numerically.",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 8,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed."
+    },
+    {
+      "decision": 9,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 9,
+      "alternative": "Allow unparseable names to become the newest.",
+      "reason": "",
+      "quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself."
+    },
+    {
+      "decision": 10,
+      "alternative": "Sort filenames numerically.",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 10,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed. That is an error naming the version now."
+    },
+    {
+      "decision": 11,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 11,
+      "alternative": "Allow unparseable names to become the newest.",
+      "reason": "",
+      "quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself."
+    },
+    {
+      "decision": 12,
+      "alternative": "Sort filenames numerically.",
+      "reason": "",
+      "quote": "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+    },
+    {
+      "decision": 12,
+      "alternative": "Continue sorting filenames lexicographically.",
+      "reason": "",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed. That is an error naming the version now."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "No ordering left to get wrong.",
+      "quote": "There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Closes an adjacent failure.",
+      "quote": "There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "The new function's documentation swallowed check_ci_covers_the_procedure's.",
+      "quote": "And the fix had stolen a doc comment. The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented — the third time in this project that inserting an item above another has taken its doc comment, after data::all in F9 and cmd_cal_validate in F4.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The check now reads the release-notes file for the version being built.",
+      "quote": "The check now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": true,
+      "verification_quote": "The check now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 2,
+      "text": "An adjacent failure where a version bumped and its notes never written is closed.",
+      "quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version.",
+      "verified": true,
+      "verification_quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version."
+    },
+    {
+      "decision": 3,
+      "text": "The new function's documentation will not steal check_ci_covers_the_procedure's doc comment",
+      "quote": "Do not steal doc comments when inserting items",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "check_ci_covers_the_procedure will be properly documented",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The test now correctly identifies the two branches it claims to.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The fix had stolen a doc comment, leaving check_ci_covers_the_procedure undocumented",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "It did find one thing, in the fix itself — the new function's doc comment had swallowed `check_ci_covers_the_procedure`'s, leaving that function undocumented."
+    },
+    {
+      "decision": 6,
+      "text": "The check now reads the notes for the version being built, derived from [workspace.package].",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed.",
+      "verified": true,
+      "verification_quote": "It now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 6,
+      "text": "A version bumped and its notes never written is now an error naming the version.",
+      "quote": "It now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": true,
+      "verification_quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version."
+    },
+    {
+      "decision": 7,
+      "text": "The code now reads the notes for the version being built, derived from [workspace.package].",
+      "quote": "It now reads the notes for the version being built, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": true,
+      "verification_quote": "It now reads the notes for the version being built, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 7,
+      "text": "A stray file cannot become 'the newest' and quietly redirect the check to itself.",
+      "quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself.",
+      "verified": true,
+      "verification_quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself."
+    },
+    {
+      "decision": 8,
+      "text": "The check now reads the notes for the version being built, derived from [workspace.package].",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed.",
+      "verified": true,
+      "verification_quote": "It now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 8,
+      "text": "A version bumped and its notes never written is now an error naming the version.",
+      "quote": "It now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": true,
+      "verification_quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version."
+    },
+    {
+      "decision": 9,
+      "text": "The code now reads the notes for the version being built, derived from [workspace.package].",
+      "quote": "It now reads the notes for the version being built, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": true,
+      "verification_quote": "It now reads the notes for the version being built, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 9,
+      "text": "A stray file cannot become 'the newest' and quietly redirect the check to itself.",
+      "quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself.",
+      "verified": true,
+      "verification_quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself."
+    },
+    {
+      "decision": 10,
+      "text": "The check reads the notes for the version being built, derived from [workspace.package].",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed. That is an error naming the version now.",
+      "verified": true,
+      "verification_quote": "It now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 10,
+      "text": "A version bumped and its notes never written silently read the previous cycle's file and passed.",
+      "quote": "It now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": true,
+      "verification_quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version."
+    },
+    {
+      "decision": 11,
+      "text": "The code now reads the notes for the version being built, derived from [workspace.package].",
+      "quote": "It now reads the notes for the version being built, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": true,
+      "verification_quote": "It now reads the notes for the version being built, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 11,
+      "text": "A stray file cannot become 'the newest' and quietly redirect the check to itself.",
+      "quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself.",
+      "verified": true,
+      "verification_quote": "An unparseable name sorts first, so a stray file cannot become 'the newest' and quietly redirect the check to itself."
+    },
+    {
+      "decision": 12,
+      "text": "The check reads the notes for the version being built, derived from [workspace.package].",
+      "quote": "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong, and it closes an adjacent failure the sort could not: a version bumped and its notes never written silently read the previous cycle's file and passed. That is an error naming the version now.",
+      "verified": true,
+      "verification_quote": "It now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong."
+    },
+    {
+      "decision": 12,
+      "text": "A version bumped and its notes never written silently read the previous cycle's file and passed.",
+      "quote": "It now reads the notes for **the version being built**, derived from `[workspace.package]` — no ordering, nothing to get wrong.",
+      "verified": true,
+      "verification_quote": "That also closes an adjacent failure the sort could not: a version bumped and its notes never written. Under the sort that silently read the previous cycle's file and passed; it is now an error naming the version."
+    }
+  ]
+}

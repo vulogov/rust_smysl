@@ -1,0 +1,474 @@
+{
+  "decisions": [
+    {
+      "decision": "The CLI is measurable and measured.",
+      "kind": "act",
+      "rationale": "The manual's 46 replayed transcripts are inside `cargo test` now, which moved the survivor rate from 72.0% to 64.2%; then Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1.",
+      "quote": "The manual's 46 replayed transcripts are inside `cargo test` now, which moved the survivor rate from 72.0% to 64.2%; then Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1."
+    },
+    {
+      "decision": "The CLI is now tested with a golden file.",
+      "kind": "act",
+      "rationale": "A golden file, compared inside cargo test rather than by a Makefile target: a Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13.",
+      "quote": "A golden file, compared inside cargo test rather than by a Makefile target: a Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13."
+    },
+    {
+      "decision": "The CLI commands are now tested with required arguments.",
+      "kind": "act",
+      "rationale": "Seven commands take a required argument, so clap rejects the bare name before the router runs. Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it. minimal_args supplies what each needs, and the clap refusal is now itself a failure.",
+      "quote": "Seven commands take a required argument, so clap rejects the bare name before the router runs. Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it. minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": "The CLI commands are now tested in isolation.",
+      "kind": "act",
+      "rationale": "Every command in the test now runs from a scratch directory of its own.",
+      "quote": "Every command in the test now runs from a scratch directory of its own."
+    },
+    {
+      "decision": "The CLI commands are now tested with all features enabled.",
+      "kind": "act",
+      "rationale": "At --all-features the test does not exist rather than being skipped -- `cargo test --test doc_output` runs 1 test, with --all-features it runs 0.",
+      "quote": "At --all-features the test does not exist rather than being skipped -- `cargo test --test doc_output` runs 1 test, with --all-features it runs 0."
+    },
+    {
+      "decision": "The CLI commands are now tested with a specific feature configuration.",
+      "kind": "act",
+      "rationale": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift.",
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": "The CLI commands are now tested with all possible feature combinations.",
+      "kind": "act",
+      "rationale": "make ci green, sentinel verified: ten feature combinations, zero failures.",
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": "The CLI commands are now tested with a specific feature configuration.",
+      "kind": "act",
+      "rationale": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift.",
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": "The CLI commands are now tested with all possible feature combinations.",
+      "kind": "act",
+      "rationale": "make ci green, sentinel verified: ten feature combinations, zero failures.",
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": "The CLI commands are now tested with a specific feature configuration.",
+      "kind": "act",
+      "rationale": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift.",
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": "The CLI commands are now tested with all possible feature combinations.",
+      "kind": "act",
+      "rationale": "make ci green, sentinel verified: ten feature combinations, zero failures.",
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": "The CLI commands are now tested with a specific feature configuration.",
+      "kind": "act",
+      "rationale": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift.",
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The manual's 46 replayed transcripts are inside `cargo test` now",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The manual's 46 replayed transcripts are inside `cargo test` now, which moved the survivor rate from 72.0% to 64.2%; then Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1."
+    },
+    {
+      "decision": 2,
+      "text": "The CLI's coverage is feature-dependent in a way nothing states.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "**`doc-output`'s coverage is feature-dependent**, which nothing states."
+    },
+    {
+      "decision": 2,
+      "text": "A Makefile gate is invisible to anything that counts coverage.",
+      "kind": "tool-setting",
+      "normative": false,
+      "quote": "A Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13."
+    },
+    {
+      "decision": 3,
+      "text": "Seven commands take a required argument",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Seven commands take a required argument, so clap rejects the bare name before the router runs."
+    },
+    {
+      "decision": 3,
+      "text": "Six of these seven commands were covered incidentally by other files",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it."
+    },
+    {
+      "decision": 3,
+      "text": "The CLI commands are now tested with required arguments",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": 4,
+      "text": "Running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written."
+    },
+    {
+      "decision": 5,
+      "text": "The CLI commands are now tested with all features enabled.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 5,
+      "text": "At --all-features the test does not exist rather than being skipped -- `cargo test --test doc_output` runs 1 test, with --all-features it runs 0.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no input reaches. Documented at the site the way 0.13 recorded worse's >=."
+    },
+    {
+      "decision": 6,
+      "text": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": 6,
+      "text": "the CLI commands are now tested with a specific feature configuration",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no input reaches. Documented at the site the way 0.13 recorded worse's >=."
+    },
+    {
+      "decision": 7,
+      "text": "The CLI commands were not previously tested with all possible feature combinations.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 8,
+      "text": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": 8,
+      "text": "the CLI commands are now tested with a specific feature configuration",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no input reaches. Documented at the site the way 0.13 recorded worse's >=."
+    },
+    {
+      "decision": 9,
+      "text": "The CLI commands were not previously tested with all possible feature combinations.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 10,
+      "text": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": 10,
+      "text": "the CLI commands are now tested with a specific feature configuration",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no input reaches. Documented at the site the way 0.13 recorded worse's >=."
+    },
+    {
+      "decision": 11,
+      "text": "The CLI commands were not previously tested with all possible feature combinations.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 12,
+      "text": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "tests/doc_output.rs is gated to compile in exactly one of the ten matrix configurations and its header explains why at length: the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+    },
+    {
+      "decision": 12,
+      "text": "the CLI commands are now tested with a specific feature configuration",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no input reaches. Documented at the site the way 0.13 recorded worse's >=."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the manual's transcripts outside of `cargo test`",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Continue using a Makefile target for testing.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Use a different method to compare the CLI output with expected results.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Continue to rely on incidental coverage for these commands",
+      "reason": "",
+      "quote": "Six were covered incidentally by other files; import was not, and its mutant survived a run of the test written to catch it."
+    },
+    {
+      "decision": 3,
+      "alternative": "Do not add required argument testing for CLI commands",
+      "reason": "",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": 4,
+      "alternative": "Continue running tests from the same directory without isolation.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Continue testing CLI commands with default features.",
+      "reason": "",
+      "quote": "**The one survivor is equivalent: COMMANDS.iter().find(|c| c.name == name) mutated to != selects the wrong Cmd, and the only field read is in the `_ =>` arm no input reaches. Documented at the site the way 0.13 recorded worse's >=."
+    },
+    {
+      "decision": 6,
+      "alternative": "continue using a general feature configuration for CLI tests",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "test each CLI command individually without specifying features",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Continue testing the CLI commands with a subset of feature combinations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Do not test the CLI commands with any feature combinations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "continue using a general feature configuration for CLI tests",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "test each CLI command individually without specifying features",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Continue testing the CLI commands with a subset of feature combinations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Do not test the CLI commands with any feature combinations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "continue using a general feature configuration for CLI tests",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "test each CLI command individually without specifying features",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Continue testing the CLI commands with a subset of feature combinations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Do not test the CLI commands with any feature combinations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "continue using a general feature configuration for CLI tests",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "test each CLI command individually without specifying features",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The survivor rate moved from 72.0% to 64.2%",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "which moved the survivor rate from 72.0% to 64.2%;"
+    },
+    {
+      "decision": 1,
+      "text": "Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "then Phase 2.2 took the remaining 172 down to 110, `progress.rs` from 51 to 1."
+    },
+    {
+      "decision": 2,
+      "text": "The CLI's coverage is now accurately measured by cargo test.",
+      "quote": "A golden file, compared inside cargo test rather than by a Makefile target: a Makefile gate is invisible to anything that counts coverage, which is why doc-output was wired into the suite in 0.13.",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 3,
+      "text": "The test suite now explicitly checks for required arguments in CLI commands",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure.",
+      "verified": true,
+      "verification_quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": 3,
+      "text": "The CLI commands that take required arguments are more thoroughly tested",
+      "quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure.",
+      "verified": true,
+      "verification_quote": "minimal_args supplies what each needs, and the clap refusal is now itself a failure."
+    },
+    {
+      "decision": 4,
+      "text": "Every command in the test now runs from a scratch directory of its own.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Every command in the test now runs from a scratch directory of its own."
+    },
+    {
+      "decision": 5,
+      "text": "The CLI commands are now tested with all features enabled.",
+      "quote": "make ci green, sentinel verified: ten feature combinations, zero failures.",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 6,
+      "text": "CLI commands are now tested with a specific feature configuration, ensuring that the tests reflect the intended build environment",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 6,
+      "text": "The --all-features anomaly is answered, and my framing of it was wrong",
+      "quote": "**Also: the --all-features anomaly is answered, and my framing of it was wrong.** READINESS said the CLI's coverage is \"feature-dependent in a way nothing states\". It states it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The CI pipeline now verifies that the CLI commands work correctly across ten different feature combinations.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 8,
+      "text": "CLI commands are now tested with a specific feature configuration, ensuring that the tests reflect the intended build environment",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 8,
+      "text": "The --all-features anomaly is answered, and my framing of it was wrong",
+      "quote": "**Also: the --all-features anomaly is answered, and my framing of it was wrong.** READINESS said the CLI's coverage is \"feature-dependent in a way nothing states\". It states it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The CI pipeline now verifies that the CLI commands work correctly across ten different feature combinations.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 10,
+      "text": "CLI commands are now tested with a specific feature configuration, ensuring that the tests reflect the intended build environment",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 10,
+      "text": "The --all-features anomaly is answered, and my framing of it was wrong",
+      "quote": "**Also: the --all-features anomaly is answered, and my framing of it was wrong.** READINESS said the CLI's coverage is \"feature-dependent in a way nothing states\". It states it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The CI pipeline now verifies that the CLI commands work correctly across ten different feature combinations.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 12,
+      "text": "CLI commands are now tested with a specific feature configuration, ensuring that the tests reflect the intended build environment",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green, sentinel verified: ten feature combinations, zero failures."
+    },
+    {
+      "decision": 12,
+      "text": "The --all-features anomaly is answered, and my framing of it was wrong",
+      "quote": "**Also: the --all-features anomaly is answered, and my framing of it was wrong.** READINESS said the CLI's coverage is \"feature-dependent in a way nothing states\". It states it.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

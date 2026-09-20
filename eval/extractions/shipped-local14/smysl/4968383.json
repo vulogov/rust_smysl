@@ -1,0 +1,527 @@
+{
+  "decisions": [
+    {
+      "decision": "nodejs/ reaches C-Produce",
+      "kind": "act",
+      "rationale": "The commit adds a fourth independent derivation and three witnesses beyond the Rust for nodejs/",
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation — and passes the published vectors including the lengths straddling the chunk boundary."
+    },
+    {
+      "decision": "make spec-tables",
+      "kind": "act",
+      "rationale": "The commit adds a new job that parses the spec's tables rather than quoting them, and compares all four implementations against them in both directions.",
+      "quote": "Parses the spec's tables rather than quoting them, and compares all four implementations against them in both directions."
+    },
+    {
+      "decision": "Gate 7: 78 -> 85 transcripts",
+      "kind": "act",
+      "rationale": "The commit changes the number of blocked commands from 78 to 85 by splitting files that have more than one state.",
+      "quote": "Chapters now replay as chapters: a scratch copy, walked in document order, with `fmt --write` allowed to write."
+    },
+    {
+      "decision": "Mutation figures sized",
+      "kind": "act",
+      "rationale": "The commit adds a new section that measures the survivor rate in gate 5 and records it.",
+      "quote": "Every survivor rate in gate 5 is the weak per-package claim. Measured on store/mod.rs: 23 survivors per-package, 18 under --test-workspace."
+    },
+    {
+      "decision": "make ci green",
+      "kind": "act",
+      "rationale": "The commit adds a new job that checks if the CI is green for all configurations.",
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": "conformance-python",
+      "kind": "act",
+      "rationale": "The commit adds a new job that runs the conformance tests in Python.",
+      "quote": "# The same specification, read a third time. Two implementations agreeing could have made the same guess where the document is silent, so independence is what makes agreement evidence — this one was written without consulting the Python, and both found the same two ambiguities."
+    },
+    {
+      "decision": "conformance-node",
+      "kind": "act",
+      "rationale": "The commit adds a new job that runs the conformance tests in Node.js.",
+      "quote": "# The same specification, read a fourth time. Two implementations agreeing could have made the same guess where the document is silent, so independence is what makes agreement evidence — this one was written without consulting the Python, and both found the same two ambiguities."
+    },
+    {
+      "decision": "conformance-go",
+      "kind": "act",
+      "rationale": "The commit adds a new job that runs the conformance tests in Go.",
+      "quote": "# The same specification, read a fourth time — and the first reading against the *revised* document, which makes it a check on the clarifications rather than only on the format."
+    },
+    {
+      "decision": "doc-output",
+      "kind": "act",
+      "rationale": "The commit adds a new job that checks if the manual's transcripts still produce the same output.",
+      "quote": "# The manual prints 43 replayable command transcripts, and until 0.4 nothing checked that the binary still produced them."
+    },
+    {
+      "decision": "fuzz",
+      "kind": "act",
+      "rationale": "The commit adds a new job that runs fuzz tests.",
+      "quote": "# Both fuzz targets existed from the start and nothing ever ran them, which is how two stack overflows survived to 0.3: the surface parser aborted at ~5 000 nesting levels and the CBOR reader at ~20 000, both reachable from input another agent hands you."
+    },
+    {
+      "decision": "spec-tables",
+      "kind": "act",
+      "rationale": "The commit adds a new job that verifies the spec tables.",
+      "quote": "# Whether what the four implementations agree *on* is written down anywhere."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`nodejs/` at C-Produce",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "nodejs/ at C-Produce\n--------------------\n§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust."
+    },
+    {
+      "decision": 1,
+      "text": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`blake3.js` is hand-rolled — a binding to the same C library the Rust calls would test two callers of one implementation"
+    },
+    {
+      "decision": 1,
+      "text": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`uid.js` reproduces all sixteen canonical encodings and uids, and implements §7's shape clause with `uid()` running it first"
+    },
+    {
+      "decision": 2,
+      "text": "python/ and go/ had reached C-Produce through all four without recording that they guessed.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "python/ and go/ had reached C-Produce through all four without recording that they guessed."
+    },
+    {
+      "decision": 2,
+      "text": "They got the same answers because they read the same fixture, so nothing disagreed and nothing failed, for two releases.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "They got the same answers because they read the same fixture, so nothing disagreed and nothing failed, for two releases."
+    },
+    {
+      "decision": 2,
+      "text": "Until now every implementation read SMYSL_FORMAT_SPEC.md only to assert it contained the string 'Deterministic CBOR'.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Until now every implementation read SMYSL_FORMAT_SPEC.md only to assert it contained the string 'Deterministic CBOR'."
+    },
+    {
+      "decision": 2,
+      "text": "READINESS described the §2.2 and §3.1 tables as 'asserted against the document' — corrected here.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "READINESS described the §2.2 and §3.1 tables as 'asserted against the document' — corrected here."
+    },
+    {
+      "decision": 3,
+      "text": "22 tutorial filenames have more than one state",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "22 tutorial filenames have more than one state — chapter 1 creates `first.smy` broken, fixes it, finds it unformatted, then rewrites it in place — so committing any one file makes the other commands naming it report drift that is not there."
+    },
+    {
+      "decision": 4,
+      "text": "Every survivor rate in gate 5 is the weak per-package claim.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every survivor rate in gate 5 is the weak per-package claim."
+    },
+    {
+      "decision": 4,
+      "text": "Measured on store/mod.rs: 23 survivors per-package, 18 under --test-workspace.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Measured on store/mod.rs: 23 survivors per-package, 18 under --test-workspace."
+    },
+    {
+      "decision": 4,
+      "text": "Five of twenty-three were never gaps.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Five of twenty-three were never gaps."
+    },
+    {
+      "decision": 5,
+      "text": "The project has multiple implementations in different languages (Rust, Python, Node.js, Go) and needs to ensure they are consistent.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "nodejs/ at C-Produce\n--------------------\n§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust."
+    },
+    {
+      "decision": 5,
+      "text": "The project uses GitHub Actions for CI/CD.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "name: ci\non:\n  push:"
+    },
+    {
+      "decision": 6,
+      "text": "The project has multiple implementations of its specification, including Rust, Python, Node.js, and Go.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "python/ and go/ had reached C-Produce through all four without recording that they guessed."
+    },
+    {
+      "decision": 6,
+      "text": "The project aims to ensure that its specification is sufficient for independent implementations.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "It targets C-Read, the floor: decode, re-encode byte-identically, preserve unknowns."
+    },
+    {
+      "decision": 6,
+      "text": "The project has a CI/CD pipeline that runs various checks and tests.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": 7,
+      "text": "The project has multiple implementations of its specification, including Rust, Python, and Go.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "python/ and go/ had reached C-Produce through all four without recording that they guessed."
+    },
+    {
+      "decision": 7,
+      "text": "The project aims to ensure that all implementations agree on the specification, especially critical sections like §2.3.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "C-Produce, which is the class that touches §2.3 — status is part of identity."
+    },
+    {
+      "decision": 7,
+      "text": "Node.js is a supported environment for running the project's conformance tests.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The same specification, read a third time. Two implementations agreeing could have made the same guess where the document is silent, so independence is what makes agreement evidence — this one was written without consulting the Python, and both found the same two ambiguities."
+    },
+    {
+      "decision": 8,
+      "text": "The project has multiple implementations of its format, including Rust, Python, and Node.js.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "nodejs/ at C-Produce\n--------------------\n§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust."
+    },
+    {
+      "decision": 8,
+      "text": "The project aims to ensure that all implementations agree on the format's interpretation.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Whether what the four implementations agree *on* is written down anywhere.\n\nEvery other conformance job asks whether they agree with each other."
+    },
+    {
+      "decision": 8,
+      "text": "The Go implementation has reached C-Produce, meaning it can produce and check the format.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "go/ reaches C-Produce, so §2.1 has a third independent derivation — the Rust, python/, and now Go."
+    },
+    {
+      "decision": 9,
+      "text": "The manual prints 43 replayable command transcripts, and until 0.4 nothing checked that the binary still produced them.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The manual prints 43 replayable command transcripts, and until 0.4 nothing checked that the binary still produced them."
+    },
+    {
+      "decision": 9,
+      "text": "A teaching document whose transcripts have quietly drifted is worse than one with none: a reader who types the command and gets something else has no way to tell which of the two is wrong.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A teaching document whose transcripts have quietly drifted is worse than one with none: a reader who types the command and gets something else has no way to tell which of the two is wrong."
+    },
+    {
+      "decision": 10,
+      "text": "The project has existing fuzz targets.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Both fuzz targets existed from the start and nothing ever ran them, which is how two stack overflows survived to 0.3: the surface parser aborted at ~5 000 nesting levels and the CBOR reader at ~20 000, both reachable from input another agent hands you."
+    },
+    {
+      "decision": 10,
+      "text": "The project needs a way to catch regressions in its parsers.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A fuzzer finds those in seconds. A fuzz target nobody runs is a test that does not exist."
+    },
+    {
+      "decision": 10,
+      "text": "The project has a CI/CD pipeline where new jobs can be added.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "name: ci"
+    },
+    {
+      "decision": 11,
+      "text": "Every implementation read SMYSL_FORMAT_SPEC.md only to assert it contained the string 'Deterministic CBOR'",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Until now every implementation read SMYSL_FORMAT_SPEC.md only to assert it contained the string \"Deterministic CBOR\""
+    },
+    {
+      "decision": 11,
+      "text": "READINESS described the §2.2 and §3.1 tables as 'asserted against the document'",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "READINESS described the §2.2 and §3.1 tables as \"asserted against the document\""
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "nodejs/ does not reach C-Produce",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Continue to assert that the spec contains certain strings without verifying them.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Only compare implementations against each other, not against a parsed version of the spec.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Do not split files with multiple states",
+      "reason": "",
+      "quote": "Splitting them means the chapters naming a different file at each step, which changes what the book teaches. Still a decision about the book rather than a task;"
+    },
+    {
+      "decision": 4,
+      "alternative": "Do not measure the survivor rate in gate 5.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Measure the survivor rate differently, e.g., per-module or globally.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Manually check the CI status for each configuration.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Add a script to periodically check and report the CI status.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Adding a conformance test in another language (e.g., Java or C#).",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Skipping the addition of a new conformance test job.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Not adding a new job for Node.js conformance tests.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Running the conformance tests in an environment other than Node.js, such as another language or platform.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Not adding a new job for conformance tests in Go.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Continue not checking the transcripts.",
+      "reason": "",
+      "quote": "It could not before, because it reported fifteen permanent mismatches — every one an artifact of how it captured output rather than a stale manual. Concatenating two separately-captured streams does not reproduce the order a terminal shows, and a block quoting one stream, or eliding with `...`, could never match."
+    },
+    {
+      "decision": 10,
+      "alternative": "Continue not running the fuzz targets.",
+      "reason": "",
+      "quote": "Both fuzz targets existed from the start and nothing ever ran them, which is how two stack overflows survived to 0.3."
+    },
+    {
+      "decision": 10,
+      "alternative": "Run the fuzz tests manually instead of as part of CI.",
+      "reason": "",
+      "quote": "A fuzzer finds those in seconds. A fuzz target nobody runs is a test that does not exist."
+    },
+    {
+      "decision": 11,
+      "alternative": "Continue to assert that SMYSL_FORMAT_SPEC.md contains 'Deterministic CBOR'",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Do not check the spec tables",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "`nodejs/` reaches C-Produce, so §2.1 has a third independent derivation — the Rust, `python/`, and now Go — where it had one until 0.10 and two until now",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "`nodejs/` reaches C-Produce, so §2.1 has a third independent derivation — the Rust, `python/`, and now Go — where it had one until 0.10 and two until now."
+    },
+    {
+      "decision": 2,
+      "text": "It found four more on its first run: the masthead read 'smysl/0.1' while §8.6 of the same document says 'smysl/1.0' is what new documents declare.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "It found four more on its first run: the masthead read 'smysl/0.1' while §8.6 of the same document says 'smysl/1.0' is what new documents declare;"
+    },
+    {
+      "decision": 2,
+      "text": "and go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "and go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had."
+    },
+    {
+      "decision": 3,
+      "text": "The number of blocked commands increases from 78 to 85",
+      "quote": "Chapters now replay as chapters: a scratch copy, walked in document order, with `fmt --write` allowed to write. Later states are derived rather than recorded. Reader edits live in edits.json, anchored by prose and never by content, so the body is read out of the chapter at run time and nothing can go stale.",
+      "verified": true,
+      "verification_quote": "Gate 7: 78 -> 85 transcripts"
+    },
+    {
+      "decision": 4,
+      "text": "The backlog is mostly real; this is one module of one crate and applying the fraction to the other 357 would be the error this file records twice already.",
+      "quote": "The backlog is mostly real; this is one module of one crate and applying the fraction to the other 357 would be the error this file records twice already.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The first attempt was invalid and looked like a result: cargo-mutants took its baseline at 1s of tests, auto-set a 20s timeout, then ran each mutant against the 109-second workspace suite. `4 missed, 6 caught, 15 timeouts` reads as nineteen of twenty-three being artefacts.",
+      "quote": "The first attempt was invalid and looked like a result: cargo-mutants took its baseline at 1s of tests, auto-set a 20s timeout, then ran each mutant against the 109-second workspace suite. `4 missed, 6 caught, 15 timeouts` reads as nineteen of twenty-three being artefacts.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "--test-workspace needs an explicit --timeout.",
+      "quote": "--test-workspace needs an explicit --timeout.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The project can quickly identify and address any issues with the CI pipeline across different configurations.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "make ci green: 10/10 matrix, spec-tables 0 mismatched, doc-output 85/0, nodejs 126, python 139, go ok."
+    },
+    {
+      "decision": 6,
+      "text": "The project now has an additional independent implementation in Python that checks the format's central claim against something other than the Rust implementation.",
+      "quote": "The only implementation outside the Rust that reaches C-Produce, which is the class that touches §2.3 — status is part of identity.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "The CI/CD pipeline now includes a new job for running conformance tests in Python.",
+      "quote": "conformance-python:",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The project now has a fourth independent implementation of its specification, which helps ensure consistency and correctness across different environments.",
+      "quote": "nodejs/ reaches C-Produce, a gate ties the format's constants to the document that defines them, and gate 7's blocked commands turn out never to have been a decision about the book.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The CI pipeline now includes a job specifically for running conformance tests in Node.js, which helps catch any discrepancies or issues early.",
+      "quote": "conformance-node:",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The project now has four independent implementations of its format, ensuring broader agreement on the specification.",
+      "quote": "nodejs/ at C-Produce\n--------------------\n§2.1 now has four independent derivations and §2.3 three witnesses beyond the Rust.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The Go implementation is included in the conformance checks, ensuring it adheres to the format's specification.",
+      "quote": "go/ reaches C-Produce, so §2.1 has a third independent derivation — the Rust, python/, and now Go.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The script exits non-zero on drift as of 0.4.",
+      "quote": "The script exits non-zero on drift as of 0.4.",
+      "verified": true,
+      "verification_quote": "The script exits non-zero on drift as of 0.4."
+    },
+    {
+      "decision": 9,
+      "text": "A gate here means something.",
+      "quote": "A gate here means something.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "The project will now catch regressions in its parsers during the CI/CD pipeline.",
+      "quote": "A fuzzer finds those in seconds. A fuzz target nobody runs is a test that does not exist.",
+      "verified": true,
+      "verification_quote": "Both targets now run for minutes without a finding, and every case is pinned by a regression test."
+    },
+    {
+      "decision": 10,
+      "text": "The CI/CD pipeline will take longer due to the addition of the fuzz tests.",
+      "quote": "Time-boxed so this stays a gate rather than a bottleneck: sixty seconds each is enough to catch a regression of that shape, and short enough that nobody is tempted to skip it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "It found four more on its first run: the masthead read `smysl/0.1` while §8.6 of the same document says `smysl/1.0` is what new documents declare",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "It found four more on its first run: the masthead read `smysl/0.1` while §8.6 of the same document says `smysl/1.0` is what new documents declare"
+    },
+    {
+      "decision": 11,
+      "text": "go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "and go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had"
+    }
+  ]
+}

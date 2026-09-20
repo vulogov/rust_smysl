@@ -1,0 +1,540 @@
+{
+  "decisions": [
+    {
+      "decision": "Reduced the number of tests from 12 to 2 for cmd_fmt",
+      "kind": "act",
+      "rationale": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping.",
+      "quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": "Refused --check and --write on a CBOR log",
+      "kind": "act",
+      "rationale": "Not specified in the commit message, but implied by the tests added.",
+      "quote": ""
+    },
+    {
+      "decision": "Turned a parse warning into a failing exit code with --strict",
+      "kind": "act",
+      "rationale": "Not specified in the commit message, but implied by the tests added.",
+      "quote": ""
+    },
+    {
+      "decision": "Refused several inputs with --output",
+      "kind": "act",
+      "rationale": "Not specified in the commit message, but implied by the tests added.",
+      "quote": ""
+    },
+    {
+      "decision": "Told a formatted file from an unformatted one with --check",
+      "kind": "act",
+      "rationale": "Not specified in the commit message, but implied by the tests added.",
+      "quote": ""
+    },
+    {
+      "decision": "Rewrote in place while leaving stdin alone with --write",
+      "kind": "act",
+      "rationale": "Not specified in the commit message, but implied by the tests added.",
+      "quote": ""
+    },
+    {
+      "decision": "Recorded the way 0.13 recorded worse's >= and 1.1 recorded Lineage::is_empty -> false",
+      "kind": "act",
+      "rationale": "Not specified in the commit message, but implied by the tests added.",
+      "quote": ""
+    },
+    {
+      "decision": "Removed the round-trip guard test",
+      "kind": "decline",
+      "rationale": "No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not.",
+      "quote": ""
+    },
+    {
+      "decision": "Refactored cmd_fmt to reduce the number of tests",
+      "kind": "act",
+      "rationale": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping.",
+      "quote": "main.rs  109 -> 99"
+    },
+    {
+      "decision": "Added a harness that was lying about it",
+      "kind": "act",
+      "rationale": "Not specified in the commit message, but implied by the tests added.",
+      "quote": ""
+    },
+    {
+      "decision": "Removed the comment warning test",
+      "kind": "decline",
+      "rationale": "Not specified in the commit message, but implied by the tests removed.",
+      "quote": ""
+    },
+    {
+      "decision": "Refactored cmd_fmt to reduce the number of tests",
+      "kind": "act",
+      "rationale": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping.",
+      "quote": "cmd_fmt   12 -> 2"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The first version of these tests inflated the score by 97 mutants",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping."
+    },
+    {
+      "decision": 1,
+      "text": "cargo-mutants reuses build directories",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "cargo-mutants reuses build directories, so a mutant that misroutes a write leaves a fixture rewritten, and every later mutant tested in that directory sees a canonical F1."
+    },
+    {
+      "decision": 1,
+      "text": "A test must not depend on the state of the tree",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "a test must not depend on the state of the tree either. Every test here now writes the document whose property it needs."
+    },
+    {
+      "decision": 2,
+      "text": "The binary has six tests aimed at decisions rather than mutants.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six tests driving the binary, aimed at decisions rather than at mutants:"
+    },
+    {
+      "decision": 2,
+      "text": "--check and --write refused on a CBOR log is one of those six tests.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "--check and --write refused on a CBOR log,"
+    },
+    {
+      "decision": 3,
+      "text": "The project has a command-line interface (CLI) that accepts various flags.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six tests driving the binary, aimed at decisions rather than at mutants:"
+    },
+    {
+      "decision": 3,
+      "text": "The CLI has a --strict flag that is intended to turn warnings into errors.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "--strict turning a parse warning into a failing exit code,"
+    },
+    {
+      "decision": 4,
+      "text": "--output refusing several inputs",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 5,
+      "text": "The binary has six tests aimed at decisions rather than mutants.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six tests driving the binary, aimed at decisions rather than at mutants:"
+    },
+    {
+      "decision": 5,
+      "text": "--check and --write refused on a CBOR log.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "--check and --write refused on a CBOR log,"
+    },
+    {
+      "decision": 5,
+      "text": "--strict turning a parse warning into a failing exit code.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "--strict turning a parse warning into a failing exit code,"
+    },
+    {
+      "decision": 5,
+      "text": "The comment warning.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the comment warning,"
+    },
+    {
+      "decision": 5,
+      "text": "--output refusing several inputs.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "--output refusing several inputs,"
+    },
+    {
+      "decision": 5,
+      "text": "--check telling a formatted file from an unformatted one.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "--check telling a formatted file from an unformatted one,"
+    },
+    {
+      "decision": 5,
+      "text": "--write rewriting in place while leaving stdin alone.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "--write rewriting in place while leaving stdin alone."
+    },
+    {
+      "decision": 6,
+      "text": "The command `--write` should rewrite files in place.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 6,
+      "text": "stdin should not be altered by the `--write` command.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 7,
+      "text": "The project has a test suite that measures the effectiveness of its tests.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every crate in the workspace is now measured."
+    },
+    {
+      "decision": 7,
+      "text": "The project uses mutation testing to evaluate the quality of its tests.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "mutation testing over the packer core — the best-tested file in the project — left 49% of viable mutants alive"
+    },
+    {
+      "decision": 7,
+      "text": "The project has a policy for recording how certain properties are tested.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recorded the way 0.13 recorded worse's >= and 1.1 recorded Lineage::is_empty -> false"
+    },
+    {
+      "decision": 8,
+      "text": "No input a user can supply reaches the round-trip guard",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The two that remain are the round-trip guard, which fires only when write_surface produces something the parser reads back differently. No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not."
+    },
+    {
+      "decision": 9,
+      "text": "The first version of these tests inflated the score by 97 mutants",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping."
+    },
+    {
+      "decision": 9,
+      "text": "A test must not depend on the state of the tree either",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "a test must not depend on the state of the machine: a test must not depend on the state of the tree either."
+    },
+    {
+      "decision": 10,
+      "text": "Six tests driving the binary, aimed at decisions rather than at mutants.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six tests driving the binary, aimed at decisions rather than at mutants:"
+    },
+    {
+      "decision": 10,
+      "text": "The first version of these tests inflated the score by 97 mutants.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "**The first version of these tests inflated the score by 97 mutants**, and that is the part worth keeping."
+    },
+    {
+      "decision": 10,
+      "text": "A test must not depend on the state of the tree either.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Every test here now writes the document whose property it needs. cmd_providers and cmd_merge are untouched at 12 and 11, which is what a correct measurement of this change looks like."
+    },
+    {
+      "decision": 11,
+      "text": "Six tests driving the binary, aimed at decisions rather than at mutants.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six tests driving the binary, aimed at decisions rather than at mutants:"
+    },
+    {
+      "decision": 11,
+      "text": "The first version of these tests inflated the score by 97 mutants.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "**The first version of these tests inflated the score by 97 mutants**, and that is the part worth keeping."
+    },
+    {
+      "decision": 11,
+      "text": "A test must not depend on the state of the tree either.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Every test here now writes the document whose property it needs. cmd_providers and cmd_merge are untouched at 12 and 11, which is what a correct measurement of this change looks like."
+    },
+    {
+      "decision": 12,
+      "text": "The first version of these tests inflated the score by 97 mutants",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping."
+    },
+    {
+      "decision": 12,
+      "text": "cargo-mutants reuses build directories",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "cargo-mutants reuses build directories, so a mutant that misroutes a write leaves a fixture rewritten, and every later mutant tested in that directory sees a canonical F1."
+    },
+    {
+      "decision": 12,
+      "text": "A test must not depend on the state of the tree",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "a test must not depend on the state of the tree either. Every test here now writes the document whose property it needs."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep all 12 tests",
+      "reason": "",
+      "quote": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping."
+    },
+    {
+      "decision": 1,
+      "alternative": "Reduce the number of tests to a different number",
+      "reason": "",
+      "quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 2,
+      "alternative": "Allow --check and --write on a CBOR log",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep the --strict flag as it is, without changing its behavior.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Remove the --strict flag entirely.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Not telling a formatted file from an unformatted one with --check.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Rewriting files in place and altering stdin.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Not rewriting files in place but altering stdin.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Neither rewriting files in place nor altering stdin.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Not recording how certain properties are tested.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Recording the tests in a different format or manner.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Keep the round-trip guard test",
+      "reason": "",
+      "quote": "The two that remain are the round-trip guard, which fires only when write_surface produces something the parser reads back differently. No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not."
+    },
+    {
+      "decision": 9,
+      "alternative": "Keep all 12 tests",
+      "reason": "",
+      "quote": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping."
+    },
+    {
+      "decision": 9,
+      "alternative": "Reduce the number of tests to 2",
+      "reason": "",
+      "quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 10,
+      "alternative": "Keep the original tests that depend on the state of the tree.",
+      "reason": "",
+      "quote": "It reported cmd_providers and cmd_merge as fully covered by tests that never invoke either command. Read at face value it was '109 -> 12'."
+    },
+    {
+      "decision": 11,
+      "alternative": "Keep the comment warning test.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Keep all 12 tests",
+      "reason": "",
+      "quote": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping."
+    },
+    {
+      "decision": 12,
+      "alternative": "Refactor cmd_fmt to reduce the number of tests",
+      "reason": "",
+      "quote": "cmd_fmt   12 -> 2"
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The number of tests for cmd_fmt is reduced from 12 to 2",
+      "quote": "cmd_fmt   12 -> 2",
+      "verified": true,
+      "verification_quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 1,
+      "text": "The score inflated by 97 mutants is kept",
+      "quote": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The test suite now includes a check for refusing --check and --write on a CBOR log.",
+      "quote": "--check and --write refused on a CBOR log,",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Users who rely on the --strict flag to catch parse warnings will now receive failing exit codes instead of warnings, potentially causing their scripts or workflows to fail.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The test suite is expanded to include tests for the new behavior of the --strict flag.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The binary now has two tests remaining, the round-trip guard and the comment warning.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "The two that remain are the round-trip guard, which fires only when write_surface produces something the parser reads back differently. No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not."
+    },
+    {
+      "decision": 6,
+      "text": "The `--write` command now correctly rewrites files in place without altering stdin.",
+      "quote": "cmd_fmt   12 -> 2",
+      "verified": true,
+      "verification_quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 7,
+      "text": "The project has a more comprehensive record of how its properties are tested.",
+      "quote": "Recorded the way 0.13 recorded worse's >= and 1.1 recorded Lineage::is_empty -> false",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The project can better track changes in its test coverage over time.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The score of mutants inflated by 97 is reduced",
+      "quote": "cmd_fmt   12 -> 2",
+      "verified": true,
+      "verification_quote": "**The first version of these tests inflated the score by 97 mutants**, and that is the part worth keeping."
+    },
+    {
+      "decision": 9,
+      "text": "The number of tests for cmd_fmt was reduced from 12 to 2",
+      "quote": "cmd_fmt   12 -> 2",
+      "verified": true,
+      "verification_quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 9,
+      "text": "The score inflated by 97 mutants is kept",
+      "quote": "The first version of these tests inflated the score by 97 mutants, and that is the part worth keeping.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "The harness now correctly reflects the number of survivors.",
+      "quote": "**The first version of these tests inflated the score by 97 mutants**, and that is the part worth keeping.",
+      "verified": true,
+      "verification_quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 10,
+      "text": "The number of survivors for cmd_providers and cmd_merge remains unchanged.",
+      "quote": "Every test here now writes the document whose property it needs. cmd_providers and cmd_merge are untouched at 12 and 11, which is what a correct measurement of this change looks like.",
+      "verified": true,
+      "verification_quote": "cmd_providers and cmd_merge are untouched at 12 and 11, which is what a correct measurement of this change looks like."
+    },
+    {
+      "decision": 11,
+      "text": "cmd_fmt   12 -> 2",
+      "quote": "cmd_fmt   12 -> 2",
+      "verified": true,
+      "verification_quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 11,
+      "text": "main.rs  109 -> 99",
+      "quote": "main.rs  109 -> 99",
+      "verified": true,
+      "verification_quote": "main.rs  109 -> 99"
+    },
+    {
+      "decision": 12,
+      "text": "The number of tests for cmd_fmt is reduced from 12 to 2",
+      "quote": "cmd_fmt   12 -> 2",
+      "verified": true,
+      "verification_quote": "cmd_fmt   12 -> 2"
+    },
+    {
+      "decision": 12,
+      "text": "The number of lines in main.rs is reduced from 109 to 99",
+      "quote": "main.rs  109 -> 99",
+      "verified": true,
+      "verification_quote": "main.rs  109 -> 99"
+    }
+  ]
+}

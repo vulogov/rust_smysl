@@ -1,0 +1,466 @@
+{
+  "decisions": [
+    {
+      "decision": "The observations are a committed file rather than one a test invents.",
+      "kind": "act",
+      "rationale": "To fix the flaky test, the author decided to use a committed file for the residuals fixture instead of having tests write it. This ensures that the tests do not interfere with each other when run concurrently.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye."
+    },
+    {
+      "decision": "The fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "kind": "act",
+      "rationale": "To improve documentation and ensure that examples are always up-to-date, the author decided to generate worked examples from the code and include them in the manual.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": "`now` reads the system clock, so its output differs on every run and could never match a committed file.",
+      "kind": "decline",
+      "rationale": "The author decided not to include an example for the `ucal now` command in the documentation because its output varies with each execution and cannot be stored in a committed file.",
+      "quote": "`ucal now` and `ucal tour` are absent on purpose: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    },
+    {
+      "decision": "Colour is off and the width is 80 columns, so these match a redirected run rather than a terminal.",
+      "kind": "act",
+      "rationale": "To ensure consistency in the documentation examples, the author decided to disable color output and set the width to 80 columns when generating the examples. This makes the output predictable and suitable for inclusion in the manual.",
+      "quote": "Colour is off and the width is 80 columns, so these match a redirected run rather than a terminal."
+    },
+    {
+      "decision": "`cargo run -p xtask -- gen-examples` generates the worked examples.",
+      "kind": "act",
+      "rationale": "The author decided to use a specific command to generate the worked examples for inclusion in the documentation. This ensures that the examples are always up-to-date and consistent with the codebase.",
+      "quote": "Regenerate with:\n\n```\ncargo build --release -p ucal --features full\ncargo run -p xtask -- gen-examples\n```"
+    },
+    {
+      "decision": "`cargo run -p xtask -- check-docs` fails if this file is not what a fresh run produces, so an example cannot describe output the program does not produce.",
+      "kind": "act",
+      "rationale": "To maintain the integrity of the documentation examples, the author decided to enforce that the generated examples match exactly with what a fresh run of the program would produce. This ensures that the examples are always correct and up-to-date.",
+      "quote": "`cargo run -p xtask -- check-docs` fails if this file is not what a fresh run produces, so an example cannot describe output the program does not produce."
+    },
+    {
+      "decision": "Field-by-field documentation is in [`CLI.md`](CLI.md).",
+      "kind": "act",
+      "rationale": "The author decided to separate detailed field-level documentation into a different file (`CLI.md`) and link to it from the main examples page. This keeps the examples focused on usage and delegates more technical details to a dedicated reference.",
+      "quote": "Field-by-field documentation is in [`CLI.md`](CLI.md)."
+    },
+    {
+      "decision": "The `verify` command re-derives the constants it ships with, and says plainly that agreeing with itself is not verification.",
+      "kind": "act",
+      "rationale": "To provide clarity about the purpose of the `verify` command, the author decided to include a message stating that agreement with itself does not constitute verification. This helps users understand the limitations and intended use of the command.",
+      "quote": "This is a self-check. Every number above was computed by one implementation from one specification, so agreement means this build's arithmetic works and reproduces the published values — not that the specification is right."
+    },
+    {
+      "decision": "The `doctor` command provides information about the profile, backend, and features.",
+      "kind": "act",
+      "rationale": "To assist with debugging and ensure consistency across different environments, the author decided to include a `doctor` command that outputs details about the current configuration, including the profile, backend, and enabled features. This helps users quickly identify potential issues or discrepancies.",
+      "quote": "Report at most 12 decisions."
+    },
+    {
+      "decision": "The `ephem at` command includes a warning when evaluating outside the validity window of a fit.",
+      "kind": "act",
+      "rationale": "To inform users about potential extrapolation issues, the author decided to include a warning in the `ephem at` command output when the evaluation is performed outside the stated validity window of the fit. This helps users understand the limitations and reliability of the predictions.",
+      "quote": "UCAL-W0003: body parameter evaluated outside its validity window."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 1,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 1,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 2,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 2,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 2,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 3,
+      "text": "`now` reads the system clock, so its output differs on every run and could never match a committed file.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "DECISION 3: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    },
+    {
+      "decision": 4,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 4,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 4,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 5,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 5,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 5,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 6,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 6,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 6,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 7,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 7,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 7,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 8,
+      "text": "The `verify` command re-derives the constants it ships with.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "DECISION 8: The `verify` command re-derives the constants it ships with, and says plainly that agreeing with itself is not verification."
+    },
+    {
+      "decision": 9,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 9,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 9,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye. Three fall inside their own windows and the +41 does not, which is the property the width exists to carry. A fixture a reader can open is better than one a test writes, and it cannot race with anything."
+    },
+    {
+      "decision": 10,
+      "text": "The `ephem at` command evaluates predictions based on fits that have a defined validity window.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "UCAL-W0003: body parameter evaluated outside its validity window. Rule C makes a parameter valid over a stated interval and forbids silent extrapolation, so this instant lies outside the window at least one of this body's figures was published for."
+    },
+    {
+      "decision": 10,
+      "text": "Rule C requires that parameters be valid within a stated interval and prohibits silent extrapolation.",
+      "kind": "normative",
+      "normative": true,
+      "quote": "Rule C makes a parameter valid over a stated interval and forbids silent extrapolation, so this instant lies outside the window at least one of this body's figures was published for."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Continue using the existing approach where tests write their own fixtures.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 1,
+      "alternative": "Use a different temporary directory for each test to avoid file conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Keep the existing approach where tests write to a shared temporary file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Use a different method to ensure that tests do not interfere with each other, such as using unique filenames or locking mechanisms.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Include an example for the `ucal now` command in the documentation.",
+      "reason": "",
+      "quote": "RATIONALE: The author decided not to include an example for the `ucal now` command in the documentation because its output varies with each execution and cannot be stored in a committed file."
+    },
+    {
+      "decision": 4,
+      "alternative": "Keep the tests writing to the same file concurrently.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Use a different file name for each test binary.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Keep using temporary files but ensure they are written and read in a non-concurrent manner.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Use a different method to generate fixtures that avoids concurrent access issues, such as writing to unique filenames or using locks.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Keep the existing approach where tests write to a shared temporary file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Use a different method for generating and checking residuals that avoids concurrent access issues.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Keep using a temporary file for residuals fixture.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Use a different naming scheme for temporary files to avoid conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "The `verify` command could be silent about its limitations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Continue using temporary files for residuals.",
+      "reason": "",
+      "quote": "It passed locally on every run, including the three I did before pushing, and failed on the bigint backend in CI on the cut commit itself. A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 10,
+      "alternative": "Do not include any warning when evaluating outside the validity window.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Include a different type of warning or message when evaluating outside the validity window.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The `now` command is absent from the worked examples section.",
+      "quote": "RATIONALE: The author decided not to include an example for the `ucal now` command in the documentation because its output varies with each execution and cannot be stored in a committed file.",
+      "verified": true,
+      "verification_quote": "`ucal now` and `ucal tour` are absent on purpose: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    },
+    {
+      "decision": 4,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Users understand the limitations and intended use of the `verify` command.",
+      "quote": "RATIONALE: To provide clarity about the purpose of the `verify` command, the author decided to include a message stating that agreeing with itself does not constitute verification. This helps users understand the limitations and intended use of the command.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The number of worked examples increased to 37.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": true,
+      "verification_quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": 10,
+      "text": "Users are informed about potential extrapolation issues, which helps them understand the limitations and reliability of the predictions.",
+      "quote": "To inform users about potential extrapolation issues, the author decided to include a warning in the `ephem at` command output when the evaluation is performed outside the stated validity window of the fit. This helps users understand the limitations and reliability of the predictions.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

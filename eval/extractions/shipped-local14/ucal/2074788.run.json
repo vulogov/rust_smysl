@@ -1,0 +1,13 @@
+{
+  "at": 1789924664,
+  "calls": 11,
+  "judge": "ollama:qwen2.5-coder:14b",
+  "max_decisions": 12,
+  "max_input": 0,
+  "recipe": "v1",
+  "seconds": 430,
+  "tool_commit": "42893f341dae005c345cbe283ab2675bdefc4a9b",
+  "warnings": [
+    "the commit is 668991 characters; the model was shown the first 57440"
+  ]
+}
