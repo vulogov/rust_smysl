@@ -59,6 +59,9 @@ pub struct Settings {
     pub answer_tokens: u32,
     /// Replaces the built-in judgement prompt.
     pub system: Option<String>,
+    /// Rotates the judged units before they are grouped. Two passes with different seeds see the same
+    /// units in different company, and a finding only one pass makes is an artefact of that company.
+    pub order_seed: usize,
 }
 
 impl Default for Settings {
@@ -75,6 +78,7 @@ impl Default for Settings {
             window: 32768,
             answer_tokens: 2048,
             system: None,
+            order_seed: 0,
         }
     }
 }
@@ -347,11 +351,70 @@ fn context(store: &Store, change: &Change, s: &Settings) -> Option<(String, Vec<
             if s.judge_limit > 0 {
                 judged.truncate(s.judge_limit);
             }
+            if s.order_seed > 0 && !judged.is_empty() {
+                let by = s.order_seed % judged.len();
+                judged.rotate_left(by);
+            }
             return Some((blocks.join("\n\n"), judged));
         }
         ranked.pop();
     }
     None
+}
+
+/// The seeds two passes use, from the configuration S4 froze.
+pub const AGREEMENT_SEEDS: [usize; 2] = [0, 5];
+
+/// Run `check` more than once and keep only what every pass reported (D12's reason, applied to one
+/// change): measured on held-out data, two passes turned 170 and 192 flags into 96 and removed every
+/// false flag on a real commit in development. It costs recall — 7 of 13 became 5 of 13 — and that trade
+/// is why the figures this tool quotes are the agreed ones.
+///
+/// One pass is `check` itself; this is what the shipped default runs.
+pub fn check_agreed(
+    store: &Store,
+    change: &Change,
+    judge: &dyn Judge,
+    s: &Settings,
+    seeds: &[usize],
+) -> Outcome {
+    let mut passes: Vec<Outcome> = seeds
+        .iter()
+        .map(|seed| {
+            check(
+                store,
+                change,
+                judge,
+                &Settings {
+                    order_seed: *seed,
+                    ..s.clone()
+                },
+            )
+        })
+        .collect();
+    let Some(mut out) = passes.pop() else {
+        return check(store, change, judge, s);
+    };
+    for other in &passes {
+        let kept: BTreeSet<&str> = other.findings.iter().map(|f| f.label.as_str()).collect();
+        let before = out.findings.len();
+        out.findings.retain(|f| kept.contains(f.label.as_str()));
+        let dropped = before - out.findings.len();
+        if dropped > 0 {
+            out.dropped.push(format!(
+                "{dropped} finding(s) only one pass reported, so they were not kept"
+            ));
+        }
+        out.calls += other.calls;
+        out.predicted_tokens += other.predicted_tokens;
+        out.charged_tokens += other.charged_tokens;
+        for w in &other.warnings {
+            if !out.warnings.contains(w) {
+                out.warnings.push(w.clone());
+            }
+        }
+    }
+    out
 }
 
 /// Run `check` over one change against one corpus.

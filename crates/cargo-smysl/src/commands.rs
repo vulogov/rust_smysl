@@ -70,6 +70,7 @@ pub fn run(args: SmyslArgs) -> u8 {
             window,
             chars_per_token,
             prompt_file,
+            passes,
         } => check(
             &args,
             CheckArgs {
@@ -84,6 +85,7 @@ pub fn run(args: SmyslArgs) -> u8 {
                 window: *window,
                 chars_per_token: *chars_per_token,
                 prompt_file: prompt_file.as_deref(),
+                passes: *passes,
             },
         ),
         Command::Evidence {
@@ -987,6 +989,7 @@ struct CheckArgs<'a> {
     window: u32,
     chars_per_token: f32,
     prompt_file: Option<&'a Path>,
+    passes: usize,
 }
 
 /// `check`: what this change contradicts in the corpus.
@@ -1045,7 +1048,18 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         },
     };
     let change = Change::from_diff(&diff, &settings);
-    let outcome = cargo_smysl_verdict::check(&store, &change, &judge, &settings);
+    // Two passes by default, which is the configuration the quoted figures were measured at.
+    let seeds: Vec<usize> = cargo_smysl_verdict::check::AGREEMENT_SEEDS
+        .iter()
+        .copied()
+        .cycle()
+        .take(c.passes.max(1))
+        .collect();
+    let outcome = if seeds.len() > 1 {
+        cargo_smysl_verdict::check::check_agreed(&store, &change, &judge, &settings, &seeds)
+    } else {
+        cargo_smysl_verdict::check(&store, &change, &judge, &settings)
+    };
 
     if c.json {
         println!(

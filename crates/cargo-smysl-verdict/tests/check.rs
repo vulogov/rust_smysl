@@ -5,6 +5,7 @@ use std::cell::RefCell;
 use std::path::Path;
 
 use cargo_smysl_corpus::{build, stage, CommitText, Extraction};
+use cargo_smysl_verdict::check::{check_agreed, AGREEMENT_SEEDS};
 use cargo_smysl_verdict::{check, Change, Charged, Judge, JudgeError, RawVerdict, Settings};
 use smysl::Store;
 
@@ -271,4 +272,67 @@ fn a_unified_diff_is_built_from_the_two_texts() {
     let change = Change::from_diff(&diff, &settings);
     assert_eq!(change.files, vec!["src/main.rs".to_string()]);
     assert!(cargo_smysl_verdict::check::unified("x.rs", before, before, 3).is_empty());
+}
+
+#[test]
+fn a_finding_only_one_pass_reports_is_not_kept() {
+    let store = corpus();
+    let settings = Settings::default();
+    let change = Change::from_diff(DIFF, &settings);
+    let probe = Scripted::new(vec![]);
+    check(&store, &change, &probe, &settings);
+    let asked = probe.asked.borrow()[0].clone();
+    let judged: Vec<String> = asked
+        .lines()
+        .find(|l| l.starts_with("JUDGE: "))
+        .unwrap()
+        .trim_start_matches("JUDGE: ")
+        .split(", ")
+        .map(str::to_string)
+        .collect();
+    let line_no = asked
+        .lines()
+        .find(|l| l.contains("vec![\".smysl/store\"]"))
+        .and_then(|l| l.split('|').next())
+        .and_then(|n| n.trim().parse::<u32>().ok())
+        .unwrap();
+
+    // Two passes: the first call of each pass answers, the rest find nothing. The two passes see the
+    // units in different company, so they name different labels — and neither survives agreement.
+    let both = Scripted::new(vec![
+        vec![verdict(&judged[0], line_no, "")],
+        vec![],
+        vec![],
+        vec![],
+        vec![verdict(&judged[1], line_no, "")],
+        vec![],
+        vec![],
+        vec![],
+    ]);
+    let outcome = check_agreed(&store, &change, &both, &settings, &AGREEMENT_SEEDS);
+    assert!(
+        outcome.findings.is_empty(),
+        "one pass each: {:?}",
+        outcome.findings
+    );
+    assert!(
+        outcome.dropped.iter().any(|d| d.contains("only one pass")),
+        "and it says so: {:?}",
+        outcome.dropped
+    );
+
+    // The same label from both passes stands.
+    let agreeing = Scripted::new(vec![
+        vec![verdict(&judged[0], line_no, "")],
+        vec![],
+        vec![],
+        vec![],
+        vec![verdict(&judged[0], line_no, "")],
+        vec![],
+        vec![],
+        vec![],
+    ]);
+    let outcome = check_agreed(&store, &change, &agreeing, &settings, &AGREEMENT_SEEDS);
+    assert_eq!(outcome.findings.len(), 1, "{:?}", outcome.dropped);
+    assert_eq!(outcome.findings[0].label, judged[0]);
 }

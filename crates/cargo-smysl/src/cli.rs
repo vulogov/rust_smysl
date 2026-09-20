@@ -127,6 +127,11 @@ pub enum Command {
         /// A file holding the judgement prompt, replacing the built-in one.
         #[arg(long, env = "SMYSL_CHECK_PROMPT_FILE")]
         prompt_file: Option<PathBuf>,
+        /// Passes over the change; a finding must be reported by every pass to be kept. Two is what the
+        /// measured figures were taken at: it roughly halves the flags and costs some recall. One is
+        /// faster and noisier.
+        #[arg(long, env = "SMYSL_CHECK_PASSES", default_value_t = 2)]
+        passes: usize,
     },
     /// Check a recorded claim against the code, and say what may be concluded (D11, D12).
     ///
