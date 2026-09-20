@@ -459,17 +459,20 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
     |---|---|---|---|
     | `research-deepseek-v2` | 82% / 67% | **41%** / 59% | 31% / 69% |
     | `research-flash-v2` | 100% / 37% | **88%** / 22% | 79% / 52% |
-    | `research-pro-v2` (ucal only, smysl 4968383 still pending) | 97% / — | **67%** / — | 46% / — |
+    | `research-pro-v2` | 96% / 63% | **61%** / 54% | 42% / 69% |
 
     **Decisions are the reliable kind**: every system is at or above 82% precision on them, and the
     disagreement between systems is recall, not correctness. **Prerequisites are not**: the kind the whole
     design rests on scores 41% on the model that finds the most of them, and the one that reaches 88%
     finds only a fifth. **Alternatives are the worst by precision**, 31–79%, which matches what the
     extraction does: it reads a rejected option into any sentence that mentions one.
-  - **The bound is not met by the shipped path.** "Prerequisite precision at least the pro run's" now has
-    a number on both sides: the pro run is 67% (partial), and the tool's own extraction is not yet scored
-    against these labels at all. That measurement is the next thing to do here, and it is cheap now that
-    the instrument exists.
+  - **The bar itself was optimistic.** This plan set the bound at "the research pro run's ~75% genuine
+    prerequisites". Under blind labels that same run scores **61%**. The 75% came from reading the
+    extractions and judging them plausible, which is the error S0 exists to prevent: it measures agreement
+    with the reader, not with the commit.
+  - **The bound is not met, and the shipped path is not measured yet.** The tool's own extraction has
+    still to be scored against these labels as a fourth system. That is the next measurement here, and it
+    is cheap now that the instrument exists.
 
 ## 7. Phase 3 — verdicts and test evidence
 
