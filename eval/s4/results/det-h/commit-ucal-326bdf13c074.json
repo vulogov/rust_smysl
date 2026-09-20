@@ -1,0 +1,179 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-3-2",
+      "score": 142.18673706054688,
+      "terms": [
+        "ucal:33.66",
+        "json:30.85",
+        "nam:10.49",
+        "fields:7.51",
+        "name:6.17"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-8-2",
+      "score": 123.75582885742188,
+      "terms": [
+        "ucal:35.16",
+        "nam:10.96",
+        "name:6.45",
+        "sam:5.90",
+        "same:5.90"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g449b762e3cca-10",
+      "score": 119.04290771484375,
+      "terms": [
+        "ucal:27.58",
+        "e:7.62",
+        "calendar:5.34",
+        "sam:4.63",
+        "same:4.63"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 117.42872619628906,
+      "terms": [
+        "ucal:25.44",
+        "e:7.03",
+        "calendar:5.15",
+        "sam:4.27",
+        "same:4.27"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g31e52cc10b1f-8",
+      "score": 111.35861206054688,
+      "terms": [
+        "add:16.26",
+        "nam:8.50",
+        "tier:5.88",
+        "name:5.00",
+        "sam:4.58"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g449b762e3cca-10-1",
+      "score": 102.52212524414062,
+      "terms": [
+        "ucal:35.48",
+        "e:9.80",
+        "calendar:5.19",
+        "for:3.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-3",
+      "score": 96.8628158569336,
+      "terms": [
+        "ucal:28.38",
+        "json:26.01",
+        "nam:10.72",
+        "name:6.31",
+        "valu:6.02"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-1",
+      "score": 90.71116638183594,
+      "terms": [
+        "ucal:31.32",
+        "add:15.16",
+        "cod:9.45",
+        "code:9.45",
+        "cal:5.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-3-1",
+      "score": 87.11164855957031,
+      "terms": [
+        "ucal:25.61",
+        "json:23.47",
+        "nam:10.06",
+        "name:5.92",
+        "valu:5.65"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-3-1",
+      "score": 81.26531219482422,
+      "terms": [
+        "ucal:36.47",
+        "json:33.43",
+        "field:5.50",
+        "in:3.66",
+        "the:2.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-4-1",
+      "score": 70.17708587646484,
+      "terms": [
+        "nam:10.39",
+        "str:7.31",
+        "string:7.31",
+        "named:6.65",
+        "som:6.65"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 70.10645294189453,
+      "terms": [
+        "nam:8.92",
+        "str:6.88",
+        "string:6.88",
+        "named:4.75",
+        "som:4.75"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "31e52cc",
+    "8fdb9b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/CLI.md",
+    "Documentation/Release_Notes/1.11.0.md",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/src/main.rs",
+    "crates/ucal/tests/add.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "fixtures/json-surface.txt",
+    "fixtures/ucal-json-1.schema.json",
+    "xtask/src/examples.rs"
+  ],
+  "fingerprint": "b00f7c47a6e74a42566ba6b8788cbc9c81bd890c0e6d1e3599cffd549c5c8ad3",
+  "id": "commit-ucal-326bdf13c074",
+  "kind": "commit",
+  "pack_text": "[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Route all time readings through a process-wide session clock.\n  -> causes q/g2074788f713e-1-1\n\n[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ignore poison on the session mutex and take the inner value.\n  -> causes q/g2074788f713e-11-1\n\n[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Make Session::reading a pure function of its inputs.\n  -> causes q/g2074788f713e-4-1\n\n[d/g2074788f713e-5] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Track the last reading to enforce monotonicity against smaller elapsed inputs.\n  -> causes q/g2074788f713e-5-1\n\n[d/g2074788f713e-6] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Store session state as Option and anchor lazily inside session_now, avoiding .expect.\n  -> causes q/g2074788f713e-6-1\n\n[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Split wall_instant out of now_instant to expose a raw system clock reading.\n  -> causes q/g2074788f713e-7-1\n\n[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)\n  Document the session clock and its rule in CLI.md and release notes.\n  -> causes q/g2074788f713e-9-1\n\n[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add a clock section to doctor and now output.\n  -> causes q/g31e52cc10b1f-1-1\n\n[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add doctor --clock flag to sample and report machine resolution.\n\n[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep precision field name and value unchanged.\n  It is a path in ucal-json/1; repurposing one is breaking.\n  -> causes q/g31e52cc10b1f-3-1\n\n[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep granularity, resolution, and accuracy as separate numbers.\n  -> causes q/g31e52cc10b1f-5-1\n\n[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Report which error terms cancel in a difference.\n  -> causes q/g31e52cc10b1f-6-1\n\n[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)\n  Add note that precision is tier rendered to, not accuracy.\n  The same field name means something else in explain; clarify meaning to prevent conflation.\n\n[d/g449b762e3cca-1] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Add `ucal cal from` as inverse of `cal show`\n  Earth's legacy calendars had both directions since 0.1.0, but the fifteen derived calendars only went one way, contradicting §15.4's claim that Earth has no special code path.\n\n[d/g449b762e3cca-10] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse calendars with no anchor\n  The same error as the forward direction, UCAL-E0062; thirteen of fifteen derived calendars are in this state.\n\n[d/g449b762e3cca-11] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Add property test recovering every instant\n  -> causes q/g449b762e3cca-11-1\n\n[d/g449b762e3cca-12] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Assert consecutive local days leave no gap\n  -> causes q/g449b762e3cca-12-1\n\n[d/g449b762e3cca-2] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Return a Window from the inverse\n  -> causes q/g449b762e3cca-2-1\n\n[d/g449b762e3cca-3] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Parse the exact form `cal show` prints\n  -> causes q/g449b762e3cca-3-1\n\n[d/g449b762e3cca-4] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Take window endpoints outward, never inward\n  -> causes q/g449b762e3cca-4-1\n\n[d/g449b762e3cca-5] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Do not use search to find the year\n  -> causes q/g449b762e3cca-5-1\n\n[d/g449b762e3cca-6] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse year 0\n  -> causes q/g449b762e3cca-6-1\n\n[d/g449b762e3cca-7] decision (cited, source crates/ucal-body/src/calendar.rs@449b762e3cca)\n  Refuse day 0\n  -> causes q/g449b762e3cca-7-1\n\n[d/g449b762e3cca-8] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a day past the year's end, not roll it forward\n  -> causes q/g449b762e3cca-8-1\n\n[d/g449b762e3cca-9] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a fraction of 1 or more\n  -> causes q/g449b762e3cca-9-1\n\n[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Read notes for version being built rather than newest sorted file\n  -> causes q/g5880e472260e-1-1\n\n[d/g5880e472260e-3] decision (cited, source xtask/src/citations.rs@5880e472260e)\n  Replace old version-sort tests with current-version and missing-notes tests\n  -> causes q/g5880e472260e-3-1\n\n[d/g5880e472260e-4] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Make missing-notes test strict about the diagnostic\n  Asserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic.\n\n[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Restore doc comment for check_ci_covers_the_procedure\n  -> causes q/g5880e472260e-5-1\n\n[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Update release notes with the fix rationale and sweep findings\n  -> causes q/g5880e472260e-6-1\n\n[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Accept broken pipe as non-fatal when writing test stdin.\n  -> causes q/g8fdb9b3edb7c-2-2\n\n[p/g31e52cc10b1f-3-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  The precision field is a path in ucal-json/1.\n  -> conditions d/g31e52cc10b1f-3\n\n[p/g31e52cc10b1f-3-2] constraint (cited, source fixtures/ucal-json-1.schema.json@31e52cc10b1f)\n  ucal-json/1 promises existing fields never change name, shape or meaning.\n  -> conditions d/g31e52cc10b1f-3\n\n[p/g31e52cc10b1f-8-1] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)\n  `--precision` is documented as tier to render to.\n  -> conditions d/g31e52cc10b1f-8\n\n[p/g31e52cc10b1f-8-2] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)\n  The same field name means something else in `ucal explain`.\n  -> conditions d/g31e52cc10b1f-8\n\n[p/g449b762e3cca-1-1] constraint (cited, source crates/ucal/src/lib.rs@449b762e3cca)\n  `ucal_body::calendar::by_id` resolves a calendar id to a calendar object.\n  -> conditions d/g449b762e3cca-1\n\n[p/g449b762e3cca-1-2] constraint (cited, source crates/ucal/src/main.rs@449b762e3cca)\n  The CLI dispatch already has `CalCommand` enum and `pick` helper.\n  -> conditions d/g449b762e3cca-1\n\n[p/g449b762e3cca-10-1] constraint (cited, source Documentation/CLI.md@449b762e3cca)\n  Forward direction already returns `UCAL-E0062` for unanchored calendars.\n  -> conditions d/g449b762e3cca-10\n\n[p/g5880e472260e-4-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  std::fs::read_to_string on a missing file returns an error message containing the path and version.\n  -> conditions d/g5880e472260e-4\n\n[p/g5880e472260e-4-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  The missing-notes diagnostic produced by decision 2 contains the phrase a cycle's notes.\n  -> conditions d/g5880e472260e-4\n\n[q/g2074788f713e-1-1] claim (inferred)\n  All time readings go through session clock, preventing wallclock face from going back in time.\n\n[q/g2074788f713e-11-1] claim (inferred)\n  Taking inner value on poisoned mutex is correct because state cannot be torn.\n\n[q/g2074788f713e-4-1] claim (inferred)\n  Pure function lets tests drive wall clock backwards and assert monotonic sequence.\n\n[q/g2074788f713e-5-1] claim (inferred)\n  last prevents smaller elapsed inputs from making reading go backwards.\n\n[q/g2074788f713e-6-1] claim (inferred)\n  Option avoids .expect, allows anchoring where failure can be returned.\n\n[q/g2074788f713e-7-1] claim (inferred)\n  wall_instant exposes raw system clock for doctor --clock and measurements.\n\n[q/g2074788f713e-9-1] claim (inferred)\n  Documents one process, one clock and max rule in CLI.md and release notes.\n\n[q/g31e52cc10b1f-1-1] claim (inferred)\n  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy …\n\n[q/g31e52cc10b1f-3-1] claim (inferred)\n  Keeping precision unchanged avoids breaking ucal-json/1 paths.\n\n[q/g31e52cc10b1f-5-1] claim (inferred)\n  Separation makes clear what each number represents; conflating them is the defect.\n\n[q/g31e52cc10b1f-6-1] claim (inferred)\n  Reporting cancellations helps interpret differences: constant offset cancels, rate error does not.\n\n[q/g449b762e3cca-11-1] claim (inferred)\n  Property test ensures inverse window contains the original instant for every anchored calendar.\n\n[q/g449b762e3cca-12-1] claim (inferred)\n  Consecutive local days leave no gap.\n\n[q/g449b762e3cca-2-1] claim (inferred)\n  The inverse returns a Window, an interval, not a point.\n\n[q/g449b762e3cca-3-1] claim (inferred)\n  The command accepts the exact format cal show prints, enabling manual round trips.\n\n[q/g449b762e3cca-4-1] claim (inferred)\n  Endpoints are taken outward, never inward, so the window contains the interval.\n\n[q/g449b762e3cca-5-1] claim (inferred)\n  The inverse evaluates directly without iterative search.\n\n[q/g449b762e3cca-6-1] claim (inferred)\n  Year 0 is refused with error E0020.\n\n[q/g449b762e3cca-7-1] claim (inferred)\n  Day 0 is refused with error E0018.\n\n[q/g449b762e3cca-8-1] claim (inferred)\n  Days beyond the year's end are refused, not rolled forward.\n\n[q/g449b762e3cca-9-1] claim (inferred)\n  Fractions of 1 or more are refused.\n\n[q/g5880e472260e-1-1] claim (inferred)\n  Check reads current version's notes from [workspace.package], removing ordering guess.\n\n[q/g5880e472260e-3-1] claim (inferred)\n  Old version-sort tests replaced with current-version and missing-notes tests.\n\n[q/g5880e472260e-5-1] claim (inferred)\n  Doc comment restored for check_ci_covers_the_procedure, leaving function documented.\n\n[q/g5880e472260e-6-1] claim (inferred)\n  Release notes updated with fix rationale, missing-notes behavior, and sweep findings.\n\n[q/g8fdb9b3edb7c-2-2] claim (inferred)\n  Status and output assertions still execute after an EPIPE, so test validity remains.\n\n[r/g31e52cc10b1f-3-1] claim (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Rejected: Change the existing `precision` field name or repurpose its value.\n  It is a path in ucal-json/1 and changing it is breaking.\n  -> contrasts d/g31e52cc10b1f-3\n\n[r/g449b762e3cca-10-1] claim (cited, source Documentation/CLI.md@449b762e3cca)\n  Rejected: Allow the inverse for calendars with no anchor.\n  The same error as the forward direction, UCAL-E0062, applies; thirteen of fifteen derived calendars are in this state.\n  -> contrasts d/g449b762e3cca-10\n\n[r/g5880e472260e-4-1] claim (cited, source xtask/src/citations.rs@5880e472260e)\n  Rejected: assert only that some error came back and the message named the version\n  The loose assertion passed even with the check disabled because read_to_string also fails and names the path containing the version.\n  -> contrasts d/g5880e472260e-4\n\n",
+  "pack_tokens": 1497,
+  "pack_units": 69,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null
+}

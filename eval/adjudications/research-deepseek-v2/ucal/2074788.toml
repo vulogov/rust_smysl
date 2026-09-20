@@ -1,0 +1,436 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-deepseek-v2"
+repo = "ucal"
+commit = "2074788f713ef4331ede63d3dc963f8e74e7565c"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Route all time readings through a process-wide session clock."
+suggest = [
+    "D1",
+    "D6",
+    "D9",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Use max(wall_now, anchor + monotonic_elapsed) as the reading rule."
+suggest = [
+    "D2",
+    "D5",
+    "D6",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Do not interpolate wall-clock ticks for precision."
+suggest = [
+    "D3",
+    "D5",
+    "D12",
+]
+match = "none"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Make Session::reading a pure function of its inputs."
+suggest = [
+    "D5",
+    "D1",
+    "D13",
+]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Track the last reading to enforce monotonicity against smaller elapsed inputs."
+suggest = [
+    "D4",
+    "D5",
+    "D10",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Store session state as Option and anchor lazily inside session_now, avoiding .expect."
+suggest = [
+    "D7",
+    "D6",
+    "D8",
+]
+match = "D7"
+
+[[item]]
+kind = "decision"
+id = "D7"
+text = "Split wall_instant out of now_instant to expose a raw system clock reading."
+suggest = [
+    "D9",
+    "D10",
+    "D1",
+]
+match = "D9"
+
+[[item]]
+kind = "decision"
+id = "D8"
+text = "Gate wall_instant (and session clock) under the civil feature."
+suggest = [
+    "D9",
+    "D10",
+    "D1",
+]
+match = "D10"
+
+[[item]]
+kind = "decision"
+id = "D9"
+text = "Document the session clock and its rule in CLI.md and release notes."
+suggest = [
+    "D5",
+    "D1",
+    "D13",
+]
+match = "none"
+
+[[item]]
+kind = "decision"
+id = "D10"
+text = "Add tests for backward steps, forward steps, monotonic sequence, and no-finer property."
+suggest = [
+    "D2",
+    "D3",
+    "D12",
+]
+match = "D13"
+
+[[item]]
+kind = "decision"
+id = "D11"
+text = "Ignore poison on the session mutex and take the inner value."
+suggest = [
+    "D8",
+    "D5",
+    "D1",
+]
+match = "D8"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "`now_instant` is the single route shared by `ucal wallclock` and `ucal now`."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "`ucal wallclock` reads the clock repeatedly as a long-running process."
+suggest = [
+    "P1",
+    "P10",
+    "P7",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "Ticks has `try_add` to compute anchor plus monotonic elapsed."
+suggest = [
+    "P1",
+    "P2",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "`std::time::Instant::elapsed()` gives monotonic duration from the session base."
+suggest = [
+    "P7",
+    "P1",
+    "P6",
+]
+match = "P1"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "Existing `--clock` reports 1000 ns to 41 ns factor 24 and rung 3125."
+suggest = [
+    "P2",
+    "P10",
+    "P1",
+]
+match = "P2"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "The first two branches cannot go backwards on their own."
+suggest = [
+    "P9",
+    "P1",
+    "P3",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P7"
+text = "The type sells monotonicity, requiring protection against smaller elapsed inputs."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P8"
+text = "`OnceLock`'s initialiser cannot return a `Result`."
+suggest = [
+    "P3",
+    "P9",
+    "P6",
+]
+match = "P3"
+
+[[item]]
+kind = "prerequisite"
+id = "P9"
+text = "The `no-panic-in-cli` lint refused an `.expect`."
+suggest = [
+    "P5",
+    "P4",
+]
+match = "P5"
+
+[[item]]
+kind = "prerequisite"
+id = "P10"
+text = "§19.5 requires failures leave through a code and exit status."
+suggest = ["P4"]
+match = "P4"
+
+[[item]]
+kind = "prerequisite"
+id = "P11"
+text = "`doctor --clock` samples raw reading because session clock measuring itself is circular."
+suggest = [
+    "P7",
+    "P10",
+    "P1",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P12"
+text = "`now_instant` goes through session clock, so raw reading needs a separate function."
+suggest = [
+    "P7",
+    "P10",
+    "P4",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P13"
+text = "Raw `SystemTime` reading code already exists to move into `wall_instant`."
+suggest = [
+    "P10",
+    "P4",
+    "P7",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P14"
+text = "Converting a clock reading is a leap-table lookup because Unix time is a UTC label."
+suggest = [
+    "P7",
+    "P10",
+    "P1",
+]
+match = "P7"
+
+[[item]]
+kind = "prerequisite"
+id = "P15"
+text = "Feature workflow builds `--no-default-features --features u512,std` and caught the missing gate."
+suggest = ["P8"]
+match = "P8"
+
+[[item]]
+kind = "prerequisite"
+id = "P16"
+text = "`now_instant` is gated under the `civil` feature."
+suggest = ["P8"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P17"
+text = "Session clock with `max` rule exists to document."
+suggest = [
+    "P10",
+    "P1",
+    "P6",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P18"
+text = "`Session::reading` is pure, allowing tests to drive wall clock backwards."
+suggest = [
+    "P10",
+    "P1",
+    "P7",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P19"
+text = "`finest_tier_for` exists to compare a session reading's tier to raw."
+suggest = [
+    "P6",
+    "P7",
+    "P2",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P20"
+text = "State is a pair of tick counts and cannot be torn."
+suggest = [
+    "P6",
+    "P9",
+    "P3",
+]
+match = "P6"
+
+[[item]]
+kind = "prerequisite"
+id = "P21"
+text = "`body_file::leak` makes the same judgment about its intern pool."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Let each wallclock tick read the raw system clock directly. — A backward step would produce a face that goes back in time."
+suggest = [
+    "A6",
+    "A2",
+    "A1",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Freeze the clock until the wall clock catches up after a backward step. — The monotonic branch keeps advancing at the oscillator's rate instead."
+suggest = [
+    "A1",
+    "A6",
+    "A5",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "Refuse a forward jump because it disagrees with the monotonic projection. — A forward jump is a correction arriving; refusing would prefer this process's opinion to the system's."
+suggest = ["A2"]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "Interpolate between wall ticks using the monotonic clock for precision. — It is worth 24/3125 of a rung, which is nothing."
+suggest = ["A1"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "Have Session::reading read the wall clock itself. — A pure function lets tests drive a wall clock backwards and assert the answer does not follow."
+suggest = [
+    "A1",
+    "A5",
+    "A6",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "Trust callers to supply non-decreasing elapsed; omit `last`. — A caller could pass a smaller elapsed, making the first two branches go backwards."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A7"
+text = "Use `.expect()` inside the OnceLock initializer to handle anchoring failure. — The no-panic-in-cli lint refused it because the initializer cannot return a Result."
+suggest = [
+    "A3",
+    "A4",
+]
+match = "A3"
+
+[[item]]
+kind = "alternative"
+id = "A8"
+text = "Anchor the session at process start-up. — A command that never asks the time should not read a clock, and most do not."
+suggest = [
+    "A5",
+    "A1",
+    "A2",
+]
+match = "A5"
+
+[[item]]
+kind = "alternative"
+id = "A9"
+text = "Sample the session clock for `doctor --clock`. — A session clock measuring itself would be measuring its own output."
+suggest = [
+    "A5",
+    "A1",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A10"
+text = "Leave `wall_instant` ungated after the split. — Converting a clock reading is a leap-table lookup because Unix time is a UTC label."
+suggest = [
+    "A1",
+    "A2",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A11"
+text = "Propagate the poison error from `session().lock()`. — The state is a pair of tick counts and cannot be torn, so taking the inner value is correct."
+suggest = [
+    "A4",
+    "A5",
+]
+match = "A4"

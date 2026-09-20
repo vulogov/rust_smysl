@@ -1,0 +1,112 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-flash-v2"
+repo = "ucal"
+commit = "2074788f713ef4331ede63d3dc963f8e74e7565c"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Route all clock readings through a session clock ensuring monotonicity across the process."
+suggest = [
+    "D1",
+    "D9",
+    "D3",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Accept forward wall clock steps instead of suppressing them."
+suggest = [
+    "D3",
+    "D5",
+    "D12",
+]
+match = "D3"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Store session state in an Option and anchor it lazily within session_now."
+suggest = [
+    "D7",
+    "D6",
+    "D8",
+]
+match = "D7"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Gate wall_instant behind the civil feature flag."
+suggest = [
+    "D10",
+    "D9",
+]
+match = "D10"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "OnceLock's initializer cannot return a Result."
+suggest = [
+    "P3",
+    "P9",
+    "P6",
+]
+match = "P3"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "The no-panic-in-cli lint disallows calls to expect."
+suggest = [
+    "P5",
+    "P4",
+]
+match = "P5"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "Converting clock readings requires a leap-table lookup from civil because Unix time is a UTC label."
+suggest = [
+    "P7",
+    "P10",
+    "P1",
+]
+match = "P7"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Freezing the reading until the wall clock catches up — The monotonic branch is designed to keep advancing at the oscillator's rate during backward steps instead of stalling."
+suggest = [
+    "A1",
+    "A5",
+    "A6",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Refusing or suppressing forward clock steps — A forward jump indicates a correction arriving, and refusing it would unfairly prefer the process's view of time over the system's."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "Initializing inside OnceLock using expect to unwrap the clock read Result — The no-panic-in-cli lint forbade using expect because failures must return an error code and exit status."
+suggest = [
+    "A3",
+    "A4",
+    "A1",
+]
+match = "A3"

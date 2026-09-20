@@ -1,0 +1,173 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 111.67854309082031,
+      "terms": [
+        "readm:8.01",
+        "readme:8.01",
+        "tables:7.00",
+        "tabl:6.44",
+        "against:5.71"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g4968383dc452-16-1",
+      "score": 86.91438293457031,
+      "terms": [
+        "stanza:7.78",
+        "missing:7.21",
+        "miss:6.42",
+        "pag:6.18",
+        "page:6.18"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 83.02754211425781,
+      "terms": [
+        "unreleas:8.73",
+        "unreleased:8.73",
+        "wher:8.73",
+        "where:8.73",
+        "changelog:7.06"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-16",
+      "score": 76.51930236816406,
+      "terms": [
+        "beta:8.52",
+        "stanza:7.76",
+        "missing:7.19",
+        "smy:7.18",
+        "rather:6.25"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-7",
+      "score": 65.70677185058594,
+      "terms": [
+        "literally:6.63",
+        "said:6.02",
+        "wher:6.02",
+        "where:6.02",
+        "uids:4.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-15",
+      "score": 61.628509521484375,
+      "terms": [
+        "block:12.26",
+        "blocked:9.07",
+        "longer:6.21",
+        "chapters:6.13",
+        "gate:5.03"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-6",
+      "score": 50.837615966796875,
+      "terms": [
+        "fact:7.71",
+        "facts:7.71",
+        "missing:5.74",
+        "miss:5.11",
+        "spec:4.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-6-1",
+      "score": 48.174896240234375,
+      "terms": [
+        "fact:7.89",
+        "facts:7.89",
+        "missing:6.60",
+        "miss:5.87",
+        "wer:5.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-9",
+      "score": 46.86122131347656,
+      "terms": [
+        "tables:7.30",
+        "tabl:6.72",
+        "gate:4.75",
+        "spec:4.60",
+        "implementations:4.41"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-9-1",
+      "score": 45.12135696411133,
+      "terms": [
+        "tabl:5.69",
+        "against:5.31",
+        "edit:5.10",
+        "noth:4.43",
+        "nothing:4.43"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-2-1",
+      "score": 44.104652404785156,
+      "terms": [
+        "first:5.55",
+        "sam:5.27",
+        "same:5.27",
+        "wer:4.94",
+        "were:4.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 43.30796432495117,
+      "terms": [
+        "rather:5.72",
+        "nothing:5.29",
+        "than:4.86",
+        "which:4.44",
+        "first:4.31"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 103,
+  "diff_truncated": false,
+  "files": [
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "fingerprint": "2d11000ed5c7fd61f662b9499145a67bb4ac804b0285c3658ab276349ff31dee",
+  "id": "commit-smysl-832ab414062a",
+  "kind": "commit",
+  "pack_text": "[d/g4968383dc452-1] decision (cited, source nodejs/README.md@4968383dc452)\n  Upgrade nodejs conformance target from C-Read to C-Produce.\n\n[d/g4968383dc452-12] decision (cited, source CHANGELOG.md@4968383dc452)\n  Correct README claims that tables were asserted against document.\n  The tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document.\n\n[d/g4968383dc452-15] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Revise gate 7 blocked command explanation, no longer 'decision about book'.\n  The block was due to filename-keyed fixtures vs position-keyed chapters, not a book decision.\n\n[d/g4968383dc452-16] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Hold beta.smy repair rather than guess missing stanza.\n  The missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair.\n  -> causes q/g4968383dc452-16-1\n\n[d/g4968383dc452-17] decision (cited, source CHANGELOG.md@4968383dc452)\n  Do not implement rule M in outside readers.\n  -> causes q/g4968383dc452-17-1\n\n[d/g4968383dc452-21] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Do not apply 22% artefact fraction to other modules.\n\n[d/g4968383dc452-23] decision (cited, source nodejs/src/uid.js@4968383dc452)\n  Implement status integers and source/kind enums as constants in nodejs.\n\n[d/g4968383dc452-24] decision (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Implement RFC 4648 base32 alphabet in nodejs.\n  -> causes q/g4968383dc452-24-1\n\n[d/g4968383dc452-6] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Add missing normative facts to spec: status integers, source layout, kind enum, base32 alphabet.\n  The spec did not contain these facts; they were recoverable only by decoding a fixture. Adding them makes the spec sufficient for a C-Produce implementer.\n\n[d/g4968383dc452-7] decision (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Declare empty deps/grounds are omitted, not encoded as empty.\n  The spec previously said 'required, MAY be empty', which read literally gives a five-key map where the reference emits three, producing wrong uids.\n\n[d/g4968383dc452-8] decision (cited, source CHANGELOG.md@4968383dc452)\n  Mark spec-derived constants with SPEC: in nodejs src/uid.js.\n\n[d/g4968383dc452-9] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Add spec-tables gate and make target parsing spec tables.\n  Previous checks only asserted the spec contained the string 'Deterministic CBOR', not the actual tables. Parsing tables ties implementations to the document.\n\n[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\n  -> causes q/g69ea5c05d859-12-1\n\n[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\n[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not add version lists to python/, nodejs/, go/ implementations.\n\n[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Build Constraints via default and field assignment instead of struct literal\n\n[d/g87345653cdf3-10] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Assert on transcript count rather than just MISMATCHED presence in doc output test\n  The first version asserted only that MISMATCHED appeared, which ran 0 transcripts satisfied; the count assertion ensures a gate that cannot confuse nothing wrong with nothing checked.\n  -> causes q/g87345653cdf3-10-1\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n  -> causes q/g87345653cdf3-11-1\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n  -> causes q/g87345653cdf3-6-1\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n  -> causes q/g87345653cdf3-9-1\n\n[d/g90ec2f781421-10] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Update CHANGELOG, READINESS, and ROAD_TO_1.0 to record dispatch pass findings.\n\n[d/g90ec2f781421-12] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Do not change tests/doc_output.rs gating to run under --all-features.\n  -> causes q/g90ec2f781421-12-1\n\n[d/g90ec2f781421-2] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Compare all 380 arguments against a golden CLI surface inside cargo test.\n\n[d/g90ec2f781421-3] decision (cited, source Makefile@90ec2f781421)\n  Hardcode command names in tests and Makefile instead of deriving from --help.\n\n[d/g90ec2f781421-4] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Run each command in a scratch directory of its own.\n\n[d/g90ec2f781421-6] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Set stdin to /dev/null for dispatch test commands.\n\n[d/g90ec2f781421-7] decision (cited, source src/main.rs@90ec2f781421)\n  Document the `==` to `!=` mutation of COMMANDS.iter().find as equivalent.\n  -> causes q/g90ec2f781421-7-1\n\n[d/g90ec2f781421-8] decision (cited, source src/main.rs@90ec2f781421)\n  Do not add a test to distinguish the equivalent `!=` mutation.\n  -> causes q/g90ec2f781421-8-1\n\n[d/g90ec2f781421-9] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Do not assert exit code in every_command_dispatches.\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  -> causes q/ga18e230ae345-6-1\n\n[e/g69ea5c05d859-9-1] evidence (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Check: make ci green\n\n[p/g4968383dc452-12-1] constraint (cited, source nodejs/README.md@4968383dc452)\n  Previous tests used hand-typed table copies, not assertions against document.\n  -> conditions d/g4968383dc452-12\n\n[p/g4968383dc452-15-1] constraint (cited, source Documentation/READINESS.md@4968383dc452)\n  Two of chapter 1 states are printed as fragment and diff, cannot be committed.\n  -> conditions d/g4968383dc452-15\n\n[p/g4968383dc452-16-1] constraint (cited, source CHANGELOG.md@4968383dc452)\n  Missing stanza cannot be reconstructed from page; guessing is not repair.\n  -> conditions d/g4968383dc452-16\n\n[p/g4968383dc452-6-1] constraint (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Missing facts were recoverable only by decoding core_bytes_hex in uid fixtures.\n  -> conditions d/g4968383dc452-6\n\n[p/g4968383dc452-7-1] constraint (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Reference encoder emits three-key map for minimal unit, omitting empty sets.\n  -> conditions d/g4968383dc452-7\n\n[p/g4968383dc452-9-1] constraint (cited, source .github/workflows/ci.yml@4968383dc452)\n  The spec contains normative tables in SMYSL_FORMAT_SPEC.md that can be parsed.\n  -> conditions d/g4968383dc452-9\n\n[p/g87345653cdf3-10-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  The script prints a summary line with a parseable ran count.\n  -> conditions d/g87345653cdf3-10\n\n[p/ga18e230ae345-6-1] constraint (cited, source CHANGELOG.md@a18e230ae345)\n  The changelog has an Unreleased — 0.8.0 section where the removal can be recorded.\n  -> conditions d/ga18e230ae345-6\n\n[q/g4968383dc452-16-1] claim (inferred)\n  beta.smy repair declined; missing stanza cannot be reconstructed from page.\n\n[q/g4968383dc452-17-1] claim (inferred)\n  Rule M not implemented; validate claiming it would be check that cannot fail.\n\n[q/g4968383dc452-24-1] claim (inferred)\n  RFC 4648 base32 alphabet implemented, avoiding mutually unreadable names.\n\n[q/g69ea5c05d859-12-1] claim (inferred)\n  Format spec §8.5 records version-trap defect fixed in 0.14.\n\n[q/g87345653cdf3-10-1] claim (inferred)\n  Count assertion prevents gate from confusing nothing wrong with nothing checked.\n\n[q/g87345653cdf3-11-1] claim (inferred)\n  Compile out doc output test outside default feature set to avoid false drift.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g87345653cdf3-6-1] claim (inferred)\n  Only compile fuzzers in CI; running remains separate due to nightly and time.\n\n[q/g87345653cdf3-9-1] claim (inferred)\n  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.\n\n[q/g90ec2f781421-12-1] claim (inferred)\n  Doc-output gating remains unchanged; design deliberate.\n\n[q/g90ec2f781421-7-1] claim (inferred)\n  Equivalent `!=` mutant documented instead of chased; records unreachability.\n\n[q/g90ec2f781421-8-1] claim (inferred)\n  No pointless test added for unreachable mutation; recorded rather than chased.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g4968383dc452-16-1] claim (cited, source CHANGELOG.md@4968383dc452)\n  Rejected: Guess the missing stanza into the published chapter.\n  The missing stanza cannot be reconstructed from the page, and guessing is not repair.\n  -> contrasts d/g4968383dc452-16\n\n[r/g4968383dc452-9-1] claim (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Rejected: Keep hand-typed table copies asserted against the document.\n  Nothing parsed the spec, so editing spec and test were separate acts.\n  -> contrasts d/g4968383dc452-9\n\n[r/g90ec2f781421-2-1] claim (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Rejected: first version of tests/dispatch.rs assumed the two arms were the same mutation; only invoked …\n  It missed that deleting a cli() arm strips arguments, which a no-argument invocation cannot see.\n  -> contrasts d/g90ec2f781421-2\n\n",
+  "pack_tokens": 1496,
+  "pack_units": 62,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null
+}

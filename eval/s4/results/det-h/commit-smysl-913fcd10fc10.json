@@ -1,0 +1,19 @@
+{
+  "candidates": null,
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 0,
+  "diff_truncated": false,
+  "files": [],
+  "fingerprint": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262",
+  "id": "commit-smysl-913fcd10fc10",
+  "kind": "commit",
+  "pack_text": null,
+  "pack_tokens": null,
+  "pack_units": null,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null
+}

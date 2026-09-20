@@ -1,0 +1,198 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 275.6201171875,
+      "terms": [
+        "src:45.69",
+        "fixtures:31.14",
+        "uid:22.53",
+        "derived:18.50",
+        "deriv:16.61"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-1-1",
+      "score": 242.83506774902344,
+      "terms": [
+        "2:60.17",
+        "3:48.39",
+        "statu:17.91",
+        "status:17.12",
+        "c:6.12"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-23",
+      "score": 204.71090698242188,
+      "terms": [
+        "fixtures:30.23",
+        "uid:17.38",
+        "statu:16.30",
+        "status:15.59",
+        "fixtur:13.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g532e4d229a6c-1-3",
+      "score": 145.18475341796875,
+      "terms": [
+        "2:59.20",
+        "3:47.61",
+        "smysl:35.32",
+        "and:1.68",
+        "the:1.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-23-1",
+      "score": 119.40412902832031,
+      "terms": [
+        "fixtures:39.47",
+        "uid:18.13",
+        "fixtur:17.62",
+        "statu:16.74",
+        "status:16.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-5-1",
+      "score": 111.51920318603516,
+      "terms": [
+        "3:52.14",
+        "6:50.14",
+        "spec:9.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-10",
+      "score": 109.28874206542969,
+      "terms": [
+        "2:66.37",
+        "cit:13.49",
+        "cited:13.49",
+        "7:6.78",
+        "1:4.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-1",
+      "score": 109.2725830078125,
+      "terms": [
+        "2:41.60",
+        "3:33.45",
+        "uid:16.79",
+        "c:6.36",
+        "nodej:4.32"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-11",
+      "score": 106.63801574707031,
+      "terms": [
+        "2:49.24",
+        "3:39.60",
+        "cbor:7.10",
+        "1:4.04",
+        "other:3.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-2",
+      "score": 103.58351135253906,
+      "terms": [
+        "3:42.38",
+        "uid:16.37",
+        "deriv:12.07",
+        "library:7.99",
+        "c:5.95"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-13",
+      "score": 101.92037200927734,
+      "terms": [
+        "fixtures:28.08",
+        "json:21.38",
+        "deriv:17.30",
+        "derived:13.26",
+        "fixtur:12.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-3",
+      "score": 100.33717346191406,
+      "terms": [
+        "fixtures:30.96",
+        "uid:22.44",
+        "fixtur:19.08",
+        "deriv:13.13",
+        "nodej:4.49"
+      ]
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch11-13-merge-diff-trace.typ",
+    "Documentation/manual/ch14-16-view-salience-retract.typ",
+    "Documentation/manual/ch17-18-pack-thread.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "Documentation/manual/ch22-24-render.typ",
+    "Documentation/manual/ch25-27-library-walkthrough.typ",
+    "README.md",
+    "crates/smysl-check/src/passes/epistemics.rs",
+    "crates/smysl-check/src/passes/trust.rs",
+    "crates/smysl-core/src/types/epistemics.rs",
+    "crates/smysl-ingest/src/ceiling.rs",
+    "crates/smysl-ingest/src/stage.rs",
+    "crates/smysl-pack/tests/golden-packs.txt",
+    "fixtures/golden/cbor/corpus.cbor",
+    "fixtures/golden/render/analyst.html",
+    "fixtures/golden/render/analyst.json",
+    "fixtures/golden/render/exec.slides.typ",
+    "fixtures/golden/render/plain.txt",
+    "fixtures/schema/unit.json",
+    "fixtures/wire/uid/cases.json",
+    "go/uid.go",
+    "go/uid_test.go",
+    "nodejs/src/uid.js",
+    "scripts/verify-spec-tables.py",
+    "tests/global_flags.rs"
+  ],
+  "fingerprint": "979ed489566cf49b2eabf6a8f566611b78e24a0ce19839f1986916c5288931ec",
+  "id": "s4-heldout-task-6-control-r1",
+  "kind": "agent",
+  "pack_text": "[d/g4968383dc452-1] decision (cited, source nodejs/README.md@4968383dc452)\n  Upgrade nodejs conformance target from C-Read to C-Produce.\n  To provide a fourth independent derivation of uids and a third witness for §2.3 beyond the Rust, strengthening the evidence that the specification is sufficient.\n\n[d/g4968383dc452-10] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Correct go and python citations from §1.1 to §2.2 key 7.\n  The cited section §1.1 does not exist; a citation to a nonexistent section reads as a clause settling the question. Correct source sub-map is §2.2 key 7.\n\n[d/g4968383dc452-12] decision (cited, source CHANGELOG.md@4968383dc452)\n  Correct README claims that tables were asserted against document.\n\n[d/g4968383dc452-13] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Rework doc-output replay to scratch copy and derive states via edits.json.\n  Previous fixtures keyed by filename failed when a chapter's state is keyed by position. Replaying as a chapter with a scratch copy and derived states is stronger.\n\n[d/g4968383dc452-15] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Revise gate 7 blocked command explanation, no longer 'decision about book'.\n\n[d/g4968383dc452-16] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Hold beta.smy repair rather than guess missing stanza.\n  -> causes q/g4968383dc452-16-1\n\n[d/g4968383dc452-17] decision (cited, source CHANGELOG.md@4968383dc452)\n  Do not implement rule M in outside readers.\n  -> causes q/g4968383dc452-17-1\n\n[d/g4968383dc452-2] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Hand-roll BLAKE3-256 in nodejs instead of binding to C library.\n  A binding to the same C library the Rust calls would test two callers of one implementation, not whether the specification is enough to derive a uid from.\n\n[d/g4968383dc452-21] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Do not apply 22% artefact fraction to other modules.\n\n[d/g4968383dc452-23] decision (cited, source nodejs/src/uid.js@4968383dc452)\n  Implement status integers and source/kind enums as constants in nodejs.\n  These values are needed for uid derivation and rule M comparisons; previously only recoverable from fixtures.\n\n[d/g4968383dc452-24] decision (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Implement RFC 4648 base32 alphabet in nodejs.\n  -> causes q/g4968383dc452-24-1\n\n[d/g4968383dc452-3] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Implement uid derivation in nodejs reproducing all sixteen fixture uids.\n  Reaching C-Produce requires deriving uids; reproducing the fixtures proves the implementation matches the reference bytes.\n\n[d/g4968383dc452-8] decision (cited, source CHANGELOG.md@4968383dc452)\n  Mark spec-derived constants with SPEC: in nodejs src/uid.js.\n  To record that these values were previously guessed from fixtures, making the method explicit.\n\n[d/g69ea5c05d859-11] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update ROAD_TO_1.0.md to mark steps 1 and 2 done, step 3 deferred, and correct the assumption that python/, …\n  The plan was wrong about the other three implementations because they only read CBOR and never see a @doc header; the migration is Rust-only and smaller than it looked.\n\n[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\n  -> causes q/g69ea5c05d859-12-1\n\n[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\n[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not add version lists to python/, nodejs/, go/ implementations.\n\n[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Build Constraints via default and field assignment instead of struct literal\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n  -> causes q/g87345653cdf3-11-1\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n  -> causes q/g87345653cdf3-9-1\n\n[d/g90ec2f781421-10] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Update CHANGELOG, READINESS, and ROAD_TO_1.0 to record dispatch pass findings.\n\n[d/g90ec2f781421-12] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Do not change tests/doc_output.rs gating to run under --all-features.\n  -> causes q/g90ec2f781421-12-1\n\n[d/g90ec2f781421-2] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Compare all 380 arguments against a golden CLI surface inside cargo test.\n\n[d/g90ec2f781421-3] decision (cited, source Makefile@90ec2f781421)\n  Hardcode command names in tests and Makefile instead of deriving from --help.\n\n[d/g90ec2f781421-4] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Run each command in a scratch directory of its own.\n\n[d/g90ec2f781421-6] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Set stdin to /dev/null for dispatch test commands.\n\n[d/g90ec2f781421-7] decision (cited, source src/main.rs@90ec2f781421)\n  Document the `==` to `!=` mutation of COMMANDS.iter().find as equivalent.\n  -> causes q/g90ec2f781421-7-1\n\n[d/g90ec2f781421-8] decision (cited, source src/main.rs@90ec2f781421)\n  Do not add a test to distinguish the equivalent `!=` mutation.\n\n[d/g90ec2f781421-9] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Do not assert exit code in every_command_dispatches.\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  -> causes q/ga18e230ae345-6-1\n\n[p/g4968383dc452-1-1] constraint (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  C-Produce is the lowest class that touches §2.3 status identity.\n  -> conditions d/g4968383dc452-1\n\n[p/g4968383dc452-1-2] constraint (cited, source nodejs/README.md@4968383dc452)\n  nodejs already implemented C-Read decoding and encoding.\n  -> conditions d/g4968383dc452-1\n\n[p/g4968383dc452-10-1] constraint (cited, source go/uid.go@4968383dc452)\n  Source sub-map is described at §2.2 key 7, and §1.1 does not exist.\n  -> conditions d/g4968383dc452-10\n\n[p/g4968383dc452-13-1] constraint (cited, source Documentation/READINESS.md@4968383dc452)\n  Chapter state is keyed by position, but fixtures were keyed by filename.\n  -> conditions d/g4968383dc452-13\n\n[p/g4968383dc452-13-2] constraint (cited, source Documentation/READINESS.md@4968383dc452)\n  Commands used to run in fixture folder and could rewrite tracked files.\n  -> conditions d/g4968383dc452-13\n\n[p/g4968383dc452-2-1] constraint (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Binding to same C library as Rust would test two callers of one implementation.\n  -> conditions d/g4968383dc452-2\n\n[p/g4968383dc452-2-2] constraint (cited, source CHANGELOG.md@4968383dc452)\n  Python and Go already hand-rolled BLAKE3 implementations for independence.\n  -> conditions d/g4968383dc452-2\n\n[p/g4968383dc452-23-1] constraint (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Spec now contains normative status integers and source/kind enum tables.\n  -> conditions d/g4968383dc452-23\n\n[p/g4968383dc452-3-1] constraint (cited, source nodejs/test/uid.test.js@4968383dc452)\n  Fixture file contains sixteen cases with canonical bytes and uid hex produced by Rust.\n  -> conditions d/g4968383dc452-3\n\n[p/g4968383dc452-3-2] constraint (cited, source CHANGELOG.md@4968383dc452)\n  Hand-rolled BLAKE3 implementation passes published vectors.\n  -> conditions d/g4968383dc452-3\n\n[p/g4968383dc452-5-1] constraint (cited, source nodejs/src/cbor.js@4968383dc452)\n  Spec §3 constraint 6 requires normalisation at encoder.\n\n[p/g4968383dc452-8-1] constraint (cited, source nodejs/README.md@4968383dc452)\n  The CBOR reader already marks spec-derived constants with SPEC:.\n  -> conditions d/g4968383dc452-8\n\n[p/g532e4d229a6c-1-3] constraint (cited, source tests/cmd_fmt.rs@532e4d229a6c)\n  The `smysl fmt` command uses exit codes 0, 2, and 3 as defined by the specification.\n\n[p/g69ea5c05d859-11-1] constraint (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  python/, nodejs/, go/ read CBOR only; no surface parser sees @doc header.\n  -> conditions d/g69ea5c05d859-11\n\n[q/g4968383dc452-16-1] claim (inferred)\n  beta.smy repair declined; missing stanza cannot be reconstructed from page.\n\n[q/g4968383dc452-17-1] claim (inferred)\n  Rule M not implemented; validate claiming it would be check that cannot fail.\n\n[q/g4968383dc452-24-1] claim (inferred)\n  RFC 4648 base32 alphabet implemented, avoiding mutually unreadable names.\n\n[q/g69ea5c05d859-12-1] claim (inferred)\n  Format spec §8.5 records version-trap defect fixed in 0.14.\n\n[q/g87345653cdf3-11-1] claim (inferred)\n  Compile out doc output test outside default feature set to avoid false drift.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g87345653cdf3-9-1] claim (inferred)\n  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.\n\n[q/g90ec2f781421-12-1] claim (inferred)\n  Doc-output gating remains unchanged; design deliberate.\n\n[q/g90ec2f781421-7-1] claim (inferred)\n  Equivalent `!=` mutant documented instead of chased; records unreachability.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g4968383dc452-23-1] claim (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Rejected: Leave status and source/kind values recoverable only from fixtures.\n  These were needed for uid derivation and rule M comparisons.\n  -> contrasts d/g4968383dc452-23\n\n",
+  "pack_tokens": 1497,
+  "pack_units": 63,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 6
+}

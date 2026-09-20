@@ -1,0 +1,172 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g532e4d229a6c-1-1",
+      "score": 89.93962097167969,
+      "terms": [
+        "fmt:9.60",
+        "prints:5.76",
+        "with:5.47",
+        "cmd:5.13",
+        "print:5.08"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g532e4d229a6c-3",
+      "score": 83.5938491821289,
+      "terms": [
+        "with:5.99",
+        "write:4.41",
+        "must:4.38",
+        "writ:4.06",
+        "canonical:3.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-5",
+      "score": 63.8913688659668,
+      "terms": [
+        "check:8.98",
+        "through:7.78",
+        "errors:6.32",
+        "error:5.89",
+        "print:5.58"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-3-1",
+      "score": 62.4005126953125,
+      "terms": [
+        "file:12.98",
+        "fil:11.94",
+        "with:8.16",
+        "contains:7.58",
+        "canonical:7.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 57.39508056640625,
+      "terms": [
+        "check:5.51",
+        "with:4.68",
+        "write:4.67",
+        "lik:4.15",
+        "like:4.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g4968383dc452-9",
+      "score": 53.39219665527344,
+      "terms": [
+        "assert:7.35",
+        "check:6.73",
+        "str:4.87",
+        "gate:4.75",
+        "contain:4.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 52.99508285522461,
+      "terms": [
+        "assert:9.54",
+        "check:6.77",
+        "with:5.75",
+        "nothing:5.29",
+        "first:4.31"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-6-1",
+      "score": 51.43177795410156,
+      "terms": [
+        "fmt:11.64",
+        "let:7.46",
+        "write:5.07",
+        "first:4.90",
+        "writ:4.67"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-5-1",
+      "score": 46.927589416503906,
+      "terms": [
+        "check:9.57",
+        "through:7.55",
+        "errors:7.00",
+        "error:6.53",
+        "statu:4.75"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 46.798797607421875,
+      "terms": [
+        "file:13.08",
+        "fil:12.03",
+        "noth:5.87",
+        "nothing:5.87",
+        "to:4.56"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-3-1",
+      "score": 46.230247497558594,
+      "terms": [
+        "nam:17.07",
+        "names:6.03",
+        "doe:4.06",
+        "does:4.06",
+        "tests:3.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-1",
+      "score": 46.16865539550781,
+      "terms": [
+        "fmt:11.66",
+        "cmd:5.60",
+        "through:4.87",
+        "tests:4.03",
+        "noth:3.74"
+      ]
+    }
+  ],
+  "contradicting": false,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 70,
+  "diff_truncated": false,
+  "files": [
+    "tests/cmd_fmt.rs"
+  ],
+  "fingerprint": "21433d16b57abb28d1cee4496fc1280290d8c3483ffe75a1dc0d005055bb40c0",
+  "id": "s4-heldout-task-4-control-r2",
+  "kind": "agent",
+  "pack_text": "[d/g4968383dc452-1] decision (cited, source nodejs/README.md@4968383dc452)\n  Upgrade nodejs conformance target from C-Read to C-Produce.\n\n[d/g4968383dc452-12] decision (cited, source CHANGELOG.md@4968383dc452)\n  Correct README claims that tables were asserted against document.\n\n[d/g4968383dc452-16] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Hold beta.smy repair rather than guess missing stanza.\n\n[d/g4968383dc452-17] decision (cited, source CHANGELOG.md@4968383dc452)\n  Do not implement rule M in outside readers.\n\n[d/g4968383dc452-21] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Do not apply 22% artefact fraction to other modules.\n\n[d/g4968383dc452-23] decision (cited, source nodejs/src/uid.js@4968383dc452)\n  Implement status integers and source/kind enums as constants in nodejs.\n\n[d/g4968383dc452-24] decision (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Implement RFC 4648 base32 alphabet in nodejs.\n  -> causes q/g4968383dc452-24-1\n\n[d/g4968383dc452-8] decision (cited, source CHANGELOG.md@4968383dc452)\n  Mark spec-derived constants with SPEC: in nodejs src/uid.js.\n\n[d/g4968383dc452-9] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Add spec-tables gate and make target parsing spec tables.\n  Previous checks only asserted the spec contained the string 'Deterministic CBOR', not the actual tables. Parsing tables ties implementations to the document.\n\n[d/g532e4d229a6c-1] decision (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Add six binary tests for cmd_fmt covering listed fmt decisions.\n  Twelve mutants survived in cmd_fmt because nothing reached the command through the binary. The tests drive the binary as a user would, killing mutants in those decisions and reducing survivors from 12 to 2.\n\n[d/g532e4d229a6c-2] decision (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Do not write a test for the round-trip guard; record it as a known survivor.\n  The guard fires only when write_surface produces something the parser reads back differently, and no user input can reach it. A test cannot distinguish a guard that checks from one that does not, so the author records it like previous untestable cases with a pointer to the tests covering the property it protects.\n\n[d/g532e4d229a6c-3] decision (cited, source tests/cmd_fmt.rs@532e4d229a6c)\n  Make each test write its own document with the needed property instead of using repository fixtures.\n  The first version depended on repository fixtures like F1 not canonical and F9 having comments. cargo-mutants reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten, causing spurious failures counted as catches. The rule is that a test must not depend on the state of the tree, just as it must not depend on the state of the machine.\n\n[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\n  -> causes q/g69ea5c05d859-12-1\n\n[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\n[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not add version lists to python/, nodejs/, go/ implementations.\n\n[d/g87345653cdf3-10] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Assert on transcript count rather than just MISMATCHED presence in doc output test\n  The first version asserted only that MISMATCHED appeared, which ran 0 transcripts satisfied; the count assertion ensures a gate that cannot confuse nothing wrong with nothing checked.\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-5] decision (cited, source Makefile@87345653cdf3)\n  Do not pipe fuzz-build's cargo check through tail\n  A pipeline's exit status is the last command's, so piping through tail would print errors but return 0; the gate must return non-zero on failure.\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n\n[d/g90ec2f781421-12] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Do not change tests/doc_output.rs gating to run under --all-features.\n  -> causes q/g90ec2f781421-12-1\n\n[d/g90ec2f781421-4] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Run each command in a scratch directory of its own.\n\n[d/g90ec2f781421-6] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Set stdin to /dev/null for dispatch test commands.\n\n[d/g90ec2f781421-8] decision (cited, source src/main.rs@90ec2f781421)\n  Do not add a test to distinguish the equivalent `!=` mutation.\n\n[d/g90ec2f781421-9] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Do not assert exit code in every_command_dispatches.\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  -> causes q/ga18e230ae345-6-1\n\n[p/g4968383dc452-3-1] constraint (cited, source nodejs/test/uid.test.js@4968383dc452)\n  Fixture file contains sixteen cases with canonical bytes and uid hex produced by Rust.\n\n[p/g4968383dc452-9-1] constraint (cited, source .github/workflows/ci.yml@4968383dc452)\n  The spec contains normative tables in SMYSL_FORMAT_SPEC.md that can be parsed.\n  -> conditions d/g4968383dc452-9\n\n[p/g532e4d229a6c-1-1] constraint (cited, source tests/cmd_fmt.rs@532e4d229a6c)\n  The binary under test only exists when the `cli` feature is enabled.\n  -> conditions d/g532e4d229a6c-1\n\n[p/g532e4d229a6c-1-2] constraint (cited, source tests/cmd_fmt.rs@532e4d229a6c)\n  Cargo provides the compiled binary path as `CARGO_BIN_EXE_smysl` for integration tests.\n  -> conditions d/g532e4d229a6c-1\n\n[p/g532e4d229a6c-1-3] constraint (cited, source tests/cmd_fmt.rs@532e4d229a6c)\n  The `smysl fmt` command uses exit codes 0, 2, and 3 as defined by the specification.\n  -> conditions d/g532e4d229a6c-1\n\n[p/g532e4d229a6c-2-1] constraint (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  The round-trip guard only fires when write_surface and the parser disagree, and no user input reaches it.\n  -> conditions d/g532e4d229a6c-2\n\n[p/g532e4d229a6c-2-2] constraint (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Earlier untestable survivors were recorded the same way, so this decline follows precedent.\n  -> conditions d/g532e4d229a6c-2\n\n[p/g532e4d229a6c-3-1] constraint (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  cargo-mutants reuses build directories across mutants, so mutant-induced fixture rewrites persist and affect …\n  -> conditions d/g532e4d229a6c-3\n\n[p/g532e4d229a6c-3-2] constraint (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Tests must not depend on the state of the tree, just as they must not depend on the state of …\n  -> conditions d/g532e4d229a6c-3\n\n[p/g87345653cdf3-10-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  The script prints a summary line with a parseable ran count.\n  -> conditions d/g87345653cdf3-10\n\n[p/g87345653cdf3-5-1] constraint (cited, source Makefile@87345653cdf3)\n  Shell pipeline exit status is the last command's, so tail masks failure.\n  -> conditions d/g87345653cdf3-5\n\n[p/ga18e230ae345-4-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The golden file content is unchanged after the removal, so there is nothing to record.\n\n[q/g4968383dc452-24-1] claim (inferred)\n  RFC 4648 base32 alphabet implemented, avoiding mutually unreadable names.\n\n[q/g69ea5c05d859-12-1] claim (inferred)\n  Format spec §8.5 records version-trap defect fixed in 0.14.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g90ec2f781421-12-1] claim (inferred)\n  Doc-output gating remains unchanged; design deliberate.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g532e4d229a6c-1-1] claim (cited, source tests/cmd_fmt.rs@532e4d229a6c)\n  Rejected: Writing unit tests that call cmd_fmt functions directly instead of running the binary\n  The command reads the filesystem, parses, writes, and prints with no seam to call, so only running the binary reaches these decisions.\n  -> contrasts d/g532e4d229a6c-1\n\n[r/g69ea5c05d859-6-1] claim (cited, source src/main.rs@69ea5c05d859)\n  Rejected: Let fmt use the default WriteContext version.\n  fmt is the round trip a user runs on purpose and would have been first to relabel.\n\n[r/g87345653cdf3-5-1] claim (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Rejected: Pipe cargo check output through tail -5\n  A pipeline's exit status is the last command's, so tail would return 0 despite errors.\n  -> contrasts d/g87345653cdf3-5\n\n[r/g90ec2f781421-3-1] claim (cited, source Makefile@90ec2f781421)\n  Rejected: derive command names from `--help` output in tests and Makefile\n  A list derived from the binary shrinks silently when the binary does, and the regenerated golden would record absence as intent.\n\n",
+  "pack_tokens": 1497,
+  "pack_units": 54,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 4
+}

@@ -1,0 +1,181 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-flash-v2"
+repo = "smysl"
+commit = "4968383dc452dba3c9ac9ab2c6abae4b3612bba5"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Add `spec-tables` CI job and verification script comparing implementations to spec tables."
+suggest = [
+    "D12",
+    "D11",
+    "D15",
+]
+match = "D11"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Implement BLAKE3-256 and C-Produce UID derivation in `nodejs/`."
+suggest = [
+    "D2",
+    "D1",
+    "D4",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Document normative status integers, source map layout, kind enum, base32 alphabet, and empty set omission in spec."
+suggest = [
+    "D6",
+    "D7",
+    "D13",
+]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Normalize text to NFC in the Node.js CBOR encoder."
+suggest = ["D8"]
+match = "D8"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Replay tutorial chapters sequentially using scratch workspaces and `edits.json` reader edits."
+suggest = [
+    "D18",
+    "D17",
+    "D23",
+]
+match = "D17"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Hold back repair of chapter 29's `beta.smy` drift."
+suggest = [
+    "D21",
+    "D17",
+    "D18",
+]
+match = "D21"
+
+[[item]]
+kind = "decision"
+id = "D7"
+text = "Decline implementing rule M in outside reader implementations."
+suggest = [
+    "D10",
+    "D18",
+    "D15",
+]
+match = "D10"
+
+[[item]]
+kind = "decision"
+id = "D8"
+text = "Fix incorrect spec section citations in Go and Python UID implementations."
+suggest = [
+    "D15",
+    "D4",
+    "D8",
+]
+match = "D15"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "Node.js does not provide a BLAKE3 implementation in its standard library."
+suggest = [
+    "P1",
+    "P19",
+    "P2",
+]
+match = "P1"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "The CBOR decoder already rejects any input text that is not NFC-normalized."
+suggest = [
+    "P6",
+    "P17",
+]
+match = "P6"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "Unit cores store grounds solely as UIDs without retaining their corresponding status values."
+suggest = [
+    "P9",
+    "P8",
+    "P5",
+]
+match = "P9"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "Section 1 of the format specification contains no subsections."
+suggest = [
+    "P19",
+    "P2",
+    "P7",
+]
+match = "P19"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Quoting the spec's tables in hand-typed test assertions. — Editing the spec and editing tests would remain separate acts unable to catch mismatches."
+suggest = [
+    "A2",
+    "A7",
+]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Using a binding to the same C library that Rust calls. — It would test two callers of one implementation rather than proving the specification is sufficient."
+suggest = [
+    "A1",
+    "A7",
+    "A5",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "Splitting multi-state tutorial files into separate files for each step. — It would force the chapters to name different files at each step, changing what the book teaches."
+suggest = [
+    "A4",
+    "A3",
+]
+match = "A4"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "Repairing chapter 29's beta.smy immediately by guessing the missing stanza. — The missing stanza cannot be reconstructed from the page and guessing is not an acceptable repair."
+suggest = [
+    "A6",
+    "A4",
+    "A5",
+]
+match = "A6"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "Enforcing Rule M directly in outside reader unit validation. — Rule M requires inspecting grounds statuses stored elsewhere, so a unit-level check cannot fail."
+suggest = []
+match = "none"

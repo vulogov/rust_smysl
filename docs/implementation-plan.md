@@ -451,9 +451,25 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
   for a paid provider. `extract` will use the same client.
 - **Done when:** on the S0 set, prerequisite precision is at least the research pro run's (~75%
   genuine), with a measured recall figure; facts regenerate byte-identically.
-  - **Facts regenerate byte-identically: held by a test.** The extraction figure is not measured: it needs
-    the S0 labels, which are still deferred, and on a local 14B one commit of this repository gave one
-    decision where the research's pro runs gave eight.
+  - **Facts regenerate byte-identically: held by a test.**
+  - **Measured 2026-09-20**, the owner having labelled the six studied commits (73 decisions, 68
+    prerequisites, 29 alternatives) blind and adjudicated all three research systems:
+
+    | System | decision P / R | prerequisite P / R | alternative P / R |
+    |---|---|---|---|
+    | `research-deepseek-v2` | 82% / 67% | **41%** / 59% | 31% / 69% |
+    | `research-flash-v2` | 100% / 37% | **88%** / 22% | 79% / 52% |
+    | `research-pro-v2` (ucal only, smysl 4968383 still pending) | 97% / — | **67%** / — | 46% / — |
+
+    **Decisions are the reliable kind**: every system is at or above 82% precision on them, and the
+    disagreement between systems is recall, not correctness. **Prerequisites are not**: the kind the whole
+    design rests on scores 41% on the model that finds the most of them, and the one that reaches 88%
+    finds only a fifth. **Alternatives are the worst by precision**, 31–79%, which matches what the
+    extraction does: it reads a rejected option into any sentence that mentions one.
+  - **The bound is not met by the shipped path.** "Prerequisite precision at least the pro run's" now has
+    a number on both sides: the pro run is 67% (partial), and the tool's own extraction is not yet scored
+    against these labels at all. That measurement is the next thing to do here, and it is cheap now that
+    the instrument exists.
 
 ## 7. Phase 3 — verdicts and test evidence
 

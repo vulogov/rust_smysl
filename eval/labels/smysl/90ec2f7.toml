@@ -73,27 +73,257 @@
 schema = 1
 repo = "smysl"
 commit = "90ec2f781421002876548124e9fe02073503372c"
-labeller = ""
-status = "todo"   # set to "done" when finished
+labeller = "vulogov"
+status = "done"
 
-# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
-#
-# [[decision]]
-# id = "D1"
-# text = ""
-# kind = "act"          # act | decline
-# evidence = ""       # optional verbatim span
-#
-# [[prerequisite]]
-# id = "P1"
-# decision = "D1"
-# text = ""
-# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
-# normative = false
-# evidence = ""
-#
-# [[alternative]]
-# id = "A1"
-# decision = "D1"
-# text = ""
-# evidence = ""
+[[decision]]
+id = "D1"
+text = "Add a test that types each of the twenty-two commands and fails if any is unrouted, so a command that stops working cannot leave the suite green"
+kind = "act"
+evidence = "tests/dispatch.rs runs every command and fails if any is unrouted"
+
+[[decision]]
+id = "D2"
+text = "Also record every argument of every command in a golden file and compare it, because deleting an arm in cli() strips a command's arguments while leaving the command routed"
+kind = "act"
+evidence = "Deleting its arm in cli() removes its arguments and nothing else ... and compares all 380 arguments against tests/cli-surface.txt."
+
+[[decision]]
+id = "D3"
+text = "Compare the golden file inside cargo test rather than from a Makefile target"
+kind = "act"
+evidence = "It needs a golden file, compared inside cargo test rather than by a Makefile target: a Makefile gate is invisible to anything that counts coverage"
+
+[[decision]]
+id = "D4"
+text = "Write the twenty-two command names out in the test rather than read them from the binary's help"
+kind = "act"
+evidence = "The twenty-two commands, written out rather than read from the binary. This list must not come from the thing it is testing."
+
+[[decision]]
+id = "D5"
+text = "Cover the cost of the hardcoded list with a test that the binary's help lists exactly those commands, in both directions"
+kind = "act"
+evidence = "Hardcoding it costs one thing - the list can go stale when a command is added - and the_help_lists_exactly_these_commands below is what covers that, in both directions."
+
+[[decision]]
+id = "D6"
+text = "Write the command names out in the Makefile regeneration target too, rather than derive them from --help"
+kind = "act"
+evidence = "a list derived from the binary shrinks silently when the binary does, and the regenerated golden would then record the absence as if it were the intent"
+
+[[decision]]
+id = "D7"
+text = "Supply each command the least it needs to reach the router, and treat clap's refusal of a bare name as a failure of the test itself"
+kind = "act"
+evidence = "minimal_args supplies what each needs, and the clap refusal is now itself a failure, so adding a required argument tomorrow says so rather than quietly dropping coverage."
+
+[[decision]]
+id = "D8"
+text = "Run every command from a scratch directory of its own, so the test neither dirties the checkout nor lets one command read what another wrote"
+kind = "act"
+evidence = "running all twenty-two commands in the repo root left .smysl/staged.smy and .smysl/usage.log behind, and the usage invocation then read a ledger the ingest invocation had just written. Every command in the test now runs from a scratch directory of its own."
+
+[[decision]]
+id = "D9"
+text = "Hand the binary an empty stdin rather than the harness's own, so the commands that read stdin fail instead of hanging"
+kind = "act"
+evidence = "Stdin is /dev/null rather than inherited: fmt and check read stdin when given no path, and a test harness that hands them a terminal would hang instead of failing."
+
+[[decision]]
+id = "D10"
+text = "Do not assert an exit code in the dispatch test; claim only that the failure came from the command rather than from the router"
+kind = "decline"
+evidence = "The exit code is not asserted. Most of these fail without a store, and how they fail is what the rest of the suite is for"
+
+[[decision]]
+id = "D11"
+text = "Leave the remaining name-comparison survivor alive as equivalent and document it at the site, rather than answer it with a test"
+kind = "decline"
+evidence = "The one survivor is equivalent ... Documented at the site the way 0.13 recorded worse's >=."
+
+[[decision]]
+id = "D12"
+text = "Withdraw the claim that the CLI's coverage is feature-dependent in a way nothing states, since the file that causes it states it"
+kind = "act"
+evidence = "READINESS said the CLI's coverage is feature-dependent in a way nothing states. It states it."
+
+[[decision]]
+id = "D13"
+text = "State the dispatch pass as a finding rather than a count: seven of twenty-two commands could have stopped working with the suite still green"
+kind = "act"
+evidence = "The dispatch pass is worth stating as a finding rather than a count."
+
+[[decision]]
+id = "D14"
+text = "Compare the whole argument surface in one assertion on the parsed pairs rather than command by command, so a diff shows every drift at once"
+kind = "act"
+evidence = "The comparison is a whole-file assert_eq! on the parsed pairs rather than a per-command loop, so a diff shows every drift at once instead of stopping at the first."
+
+[[decision]]
+id = "D15"
+text = "Record each flag by its long form only, and each positional without its repetition marker"
+kind = "act"
+evidence = "The short form is dropped because every one of them has a long form beside it, and recording both would double the file to say the same thing once."
+
+[[prerequisite]]
+id = "P1"
+decision = "D2"
+text = "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally, and its arms only add arguments"
+kind = "existing-behaviour"
+normative = false
+evidence = "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally"
+
+[[prerequisite]]
+id = "P2"
+decision = "D7"
+text = "clap rejects a missing required argument before the router runs"
+kind = "existing-behaviour"
+normative = false
+evidence = "Seven commands take a required argument, so clap rejects the bare name before the router runs."
+
+[[prerequisite]]
+id = "P3"
+decision = "D1"
+text = "clap answers a command's --help itself, before main's match is reached"
+kind = "existing-behaviour"
+normative = false
+evidence = "clap answers `smysl ingest --help` itself, before main's match is reached."
+
+[[prerequisite]]
+id = "P4"
+decision = "D3"
+text = "Nothing that measures coverage can see a Makefile gate"
+kind = "tool-setting"
+normative = false
+evidence = "nothing that measures coverage can see a Makefile"
+
+[[prerequisite]]
+id = "P5"
+decision = "D3"
+text = "doc-output was wired into the test suite in 0.13 for this same reason"
+kind = "prior-change"
+normative = false
+evidence = "which is why doc-output was wired into the suite in 0.13"
+
+[[prerequisite]]
+id = "P6"
+decision = "D4"
+text = "An expectation must not be derived from the thing it is testing"
+kind = "invariant"
+normative = true
+evidence = "Deriving the expectation from the subject is the failure this repository keeps rediscovering"
+
+[[prerequisite]]
+id = "P7"
+decision = "D8"
+text = "ingest appends to .smysl/staged.smy and usage to .smysl/usage.log, both resolved against the working directory"
+kind = "existing-behaviour"
+normative = false
+evidence = "ingest appends to .smysl/staged.smy and usage to .smysl/usage.log, both resolved against the working directory."
+
+[[prerequisite]]
+id = "P8"
+decision = "D8"
+text = "A test must not dirty the tree it runs in"
+kind = "invariant"
+normative = true
+evidence = "A test that dirties the tree is one step from a test that depends on the tree."
+
+[[prerequisite]]
+id = "P9"
+decision = "D9"
+text = "fmt and check read stdin when given no path"
+kind = "existing-behaviour"
+normative = false
+evidence = "fmt and check read stdin when given no path"
+
+[[prerequisite]]
+id = "P10"
+decision = "D11"
+text = "The selected Cmd is read in exactly one place, the fallback arm no input reaches while every command in the table has an arm above it"
+kind = "existing-behaviour"
+normative = false
+evidence = "cmd is read in exactly one place - the `_ =>` arm at the bottom of the dispatch, which no input reaches"
+
+[[prerequisite]]
+id = "P11"
+decision = "D11"
+text = "clap only yields subcommand names that cli() registered, and cli() registers exactly the table"
+kind = "existing-behaviour"
+normative = false
+evidence = "clap only yields subcommand names that cli() registered, and cli() registers exactly COMMANDS."
+
+[[prerequisite]]
+id = "P12"
+decision = "D11"
+text = "This project already records a survivor no test can distinguish as a fact about the code"
+kind = "prior-change"
+normative = false
+evidence = "the way 0.13 recorded worse's >= and 1.1 recorded Lineage::is_empty"
+
+[[prerequisite]]
+id = "P13"
+decision = "D12"
+text = "tests/doc_output.rs is gated to compile in exactly one matrix configuration, so at --all-features it does not exist rather than being skipped"
+kind = "existing-behaviour"
+normative = false
+evidence = "At --all-features the test does not exist rather than being skipped"
+
+[[prerequisite]]
+id = "P14"
+decision = "D12"
+text = "The manual documents a default-features build, and exact-pack compiled in makes a correct SMY-W202 claim read as drift"
+kind = "existing-behaviour"
+normative = false
+evidence = "the manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift"
+
+[[prerequisite]]
+id = "P15"
+decision = "D2"
+text = "The cli() arms are not feature-gated, so what a build accepts is the same at every feature combination and one golden file can record it"
+kind = "existing-behaviour"
+normative = false
+evidence = "the arms are not feature-gated, so what a build accepts does not change with its features, only what it then does"
+
+[[alternative]]
+id = "A1"
+decision = "D1"
+text = "Invoke each command with --help to see whether it is wired"
+evidence = "--help alone would not do for the first: clap answers `smysl ingest --help` itself, before main's match is reached."
+
+[[alternative]]
+id = "A2"
+decision = "D4"
+text = "Read the command names out of the binary's own help and loop over those"
+evidence = "Parsing `smysl --help` for the names and then checking each one dispatches is a check that cannot fail"
+
+[[alternative]]
+id = "A3"
+decision = "D3"
+text = "Guard the argument surface with a Makefile target, the way api-check guards the library surface"
+evidence = "make api-check guards the library surface the same way, and nothing that measures coverage can see a Makefile"
+
+[[alternative]]
+id = "A4"
+decision = "D14"
+text = "Compare the recorded surface command by command in a loop"
+evidence = "rather than a per-command loop"
+
+[[alternative]]
+id = "A5"
+decision = "D11"
+text = "Write a test for the surviving comparison"
+evidence = "rather than answered with a test that cannot distinguish the two programs"
+
+[[alternative]]
+id = "A6"
+decision = "D15"
+text = "Record the short form of each flag beside its long form"
+evidence = "recording both would double the file to say the same thing once"
+
+[[alternative]]
+id = "A7"
+decision = "D7"
+text = "Accept clap's refusal of a bare invocation silently and move on"
+evidence = "Treating it as a failure rather than silently accepting it is what stops the hole reopening"

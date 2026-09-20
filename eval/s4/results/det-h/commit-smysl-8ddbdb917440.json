@@ -1,0 +1,136 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g87345653cdf3-8-2",
+      "score": 51.25371170043945,
+      "terms": [
+        "smysl:51.25"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g87345653cdf3-7-1",
+      "score": 46.7225227355957,
+      "terms": [
+        "smysl:46.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-7-1",
+      "score": 44.887210845947266,
+      "terms": [
+        "smysl:44.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "score": 43.57100296020508,
+      "terms": [
+        "smysl:43.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 41.45871353149414,
+      "terms": [
+        "smysl:41.46"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-8",
+      "score": 23.485111236572266,
+      "terms": [
+        "manual:10.25",
+        "nam:5.13",
+        "name:5.13",
+        "0:2.98"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-6",
+      "score": 12.622929573059082,
+      "terms": [
+        "document:5.02",
+        "8:4.55",
+        "0:3.05"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 8.495877265930176,
+      "terms": [
+        "8:5.20",
+        "0:3.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g87345653cdf3-6-1",
+      "score": 7.294904708862305,
+      "terms": [
+        "about:7.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 7.160739421844482,
+      "terms": [
+        "8:4.24",
+        "0:2.92"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-5-1",
+      "score": 4.854342937469482,
+      "terms": [
+        "document:4.85"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-9-1",
+      "score": 4.517230987548828,
+      "terms": [
+        "tool:4.52"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 298,
+  "diff_truncated": true,
+  "files": [
+    "Documentation/SMYSL_ARCHITECTURE_RFC.md",
+    "Documentation/SMYSL_FORMAT_GUIDE.pdf",
+    "Documentation/SMYSL_FORMAT_GUIDE.typ",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SMYSL_RATIONALE.pdf",
+    "Documentation/SMYSL_RATIONALE.typ",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.pdf",
+    "Documentation/SMYSL_RATIONALE_PRESENTATION.typ",
+    "Documentation/manual/design.typ"
+  ],
+  "fingerprint": "f70925b6aaec4b2938c773811011e36eceb14ef576a2af1a8c91d84e8ee4d03f",
+  "id": "commit-smysl-8ddbdb917440",
+  "kind": "commit",
+  "pack_text": "[d/g0bc1aeb96d6b-1] decision (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Gate `report_against` and its tests on `gemini` or `anthropic` features\n  -> causes q/g0bc1aeb96d6b-1-1\n  -> causes q/g0bc1aeb96d6b-1-3\n  -> causes q/g0bc1aeb96d6b-1-2\n\n[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Build Constraints via default and field assignment instead of struct literal\n  -> causes q/g87345653cdf3-1-1\n\n[d/g87345653cdf3-10] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Assert on transcript count rather than just MISMATCHED presence in doc output test\n  -> causes q/g87345653cdf3-10-1\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n  -> causes q/g87345653cdf3-11-1\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n  The BTreeSet import became unused after replacing the struct literal with default construction.\n  -> causes q/g87345653cdf3-2-1\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  CI must see fuzz compilation because local checks passed while the break existed; this makes the gate structural.\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-5] decision (cited, source Makefile@87345653cdf3)\n  Do not pipe fuzz-build's cargo check through tail\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n  Running fuzzers requires nightly and a minute per target, so it remains a separate job; compilation catches the break in seconds.\n  -> causes q/g87345653cdf3-6-1\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n  This lets the new cargo test pass the binary cargo built for it, so mutation testing exercises the mutated binary rather than a stale one.\n  -> causes q/g87345653cdf3-7-1\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n  Token 0 is the binary name, not a manual input; if the binary path is absolute, the absolute-path rule would otherwise skip all commands.\n  -> causes q/g87345653cdf3-8-1\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n  The replay script existed but was invisible to cargo test and coverage tools; adding it as an integration test makes it measurable.\n  -> causes q/g87345653cdf3-9-1\n\n[d/ga18e230ae345-1] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Remove the local-improvement pass (§18.3 step 3).\n  -> causes q/ga18e230ae345-1-1\n\n[d/ga18e230ae345-2] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Remove `IMPROVEMENT_PASSES` constant and `PackRequest::improvement_passes` field.\n  A knob for a pass that no longer exists is worse than no knob.\n  -> causes q/ga18e230ae345-2-1\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n  -> causes q/ga18e230ae345-3-1\n\n[d/ga18e230ae345-4] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to update the golden file.\n  -> causes q/ga18e230ae345-4-1\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  To document why the pass was removed, including the measurements that justified it.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  To record the removal and its justification for the 0.8.0 release notes.\n  -> causes q/ga18e230ae345-6-1\n\n[e/g0bc1aeb96d6b-2-1] evidence (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Check: fails the same way on the previous commit\n\n[p/g0bc1aeb96d6b-2-1] constraint (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused the same way on the …\n  `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused the same way on the previous commit\n\n[p/g87345653cdf3-2-1] constraint (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  The only BTreeSet use was in the removed struct literal.\n  -> conditions d/g87345653cdf3-2\n\n[p/g87345653cdf3-4-1] constraint (cited, source Makefile@87345653cdf3)\n  The fuzz-build target compiles fuzz targets and reports failure.\n  -> conditions d/g87345653cdf3-4\n\n[p/g87345653cdf3-4-2] constraint (cited, source Makefile@87345653cdf3)\n  make ci is the target that CI runs locally and remotely.\n  -> conditions d/g87345653cdf3-4\n\n[p/g87345653cdf3-6-1] constraint (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Running fuzzers requires nightly and about a minute per target.\n  -> conditions d/g87345653cdf3-6\n\n[p/g87345653cdf3-7-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  cargo sets CARGO_BIN_EXE_smysl to the binary built for the integration test.\n  -> conditions d/g87345653cdf3-7\n\n[p/g87345653cdf3-8-1] constraint (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Token 0 is the binary path, and the absolute-path rule skips tokens containing '/'.\n  -> conditions d/g87345653cdf3-8\n\n[p/g87345653cdf3-8-2] constraint (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  SMYSL_BIN may be absolute because CARGO_BIN_EXE_smysl always is.\n  -> conditions d/g87345653cdf3-8\n\n[p/g87345653cdf3-9-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  The replay script exists and works.\n  -> conditions d/g87345653cdf3-9\n\n[p/g87345653cdf3-9-2] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  cargo test runs #[test] functions in files under tests/.\n  -> conditions d/g87345653cdf3-9\n\n[p/ga18e230ae345-2-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass no longer exists after removal, leaving the constant and field unused.\n  -> conditions d/ga18e230ae345-2\n\n[p/ga18e230ae345-5-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The measurements showing the pass was harmful are accurate, as documented in the changelog.\n  -> conditions d/ga18e230ae345-5\n\n[p/ga18e230ae345-6-1] constraint (cited, source CHANGELOG.md@a18e230ae345)\n  The changelog has an Unreleased — 0.8.0 section where the removal can be recorded.\n  -> conditions d/ga18e230ae345-6\n\n[q/g0bc1aeb96d6b-1-1] finding (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Builds without those features no longer fail on unused function under `-D warnings`.\n\n[q/g0bc1aeb96d6b-1-2] claim (inferred)\n  `report_against` compiles only when `gemini` or `anthropic` feature is enabled.\n\n[q/g0bc1aeb96d6b-1-3] claim (inferred)\n  The `cap_tests` module compiles only when tests and relevant features are enabled.\n\n[q/g87345653cdf3-1-1] claim (inferred)\n  Constraints built via default and field assignment compiles despite non_exhaustive; future fields stay …\n  Constraints built via default and field assignment compiles despite non_exhaustive; future fields stay additive.\n\n[q/g87345653cdf3-10-1] claim (inferred)\n  Count assertion prevents gate from confusing nothing wrong with nothing checked.\n\n[q/g87345653cdf3-11-1] claim (inferred)\n  Compile out doc output test outside default feature set to avoid false drift.\n\n[q/g87345653cdf3-2-1] claim (inferred)\n  Remove unused BTreeSet import after replacing struct literal with default construction.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g87345653cdf3-6-1] claim (inferred)\n  Only compile fuzzers in CI; running remains separate due to nightly and time.\n\n[q/g87345653cdf3-7-1] claim (inferred)\n  SMYSL_BIN override lets cargo test use freshly built binary, so mutation tests exercise mutated code.\n\n[q/g87345653cdf3-8-1] claim (inferred)\n  Skip token 0 in path extraction to avoid absolute binary path skipping every command.\n\n[q/g87345653cdf3-9-1] claim (inferred)\n  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.\n\n[q/ga18e230ae345-1-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass is removed because it made packs worse.\n\n[q/ga18e230ae345-2-1] claim (inferred)\n  IMPROVEMENT_PASSES constant and PackRequest::improvement_passes field removed from the public API.\n\n[q/ga18e230ae345-3-1] claim (inferred)\n  The search test is removed; keeping it would compare two identical configurations.\n\n[q/ga18e230ae345-4-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Golden file remains unchanged because no recorded selection moved.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g87345653cdf3-1-1] claim (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Rejected: Use a struct literal for Constraints\n  -> contrasts d/g87345653cdf3-1\n\n[r/g87345653cdf3-10-1] claim (cited, source tests/doc_output.rs@87345653cdf3)\n  Rejected: Assert only that MISMATCHED appears\n  -> contrasts d/g87345653cdf3-10\n\n[r/g87345653cdf3-2-1] claim (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Rejected: Keep the unused BTreeSet import\n  -> contrasts d/g87345653cdf3-2\n\n[r/g87345653cdf3-6-1] claim (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Rejected: Run fuzzers as part of make ci\n  -> contrasts d/g87345653cdf3-6\n\n[r/g87345653cdf3-7-1] claim (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Rejected: Hardcode the binary path as './target/debug/smysl'\n  A stale binary would report every mutant as caught while testing none of them.\n  -> contrasts d/g87345653cdf3-7\n\n[r/g87345653cdf3-8-1] claim (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Rejected: Include token 0 in the path filter\n  -> contrasts d/g87345653cdf3-8\n\n[r/g87345653cdf3-9-1] claim (cited, source tests/doc_output.rs@87345653cdf3)\n  Rejected: Keep replay only as a script, not a cargo test\n  The script was invisible to cargo test and coverage tools, making it unmeasurable.\n  -> contrasts d/g87345653cdf3-9\n\n[r/ga18e230ae345-1-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Keep the local-improvement pass\n  -> contrasts d/ga18e230ae345-1\n\n[r/ga18e230ae345-3-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Keep the search that measured the pass\n  -> contrasts d/ga18e230ae345-3\n\n[r/ga18e230ae345-6-1] claim (cited, source CHANGELOG.md@a18e230ae345)\n  Rejected: Leave the changelog entry as 'Nothing yet.'\n  To record the removal and its justification for the 0.8.0 release notes.\n  -> contrasts d/ga18e230ae345-6\n\n",
+  "pack_tokens": 1493,
+  "pack_units": 59,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null
+}

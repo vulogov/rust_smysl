@@ -1,0 +1,181 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-2-1",
+      "score": 139.8839569091797,
+      "terms": [
+        "smysl:82.80",
+        "provider:46.67",
+        "sam:3.69",
+        "same:3.69",
+        "featur:2.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 41.70442581176758,
+      "terms": [
+        "gemini:7.53",
+        "tests:4.28",
+        "its:3.38",
+        "mapper:3.29",
+        "mappers:3.29"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g0bc1aeb96d6b-1-1",
+      "score": 35.16519546508789,
+      "terms": [
+        "gemini:7.53",
+        "mapper:4.76",
+        "mappers:4.76",
+        "reach:4.76",
+        "feature:3.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g0bc1aeb96d6b-2-1",
+      "score": 27.928298950195312,
+      "terms": [
+        "repair:6.36",
+        "thi:3.31",
+        "this:3.31",
+        "into:3.18",
+        "sam:2.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-2",
+      "score": 27.773340225219727,
+      "terms": [
+        "repair:6.64",
+        "into:3.32",
+        "sam:2.62",
+        "same:2.62",
+        "thi:2.62"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 23.389677047729492,
+      "terms": [
+        "with:3.72",
+        "that:3.32",
+        "thi:2.94",
+        "this:2.94",
+        "would:2.94"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 23.143802642822266,
+      "terms": [
+        "with:3.67",
+        "that:3.31",
+        "thi:2.90",
+        "this:2.90",
+        "would:2.90"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-1-1",
+      "score": 22.061935424804688,
+      "terms": [
+        "doe:5.50",
+        "does:5.50",
+        "never:5.50",
+        "not:3.06",
+        "pass:1.73"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 18.134035110473633,
+      "terms": [
+        "noth:3.82",
+        "nothing:3.82",
+        "its:3.15",
+        "for:2.87",
+        "not:2.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g0bc1aeb96d6b-1-1",
+      "score": 15.111625671386719,
+      "terms": [
+        "gemini:7.41",
+        "for:3.37",
+        "build:3.33",
+        "and:1.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 14.248230934143066,
+      "terms": [
+        "than:3.99",
+        "for:2.87",
+        "that:2.63",
+        "pass:1.48",
+        "is:1.30"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 12.885050773620605,
+      "terms": [
+        "than:3.79",
+        "for:2.72",
+        "that:2.49",
+        "pass:1.41",
+        "and:1.25"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "files": [
+    "Documentation/ROAD_TO_1.0.md",
+    "Makefile",
+    "crates/smysl-ingest/src/chunk.rs",
+    "crates/smysl-ingest/src/lib.rs",
+    "crates/smysl-ingest/src/monotone.rs",
+    "crates/smysl-ingest/src/repair.rs",
+    "crates/smysl-ingest/src/stage.rs",
+    "crates/smysl-provider/src/http.rs",
+    "crates/smysl-provider/src/lib.rs",
+    "crates/smysl-provider/src/map/auth.rs",
+    "crates/smysl-provider/src/map/deepseek.rs",
+    "crates/smysl-provider/src/map/gemini.rs",
+    "crates/smysl-provider/src/map/mod.rs",
+    "crates/smysl-provider/src/map/ollama.rs",
+    "crates/smysl-provider/src/map/openai.rs",
+    "crates/smysl-provider/src/runtime.rs"
+  ],
+  "fingerprint": "eb87779082343f8504606b133b6ef8123dd71e3d4173e13b5ae4155dfff95bb2",
+  "id": "commit-smysl-c859527c87f7",
+  "kind": "commit",
+  "pack_text": "[d/g0bc1aeb96d6b-1] decision (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Gate `report_against` and its tests on `gemini` or `anthropic` features\n  The function is only reached from the feature-gated `gemini` and `anthropic` mappers, so builds without those features had an unused function and CI's `-D warnings` failed.\n  -> causes q/g0bc1aeb96d6b-1-1\n  -> causes q/g0bc1aeb96d6b-1-3\n  -> causes q/g0bc1aeb96d6b-1-2\n\n[d/g0bc1aeb96d6b-2] decision (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Leave the `jitter` unused failure in `--no-default-features` unrepaired\n  It is pre-existing, fails the same way on the previous commit, is outside CI's matrix, and should not be folded into this repair.\n  -> causes q/g0bc1aeb96d6b-2-1\n\n[d/ga18e230ae345-1] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Remove the local-improvement pass (§18.3 step 3).\n  It was making packs worse; across 28,000 generated packs it changed 26 and 22 were worse by the value function it exists to maximise.\n  -> causes q/ga18e230ae345-1-1\n\n[d/ga18e230ae345-2] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Remove `IMPROVEMENT_PASSES` constant and `PackRequest::improvement_passes` field.\n  A knob for a pass that no longer exists is worse than no knob.\n  -> causes q/ga18e230ae345-2-1\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n  With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.\n  -> causes q/ga18e230ae345-3-1\n\n[d/ga18e230ae345-4] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to update the golden file.\n  The golden file is byte-identical after the removal; no selections moved, so there is nothing to record.\n  -> causes q/ga18e230ae345-4-1\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  To document why the pass was removed, including the measurements that justified it.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  To record the removal and its justification for the 0.8.0 release notes.\n  -> causes q/ga18e230ae345-6-1\n\n[e/g0bc1aeb96d6b-1-1] evidence (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Check: Verified against both failing CI commands and each provider feature on its own.\n  -> backs q/g0bc1aeb96d6b-1-1\n\n[e/g0bc1aeb96d6b-2-1] evidence (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Check: fails the same way on the previous commit\n  -> backs q/g0bc1aeb96d6b-2-1\n\n[e/ga18e230ae345-1-1] evidence (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Check: Across 28 000 generated packs it changed 26, and 22 of those 26 were *worse* by the value function …\n  Check: Across 28 000 generated packs it changed 26, and 22 of those 26 were *worse* by the value function it exists to maximise.\n  -> backs q/ga18e230ae345-1-1\n\n[e/ga18e230ae345-4-1] evidence (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Check: The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection …\n  Check: The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection moved.\n  -> backs q/ga18e230ae345-4-1\n\n[p/g0bc1aeb96d6b-1-1] constraint (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  `report_against` is only reached from the `gemini` and `anthropic` mappers, both feature-gated\n  -> conditions d/g0bc1aeb96d6b-1\n\n[p/g0bc1aeb96d6b-1-2] constraint (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  CI sets `-D warnings`, which refuses an unused function\n  -> conditions d/g0bc1aeb96d6b-1\n\n[p/g0bc1aeb96d6b-2-1] constraint (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused the same way on the …\n  `cargo check -p smysl-provider --no-default-features` fails on `jitter` being unused the same way on the previous commit\n  -> conditions d/g0bc1aeb96d6b-2\n\n[p/g0bc1aeb96d6b-2-2] constraint (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  The `jitter` unused failure is outside CI's matrix\n  -> conditions d/g0bc1aeb96d6b-2\n\n[p/ga18e230ae345-1-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The existing corpus never triggers the local-improvement pass, so removal does not change recorded selections.\n  -> conditions d/ga18e230ae345-1\n\n[p/ga18e230ae345-2-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass no longer exists after removal, leaving the constant and field unused.\n  -> conditions d/ga18e230ae345-2\n\n[p/ga18e230ae345-3-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass has been removed, so the search would compare identical configurations.\n  -> conditions d/ga18e230ae345-3\n\n[p/ga18e230ae345-4-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The golden file content is unchanged after the removal, so there is nothing to record.\n  -> conditions d/ga18e230ae345-4\n\n[p/ga18e230ae345-5-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The measurements showing the pass was harmful are accurate, as documented in the changelog.\n  -> conditions d/ga18e230ae345-5\n\n[p/ga18e230ae345-6-1] constraint (cited, source CHANGELOG.md@a18e230ae345)\n  The changelog has an Unreleased — 0.8.0 section where the removal can be recorded.\n  -> conditions d/ga18e230ae345-6\n\n[q/g0bc1aeb96d6b-1-1] finding (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Builds without those features no longer fail on unused function under `-D warnings`.\n\n[q/g0bc1aeb96d6b-1-2] claim (inferred)\n  `report_against` compiles only when `gemini` or `anthropic` feature is enabled.\n\n[q/g0bc1aeb96d6b-1-3] claim (inferred)\n  The `cap_tests` module compiles only when tests and relevant features are enabled.\n\n[q/g0bc1aeb96d6b-2-1] finding (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  The no-default-features `jitter` unused failure remains unfixed and pre-existing.\n\n[q/ga18e230ae345-1-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass is removed because it made packs worse.\n\n[q/ga18e230ae345-2-1] claim (inferred)\n  IMPROVEMENT_PASSES constant and PackRequest::improvement_passes field removed from the public API.\n\n[q/ga18e230ae345-3-1] claim (inferred)\n  The search test is removed; keeping it would compare two identical configurations.\n\n[q/ga18e230ae345-4-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Golden file remains unchanged because no recorded selection moved.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g0bc1aeb96d6b-1-1] claim (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Rejected: Leave `report_against` ungated for builds without `gemini` or `anthropic`.\n  Any build without them had an unused function and CI sets -D warnings.\n  -> contrasts d/g0bc1aeb96d6b-1\n\n[r/g0bc1aeb96d6b-2-1] claim (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Rejected: Fix the `jitter` unused warning in `--no-default-features` as part of this commit.\n  It fails the same way on the previous commit, is pre-existing, outside CI's matrix, and not something to fold into a repair.\n  -> contrasts d/g0bc1aeb96d6b-2\n\n[r/ga18e230ae345-1-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Keep the local-improvement pass\n  It was making packs worse; across 28,000 packs, 22 of 26 changes were worse.\n  -> contrasts d/ga18e230ae345-1\n\n[r/ga18e230ae345-2-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Keep the IMPROVEMENT_PASSES constant and field\n  A knob for a pass that no longer exists is worse than no knob.\n  -> contrasts d/ga18e230ae345-2\n\n[r/ga18e230ae345-3-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Keep the search that measured the pass\n  With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.\n  -> contrasts d/ga18e230ae345-3\n\n[r/ga18e230ae345-4-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Update the golden file to reflect removal\n  The golden file is byte-identical after the removal; no selections moved, so there is nothing to record.\n  -> contrasts d/ga18e230ae345-4\n\n[r/ga18e230ae345-5-1] claim (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Rejected: Remove the loop without adding an explanatory comment\n  To document why the pass was removed, including the measurements that justified it.\n  -> contrasts d/ga18e230ae345-5\n\n[r/ga18e230ae345-6-1] claim (cited, source CHANGELOG.md@a18e230ae345)\n  Rejected: Leave the changelog entry as 'Nothing yet.'\n  To record the removal and its justification for the 0.8.0 release notes.\n  -> contrasts d/ga18e230ae345-6\n\n",
+  "pack_tokens": 1365,
+  "pack_units": 40,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null
+}

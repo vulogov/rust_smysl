@@ -1,0 +1,163 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 31.20186424255371,
+      "terms": [
+        "project:3.13",
+        "shap:3.13",
+        "shape:3.13",
+        "thi:3.13",
+        "this:3.13"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 30.844730377197266,
+      "terms": [
+        "project:3.09",
+        "shap:3.09",
+        "shape:3.09",
+        "thi:3.09",
+        "this:3.09"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-6-1",
+      "score": 21.049043655395508,
+      "terms": [
+        "releas:3.37",
+        "release:3.37",
+        "noth:3.09",
+        "nothing:3.09",
+        "for:2.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-6",
+      "score": 15.961698532104492,
+      "terms": [
+        "releas:3.62",
+        "release:3.62",
+        "for:2.72",
+        "not:2.72",
+        "record:1.59"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-4-1",
+      "score": 11.090583801269531,
+      "terms": [
+        "noth:3.09",
+        "nothing:3.09",
+        "after:2.74",
+        "record:1.80",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-2-1",
+      "score": 9.72757339477539,
+      "terms": [
+        "than:3.37",
+        "for:2.54",
+        "that:2.02",
+        "and:1.47",
+        "the:0.33"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-2",
+      "score": 8.934425354003906,
+      "terms": [
+        "than:3.19",
+        "for:2.41",
+        "that:1.91",
+        "and:1.42"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-4",
+      "score": 8.91423225402832,
+      "terms": [
+        "noth:2.46",
+        "nothing:2.46",
+        "after:2.19",
+        "record:1.43",
+        "the:0.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-4-1",
+      "score": 8.689972877502441,
+      "terms": [
+        "noth:2.40",
+        "nothing:2.40",
+        "after:2.13",
+        "record:1.40",
+        "the:0.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-3-1",
+      "score": 7.624395370483398,
+      "terms": [
+        "has:4.13",
+        "search:3.11",
+        "the:0.38"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-5-1",
+      "score": 7.267088890075684,
+      "terms": [
+        "without:4.92",
+        "that:1.98",
+        "the:0.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/ga18e230ae345-6-1",
+      "score": 6.326206207275391,
+      "terms": [
+        "has:4.13",
+        "record:1.81",
+        "the:0.38"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230"
+  ],
+  "diff_lines_shown": 158,
+  "diff_truncated": false,
+  "files": [
+    "crates/smysl-embed/tests/gate.rs",
+    "fixtures/embed-tiny/README.md",
+    "fixtures/embed-tiny/config.json",
+    "fixtures/embed-tiny/model.safetensors",
+    "fixtures/embed-tiny/tokenizer.json"
+  ],
+  "fingerprint": "3af0c537131639d0fabea3f47462fba17277512d68438994f93adeb8f3b4cc59",
+  "id": "commit-smysl-5f5e5b6587fc",
+  "kind": "commit",
+  "pack_text": "[d/ga18e230ae345-1] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Remove the local-improvement pass (§18.3 step 3).\n  It was making packs worse; across 28,000 generated packs it changed 26 and 22 were worse by the value function it exists to maximise.\n  -> causes q/ga18e230ae345-1-1\n\n[d/ga18e230ae345-2] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Remove `IMPROVEMENT_PASSES` constant and `PackRequest::improvement_passes` field.\n  A knob for a pass that no longer exists is worse than no knob.\n  -> causes q/ga18e230ae345-2-1\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n  With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.\n  -> causes q/ga18e230ae345-3-1\n\n[d/ga18e230ae345-4] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to update the golden file.\n  The golden file is byte-identical after the removal; no selections moved, so there is nothing to record.\n  -> causes q/ga18e230ae345-4-1\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  To document why the pass was removed, including the measurements that justified it.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  To record the removal and its justification for the 0.8.0 release notes.\n  -> causes q/ga18e230ae345-6-1\n\n[e/ga18e230ae345-1-1] evidence (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Check: Across 28 000 generated packs it changed 26, and 22 of those 26 were *worse* by the value function …\n  Check: Across 28 000 generated packs it changed 26, and 22 of those 26 were *worse* by the value function it exists to maximise.\n  -> backs q/ga18e230ae345-1-1\n\n[e/ga18e230ae345-4-1] evidence (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Check: The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection …\n  Check: The golden file is byte-identical after the removal: nine fixtures at six budgets, not one selection moved.\n  -> backs q/ga18e230ae345-4-1\n\n[p/ga18e230ae345-1-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The existing corpus never triggers the local-improvement pass, so removal does not change recorded selections.\n  -> conditions d/ga18e230ae345-1\n\n[p/ga18e230ae345-2-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass no longer exists after removal, leaving the constant and field unused.\n  -> conditions d/ga18e230ae345-2\n\n[p/ga18e230ae345-3-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass has been removed, so the search would compare identical configurations.\n  -> conditions d/ga18e230ae345-3\n\n[p/ga18e230ae345-4-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The golden file content is unchanged after the removal, so there is nothing to record.\n  -> conditions d/ga18e230ae345-4\n\n[p/ga18e230ae345-5-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The measurements showing the pass was harmful are accurate, as documented in the changelog.\n  -> conditions d/ga18e230ae345-5\n\n[p/ga18e230ae345-6-1] constraint (cited, source CHANGELOG.md@a18e230ae345)\n  The changelog has an Unreleased — 0.8.0 section where the removal can be recorded.\n  -> conditions d/ga18e230ae345-6\n\n[q/ga18e230ae345-1-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass is removed because it made packs worse.\n\n[q/ga18e230ae345-2-1] claim (inferred)\n  IMPROVEMENT_PASSES constant and PackRequest::improvement_passes field removed from the public API.\n\n[q/ga18e230ae345-3-1] claim (inferred)\n  The search test is removed; keeping it would compare two identical configurations.\n\n[q/ga18e230ae345-4-1] finding (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Golden file remains unchanged because no recorded selection moved.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/ga18e230ae345-1-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Keep the local-improvement pass\n  It was making packs worse; across 28,000 packs, 22 of 26 changes were worse.\n  -> contrasts d/ga18e230ae345-1\n\n[r/ga18e230ae345-2-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Keep the IMPROVEMENT_PASSES constant and field\n  A knob for a pass that no longer exists is worse than no knob.\n  -> contrasts d/ga18e230ae345-2\n\n[r/ga18e230ae345-3-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Keep the search that measured the pass\n  With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.\n  -> contrasts d/ga18e230ae345-3\n\n[r/ga18e230ae345-4-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Update the golden file to reflect removal\n  The golden file is byte-identical after the removal; no selections moved, so there is nothing to record.\n  -> contrasts d/ga18e230ae345-4\n\n[r/ga18e230ae345-5-1] claim (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Rejected: Remove the loop without adding an explanatory comment\n  To document why the pass was removed, including the measurements that justified it.\n  -> contrasts d/ga18e230ae345-5\n\n[r/ga18e230ae345-6-1] claim (cited, source CHANGELOG.md@a18e230ae345)\n  Rejected: Leave the changelog entry as 'Nothing yet.'\n  To record the removal and its justification for the 0.8.0 release notes.\n  -> contrasts d/ga18e230ae345-6\n\n",
+  "pack_tokens": 897,
+  "pack_units": 26,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null
+}

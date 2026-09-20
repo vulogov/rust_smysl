@@ -1,0 +1,218 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-deepseek-v2"
+repo = "ucal"
+commit = "cc3aafefb1da326e130fd890c1d575969cee7a2a"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Replace test-written temp fixture with committed observations file."
+suggest = [
+    "D1",
+    "D3",
+    "D4",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Create observations as four synthetic instants with known shifts."
+suggest = [
+    "D3",
+    "D1",
+    "D2",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Add residuals command as worked example in manual."
+suggest = [
+    "D4",
+    "D1",
+    "D2",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Add release note documenting flaky test and repair."
+suggest = ["D1"]
+match = "none"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Keep 'no observations read' as error rather than agreement."
+suggest = [
+    "D1",
+    "D4",
+    "D3",
+]
+match = "none"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Do not fit or extract quadratic trend (Ṗ) from residuals."
+suggest = [
+    "D1",
+    "D4",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "Two test binaries previously wrote the same fixed-name temp path and ran concurrently"
+suggest = [
+    "P1",
+    "P2",
+    "P5",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "The committed observations file exists at Documentation/examples/observations.txt with synthetic observations"
+suggest = [
+    "P3",
+    "P6",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "The residuals command accepts a file path argument to read observations"
+suggest = ["P2"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "The ephemeris file at Documentation/examples/ephemeris.hjson exists with predictable cycle centres"
+suggest = [
+    "P3",
+    "P6",
+    "P5",
+]
+match = "P3"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "Residuals command uses window widths that grow with cycle so +41 outside demonstrates property"
+suggest = ["P5"]
+match = "P5"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "Observations parser skips blank lines and lines starting with #"
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P7"
+text = "Manual examples are generated from xtask/src/examples.rs entries"
+suggest = [
+    "P6",
+    "P3",
+]
+match = "P6"
+
+[[item]]
+kind = "prerequisite"
+id = "P8"
+text = "The committed observations file contains four synthetic instants and is valid"
+suggest = ["P3"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P9"
+text = "The flaky test occurred on the cut commit and was found by CI"
+suggest = [
+    "P1",
+    "P2",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P10"
+text = "The repair uses a committed observations file"
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P11"
+text = "The residuals command currently returns error when no observations are read"
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P12"
+text = "The residuals command reports residuals but does not fit a quadratic trend"
+suggest = ["P3"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Write temp fixture into std::env::temp_dir() under fixed name. — Race condition: one test truncated the file while the other read it."
+suggest = [
+    "A1",
+    "A2",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Have the test invent observations without known shifts. — Residuals would not be known in advance, so cannot be checked by eye."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "Not include residuals command in the manual as a worked example. — The fixture is a demonstrable example and should be generated into the manual."
+suggest = ["A1"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "Do not add a release note documenting the flaky test. — Record that CI found flaky test and how it was fixed."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "Treat no observations read as agreement (compare nothing). — Comparing nothing should not be a report of agreement."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "Fit or extract quadratic trend (Ṗ) from residuals. — Least squares fitting needs to know which code produced the number, so it is not produced."
+suggest = []
+match = "none"

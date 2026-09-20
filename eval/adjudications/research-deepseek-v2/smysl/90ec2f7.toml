@@ -1,0 +1,411 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-deepseek-v2"
+repo = "smysl"
+commit = "90ec2f781421002876548124e9fe02073503372c"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Add tests/dispatch.rs that invokes every command and fails if unrouted."
+suggest = [
+    "D1",
+    "D10",
+    "D14",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Compare all 380 arguments against a golden CLI surface inside cargo test."
+suggest = [
+    "D3",
+    "D2",
+    "D14",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Hardcode command names in tests and Makefile instead of deriving from --help."
+suggest = [
+    "D6",
+    "D4",
+    "D3",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Run each command in a scratch directory of its own."
+suggest = [
+    "D8",
+    "D7",
+    "D1",
+]
+match = "D8"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Supply minimal_args for required-argument commands and treat clap refusal as failure."
+suggest = [
+    "D7",
+    "D9",
+    "D10",
+]
+match = "D7"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Set stdin to /dev/null for dispatch test commands."
+suggest = [
+    "D9",
+    "D10",
+    "D5",
+]
+match = "D9"
+
+[[item]]
+kind = "decision"
+id = "D7"
+text = "Document the `==` to `!=` mutation of COMMANDS.iter().find as equivalent."
+suggest = [
+    "D11",
+    "D9",
+    "D5",
+]
+match = "D11"
+
+[[item]]
+kind = "decision"
+id = "D8"
+text = "Do not add a test to distinguish the equivalent `!=` mutation."
+suggest = [
+    "D11",
+    "D10",
+    "D1",
+]
+match = "D11"
+
+[[item]]
+kind = "decision"
+id = "D9"
+text = "Do not assert exit code in every_command_dispatches."
+suggest = ["D10"]
+match = "D10"
+
+[[item]]
+kind = "decision"
+id = "D10"
+text = "Update CHANGELOG, READINESS, and ROAD_TO_1.0 to record dispatch pass findings."
+suggest = [
+    "D13",
+    "D15",
+    "D10",
+]
+match = "none"
+
+[[item]]
+kind = "decision"
+id = "D11"
+text = "Correct documentation that doc-output coverage is feature-dependent and unexplained."
+suggest = ["D12"]
+match = "D12"
+
+[[item]]
+kind = "decision"
+id = "D12"
+text = "Do not change tests/doc_output.rs gating to run under --all-features."
+suggest = [
+    "D10",
+    "D8",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "Cargo provides the binary path via CARGO_BIN_EXE_smysl for integration tests."
+suggest = [
+    "P9",
+    "P13",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "Clap's answer for an unregistered subcommand is 'unrecognized subcommand'."
+suggest = [
+    "P11",
+    "P2",
+    "P3",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "The router's answer for a table entry missing from main is 'not wired in this build'."
+suggest = [
+    "P2",
+    "P3",
+    "P5",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "cli() registers all twenty-two subcommands unconditionally, so an arm deletion strips arguments only."
+suggest = [
+    "P1",
+    "P11",
+    "P15",
+]
+match = "P1"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "Coverage tools cannot see Makefile gates, so golden comparison must be inside cargo test."
+suggest = [
+    "P4",
+    "P8",
+    "P12",
+]
+match = "P4"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "The hardcoded command list matches the actual twenty-two commands."
+suggest = [
+    "P1",
+    "P3",
+    "P10",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P7"
+text = "ingest and usage write to .smysl in the working directory, so a shared checkout would be dirtied."
+suggest = ["P7"]
+match = "P7"
+
+[[item]]
+kind = "prerequisite"
+id = "P8"
+text = "Seven commands require an argument, so clap rejects bare names before the router runs."
+suggest = [
+    "P2",
+    "P3",
+    "P11",
+]
+match = "P2"
+
+[[item]]
+kind = "prerequisite"
+id = "P9"
+text = "fmt and check read stdin when given no path, so inherited terminal would hang."
+suggest = [
+    "P9",
+    "P14",
+    "P10",
+]
+match = "P9"
+
+[[item]]
+kind = "prerequisite"
+id = "P10"
+text = "Every command in COMMANDS has an arm above the `_` arm, so no input reaches it."
+suggest = [
+    "P10",
+    "P3",
+    "P1",
+]
+match = "P10"
+
+[[item]]
+kind = "prerequisite"
+id = "P11"
+text = "clap only yields subcommand names that cli() registered, and cli() registers exactly COMMANDS."
+suggest = [
+    "P11",
+    "P1",
+    "P2",
+]
+match = "P11"
+
+[[item]]
+kind = "prerequisite"
+id = "P12"
+text = "The `_` arm is unreachable, so no test can distinguish the `!=` mutant."
+suggest = [
+    "P12",
+    "P8",
+    "P5",
+]
+match = "P10"
+
+[[item]]
+kind = "prerequisite"
+id = "P13"
+text = "Most commands fail without a store, so exit code would only reflect command failure."
+suggest = [
+    "P1",
+    "P12",
+    "P3",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P14"
+text = "cli+main survivors went from 15 to 1."
+suggest = [
+    "P3",
+    "P11",
+    "P1",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P15"
+text = "Seven of twenty-two commands were untested."
+suggest = ["P1"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P16"
+text = "tests/doc_output.rs is gated to compile in exactly one matrix configuration."
+suggest = [
+    "P13",
+    "P15",
+    "P10",
+]
+match = "P13"
+
+[[item]]
+kind = "prerequisite"
+id = "P17"
+text = "With --all-features, doc_output test runs 0 tests; it does not exist."
+suggest = [
+    "P13",
+    "P8",
+    "P2",
+]
+match = "P13"
+
+[[item]]
+kind = "prerequisite"
+id = "P18"
+text = "The manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift."
+suggest = [
+    "P14",
+    "P9",
+    "P7",
+]
+match = "P14"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "first version of tests/dispatch.rs assumed the two arms were the same mutation; only invoked commands with no arguments — It missed that deleting a cli() arm strips arguments, which a no-argument invocation cannot see."
+suggest = [
+    "A1",
+    "A7",
+    "A3",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "compare the golden CLI surface via a Makefile target instead of inside cargo test — A Makefile gate is invisible to anything that counts coverage."
+suggest = [
+    "A3",
+    "A4",
+    "A5",
+]
+match = "A3"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "derive command names from `--help` output in tests and Makefile — A list derived from the binary shrinks silently when the binary does, and the regenerated golden would record absence as intent."
+suggest = [
+    "A2",
+    "A1",
+    "A4",
+]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "run each command in the repository root — It left .smysl/staged.smy and .smysl/usage.log behind, and usage read a ledger ingest had just written."
+suggest = [
+    "A1",
+    "A2",
+    "A4",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "accept clap's refusal for required-argument commands as a skipped test — That would quietly drop coverage; treating refusal as failure stops the hole reopening."
+suggest = [
+    "A7",
+    "A5",
+    "A3",
+]
+match = "A7"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "inherit stdin from the terminal for dispatch test commands — fmt and check read stdin when given no path; inherited terminal would hang instead of failing."
+suggest = [
+    "A5",
+    "A2",
+    "A3",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A7"
+text = "add a test to distinguish the `!=` mutation of COMMANDS.iter().find — The mutation is unreachable; a test cannot distinguish the two programs."
+suggest = ["A5"]
+match = "A5"
+
+[[item]]
+kind = "alternative"
+id = "A8"
+text = "assert exit code in every_command_dispatches — Most commands fail without a store; how they fail is the rest of the suite's job."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A9"
+text = "retain the claim that doc-output's feature-dependent coverage is unexplained — It was wrong; tests/doc_output.rs header explains the gating."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A10"
+text = "change tests/doc_output.rs gating to run under --all-features — The design is deliberate; exact-pack makes a correct SMY-W202 claim read as drift."
+suggest = ["A2"]
+match = "none"

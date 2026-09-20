@@ -1,0 +1,44 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-flash-v2"
+repo = "ucal"
+commit = "cc3aafefb1da326e130fd890c1d575969cee7a2a"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Use a committed observations file instead of writing a temporary file in tests"
+suggest = [
+    "D1",
+    "D4",
+    "D3",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Include the ephemeris residuals command in the documentation's worked examples"
+suggest = [
+    "D4",
+    "D1",
+    "D2",
+]
+match = "D4"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "The observations file parser skips blank lines and lines starting with hash characters."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Writing the observations fixture dynamically to a temporary directory during test runs — Concurrent test binaries writing to the same temporary path raced, resulting in truncated reads and flaky test failures."
+suggest = [
+    "A1",
+    "A2",
+]
+match = "A1"

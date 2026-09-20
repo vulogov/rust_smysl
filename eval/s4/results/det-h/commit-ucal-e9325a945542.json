@@ -1,0 +1,19 @@
+{
+  "candidates": null,
+  "contradicting": null,
+  "corpus_commits": [],
+  "diff_lines_shown": 36,
+  "diff_truncated": false,
+  "files": [
+    ".github/workflows/links.yml"
+  ],
+  "fingerprint": "ea3b77d2147c0daf28cc523fde629d828749ceb48d280690d51c1ebce3445b4d",
+  "id": "commit-ucal-e9325a945542",
+  "kind": "commit",
+  "pack_text": null,
+  "pack_tokens": null,
+  "pack_units": null,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null
+}

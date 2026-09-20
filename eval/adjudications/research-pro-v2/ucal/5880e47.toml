@@ -1,0 +1,153 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-pro-v2"
+repo = "ucal"
+commit = "5880e472260eb32c58821c7fe4a7497154d590a8"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Derive the version being built from `[workspace.package]`."
+suggest = [
+    "D1",
+    "D3",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Do not sort release notes filenames numerically."
+suggest = [
+    "D2",
+    "D1",
+    "D3",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Treat a missing release notes file for the current version as an error."
+suggest = [
+    "D1",
+    "D3",
+    "D4",
+]
+match = "D3"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Restore the doc comment for `check_ci_covers_the_procedure`."
+suggest = ["D5"]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Make the missing-notes test strictly check the error message."
+suggest = [
+    "D4",
+    "D1",
+    "D3",
+]
+match = "D4"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "The version being built is specified in the workspace package manifest."
+suggest = [
+    "P1",
+    "P3",
+    "P4",
+]
+match = "P4"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "Other parts of the codebase treat versions as opaque strings."
+suggest = ["P5"]
+match = "P5"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "Sorting numerically fixes the immediate bug."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "A cycle's release notes are created when the cycle opens."
+suggest = [
+    "P3",
+    "P2",
+    "P1",
+]
+match = "P3"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "The new function's doc comment swallowed the existing one."
+suggest = [
+    "P3",
+    "P1",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "read_to_string fails with a message containing the path and version."
+suggest = [
+    "P2",
+    "P3",
+    "P1",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "sort it correctly — It leaves the guess in place."
+suggest = ["A1"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Sorting numerically — It would have left the guess in place."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "silently read the previous cycle's file and passed — It is now an error naming the version."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "leaving that function undocumented — The new function's doc comment had swallowed it."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "Asserting only that *some* error came back — It passed even with the check disabled because read_to_string fails too."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "A2"

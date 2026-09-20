@@ -1,0 +1,172 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "r/g5880e472260e-4-1",
+      "score": 133.16981506347656,
+      "terms": [
+        "som:14.16",
+        "some:14.16",
+        "nam:10.17",
+        "path:7.08",
+        "back:5.90"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-1-2",
+      "score": 115.8187255859375,
+      "terms": [
+        "releas:11.07",
+        "release:11.07",
+        "notes:10.39",
+        "release_not:7.99",
+        "release_notes:7.99"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-3",
+      "score": 99.09934997558594,
+      "terms": [
+        "notes:8.71",
+        "sort:5.60",
+        "current:5.26",
+        "version:4.76",
+        "fil:4.35"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/gcc3aafefb1da-1-1",
+      "score": 88.64308166503906,
+      "terms": [
+        "dir:16.85",
+        "nam:9.76",
+        "env:8.42",
+        "temp_dir:8.42",
+        "temp:8.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 84.45155334472656,
+      "terms": [
+        "som:10.11",
+        "some:10.11",
+        "notes:8.84",
+        "nam:8.73",
+        "path:6.66"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 78.26837921142578,
+      "terms": [
+        "notes:9.78",
+        "nam:9.24",
+        "releas:8.81",
+        "release:8.81",
+        "current:5.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 72.66842651367188,
+      "terms": [
+        "notes:9.43",
+        "fall:8.22",
+        "bump:6.40",
+        "bumped:6.40",
+        "back:6.18"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 70.89274597167969,
+      "terms": [
+        "releas:10.76",
+        "release:10.76",
+        "notes:10.10",
+        "release_not:7.60",
+        "release_notes:7.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 68.16032409667969,
+      "terms": [
+        "notes:8.34",
+        "newest:8.06",
+        "sort:5.96",
+        "filenam:5.57",
+        "guess:4.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-6-1",
+      "score": 59.15074157714844,
+      "terms": [
+        "releas:9.26",
+        "release:9.26",
+        "notes:8.70",
+        "adjacent:6.58",
+        "sort:6.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g21665b3aac9b-9-2",
+      "score": 50.728633880615234,
+      "terms": [
+        "releas:9.97",
+        "release:9.97",
+        "failure:6.77",
+        "hav:6.77",
+        "have:6.77"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g8fdb9b3edb7c-2-1",
+      "score": 49.569034576416016,
+      "terms": [
+        "expect:12.12",
+        "write:7.76",
+        "writ:6.44",
+        "any:5.80",
+        "when:3.51"
+      ]
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "files": [
+    "xtask/src/citations.rs"
+  ],
+  "fingerprint": "4ee908b21dd77faf987cc431a5beda7d969ad7968dbf97816346cb0aea756823",
+  "id": "s4-heldout-task-10-control-r2",
+  "kind": "agent",
+  "pack_text": "[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Route all time readings through a process-wide session clock.\n\n[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ignore poison on the session mutex and take the inner value.\n\n[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Make Session::reading a pure function of its inputs.\n\n[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)\n  Document the session clock and its rule in CLI.md and release notes.\n\n[d/g21665b3aac9b-1] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Set RUSTFLAGS=-D warnings in features.yml workflow\n\n[d/g21665b3aac9b-2] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Fix the six items with cfg attributes rather than warning suppressions\n  -> causes q/g21665b3aac9b-2-1\n\n[d/g21665b3aac9b-3] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate RatInterval import behind feature cosmo\n\n[d/g21665b3aac9b-4] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate qualified::Kind import behind feature civil\n  -> causes q/g21665b3aac9b-4-1\n\n[d/g21665b3aac9b-5] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate Rounding import behind feature civil\n\n[d/g21665b3aac9b-6] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate parse_form and codec::Form behind all(civil, std)\n\n[d/g21665b3aac9b-7] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate years_quantity behind any(events, cosmo)\n\n[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add a clock section to doctor and now output.\n\n[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add doctor --clock flag to sample and report machine resolution.\n\n[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep precision field name and value unchanged.\n  -> causes q/g31e52cc10b1f-3-1\n\n[d/g31e52cc10b1f-4] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Do not measure accuracy.\n\n[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep granularity, resolution, and accuracy as separate numbers.\n\n[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Report which error terms cancel in a difference.\n\n[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)\n  Add note that precision is tier rendered to, not accuracy.\n\n[d/g449b762e3cca-11] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Add property test recovering every instant\n\n[d/g449b762e3cca-12] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Assert consecutive local days leave no gap\n  -> causes q/g449b762e3cca-12-1\n\n[d/g449b762e3cca-2] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Return a Window from the inverse\n  -> causes q/g449b762e3cca-2-1\n\n[d/g449b762e3cca-3] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Parse the exact form `cal show` prints\n\n[d/g449b762e3cca-4] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Take window endpoints outward, never inward\n\n[d/g449b762e3cca-5] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Do not use search to find the year\n  -> causes q/g449b762e3cca-5-1\n\n[d/g449b762e3cca-6] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse year 0\n  -> causes q/g449b762e3cca-6-1\n\n[d/g449b762e3cca-7] decision (cited, source crates/ucal-body/src/calendar.rs@449b762e3cca)\n  Refuse day 0\n  -> causes q/g449b762e3cca-7-1\n\n[d/g449b762e3cca-8] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a day past the year's end, not roll it forward\n  -> causes q/g449b762e3cca-8-1\n\n[d/g449b762e3cca-9] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a fraction of 1 or more\n  -> causes q/g449b762e3cca-9-1\n\n[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Read notes for version being built rather than newest sorted file\n  Sorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing.\n\n[d/g5880e472260e-2] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Error naming the version when current release notes missing\n  The old sort silently read the previous cycle's file and passed when notes were never written. Now a missing notes file for the current version is an explicit error.\n\n[d/g5880e472260e-3] decision (cited, source xtask/src/citations.rs@5880e472260e)\n  Replace old version-sort tests with current-version and missing-notes tests\n  Old tests checked that sorting by version picks 1.10.0 and that stray files sort first. New tests assert the current version's notes file exists and that a missing file is refused.\n\n[d/g5880e472260e-4] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Make missing-notes test strict about the diagnostic\n  Asserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic.\n\n[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Restore doc comment for check_ci_covers_the_procedure\n\n[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Update release notes with the fix rationale and sweep findings\n\n[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Accept broken pipe as non-fatal when writing test stdin.\n\n[d/gcc3aafefb1da-1] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Replace test-written temp fixture with committed observations file.\n  -> causes q/gcc3aafefb1da-1-1\n\n[d/gcc3aafefb1da-4] decision (cited, source Documentation/Release_Notes/1.12.0.md@cc3aafefb1da)\n  Add release note documenting flaky test and repair.\n  -> causes q/gcc3aafefb1da-4-1\n\n[d/gcc3aafefb1da-5] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Keep 'no observations read' as error rather than agreement.\n  -> causes q/gcc3aafefb1da-5-1\n\n[d/gcc3aafefb1da-6] decision (cited, source Documentation/CLI-EXAMPLES.md@cc3aafefb1da)\n  Do not fit or extract quadratic trend (Ṗ) from residuals.\n  -> causes q/gcc3aafefb1da-6-1\n\n[p/g21665b3aac9b-9-2] constraint (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  The two failure conditions (no release and gh unauthenticated) have different remedies.\n\n[p/g5880e472260e-1-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  The workspace version is declared under [workspace.package] in Cargo.toml.\n  -> conditions d/g5880e472260e-1\n\n[p/g5880e472260e-1-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  Release notes are stored as {version}.md files under Documentation/Release_Notes.\n  -> conditions d/g5880e472260e-1\n\n[p/g5880e472260e-2-1] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  check_ci_covers_the_procedure returns Result<usize, Vec<String>>, so an Err is a failed check.\n  -> conditions d/g5880e472260e-2\n\n[p/g5880e472260e-2-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  The current version is already derived from [workspace.package] by decision 1.\n  -> conditions d/g5880e472260e-2\n\n[p/g5880e472260e-3-1] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  The test can get the workspace root via crate::workspace_root().\n  -> conditions d/g5880e472260e-3\n\n[p/g5880e472260e-4-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  std::fs::read_to_string on a missing file returns an error message containing the path and version.\n  -> conditions d/g5880e472260e-4\n\n[p/g5880e472260e-4-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  The missing-notes diagnostic produced by decision 2 contains the phrase a cycle's notes.\n  -> conditions d/g5880e472260e-4\n\n[p/g5880e472260e-6-1] constraint (speculative)\n  Release notes for the current 1.10.0 cycle are kept in Documentation/Release_Notes/1.10.0.md.\n  -> conditions d/g5880e472260e-6\n\n[q/g2074788f713e-5-1] claim (inferred)\n  last prevents smaller elapsed inputs from making reading go backwards.\n\n[q/g2074788f713e-6-1] claim (inferred)\n  Option avoids .expect, allows anchoring where failure can be returned.\n\n[q/g21665b3aac9b-2-1] claim (inferred)\n  Six items fixed with cfg attributes, not warning suppressions.\n\n[q/g21665b3aac9b-4-1] claim (inferred)\n  qualified::Kind import is gated to civil because to-civil reads it.\n\n[q/g31e52cc10b1f-3-1] claim (inferred)\n  Keeping precision unchanged avoids breaking ucal-json/1 paths.\n\n[q/g449b762e3cca-12-1] claim (inferred)\n  Consecutive local days leave no gap.\n\n[q/g449b762e3cca-2-1] claim (inferred)\n  The inverse returns a Window, an interval, not a point.\n\n[q/g449b762e3cca-5-1] claim (inferred)\n  The inverse evaluates directly without iterative search.\n\n[q/g449b762e3cca-6-1] claim (inferred)\n  Year 0 is refused with error E0020.\n\n[q/g449b762e3cca-7-1] claim (inferred)\n  Day 0 is refused with error E0018.\n\n[q/g449b762e3cca-8-1] claim (inferred)\n  Days beyond the year's end are refused, not rolled forward.\n\n[q/g449b762e3cca-9-1] claim (inferred)\n  Fractions of 1 or more are refused.\n\n[q/gcc3aafefb1da-1-1] claim (inferred)\n  Committed fixture cannot race and a reader can open it.\n\n[q/gcc3aafefb1da-4-1] claim (inferred)\n  Release note records CI found the flaky test and the repair.\n\n[q/gcc3aafefb1da-5-1] claim (inferred)\n  No observations read remains an error, not a report of agreement.\n\n[q/gcc3aafefb1da-6-1] claim (inferred)\n  Residuals command does not fit or extract quadratic trend (Ṗ).\n\n[r/g5880e472260e-2-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Rejected: silently fall back to the previous cycle's notes file\n  This fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file.\n  -> contrasts d/g5880e472260e-2\n\n[r/g5880e472260e-4-1] claim (cited, source xtask/src/citations.rs@5880e472260e)\n  Rejected: assert only that some error came back and the message named the version\n  The loose assertion passed even with the check disabled because read_to_string also fails and names the path containing the version.\n  -> contrasts d/g5880e472260e-4\n\n[r/g5880e472260e-6-1] claim (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Rejected: keep the old release-notes text describing the numeric sort\n  That text described the abandoned numeric sort and omitted the adjacent failure and sweep findings.\n  -> contrasts d/g5880e472260e-6\n\n[r/g8fdb9b3edb7c-2-1] claim (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Rejected: Treat any write error to child stdin as fatal using expect(\"write\").\n  A broken pipe can occur when the child exits before finishing the write, and that is the program behaving correctly, so the test should not fail.\n  -> contrasts d/g8fdb9b3edb7c-2\n\n[r/gcc3aafefb1da-1-1] claim (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Rejected: Write temp fixture into std::env::temp_dir() under fixed name.\n  Race condition: one test truncated the file while the other read it.\n  -> contrasts d/gcc3aafefb1da-1\n\n",
+  "pack_tokens": 1492,
+  "pack_units": 69,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 10
+}

@@ -1,0 +1,433 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-pro-v2"
+repo = "smysl"
+commit = "4968383dc452dba3c9ac9ab2c6abae4b3612bba5"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Hand-roll the BLAKE3 implementation in Node.js."
+suggest = [
+    "D2",
+    "D14",
+    "D1",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Run the shape clause first in `uid()`."
+suggest = [
+    "D4",
+    "D26",
+    "D15",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Parse the spec's tables rather than quoting them in tests."
+suggest = [
+    "D11",
+    "D14",
+    "D5",
+]
+match = "D11"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Replay chapters using a scratch copy of the fixtures."
+suggest = [
+    "D17",
+    "D20",
+    "D23",
+]
+match = "D17"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Derive later states of a chapter rather than recording them."
+suggest = [
+    "D17",
+    "D21",
+    "D11",
+]
+match = "D17"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Anchor reader edits in `edits.json` by prose, never by content."
+suggest = [
+    "D18",
+    "D19",
+    "D20",
+]
+match = "D18"
+
+[[item]]
+kind = "decision"
+id = "D7"
+text = "Hold back repairing `beta.smy` in chapter 29."
+suggest = [
+    "D21",
+    "D17",
+    "D18",
+]
+match = "D21"
+
+[[item]]
+kind = "decision"
+id = "D8"
+text = "Add an explicit `--timeout` to `--test-workspace` for cargo-mutants."
+suggest = [
+    "D26",
+    "D12",
+    "D11",
+]
+match = "D26"
+
+[[item]]
+kind = "decision"
+id = "D9"
+text = "Deliberately not implement Rule M in outside readers."
+suggest = [
+    "D10",
+    "D4",
+]
+match = "D10"
+
+[[item]]
+kind = "decision"
+id = "D10"
+text = "NFC-normalise text at the CBOR encoder in Node.js."
+suggest = ["D8"]
+match = "D8"
+
+[[item]]
+kind = "decision"
+id = "D11"
+text = "Specify that empty `deps` or `grounds` are omitted."
+suggest = [
+    "D6",
+    "D10",
+]
+match = "D6"
+
+[[item]]
+kind = "decision"
+id = "D12"
+text = "Make status integers normative in the spec."
+suggest = [
+    "D12",
+    "D5",
+    "D15",
+]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D13"
+text = "Document the `source` map key layout and `kind` enum."
+suggest = [
+    "D17",
+    "D13",
+]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D14"
+text = "Name the base32 alphabet as RFC 4648, lowercased, unpadded."
+suggest = [
+    "D7",
+    "D8",
+]
+match = "D7"
+
+[[item]]
+kind = "decision"
+id = "D15"
+text = "Do not compare output for commands annotated with `(then …)`."
+suggest = [
+    "D25",
+    "D20",
+    "D22",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "Node.js does not have a BLAKE3 implementation in its standard library."
+suggest = [
+    "P1",
+    "P19",
+    "P2",
+]
+match = "P1"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "The C-Produce class is a claim about what an implementation emits."
+suggest = ["P18"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "The specification's tables are normative."
+suggest = ["P5"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "Running `fmt --write` in the fixture folder would rewrite tracked files."
+suggest = [
+    "P12",
+    "P13",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "A chapter's state is keyed by position, not by filename."
+suggest = [
+    "P11",
+    "P14",
+    "P13",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "An anchor must appear exactly once in its chapter."
+suggest = [
+    "P11",
+    "P14",
+    "P12",
+]
+match = "P11"
+
+[[item]]
+kind = "prerequisite"
+id = "P7"
+text = "The missing stanza cannot be reconstructed from the page."
+suggest = [
+    "P14",
+    "P12",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P8"
+text = "cargo-mutants auto-sets a timeout based on the baseline test duration."
+suggest = [
+    "P16",
+    "P15",
+]
+match = "P16"
+
+[[item]]
+kind = "prerequisite"
+id = "P9"
+text = "A unit core carries grounds as uids, making Rule M checkable against a store, not a unit."
+suggest = [
+    "P9",
+    "P8",
+    "P5",
+]
+match = "P9"
+
+[[item]]
+kind = "prerequisite"
+id = "P10"
+text = "The decoder rejects anything not already NFC."
+suggest = [
+    "P6",
+    "P17",
+]
+match = "P6"
+
+[[item]]
+kind = "prerequisite"
+id = "P11"
+text = "The minimal case in the fixture is a three-key map over 0, 1, and 6."
+suggest = [
+    "P12",
+    "P13",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P12"
+text = "Rule M compares statuses as integers."
+suggest = [
+    "P5",
+    "P9",
+]
+match = "P5"
+
+[[item]]
+kind = "prerequisite"
+id = "P13"
+text = "The fixture JSON gives names, leaving hex as the only statement of the integers."
+suggest = [
+    "P5",
+    "P7",
+    "P15",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P14"
+text = "Section 2.1 obliges a parser to accept 26 to 52 characters."
+suggest = [
+    "P19",
+    "P7",
+    "P18",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P15"
+text = "A caption annotated `(then …)` shows what comes after the command, not what it printed."
+suggest = [
+    "P18",
+    "P12",
+    "P13",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "a binding to the same C library the Rust calls — It would test two callers of one implementation rather than proving the specification is sufficient."
+suggest = [
+    "A1",
+    "A7",
+    "A5",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "validating on request while deriving anyway — The class is about what an implementation emits, so a malformed unit cannot obtain an identity."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "quoting them — Editing the spec and editing the test are two separate acts, and neither could notice the other."
+suggest = ["A2"]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "run in the fixture folder itself — A single replayed `fmt --write` would have rewritten a tracked file on every run."
+suggest = [
+    "A3",
+    "A2",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "recorded — Deriving it by running the command is a stronger claim than recording it would have been."
+suggest = []
+match = "A3"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "by content — The edit body is read out of the chapter at run time, so nothing can go stale."
+suggest = [
+    "A5",
+    "A6",
+    "A4",
+]
+match = "A5"
+
+[[item]]
+kind = "alternative"
+id = "A7"
+text = "repaired — The missing stanza cannot be reconstructed from the page, and guessing one into a published chapter is not a repair."
+suggest = [
+    "A6",
+    "A4",
+    "A5",
+]
+match = "A6"
+
+[[item]]
+kind = "alternative"
+id = "A8"
+text = "the default — cargo-mutants auto-sets a short timeout based on package tests, causing workspace tests to timeout and look like artefacts."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A9"
+text = "a `validate` claiming to enforce it — It constrains a unit against the statuses of its grounds, which requires a store, so a validate claiming to enforce it would be a check that cannot fail."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A10"
+text = "only in the constructors that happen to be remembered — The spec requires normalisation at the encoder, which makes `unicode-decomposed` reproducible."
+suggest = ["A2"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A11"
+text = "A literal reading — A literal reading gives a five-key map where the reference emits three, which is a different uid for every unit with neither."
+suggest = ["A4"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A12"
+text = "guessing a different order — Rule M compares them as integers, so guessing a different order would derive wrong uids and enforce a different monotonicity rule."
+suggest = ["A4"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A13"
+text = "recoverable only by decoding `core_bytes_hex` — Implementers could recover them only by decoding `core_bytes_hex` in the uid fixtures."
+suggest = ["A2"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A14"
+text = "base32hex — base32hex was an equally faithful reading that would produce mutually unreadable names."
+suggest = ["A4"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A15"
+text = "comparing its output to a diff — The block shows what comes after the command, not what it printed, so comparing its output to a diff would report drift on a block that never claimed to be its output."
+suggest = []
+match = "none"

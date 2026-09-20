@@ -1,0 +1,174 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-2-1",
+      "score": 140.58151245117188,
+      "terms": [
+        "ticks:29.24",
+        "tick:23.24",
+        "anchor:10.02",
+        "has:6.66",
+        "elaps:6.40"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-6-2",
+      "score": 129.00816345214844,
+      "terms": [
+        "session:21.29",
+        "anchor:9.73",
+        "clock:9.38",
+        "start:7.54",
+        "process:6.47"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g2074788f713e-4-1",
+      "score": 121.46867370605469,
+      "terms": [
+        "session:20.53",
+        "clock:12.00",
+        "wall:10.45",
+        "let:5.50",
+        "tests:4.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-3",
+      "score": 111.70967102050781,
+      "terms": [
+        "ticks:29.66",
+        "tick:23.57",
+        "session:16.26",
+        "clock:11.93",
+        "wall:10.39"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-3-1",
+      "score": 89.8779296875,
+      "terms": [
+        "ticks:28.04",
+        "tick:22.29",
+        "clock:11.28",
+        "wall:9.82",
+        "nothing:5.43"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-4-1",
+      "score": 73.66693878173828,
+      "terms": [
+        "drift:27.68",
+        "measur:12.53",
+        "clock:11.07",
+        "baselin:5.87",
+        "baseline:5.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 71.12992858886719,
+      "terms": [
+        "session:18.79",
+        "clock:11.25",
+        "wall:8.78",
+        "with:4.72",
+        "feature:4.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-6",
+      "score": 69.5610580444336,
+      "terms": [
+        "session:22.13",
+        "anchor:8.53",
+        "option:7.94",
+        "session_now:7.88",
+        "expect:6.61"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-7",
+      "score": 67.86663818359375,
+      "terms": [
+        "session:14.43",
+        "clock:11.28",
+        "wall:8.81",
+        "system:5.15",
+        "measurement:4.82"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-2",
+      "score": 65.9922103881836,
+      "terms": [
+        "measured:13.04",
+        "measur:9.38",
+        "machin:7.68",
+        "machine:7.68",
+        "doctor:5.93"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-4-2",
+      "score": 65.71843719482422,
+      "terms": [
+        "drift:36.88",
+        "baselin:7.82",
+        "baseline:7.82",
+        "report:5.05",
+        "from:4.35"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g449b762e3cca-4-1",
+      "score": 63.63126754760742,
+      "terms": [
+        "ticks:32.08",
+        "tick:25.49",
+        "from:4.23",
+        "and:1.83"
+      ]
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 233,
+  "diff_truncated": true,
+  "files": [
+    "Documentation/CLI.md",
+    "crates/ucal/src/clock.rs",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/tests/golden.rs"
+  ],
+  "fingerprint": "31b9454f9de215547c604d9baa58abdfd4555654a666748ba5db935483c6394b",
+  "id": "s4-heldout-task-12-control-r2",
+  "kind": "agent",
+  "pack_text": "[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Route all time readings through a process-wide session clock.\n\n[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ignore poison on the session mutex and take the inner value.\n\n[d/g2074788f713e-3] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Do not interpolate wall-clock ticks for precision.\n  Interpolating between wall ticks is worth 24/3125 of a rung, which is nothing. Session clock exists for monotonicity, not precision.\n\n[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Make Session::reading a pure function of its inputs.\n\n[d/g2074788f713e-6] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Store session state as Option and anchor lazily inside session_now, avoiding .expect.\n  OnceLock's initializer cannot return a Result; no-panic-in-cli lint refused .expect. Option allows anchoring where a failure can be returned.\n  -> causes q/g2074788f713e-6-1\n\n[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Split wall_instant out of now_instant to expose a raw system clock reading.\n  now_instant goes through session clock; doctor --clock and measurements need the raw reading. Splitting also exposed the feature gate issue.\n\n[d/g2074788f713e-8] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Gate wall_instant (and session clock) under the civil feature.\n  Converting a clock reading is a leap-table lookup, because Unix time is a UTC label. The feature workflow caught the missing gate when building with u512,std.\n\n[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)\n  Document the session clock and its rule in CLI.md and release notes.\n\n[d/g21665b3aac9b-1] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Set RUSTFLAGS=-D warnings in features.yml workflow\n\n[d/g21665b3aac9b-2] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Fix the six items with cfg attributes rather than warning suppressions\n  -> causes q/g21665b3aac9b-2-1\n\n[d/g21665b3aac9b-3] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate RatInterval import behind feature cosmo\n\n[d/g21665b3aac9b-4] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate qualified::Kind import behind feature civil\n  -> causes q/g21665b3aac9b-4-1\n\n[d/g21665b3aac9b-5] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate Rounding import behind feature civil\n\n[d/g21665b3aac9b-6] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate parse_form and codec::Form behind all(civil, std)\n\n[d/g21665b3aac9b-7] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate years_quantity behind any(events, cosmo)\n\n[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add a clock section to doctor and now output.\n\n[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add doctor --clock flag to sample and report machine resolution.\n  Resolution is measured and varies by machine; it must be behind a flag because doctor's ordinary output is compared against a committed example.\n\n[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep precision field name and value unchanged.\n  -> causes q/g31e52cc10b1f-3-1\n\n[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep granularity, resolution, and accuracy as separate numbers.\n\n[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Report which error terms cancel in a difference.\n\n[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)\n  Add note that precision is tier rendered to, not accuracy.\n\n[d/g449b762e3cca-11] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Add property test recovering every instant\n\n[d/g449b762e3cca-12] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Assert consecutive local days leave no gap\n  -> causes q/g449b762e3cca-12-1\n\n[d/g449b762e3cca-2] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Return a Window from the inverse\n  -> causes q/g449b762e3cca-2-1\n\n[d/g449b762e3cca-3] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Parse the exact form `cal show` prints\n\n[d/g449b762e3cca-4] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Take window endpoints outward, never inward\n\n[d/g449b762e3cca-5] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Do not use search to find the year\n  -> causes q/g449b762e3cca-5-1\n\n[d/g449b762e3cca-6] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse year 0\n  -> causes q/g449b762e3cca-6-1\n\n[d/g449b762e3cca-7] decision (cited, source crates/ucal-body/src/calendar.rs@449b762e3cca)\n  Refuse day 0\n  -> causes q/g449b762e3cca-7-1\n\n[d/g449b762e3cca-8] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a day past the year's end, not roll it forward\n  -> causes q/g449b762e3cca-8-1\n\n[d/g449b762e3cca-9] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a fraction of 1 or more\n  -> causes q/g449b762e3cca-9-1\n\n[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Read notes for version being built rather than newest sorted file\n\n[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Restore doc comment for check_ci_covers_the_procedure\n\n[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Update release notes with the fix rationale and sweep findings\n\n[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Accept broken pipe as non-fatal when writing test stdin.\n\n[d/gcc3aafefb1da-1] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Replace test-written temp fixture with committed observations file.\n  -> causes q/gcc3aafefb1da-1-1\n\n[d/gcc3aafefb1da-4] decision (cited, source Documentation/Release_Notes/1.12.0.md@cc3aafefb1da)\n  Add release note documenting flaky test and repair.\n  -> causes q/gcc3aafefb1da-4-1\n\n[d/gcc3aafefb1da-5] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Keep 'no observations read' as error rather than agreement.\n  -> causes q/gcc3aafefb1da-5-1\n\n[d/gcc3aafefb1da-6] decision (cited, source Documentation/CLI-EXAMPLES.md@cc3aafefb1da)\n  Do not fit or extract quadratic trend (Ṗ) from residuals.\n  -> causes q/gcc3aafefb1da-6-1\n\n[p/g2074788f713e-2-1] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ticks has `try_add` to compute anchor plus monotonic elapsed.\n\n[p/g2074788f713e-3-1] constraint (cited, source Documentation/CLI.md@2074788f713e)\n  Existing `--clock` reports 1000 ns to 41 ns factor 24 and rung 3125.\n  -> conditions d/g2074788f713e-3\n\n[p/g2074788f713e-6-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  `OnceLock`'s initialiser cannot return a `Result`.\n  -> conditions d/g2074788f713e-6\n\n[p/g2074788f713e-6-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  The `no-panic-in-cli` lint refused an `.expect`.\n  -> conditions d/g2074788f713e-6\n\n[p/g2074788f713e-6-3] constraint (cited, source Documentation/CLI.md@2074788f713e)\n  §19.5 requires failures leave through a code and exit status.\n  -> conditions d/g2074788f713e-6\n\n[p/g2074788f713e-7-1] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)\n  `doctor --clock` samples raw reading because session clock measuring itself is circular.\n  -> conditions d/g2074788f713e-7\n\n[p/g2074788f713e-7-2] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)\n  `now_instant` goes through session clock, so raw reading needs a separate function.\n  -> conditions d/g2074788f713e-7\n\n[p/g2074788f713e-7-3] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Raw `SystemTime` reading code already exists to move into `wall_instant`.\n  -> conditions d/g2074788f713e-7\n\n[p/g2074788f713e-8-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Converting a clock reading is a leap-table lookup because Unix time is a UTC label.\n  -> conditions d/g2074788f713e-8\n\n[p/g2074788f713e-8-2] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)\n  Feature workflow builds `--no-default-features --features u512,std` and caught the missing gate.\n  -> conditions d/g2074788f713e-8\n\n[p/g2074788f713e-8-3] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)\n  `now_instant` is gated under the `civil` feature.\n  -> conditions d/g2074788f713e-8\n\n[p/g31e52cc10b1f-2-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  doctor's ordinary output is compared byte-for-byte against a committed example.\n  -> conditions d/g31e52cc10b1f-2\n\n[p/g31e52cc10b1f-2-2] constraint (cited, source crates/ucal/src/clock.rs@31e52cc10b1f)\n  Resolution measurements vary by machine and by run.\n  -> conditions d/g31e52cc10b1f-2\n\n[p/g31e52cc10b1f-4-2] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  A rate error from a short baseline reports quantisation as drift.\n\n[p/g449b762e3cca-4-1] constraint (cited, source crates/ucal-body/src/calendar.rs@449b762e3cca)\n  `Ratio` supports `floor` and `ceil`; `Instant::from_ticks` takes integer ticks.\n  -> conditions d/g449b762e3cca-4\n\n[q/g2074788f713e-5-1] claim (inferred)\n  last prevents smaller elapsed inputs from making reading go backwards.\n\n[q/g2074788f713e-6-1] claim (inferred)\n  Option avoids .expect, allows anchoring where failure can be returned.\n\n[q/g21665b3aac9b-2-1] claim (inferred)\n  Six items fixed with cfg attributes, not warning suppressions.\n\n[q/g21665b3aac9b-4-1] claim (inferred)\n  qualified::Kind import is gated to civil because to-civil reads it.\n\n[q/g31e52cc10b1f-3-1] claim (inferred)\n  Keeping precision unchanged avoids breaking ucal-json/1 paths.\n\n[q/g449b762e3cca-12-1] claim (inferred)\n  Consecutive local days leave no gap.\n\n[q/g449b762e3cca-2-1] claim (inferred)\n  The inverse returns a Window, an interval, not a point.\n\n[q/g449b762e3cca-5-1] claim (inferred)\n  The inverse evaluates directly without iterative search.\n\n[q/g449b762e3cca-6-1] claim (inferred)\n  Year 0 is refused with error E0020.\n\n[q/g449b762e3cca-7-1] claim (inferred)\n  Day 0 is refused with error E0018.\n\n[q/g449b762e3cca-8-1] claim (inferred)\n  Days beyond the year's end are refused, not rolled forward.\n\n[q/g449b762e3cca-9-1] claim (inferred)\n  Fractions of 1 or more are refused.\n\n[q/gcc3aafefb1da-1-1] claim (inferred)\n  Committed fixture cannot race and a reader can open it.\n\n[q/gcc3aafefb1da-4-1] claim (inferred)\n  Release note records CI found the flaky test and the repair.\n\n[q/gcc3aafefb1da-5-1] claim (inferred)\n  No observations read remains an error, not a report of agreement.\n\n[q/gcc3aafefb1da-6-1] claim (inferred)\n  Residuals command does not fit or extract quadratic trend (Ṗ).\n\n[r/g2074788f713e-3-1] claim (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Rejected: Interpolate between wall ticks using the monotonic clock for precision.\n  It is worth 24/3125 of a rung, which is nothing.\n  -> contrasts d/g2074788f713e-3\n\n[r/g2074788f713e-4-1] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Rejected: Have Session::reading read the wall clock itself.\n  A pure function lets tests drive a wall clock backwards and assert the answer does not follow.\n  -> contrasts d/g2074788f713e-4\n\n[r/g2074788f713e-6-2] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Rejected: Anchor the session at process start-up.\n  A command that never asks the time should not read a clock, and most do not.\n  -> contrasts d/g2074788f713e-6\n\n[r/g31e52cc10b1f-4-1] claim (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Rejected: Attempt to measure or estimate clock accuracy.\n  Offline operation provides no reference, and short-baseline rate error reports quantisation as drift.\n\n",
+  "pack_tokens": 1495,
+  "pack_units": 74,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": 12
+}

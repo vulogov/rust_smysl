@@ -1,0 +1,172 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-9",
+      "score": 59.737239837646484,
+      "terms": [
+        "mor:15.98",
+        "more:15.98",
+        "thi:9.97",
+        "this:9.97",
+        "one:3.67"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 48.858219146728516,
+      "terms": [
+        "thi:9.26",
+        "this:9.26",
+        "for:6.86",
+        "sam:4.08",
+        "same:4.08"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-10",
+      "score": 45.02898406982422,
+      "terms": [
+        "thi:10.04",
+        "this:10.04",
+        "sam:4.43",
+        "same:4.43",
+        "ucal:3.84"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g449b762e3cca-6-1",
+      "score": 39.017635345458984,
+      "terms": [
+        "ther:6.43",
+        "there:6.43",
+        "years:6.18",
+        "year:5.02",
+        "are:4.55"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-6",
+      "score": 37.155029296875,
+      "terms": [
+        "there:6.58",
+        "ther:5.47",
+        "years:5.26",
+        "year:5.21",
+        "are:3.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-9-1",
+      "score": 36.031517028808594,
+      "terms": [
+        "thi:9.54",
+        "this:9.54",
+        "rather:4.96",
+        "than:4.60",
+        "one:3.51"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g21665b3aac9b-3",
+      "score": 33.694480895996094,
+      "terms": [
+        "cosmo:6.46",
+        "interval:6.46",
+        "noth:5.09",
+        "nothing:5.09",
+        "all:4.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 33.541542053222656,
+      "terms": [
+        "built:8.03",
+        "for:6.51",
+        "rather:5.78",
+        "than:5.37",
+        "from:2.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-2-1",
+      "score": 33.38463592529297,
+      "terms": [
+        "rather:6.43",
+        "exact:6.18",
+        "answer:6.12",
+        "than:5.97",
+        "interval:5.06"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g449b762e3cca-6-1",
+      "score": 32.935691833496094,
+      "terms": [
+        "year:5.27",
+        "ther:4.81",
+        "there:4.81",
+        "years:4.63",
+        "are:3.41"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g21665b3aac9b-7-1",
+      "score": 31.02770233154297,
+      "terms": [
+        "for:7.84",
+        "cosmo:5.76",
+        "years:5.76",
+        "other:5.56",
+        "year:4.16"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/gcc3aafefb1da-5",
+      "score": 30.49535369873047,
+      "terms": [
+        "rather:6.67",
+        "than:6.20",
+        "noth:5.84",
+        "nothing:5.84",
+        "error:3.76"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "cc3aafe",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 151,
+  "diff_truncated": true,
+  "files": [
+    "Documentation/Proposals/S5-more-for-physicists.md"
+  ],
+  "fingerprint": "205cba4cb7fa95bf7076411e97b6bd6fe4ca32dea2fa4b47c1da892eb82879f2",
+  "id": "commit-ucal-ab32d922d3ff",
+  "kind": "commit",
+  "pack_text": "[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Route all time readings through a process-wide session clock.\n\n[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ignore poison on the session mutex and take the inner value.\n\n[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Make Session::reading a pure function of its inputs.\n\n[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Split wall_instant out of now_instant to expose a raw system clock reading.\n  -> causes q/g2074788f713e-7-1\n\n[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)\n  Document the session clock and its rule in CLI.md and release notes.\n  -> causes q/g2074788f713e-9-1\n\n[d/g21665b3aac9b-1] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Set RUSTFLAGS=-D warnings in features.yml workflow\n\n[d/g21665b3aac9b-2] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Fix the six items with cfg attributes rather than warning suppressions\n  -> causes q/g21665b3aac9b-2-1\n\n[d/g21665b3aac9b-3] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate RatInterval import behind feature cosmo\n  RatInterval is only parse_redshift's return type and nothing else's, so it arrives with cosmo or not at all.\n  -> causes q/g21665b3aac9b-3-1\n\n[d/g21665b3aac9b-4] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate qualified::Kind import behind feature civil\n  -> causes q/g21665b3aac9b-4-1\n\n[d/g21665b3aac9b-5] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate Rounding import behind feature civil\n\n[d/g21665b3aac9b-6] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate parse_form and codec::Form behind all(civil, std)\n\n[d/g21665b3aac9b-7] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate years_quantity behind any(events, cosmo)\n\n[d/g21665b3aac9b-9] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Split sign-release error message into two messages based on gh auth status\n\n[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add a clock section to doctor and now output.\n\n[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add doctor --clock flag to sample and report machine resolution.\n\n[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep precision field name and value unchanged.\n  -> causes q/g31e52cc10b1f-3-1\n\n[d/g31e52cc10b1f-4] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Do not measure accuracy.\n\n[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep granularity, resolution, and accuracy as separate numbers.\n\n[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Report which error terms cancel in a difference.\n\n[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)\n  Add note that precision is tier rendered to, not accuracy.\n\n[d/g449b762e3cca-10] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse calendars with no anchor\n  The same error as the forward direction, UCAL-E0062; thirteen of fifteen derived calendars are in this state.\n\n[d/g449b762e3cca-11] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Add property test recovering every instant\n\n[d/g449b762e3cca-12] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Assert consecutive local days leave no gap\n  -> causes q/g449b762e3cca-12-1\n\n[d/g449b762e3cca-2] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Return a Window from the inverse\n  -> causes q/g449b762e3cca-2-1\n\n[d/g449b762e3cca-3] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Parse the exact form `cal show` prints\n\n[d/g449b762e3cca-4] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Take window endpoints outward, never inward\n\n[d/g449b762e3cca-5] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Do not use search to find the year\n  -> causes q/g449b762e3cca-5-1\n\n[d/g449b762e3cca-6] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse year 0\n  Local years are 1-based from the anchor; year 1 is the year that began there, and there is no year 0.\n  -> causes q/g449b762e3cca-6-1\n\n[d/g449b762e3cca-7] decision (cited, source crates/ucal-body/src/calendar.rs@449b762e3cca)\n  Refuse day 0\n  -> causes q/g449b762e3cca-7-1\n\n[d/g449b762e3cca-8] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a day past the year's end, not roll it forward\n  -> causes q/g449b762e3cca-8-1\n\n[d/g449b762e3cca-9] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a fraction of 1 or more\n  A fraction through a day lies in [0, 1); 1 is the next day, not the end of this one.\n  -> causes q/g449b762e3cca-9-1\n\n[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Read notes for version being built rather than newest sorted file\n  Sorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing.\n\n[d/g5880e472260e-3] decision (cited, source xtask/src/citations.rs@5880e472260e)\n  Replace old version-sort tests with current-version and missing-notes tests\n  -> causes q/g5880e472260e-3-1\n\n[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Restore doc comment for check_ci_covers_the_procedure\n\n[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Update release notes with the fix rationale and sweep findings\n\n[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Accept broken pipe as non-fatal when writing test stdin.\n\n[d/gcc3aafefb1da-1] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Replace test-written temp fixture with committed observations file.\n  -> causes q/gcc3aafefb1da-1-1\n\n[d/gcc3aafefb1da-4] decision (cited, source Documentation/Release_Notes/1.12.0.md@cc3aafefb1da)\n  Add release note documenting flaky test and repair.\n  -> causes q/gcc3aafefb1da-4-1\n\n[d/gcc3aafefb1da-5] decision (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  Keep 'no observations read' as error rather than agreement.\n  Comparing nothing should not be a report of agreement.\n  -> causes q/gcc3aafefb1da-5-1\n\n[d/gcc3aafefb1da-6] decision (cited, source Documentation/CLI-EXAMPLES.md@cc3aafefb1da)\n  Do not fit or extract quadratic trend (Ṗ) from residuals.\n  -> causes q/gcc3aafefb1da-6-1\n\n[p/g21665b3aac9b-3-1] constraint (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  parse_redshift is compiled only when feature cosmo is enabled.\n  -> conditions d/g21665b3aac9b-3\n\n[p/g21665b3aac9b-7-1] constraint (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  years_quantity is called by events for a window's width and by cosmo for an enclosure's ends, and by no other …\n  years_quantity is called by events for a window's width and by cosmo for an enclosure's ends, and by no other features.\n  -> conditions d/g21665b3aac9b-7\n\n[p/g449b762e3cca-10-1] constraint (cited, source Documentation/CLI.md@449b762e3cca)\n  Forward direction already returns `UCAL-E0062` for unanchored calendars.\n  -> conditions d/g449b762e3cca-10\n\n[p/g449b762e3cca-6-1] constraint (cited, source Documentation/CLI.md@449b762e3cca)\n  Local years are 1-based from anchor; year 1 is the year that began there.\n  -> conditions d/g449b762e3cca-6\n\n[p/g449b762e3cca-9-1] constraint (cited, source crates/ucal-body/src/calendar.rs@449b762e3cca)\n  `Ratio` provides `cmp_exact` and `Ratio::one` for exact comparison.\n  -> conditions d/g449b762e3cca-9\n\n[p/g5880e472260e-1-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  The workspace version is declared under [workspace.package] in Cargo.toml.\n  -> conditions d/g5880e472260e-1\n\n[p/g5880e472260e-1-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  Release notes are stored as {version}.md files under Documentation/Release_Notes.\n  -> conditions d/g5880e472260e-1\n\n[p/gcc3aafefb1da-5-1] constraint (cited, source git:cc3aafefb1da326e130fd890c1d575969cee7a2a)\n  The residuals command currently returns error when no observations are read\n  -> conditions d/gcc3aafefb1da-5\n\n[q/g2074788f713e-5-1] claim (inferred)\n  last prevents smaller elapsed inputs from making reading go backwards.\n\n[q/g2074788f713e-6-1] claim (inferred)\n  Option avoids .expect, allows anchoring where failure can be returned.\n\n[q/g2074788f713e-7-1] claim (inferred)\n  wall_instant exposes raw system clock for doctor --clock and measurements.\n\n[q/g2074788f713e-9-1] claim (inferred)\n  Documents one process, one clock and max rule in CLI.md and release notes.\n\n[q/g21665b3aac9b-2-1] claim (inferred)\n  Six items fixed with cfg attributes, not warning suppressions.\n\n[q/g21665b3aac9b-3-1] claim (inferred)\n  RatInterval import is gated to cosmo because only parse_redshift uses it.\n\n[q/g21665b3aac9b-4-1] claim (inferred)\n  qualified::Kind import is gated to civil because to-civil reads it.\n\n[q/g31e52cc10b1f-3-1] claim (inferred)\n  Keeping precision unchanged avoids breaking ucal-json/1 paths.\n\n[q/g449b762e3cca-12-1] claim (inferred)\n  Consecutive local days leave no gap.\n\n[q/g449b762e3cca-2-1] claim (inferred)\n  The inverse returns a Window, an interval, not a point.\n\n[q/g449b762e3cca-5-1] claim (inferred)\n  The inverse evaluates directly without iterative search.\n\n[q/g449b762e3cca-6-1] claim (inferred)\n  Year 0 is refused with error E0020.\n\n[q/g449b762e3cca-7-1] claim (inferred)\n  Day 0 is refused with error E0018.\n\n[q/g449b762e3cca-8-1] claim (inferred)\n  Days beyond the year's end are refused, not rolled forward.\n\n[q/g449b762e3cca-9-1] claim (inferred)\n  Fractions of 1 or more are refused.\n\n[q/g5880e472260e-3-1] claim (inferred)\n  Old version-sort tests replaced with current-version and missing-notes tests.\n\n[q/gcc3aafefb1da-1-1] claim (inferred)\n  Committed fixture cannot race and a reader can open it.\n\n[q/gcc3aafefb1da-4-1] claim (inferred)\n  Release note records CI found the flaky test and the repair.\n\n[q/gcc3aafefb1da-5-1] claim (inferred)\n  No observations read remains an error, not a report of agreement.\n\n[q/gcc3aafefb1da-6-1] claim (inferred)\n  Residuals command does not fit or extract quadratic trend (Ṗ).\n\n[r/g449b762e3cca-10-1] claim (cited, source Documentation/CLI.md@449b762e3cca)\n  Rejected: Allow the inverse for calendars with no anchor.\n  The same error as the forward direction, UCAL-E0062, applies; thirteen of fifteen derived calendars are in this state.\n  -> contrasts d/g449b762e3cca-10\n\n[r/g449b762e3cca-2-1] claim (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Rejected: Return an exact instant rather than a Window.\n  A local day is a span and the anchor's uncertainty propagates, so the answer must be an interval.\n  -> contrasts d/g449b762e3cca-2\n\n[r/g449b762e3cca-6-1] claim (cited, source Documentation/CLI.md@449b762e3cca)\n  Rejected: Accept year 0 as the year before the anchor's year 1.\n  Local years are 1-based from the anchor, and year 1 is the year that began there.\n  -> contrasts d/g449b762e3cca-6\n\n[r/g449b762e3cca-9-1] claim (cited, source Documentation/CLI.md@449b762e3cca)\n  Rejected: Treat fraction 1 as the end of the current day.\n  A fraction through a day lies in [0, 1), and 1 is the next day rather than the end of this one.\n  -> contrasts d/g449b762e3cca-9\n\n",
+  "pack_tokens": 1491,
+  "pack_units": 72,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null
+}

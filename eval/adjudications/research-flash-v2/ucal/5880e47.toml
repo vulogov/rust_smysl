@@ -1,0 +1,65 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-flash-v2"
+repo = "ucal"
+commit = "5880e472260eb32c58821c7fe4a7497154d590a8"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Read release notes for the workspace version rather than guessing via sorted filenames."
+suggest = [
+    "D1",
+    "D3",
+    "D2",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Restore check_ci_covers_the_procedure's doc comment separated during helper insertion."
+suggest = ["D5"]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Assert specific error text in test instead of generic failure or version check."
+suggest = [
+    "D4",
+    "D1",
+    "D3",
+]
+match = "D4"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "read_to_string failure messages include the target path containing the version number."
+suggest = [
+    "P2",
+    "P3",
+    "P1",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Sorting release-notes filenames numerically — It repairs only the immediate ordering bug while leaving guesswork in place and failing to catch missing notes."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Asserting only that some error occurred and named the version — The test passed even with the check disabled because read_to_string also fails and includes the path containing the version."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "A2"

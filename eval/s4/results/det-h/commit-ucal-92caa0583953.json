@@ -1,0 +1,157 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-11-2",
+      "score": 110.47590637207031,
+      "terms": [
+        "body:32.10",
+        "file:23.78",
+        "fil:22.97",
+        "makes:6.70",
+        "body_fil:5.90"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g8fdb9b3edb7c-1-1",
+      "score": 104.00128173828125,
+      "terms": [
+        "body:33.78",
+        "file:22.68",
+        "fil:21.91",
+        "body_fil:5.63",
+        "body_file:5.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g8fdb9b3edb7c-1-1",
+      "score": 94.98040008544922,
+      "terms": [
+        "body:35.27",
+        "file:23.38",
+        "fil:22.59",
+        "body_fil:5.80",
+        "body_file:5.80"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g8fdb9b3edb7c-1",
+      "score": 90.38626861572266,
+      "terms": [
+        "body:27.61",
+        "file:15.62",
+        "fil:15.09",
+        "with:7.20",
+        "replace:6.27"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-3",
+      "score": 82.9926986694336,
+      "terms": [
+        "fil:21.08",
+        "file:19.28",
+        "with:6.79",
+        "replace:5.91",
+        "tests:5.21"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 80.51334381103516,
+      "terms": [
+        "file:23.58",
+        "fil:22.78",
+        "cycl:5.56",
+        "cycle:5.56",
+        "could:4.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 71.50531005859375,
+      "terms": [
+        "file:20.76",
+        "fil:20.06",
+        "releas:4.48",
+        "release:4.48",
+        "nam:4.31"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-1",
+      "score": 59.98301696777344,
+      "terms": [
+        "file:20.91",
+        "fil:20.21",
+        "rather:7.21",
+        "order:3.49",
+        "notes:3.30"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-4-1",
+      "score": 56.43233108520508,
+      "terms": [
+        "file:21.90",
+        "fil:21.16",
+        "path:4.93",
+        "str:4.72",
+        "the:2.01"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g2074788f713e-9",
+      "score": 55.237953186035156,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g31e52cc10b1f-8",
+      "score": 55.237953186035156,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-6",
+      "score": 55.237953186035156,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "31e52cc",
+    "8fdb9b3"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "files": [
+    "Documentation/CLI.md",
+    "Documentation/Release_Notes/1.10.0.md",
+    "crates/ucal/src/body_export.rs",
+    "crates/ucal/src/body_file.rs",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/tests/body_file.rs",
+    "xtask/src/lint.rs"
+  ],
+  "fingerprint": "623fc15ce19698e3c7e43309891cd3274c33da9ba611b5904cd786b8f73a158b",
+  "id": "commit-ucal-92caa0583953",
+  "kind": "commit",
+  "pack_text": "[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Route all time readings through a process-wide session clock.\n  -> causes q/g2074788f713e-1-1\n\n[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ignore poison on the session mutex and take the inner value.\n  -> causes q/g2074788f713e-11-1\n\n[d/g2074788f713e-2] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.\n\n[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Make Session::reading a pure function of its inputs.\n  -> causes q/g2074788f713e-4-1\n\n[d/g2074788f713e-5] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Track the last reading to enforce monotonicity against smaller elapsed inputs.\n  -> causes q/g2074788f713e-5-1\n\n[d/g2074788f713e-6] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Store session state as Option and anchor lazily inside session_now, avoiding .expect.\n  -> causes q/g2074788f713e-6-1\n\n[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Split wall_instant out of now_instant to expose a raw system clock reading.\n  -> causes q/g2074788f713e-7-1\n\n[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)\n  Document the session clock and its rule in CLI.md and release notes.\n  Record one process, one clock and the max rule for users.\n  -> causes q/g2074788f713e-9-1\n\n[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add a clock section to doctor and now output.\n  -> causes q/g31e52cc10b1f-1-1\n\n[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add doctor --clock flag to sample and report machine resolution.\n  -> causes q/g31e52cc10b1f-2-1\n\n[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep precision field name and value unchanged.\n  -> causes q/g31e52cc10b1f-3-1\n\n[d/g31e52cc10b1f-4] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Do not measure accuracy.\n\n[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep granularity, resolution, and accuracy as separate numbers.\n  -> causes q/g31e52cc10b1f-5-1\n\n[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Report which error terms cancel in a difference.\n  -> causes q/g31e52cc10b1f-6-1\n\n[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)\n  Add note that precision is tier rendered to, not accuracy.\n  The same field name means something else in explain; clarify meaning to prevent conflation.\n  -> causes q/g31e52cc10b1f-8-1\n\n[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Read notes for version being built rather than newest sorted file\n  Sorting filenames picked newest by lexicographic order, causing 1.10.0 to be missed. Deriving the version from [workspace.package] removes ordering and avoids guessing.\n  -> causes q/g5880e472260e-1-1\n\n[d/g5880e472260e-2] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Error naming the version when current release notes missing\n  The old sort silently read the previous cycle's file and passed when notes were never written. Now a missing notes file for the current version is an explicit error.\n\n[d/g5880e472260e-3] decision (cited, source xtask/src/citations.rs@5880e472260e)\n  Replace old version-sort tests with current-version and missing-notes tests\n  Old tests checked that sorting by version picks 1.10.0 and that stray files sort first. New tests assert the current version's notes file exists and that a missing file is refused.\n  -> causes q/g5880e472260e-3-1\n\n[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Restore doc comment for check_ci_covers_the_procedure\n  -> causes q/g5880e472260e-5-1\n\n[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Update release notes with the fix rationale and sweep findings\n  Record the change, why it is not a better sort, the missing-notes behavior, and the version-ordering sweep result for 1.10.0.\n  -> causes q/g5880e472260e-6-1\n\n[d/g8fdb9b3edb7c-1] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Replace interpolated event id with literal in event error message.\n  The interpolated id required body_file::leak, which is gated behind `body` while the arm is gated behind `events`, causing a feature-gating miss; the caller already typed the id.\n\n[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Accept broken pipe as non-fatal when writing test stdin.\n  -> causes q/g8fdb9b3edb7c-2-2\n  -> causes q/g8fdb9b3edb7c-2-1\n\n[p/g2074788f713e-11-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  `body_file::leak` makes the same judgment about its intern pool.\n  -> conditions d/g2074788f713e-11\n\n[p/g2074788f713e-9-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Session clock with `max` rule exists to document.\n  -> conditions d/g2074788f713e-9\n\n[p/g31e52cc10b1f-5-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Granularity is structural and fills T-2.\n  -> conditions d/g31e52cc10b1f-5\n\n[p/g31e52cc10b1f-8-1] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)\n  `--precision` is documented as tier to render to.\n  -> conditions d/g31e52cc10b1f-8\n\n[p/g31e52cc10b1f-8-2] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)\n  The same field name means something else in `ucal explain`.\n  -> conditions d/g31e52cc10b1f-8\n\n[p/g5880e472260e-1-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  The workspace version is declared under [workspace.package] in Cargo.toml.\n  -> conditions d/g5880e472260e-1\n\n[p/g5880e472260e-1-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  Release notes are stored as {version}.md files under Documentation/Release_Notes.\n  -> conditions d/g5880e472260e-1\n\n[p/g5880e472260e-2-1] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  check_ci_covers_the_procedure returns Result<usize, Vec<String>>, so an Err is a failed check.\n  -> conditions d/g5880e472260e-2\n\n[p/g5880e472260e-2-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  The current version is already derived from [workspace.package] by decision 1.\n  -> conditions d/g5880e472260e-2\n\n[p/g5880e472260e-3-1] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  The test can get the workspace root via crate::workspace_root().\n  -> conditions d/g5880e472260e-3\n\n[p/g5880e472260e-4-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  std::fs::read_to_string on a missing file returns an error message containing the path and version.\n\n[p/g5880e472260e-6-1] constraint (speculative)\n  Release notes for the current 1.10.0 cycle are kept in Documentation/Release_Notes/1.10.0.md.\n  -> conditions d/g5880e472260e-6\n\n[p/g8fdb9b3edb7c-1-1] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  `body_file::leak` is gated behind `body`; the arm is gated behind `events`.\n  -> conditions d/g8fdb9b3edb7c-1\n\n[p/g8fdb9b3edb7c-1-2] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Features workflow builds `events` without `body`.\n  -> conditions d/g8fdb9b3edb7c-1\n\n[p/g8fdb9b3edb7c-1-3] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  The caller already typed the event id, so omitting it is acceptable.\n  -> conditions d/g8fdb9b3edb7c-1\n\n[q/g2074788f713e-1-1] claim (inferred)\n  All time readings go through session clock, preventing wallclock face from going back in time.\n\n[q/g2074788f713e-11-1] claim (inferred)\n  Taking inner value on poisoned mutex is correct because state cannot be torn.\n\n[q/g2074788f713e-4-1] claim (inferred)\n  Pure function lets tests drive wall clock backwards and assert monotonic sequence.\n\n[q/g2074788f713e-5-1] claim (inferred)\n  last prevents smaller elapsed inputs from making reading go backwards.\n\n[q/g2074788f713e-6-1] claim (inferred)\n  Option avoids .expect, allows anchoring where failure can be returned.\n\n[q/g2074788f713e-7-1] claim (inferred)\n  wall_instant exposes raw system clock for doctor --clock and measurements.\n\n[q/g2074788f713e-9-1] claim (inferred)\n  Documents one process, one clock and max rule in CLI.md and release notes.\n\n[q/g31e52cc10b1f-1-1] claim (inferred)\n  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy …\n\n[q/g31e52cc10b1f-2-1] claim (inferred)\n  Doctor --clock must be behind a flag because resolution varies by machine and ordinary output is compared …\n\n[q/g31e52cc10b1f-3-1] claim (inferred)\n  Keeping precision unchanged avoids breaking ucal-json/1 paths.\n\n[q/g31e52cc10b1f-5-1] claim (inferred)\n  Separation makes clear what each number represents; conflating them is the defect.\n\n[q/g31e52cc10b1f-6-1] claim (inferred)\n  Reporting cancellations helps interpret differences: constant offset cancels, rate error does not.\n\n[q/g31e52cc10b1f-8-1] claim (inferred)\n  Note clarifies precision means tier rendered to, not accuracy, preventing conflation with explain's precision.\n\n[q/g5880e472260e-1-1] claim (inferred)\n  Check reads current version's notes from [workspace.package], removing ordering guess.\n\n[q/g5880e472260e-3-1] claim (inferred)\n  Old version-sort tests replaced with current-version and missing-notes tests.\n\n[q/g5880e472260e-5-1] claim (inferred)\n  Doc comment restored for check_ci_covers_the_procedure, leaving function documented.\n\n[q/g5880e472260e-6-1] claim (inferred)\n  Release notes updated with fix rationale, missing-notes behavior, and sweep findings.\n\n[q/g8fdb9b3edb7c-2-1] claim (inferred)\n  BrokenPipe on stdin write is treated as success, preventing EPIPE race from failing the test.\n\n[q/g8fdb9b3edb7c-2-2] claim (inferred)\n  Status and output assertions still execute after an EPIPE, so test validity remains.\n\n[r/g5880e472260e-2-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Rejected: silently fall back to the previous cycle's notes file\n  This fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file.\n  -> contrasts d/g5880e472260e-2\n\n[r/g8fdb9b3edb7c-1-1] claim (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Rejected: Interpolate the event id using body_file::leak(format!(...)).\n  It caused a feature-gating miss because body_file::leak is gated behind body while the arm is gated behind events, so builds with events but not body fail.\n  -> contrasts d/g8fdb9b3edb7c-1\n\n",
+  "pack_tokens": 1500,
+  "pack_units": 58,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null
+}

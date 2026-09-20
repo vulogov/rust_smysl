@@ -1,0 +1,168 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-flash-v2"
+repo = "smysl"
+commit = "90ec2f781421002876548124e9fe02073503372c"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Compare CLI argument surface against a golden file inside cargo test instead of a Makefile gate."
+suggest = [
+    "D3",
+    "D2",
+    "D14",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Hardcode the command list rather than deriving it from binary help output."
+suggest = [
+    "D4",
+    "D6",
+    "D5",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Supply minimal arguments for required-argument commands and assert when clap rejects bare invocations."
+suggest = [
+    "D7",
+    "D2",
+    "D9",
+]
+match = "D7"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Run each command under test inside its own scratch directory."
+suggest = [
+    "D8",
+    "D7",
+    "D1",
+]
+match = "D8"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Set command stdin to null rather than inheriting it during dispatch testing."
+suggest = [
+    "D10",
+    "D4",
+    "D6",
+]
+match = "D9"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Decline to add a test targeting the mutated command lookup comparison in main."
+suggest = [
+    "D1",
+    "D11",
+    "D4",
+]
+match = "D11"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "Subcommand argument arms are not feature-gated across build configurations."
+suggest = [
+    "P15",
+    "P2",
+    "P11",
+]
+match = "P15"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "Ingest and usage append to files resolved against the working directory."
+suggest = ["P7"]
+match = "P7"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "Fmt and check read standard input when invoked without path arguments."
+suggest = [
+    "P9",
+    "P10",
+    "P1",
+]
+match = "P9"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "Clap only yields registered subcommand names, ensuring the fallback dispatch arm is unreachable."
+suggest = [
+    "P11",
+    "P10",
+    "P2",
+]
+match = "P11"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Checking the CLI argument surface via a Makefile target — A Makefile gate is invisible to tools that measure test coverage."
+suggest = [
+    "A3",
+    "A5",
+    "A4",
+]
+match = "A3"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Deriving the command list dynamically by parsing the binary's help output — A deleted command arm would vanish from both the help text and the test list, silently passing."
+suggest = [
+    "A2",
+    "A1",
+    "A5",
+]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "Silently accepting clap rejections when invocations lack required arguments — Silently accepting clap failures would allow newly introduced required arguments to bypass test coverage undetected."
+suggest = [
+    "A7",
+    "A5",
+]
+match = "A7"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "Running the commands directly in the repository checkout root — Running commands in the repository root leaves untracked log and staging files and bleeds state between invocations."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "Inheriting standard input during dispatch testing — Commands that default to reading standard input when invoked without paths would cause the test harness to hang."
+suggest = ["A5"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "Writing a test targeting the mutated equality check in main — The mutant is functionally equivalent because the selected command descriptor is only used inside an unreachable fallback arm."
+suggest = [
+    "A5",
+    "A4",
+    "A1",
+]
+match = "A5"

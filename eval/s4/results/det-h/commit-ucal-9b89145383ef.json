@@ -1,0 +1,163 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-6",
+      "score": 57.60369873046875,
+      "terms": [
+        "record:5.11",
+        "releas:4.60",
+        "release:4.60",
+        "with:3.75",
+        "notes:3.71"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-2",
+      "score": 52.827728271484375,
+      "terms": [
+        "when:6.06",
+        "wer:4.90",
+        "were:4.90",
+        "releas:4.48",
+        "release:4.48"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 44.27662658691406,
+      "terms": [
+        "are:6.17",
+        "documentation:6.17",
+        "releas:5.43",
+        "release:5.43",
+        "cycl:5.16"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-1-1",
+      "score": 42.543907165527344,
+      "terms": [
+        "ucal:10.50",
+        "shar:8.12",
+        "singl:8.12",
+        "single:8.12",
+        "now:4.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g5880e472260e-4",
+      "score": 35.845489501953125,
+      "terms": [
+        "about:6.03",
+        "that:5.34",
+        "named:4.51",
+        "nam:4.08",
+        "notes:3.50"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-9",
+      "score": 31.473291397094727,
+      "terms": [
+        "record:5.57",
+        "releas:4.86",
+        "release:4.86",
+        "one:4.50",
+        "notes:3.56"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-1-2",
+      "score": 30.831918716430664,
+      "terms": [
+        "are:6.47",
+        "documentation:6.47",
+        "releas:5.58",
+        "release:5.58",
+        "notes:4.09"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g5880e472260e-2-1",
+      "score": 30.654970169067383,
+      "terms": [
+        "cycl:5.56",
+        "cycle:5.56",
+        "thi:4.72",
+        "this:4.72",
+        "notes:3.72"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-4-2",
+      "score": 28.12880516052246,
+      "terms": [
+        "decision:6.82",
+        "cycl:5.24",
+        "cycle:5.24",
+        "notes:4.01",
+        "a:3.06"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-7",
+      "score": 27.991987228393555,
+      "terms": [
+        "e:12.77",
+        "report:4.32",
+        "one:3.78",
+        "a:3.72",
+        "not:2.34"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g5880e472260e-6-1",
+      "score": 26.413864135742188,
+      "terms": []
+    },
+    {
+      "anchored": false,
+      "label": "r/g8fdb9b3edb7c-2-1",
+      "score": 26.00244140625,
+      "terms": [
+        "that:5.90",
+        "any:5.52",
+        "when:4.28",
+        "exit:4.03",
+        "a:2.23"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "31e52cc",
+    "8fdb9b3"
+  ],
+  "diff_lines_shown": 40,
+  "diff_truncated": false,
+  "files": [
+    "Documentation/Release_Notes/1.10.0.md"
+  ],
+  "fingerprint": "aa21983c3e72a59de0eddda49769b1507473e7618eeedaab4e5aaeb19266631b",
+  "id": "commit-ucal-9b89145383ef",
+  "kind": "commit",
+  "pack_text": "[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Route all time readings through a process-wide session clock.\n  -> causes q/g2074788f713e-1-1\n\n[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ignore poison on the session mutex and take the inner value.\n  -> causes q/g2074788f713e-11-1\n\n[d/g2074788f713e-2] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.\n  -> causes q/g2074788f713e-2-2\n\n[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Make Session::reading a pure function of its inputs.\n  Pure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence.\n  -> causes q/g2074788f713e-4-1\n\n[d/g2074788f713e-5] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Track the last reading to enforce monotonicity against smaller elapsed inputs.\n  -> causes q/g2074788f713e-5-1\n\n[d/g2074788f713e-6] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Store session state as Option and anchor lazily inside session_now, avoiding .expect.\n  -> causes q/g2074788f713e-6-1\n\n[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Split wall_instant out of now_instant to expose a raw system clock reading.\n  -> causes q/g2074788f713e-7-1\n\n[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)\n  Document the session clock and its rule in CLI.md and release notes.\n  Record one process, one clock and the max rule for users.\n  -> causes q/g2074788f713e-9-1\n\n[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add a clock section to doctor and now output.\n  -> causes q/g31e52cc10b1f-1-1\n\n[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add doctor --clock flag to sample and report machine resolution.\n  -> causes q/g31e52cc10b1f-2-1\n\n[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep precision field name and value unchanged.\n  -> causes q/g31e52cc10b1f-3-1\n\n[d/g31e52cc10b1f-4] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Do not measure accuracy.\n\n[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep granularity, resolution, and accuracy as separate numbers.\n  Conflating them is the defect; separation makes clear what each number represents.\n  -> causes q/g31e52cc10b1f-5-1\n\n[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Report which error terms cancel in a difference.\n  -> causes q/g31e52cc10b1f-6-1\n\n[d/g31e52cc10b1f-7] decision (cited, source Documentation/Release_Notes/1.9.0.md@31e52cc10b1f)\n  Report interpolation cost as a fraction, not a decimal.\n  Rule E forbids a float in a shipped crate; the lint caught the first draft using one.\n\n[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)\n  Add note that precision is tier rendered to, not accuracy.\n  -> causes q/g31e52cc10b1f-8-1\n\n[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Read notes for version being built rather than newest sorted file\n  -> causes q/g5880e472260e-1-1\n\n[d/g5880e472260e-2] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Error naming the version when current release notes missing\n  The old sort silently read the previous cycle's file and passed when notes were never written. Now a missing notes file for the current version is an explicit error.\n\n[d/g5880e472260e-3] decision (cited, source xtask/src/citations.rs@5880e472260e)\n  Replace old version-sort tests with current-version and missing-notes tests\n  -> causes q/g5880e472260e-3-1\n\n[d/g5880e472260e-4] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Make missing-notes test strict about the diagnostic\n  Asserting only that some error came back and the message named the version passed with the check disabled because read_to_string also fails and names the path. The test now checks for the specific missing-notes diagnostic.\n\n[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Restore doc comment for check_ci_covers_the_procedure\n  -> causes q/g5880e472260e-5-1\n\n[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Update release notes with the fix rationale and sweep findings\n  Record the change, why it is not a better sort, the missing-notes behavior, and the version-ordering sweep result for 1.10.0.\n  -> causes q/g5880e472260e-6-1\n\n[d/g8fdb9b3edb7c-1] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Replace interpolated event id with literal in event error message.\n\n[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Accept broken pipe as non-fatal when writing test stdin.\n  -> causes q/g8fdb9b3edb7c-2-2\n  -> causes q/g8fdb9b3edb7c-2-1\n\n[p/g2074788f713e-1-1] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)\n  `now_instant` is the single route shared by `ucal wallclock` and `ucal now`.\n  -> conditions d/g2074788f713e-1\n\n[p/g2074788f713e-9-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Session clock with `max` rule exists to document.\n  -> conditions d/g2074788f713e-9\n\n[p/g31e52cc10b1f-5-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Granularity is structural and fills T-2.\n  -> conditions d/g31e52cc10b1f-5\n\n[p/g31e52cc10b1f-7-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Rule E forbids a float in a shipped crate.\n  -> conditions d/g31e52cc10b1f-7\n\n[p/g5880e472260e-1-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  Release notes are stored as {version}.md files under Documentation/Release_Notes.\n  -> conditions d/g5880e472260e-1\n\n[p/g5880e472260e-2-1] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  check_ci_covers_the_procedure returns Result<usize, Vec<String>>, so an Err is a failed check.\n  -> conditions d/g5880e472260e-2\n\n[p/g5880e472260e-2-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  The current version is already derived from [workspace.package] by decision 1.\n  -> conditions d/g5880e472260e-2\n\n[p/g5880e472260e-4-1] constraint (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  std::fs::read_to_string on a missing file returns an error message containing the path and version.\n  -> conditions d/g5880e472260e-4\n\n[p/g5880e472260e-4-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  The missing-notes diagnostic produced by decision 2 contains the phrase a cycle's notes.\n  -> conditions d/g5880e472260e-4\n\n[p/g5880e472260e-6-1] constraint (speculative)\n  Release notes for the current 1.10.0 cycle are kept in Documentation/Release_Notes/1.10.0.md.\n  -> conditions d/g5880e472260e-6\n\n[q/g2074788f713e-1-1] claim (inferred)\n  All time readings go through session clock, preventing wallclock face from going back in time.\n\n[q/g2074788f713e-10-2] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Test asserts session reading no finer than raw.\n\n[q/g2074788f713e-11-1] claim (inferred)\n  Taking inner value on poisoned mutex is correct because state cannot be torn.\n\n[q/g2074788f713e-2-2] claim (inferred)\n  Forward step wins, tracks system corrections arriving.\n\n[q/g2074788f713e-4-1] claim (inferred)\n  Pure function lets tests drive wall clock backwards and assert monotonic sequence.\n\n[q/g2074788f713e-5-1] claim (inferred)\n  last prevents smaller elapsed inputs from making reading go backwards.\n\n[q/g2074788f713e-6-1] claim (inferred)\n  Option avoids .expect, allows anchoring where failure can be returned.\n\n[q/g2074788f713e-7-1] claim (inferred)\n  wall_instant exposes raw system clock for doctor --clock and measurements.\n\n[q/g2074788f713e-9-1] claim (inferred)\n  Documents one process, one clock and max rule in CLI.md and release notes.\n\n[q/g31e52cc10b1f-1-1] claim (inferred)\n  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy …\n\n[q/g31e52cc10b1f-2-1] claim (inferred)\n  Doctor --clock must be behind a flag because resolution varies by machine and ordinary output is compared …\n\n[q/g31e52cc10b1f-3-1] claim (inferred)\n  Keeping precision unchanged avoids breaking ucal-json/1 paths.\n\n[q/g31e52cc10b1f-5-1] claim (inferred)\n  Separation makes clear what each number represents; conflating them is the defect.\n\n[q/g31e52cc10b1f-6-1] claim (inferred)\n  Reporting cancellations helps interpret differences: constant offset cancels, rate error does not.\n\n[q/g31e52cc10b1f-8-1] claim (inferred)\n  Note clarifies precision means tier rendered to, not accuracy, preventing conflation with explain's precision.\n\n[q/g5880e472260e-1-1] claim (inferred)\n  Check reads current version's notes from [workspace.package], removing ordering guess.\n\n[q/g5880e472260e-3-1] claim (inferred)\n  Old version-sort tests replaced with current-version and missing-notes tests.\n\n[q/g5880e472260e-5-1] claim (inferred)\n  Doc comment restored for check_ci_covers_the_procedure, leaving function documented.\n\n[q/g5880e472260e-6-1] claim (inferred)\n  Release notes updated with fix rationale, missing-notes behavior, and sweep findings.\n\n[q/g8fdb9b3edb7c-2-1] claim (inferred)\n  BrokenPipe on stdin write is treated as success, preventing EPIPE race from failing the test.\n\n[q/g8fdb9b3edb7c-2-2] claim (inferred)\n  Status and output assertions still execute after an EPIPE, so test validity remains.\n\n[r/g5880e472260e-2-1] claim (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Rejected: silently fall back to the previous cycle's notes file\n  This fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file.\n  -> contrasts d/g5880e472260e-2\n\n[r/g5880e472260e-6-1] claim (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Rejected: keep the old release-notes text describing the numeric sort\n  That text described the abandoned numeric sort and omitted the adjacent failure and sweep findings.\n  -> contrasts d/g5880e472260e-6\n\n[r/g8fdb9b3edb7c-2-1] claim (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Rejected: Treat any write error to child stdin as fatal using expect(\"write\").\n  A broken pipe can occur when the child exits before finishing the write, and that is the program behaving correctly, so the test should not fail.\n  -> contrasts d/g8fdb9b3edb7c-2\n\n",
+  "pack_tokens": 1490,
+  "pack_units": 58,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null
+}

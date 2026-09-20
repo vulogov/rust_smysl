@@ -1,0 +1,374 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-pro-v2"
+repo = "ucal"
+commit = "2074788f713ef4331ede63d3dc963f8e74e7565c"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Introduce a session clock for monotonicity, not precision."
+suggest = [
+    "D12",
+    "D1",
+    "D13",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Decline to freeze the reading when the wall clock steps backwards."
+suggest = [
+    "D3",
+    "D5",
+    "D2",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Accept forward steps from the wall clock."
+suggest = [
+    "D3",
+    "D5",
+    "D12",
+]
+match = "D3"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Make the session clock rule a pure function of its inputs."
+suggest = [
+    "D5",
+    "D1",
+    "D13",
+]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Decline to make a session reading finer than a raw one."
+suggest = [
+    "D13",
+    "D1",
+    "D9",
+]
+match = "D13"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Use an Option for the session state instead of .expect()."
+suggest = [
+    "D7",
+    "D6",
+    "D8",
+]
+match = "D7"
+
+[[item]]
+kind = "decision"
+id = "D7"
+text = "Gate `wall_instant` with the `civil` feature."
+suggest = [
+    "D10",
+    "D9",
+]
+match = "D10"
+
+[[item]]
+kind = "decision"
+id = "D8"
+text = "Report divergence as a magnitude and a direction."
+suggest = ["D11"]
+match = "D11"
+
+[[item]]
+kind = "decision"
+id = "D9"
+text = "Anchor the session clock on first use rather than at start-up."
+suggest = [
+    "D6",
+    "D8",
+    "D3",
+]
+match = "D6"
+
+[[item]]
+kind = "decision"
+id = "D10"
+text = "Use `last` as a belt-and-braces bound for the reading."
+suggest = [
+    "D10",
+    "D3",
+    "D5",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D11"
+text = "Take the inner value of a poisoned lock."
+suggest = [
+    "D8",
+    "D5",
+    "D2",
+]
+match = "D8"
+
+[[item]]
+kind = "decision"
+id = "D12"
+text = "Read the system clock straight for `wall_instant`."
+suggest = [
+    "D9",
+    "D5",
+    "D1",
+]
+match = "D9"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "A rung is 3125."
+suggest = ["P2"]
+match = "P2"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "The system clock is disciplined externally and can step backwards."
+suggest = [
+    "P1",
+    "P10",
+    "P7",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "The wallclock command reads the clock twenty times a second."
+suggest = [
+    "P10",
+    "P1",
+    "P7",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "A forward jump is a correction arriving."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "No clock is read in the pure function."
+suggest = [
+    "P10",
+    "P1",
+    "P7",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "Anchoring and projecting changes nothing about what a quantum fills."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P7"
+text = "OnceLock's initialiser cannot return a Result."
+suggest = [
+    "P3",
+    "P9",
+    "P6",
+]
+match = "P3"
+
+[[item]]
+kind = "prerequisite"
+id = "P8"
+text = "The no-panic-in-cli lint refused an .expect()."
+suggest = [
+    "P5",
+    "P4",
+]
+match = "P5"
+
+[[item]]
+kind = "prerequisite"
+id = "P9"
+text = "Unix time is a UTC label."
+suggest = ["P7"]
+match = "P7"
+
+[[item]]
+kind = "prerequisite"
+id = "P10"
+text = "Converting a clock reading is a leap-table lookup."
+suggest = [
+    "P7",
+    "P10",
+    "P1",
+]
+match = "P7"
+
+[[item]]
+kind = "prerequisite"
+id = "P11"
+text = "A tick count is unsigned by Rule B."
+suggest = [
+    "P9",
+    "P6",
+]
+match = "P9"
+
+[[item]]
+kind = "prerequisite"
+id = "P12"
+text = "Most commands do not ask the time."
+suggest = ["P7"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P13"
+text = "The first two cannot go backwards on their own."
+suggest = [
+    "P9",
+    "P1",
+    "P3",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P14"
+text = "The state is a pair of tick counts and cannot be torn."
+suggest = [
+    "P6",
+    "P9",
+    "P3",
+]
+match = "P6"
+
+[[item]]
+kind = "prerequisite"
+id = "P15"
+text = "A session clock that measured itself would be measuring its own output."
+suggest = [
+    "P9",
+    "P10",
+    "P1",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "precision — Interpolating between wall ticks is worth 24/3125 of a rung, which is nothing."
+suggest = ["A1"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "freezing until the wall clock catches up — The monotonic branch keeps advancing at the oscillator's rate."
+suggest = [
+    "A1",
+    "A5",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "refusing it — It would prefer this process's opinion of the time to the system's."
+suggest = ["A2"]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "reading a clock here — A pure function lets a test drive a wall clock backwards and check that the answer does not follow it."
+suggest = [
+    "A1",
+    "A2",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "having bought precision — Interpolation is worth 24/3125 of a rung."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "an .expect() — The no-panic-in-cli lint refused it."
+suggest = ["A3"]
+match = "A3"
+
+[[item]]
+kind = "alternative"
+id = "A7"
+text = "dropping its `civil` gate — Converting a clock reading is a leap-table lookup, because Unix time is a UTC label."
+suggest = [
+    "A1",
+    "A2",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A8"
+text = "a negative — A tick count is unsigned by Rule B."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A9"
+text = "at start-up — A command that never asks the time should not read a clock, and most of them do not."
+suggest = [
+    "A5",
+    "A1",
+]
+match = "A5"
+
+[[item]]
+kind = "alternative"
+id = "A10"
+text = "the first two — A caller handing back a smaller elapsed would make them go backwards, and this type sells monotonicity."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A11"
+text = "merely convenient — The state is a pair of tick counts and cannot be torn."
+suggest = []
+match = "A4"
+
+[[item]]
+kind = "alternative"
+id = "A12"
+text = "a session clock that measured itself — It would be measuring its own output."
+suggest = [
+    "A5",
+    "A1",
+]
+match = "none"

@@ -1,0 +1,845 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-deepseek-v2"
+repo = "smysl"
+commit = "4968383dc452dba3c9ac9ab2c6abae4b3612bba5"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Upgrade nodejs conformance target from C-Read to C-Produce."
+suggest = [
+    "D1",
+    "D13",
+    "D12",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Hand-roll BLAKE3-256 in nodejs instead of binding to C library."
+suggest = [
+    "D2",
+    "D14",
+    "D8",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Implement uid derivation in nodejs reproducing all sixteen fixture uids."
+suggest = [
+    "D4",
+    "D8",
+    "D20",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Run shape clause validation before uid() in nodejs."
+suggest = [
+    "D4",
+    "D26",
+    "D8",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "NFC-normalise text in nodejs CBOR encoder."
+suggest = [
+    "D8",
+    "D1",
+    "D13",
+]
+match = "D8"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Add missing normative facts to spec: status integers, source layout, kind enum, base32 alphabet."
+suggest = [
+    "D5",
+    "D7",
+    "D12",
+]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D7"
+text = "Declare empty deps/grounds are omitted, not encoded as empty."
+suggest = [
+    "D6",
+    "D18",
+    "D10",
+]
+match = "D6"
+
+[[item]]
+kind = "decision"
+id = "D8"
+text = "Mark spec-derived constants with SPEC: in nodejs src/uid.js."
+suggest = [
+    "D5",
+    "D13",
+    "D8",
+]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D9"
+text = "Add spec-tables gate and make target parsing spec tables."
+suggest = [
+    "D12",
+    "D11",
+    "D14",
+]
+match = "D11"
+
+[[item]]
+kind = "decision"
+id = "D10"
+text = "Correct go and python citations from §1.1 to §2.2 key 7."
+suggest = [
+    "D6",
+    "D13",
+]
+match = "D15"
+
+[[item]]
+kind = "decision"
+id = "D11"
+text = "Update masthead format version to smysl/1.0."
+suggest = ["D15"]
+match = "D15"
+
+[[item]]
+kind = "decision"
+id = "D12"
+text = "Correct README claims that tables were asserted against document."
+suggest = [
+    "D13",
+    "D11",
+    "D3",
+]
+match = "D13"
+
+[[item]]
+kind = "decision"
+id = "D13"
+text = "Rework doc-output replay to scratch copy and derive states via edits.json."
+suggest = [
+    "D17",
+    "D20",
+    "D18",
+]
+match = "D17"
+
+[[item]]
+kind = "decision"
+id = "D14"
+text = "Anchor reader edits by prose, never by content, in edits.json."
+suggest = [
+    "D18",
+    "D19",
+    "D20",
+]
+match = "D18"
+
+[[item]]
+kind = "decision"
+id = "D15"
+text = "Revise gate 7 blocked command explanation, no longer 'decision about book'."
+suggest = [
+    "D22",
+    "D12",
+    "D16",
+]
+match = "D22"
+
+[[item]]
+kind = "decision"
+id = "D16"
+text = "Hold beta.smy repair rather than guess missing stanza."
+suggest = [
+    "D21",
+    "D2",
+    "D23",
+]
+match = "D21"
+
+[[item]]
+kind = "decision"
+id = "D17"
+text = "Do not implement rule M in outside readers."
+suggest = [
+    "D10",
+    "D25",
+    "D4",
+]
+match = "D10"
+
+[[item]]
+kind = "decision"
+id = "D18"
+text = "Update gate 7 replayed count from 78 to 85, skipped 116 to 108."
+suggest = [
+    "D16",
+    "D12",
+    "D23",
+]
+match = "none"
+
+[[item]]
+kind = "decision"
+id = "D19"
+text = "Measure mutation survivors on store/mod.rs under both per-package and workspace tests."
+suggest = [
+    "D24",
+    "D25",
+    "D26",
+]
+match = "D24"
+
+[[item]]
+kind = "decision"
+id = "D20"
+text = "Record that --test-workspace needs explicit --timeout."
+suggest = [
+    "D26",
+    "D22",
+    "D24",
+]
+match = "D26"
+
+[[item]]
+kind = "decision"
+id = "D21"
+text = "Do not apply 22% artefact fraction to other modules."
+suggest = ["D25"]
+match = "D25"
+
+[[item]]
+kind = "decision"
+id = "D22"
+text = "Add BLAKE3 test vectors for chunk boundary lengths."
+suggest = [
+    "D3",
+    "D12",
+    "D2",
+]
+match = "D3"
+
+[[item]]
+kind = "decision"
+id = "D23"
+text = "Implement status integers and source/kind enums as constants in nodejs."
+suggest = [
+    "D8",
+    "D1",
+    "D4",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D24"
+text = "Implement RFC 4648 base32 alphabet in nodejs."
+suggest = [
+    "D7",
+    "D8",
+    "D1",
+]
+match = "D7"
+
+[[item]]
+kind = "decision"
+id = "D25"
+text = "Omit empty deps/grounds sets in nodejs canonical encoding."
+suggest = [
+    "D6",
+    "D8",
+    "D1",
+]
+match = "D6"
+
+[[item]]
+kind = "decision"
+id = "D26"
+text = "Sort and deduplicate deps/grounds in nodejs."
+suggest = [
+    "D6",
+    "D8",
+    "D1",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "C-Produce is the lowest class that touches §2.3 status identity."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "nodejs already implemented C-Read decoding and encoding."
+suggest = [
+    "P6",
+    "P17",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "Binding to same C library as Rust would test two callers of one implementation."
+suggest = [
+    "P3",
+    "P1",
+    "P15",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "Python and Go already hand-rolled BLAKE3 implementations for independence."
+suggest = [
+    "P1",
+    "P17",
+    "P6",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "Fixture file contains sixteen cases with canonical bytes and uid hex produced by Rust."
+suggest = [
+    "P4",
+    "P13",
+    "P8",
+]
+match = "P4"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "Hand-rolled BLAKE3 implementation passes published vectors."
+suggest = [
+    "P1",
+    "P2",
+    "P3",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P7"
+text = "Spec §7 defines shape clause requiring gist, grounds, source for C-Produce."
+suggest = [
+    "P8",
+    "P9",
+    "P10",
+]
+match = "P8"
+
+[[item]]
+kind = "prerequisite"
+id = "P8"
+text = "Spec §3 constraint 6 requires normalisation at encoder."
+suggest = [
+    "P7",
+    "P10",
+    "P6",
+]
+match = "P7"
+
+[[item]]
+kind = "prerequisite"
+id = "P9"
+text = "Re-encode path sees only decoder-rejected NFC text, so encoder normalization was no-op."
+suggest = [
+    "P6",
+    "P7",
+    "P15",
+]
+match = "P6"
+
+[[item]]
+kind = "prerequisite"
+id = "P10"
+text = "Missing facts were recoverable only by decoding core_bytes_hex in uid fixtures."
+suggest = [
+    "P4",
+    "P7",
+    "P15",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P11"
+text = "Reference encoder emits three-key map for minimal unit, omitting empty sets."
+suggest = [
+    "P9",
+    "P7",
+    "P4",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P12"
+text = "The CBOR reader already marks spec-derived constants with SPEC:."
+suggest = [
+    "P10",
+    "P17",
+    "P6",
+]
+match = "P10"
+
+[[item]]
+kind = "prerequisite"
+id = "P13"
+text = "The spec contains normative tables in SMYSL_FORMAT_SPEC.md that can be parsed."
+suggest = [
+    "P5",
+    "P10",
+    "P2",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P14"
+text = "Source sub-map is described at §2.2 key 7, and §1.1 does not exist."
+suggest = [
+    "P19",
+    "P8",
+]
+match = "P19"
+
+[[item]]
+kind = "prerequisite"
+id = "P15"
+text = "§8.6 says smysl/1.0 is what new documents declare."
+suggest = ["P18"]
+match = "P18"
+
+[[item]]
+kind = "prerequisite"
+id = "P16"
+text = "Previous tests used hand-typed table copies, not assertions against document."
+suggest = [
+    "P9",
+    "P17",
+    "P14",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P17"
+text = "Chapter state is keyed by position, but fixtures were keyed by filename."
+suggest = [
+    "P11",
+    "P4",
+    "P14",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P18"
+text = "Commands used to run in fixture folder and could rewrite tracked files."
+suggest = [
+    "P12",
+    "P13",
+    "P16",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P19"
+text = "edits.json already introduced to declare reader edits, needing anchor scheme."
+suggest = [
+    "P11",
+    "P10",
+    "P18",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P20"
+text = "Two of chapter 1 states are printed as fragment and diff, cannot be committed."
+suggest = [
+    "P13",
+    "P11",
+    "P14",
+]
+match = "P13"
+
+[[item]]
+kind = "prerequisite"
+id = "P21"
+text = "Missing stanza cannot be reconstructed from page; guessing is not repair."
+suggest = [
+    "P14",
+    "P12",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P22"
+text = "Unit core carries grounds as uids, not statuses; rule M requires store."
+suggest = [
+    "P9",
+    "P5",
+    "P8",
+]
+match = "P9"
+
+[[item]]
+kind = "prerequisite"
+id = "P23"
+text = "The script now replays chapters as chapters with scratch copy."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P24"
+text = "store/mod.rs holds Store::matching_prefix, a known survivor for validation."
+suggest = [
+    "P17",
+    "P9",
+    "P15",
+]
+match = "P17"
+
+[[item]]
+kind = "prerequisite"
+id = "P25"
+text = "cargo-mutants supports per-package and workspace test modes."
+suggest = [
+    "P15",
+    "P16",
+    "P6",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P26"
+text = "cargo-mutants auto-set timeout based on baseline, causing timeouts on workspace suite."
+suggest = [
+    "P16",
+    "P15",
+    "P10",
+]
+match = "P16"
+
+[[item]]
+kind = "prerequisite"
+id = "P27"
+text = "One module evidence is not generalizable to other 357 survivors."
+suggest = [
+    "P17",
+    "P10",
+    "P14",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P28"
+text = "BLAKE3 chunk boundary is 1024 bytes; short vectors miss multi-chunk hasher bugs."
+suggest = [
+    "P3",
+    "P1",
+    "P4",
+]
+match = "P3"
+
+[[item]]
+kind = "prerequisite"
+id = "P29"
+text = "Spec now contains normative status integers and source/kind enum tables."
+suggest = [
+    "P5",
+    "P10",
+    "P8",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P30"
+text = "Spec now names base32 alphabet as RFC 4648 lowercased unpadded."
+suggest = [
+    "P2",
+    "P10",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P31"
+text = "Spec now declares empty deps/grounds omitted, as in prior decision."
+suggest = [
+    "P9",
+    "P10",
+    "P8",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P32"
+text = "Spec says deps/grounds are sets, deduplicated and sorted by uid bytes."
+suggest = [
+    "P4",
+    "P8",
+    "P9",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Leave nodejs at C-Read as a scope decision rather than a gap. — The new reading strengthened the evidence, so remaining C-Read was rejected."
+suggest = [
+    "A5",
+    "A2",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Bind to the same C library the Rust calls. — That would test two callers of one implementation, not whether the specification is enough."
+suggest = [
+    "A1",
+    "A7",
+    "A2",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "Check only the uid, not canonical bytes separately. — A mismatch has two possible causes and they need different fixes."
+suggest = [
+    "A4",
+    "A2",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "Validate on request while uid() derives anyway. — The class is about emitting, so the failure must be on the path that hands out a uid."
+suggest = ["A5"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "Leave text normalization as a no-op. — It was not needed for re-encode, but authored text requires it."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "Leave these facts recoverable only by decoding fixtures. — The spec did not admit it carried normative content."
+suggest = ["A2"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A7"
+text = "Encode empty deps/grounds as empty arrays. — A literal reading would produce a different uid for every unit with neither."
+suggest = ["A4"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A8"
+text = "Leave gaps unmarked, as python and go did. — Without a SPEC mark there is no evidence a reader guessed."
+suggest = ["A2"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A9"
+text = "Keep hand-typed table copies asserted against the document. — Nothing parsed the spec, so editing spec and test were separate acts."
+suggest = [
+    "A2",
+    "A7",
+]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A10"
+text = "Keep citations to the nonexistent §1.1. — A citation to a section that does not exist reads as a clause settling the question."
+suggest = ["A2"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A11"
+text = "Leave the masthead at smysl/0.1. — It had gone stale while §8.6 says smysl/1.0 is what new documents declare."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A12"
+text = "Continue to claim tables were asserted against document. — They were hand-typed copies, not assertions against the document."
+suggest = [
+    "A2",
+    "A7",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A13"
+text = "Keep filename-keyed fixtures. — A chapter's state is keyed by position, and two states cannot be committed at all."
+suggest = [
+    "A3",
+    "A4",
+    "A6",
+]
+match = "A3"
+
+[[item]]
+kind = "alternative"
+id = "A14"
+text = "Anchor edits by content, duplicating the body. — Duplication would go stale; reading from the chapter prevents that."
+suggest = [
+    "A5",
+    "A6",
+    "A4",
+]
+match = "A5"
+
+[[item]]
+kind = "alternative"
+id = "A15"
+text = "Keep describing the block as a decision about the book. — It was actually the fixtures being keyed by filename, not a book decision."
+suggest = [
+    "A3",
+    "A2",
+    "A4",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A16"
+text = "Guess the missing stanza into the published chapter. — The missing stanza cannot be reconstructed from the page, and guessing is not repair."
+suggest = [
+    "A6",
+    "A4",
+    "A5",
+]
+match = "A6"
+
+[[item]]
+kind = "alternative"
+id = "A17"
+text = "Implement rule M in outside reader validate. — It would be a check that cannot fail because a unit does not carry ground statuses."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A18"
+text = "Leave the counted 78 and 116 unchanged. — The new chapter replay method increased the number of replayed transcripts."
+suggest = [
+    "A6",
+    "A4",
+    "A5",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A19"
+text = "Keep using only per-package mutation figures. — Nobody had measured the difference, so the stronger claim was unknown."
+suggest = [
+    "A2",
+    "A8",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A20"
+text = "Rely on cargo-mutants auto-set timeout. — The default produced mostly timeouts, which looked like artefacts."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A21"
+text = "Apply the 22% artefact fraction to other modules. — One module evidence is not generalizable and would repeat quoting a number without configuration."
+suggest = [
+    "A2",
+    "A8",
+]
+match = "A8"
+
+[[item]]
+kind = "alternative"
+id = "A22"
+text = "Test only short inputs that fit one chunk. — A hasher that only compresses one chunk passes every short vector."
+suggest = ["A2"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A23"
+text = "Leave status and source/kind values recoverable only from fixtures. — These were needed for uid derivation and rule M comparisons."
+suggest = ["A2"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A24"
+text = "Use the equally faithful base32hex alphabet. — It would produce mutually unreadable names for the same unit."
+suggest = [
+    "A1",
+    "A4",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A25"
+text = "Encode empty deps/grounds as empty arrays. — The spec says 'MAY be empty', but the encoder omits empty sets."
+suggest = ["A2"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A26"
+text = "Treat deps/grounds as ordered lists with duplicates. — The spec defines them as sets, so order and repetition are not content."
+suggest = ["A2"]
+match = "none"

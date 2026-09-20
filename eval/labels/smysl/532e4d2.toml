@@ -54,27 +54,193 @@
 schema = 1
 repo = "smysl"
 commit = "532e4d229a6c98c1cb4b98ba9709a1179deb897f"
-labeller = ""
-status = "todo"   # set to "done" when finished
+labeller = "vulogov"
+status = "done"
 
-# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
-#
-# [[decision]]
-# id = "D1"
-# text = ""
-# kind = "act"          # act | decline
-# evidence = ""       # optional verbatim span
-#
-# [[prerequisite]]
-# id = "P1"
-# decision = "D1"
-# text = ""
-# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
-# normative = false
-# evidence = ""
-#
-# [[alternative]]
-# id = "A1"
-# decision = "D1"
-# text = ""
-# evidence = ""
+[[decision]]
+id = "D1"
+text = "Reach cmd_fmt's branches with six tests that run the binary as a user runs it, aimed at the decisions the command makes rather than at the surviving mutants"
+kind = "act"
+evidence = "Six tests driving the binary, aimed at decisions rather than at mutants"
+
+[[decision]]
+id = "D2"
+text = "Have every test write the document whose property it needs into a scratch directory of its own, instead of relying on a repository fixture having that property"
+kind = "act"
+evidence = "Every test here now writes the document whose property it needs."
+
+[[decision]]
+id = "D3"
+text = "Leave the two round-trip-guard mutants alive and record why, rather than contrive a test for them"
+kind = "decline"
+evidence = "No input a user can supply reaches it, so no test can distinguish a guard that checks from one that does not."
+
+[[decision]]
+id = "D4"
+text = "Read the bundled log's stdout as raw bytes through a separate helper, because the text helper's lossy decoding destroys CBOR"
+kind = "act"
+evidence = "`run` decodes stdout with `from_utf8_lossy`, which is right for text and destroys CBOR - every invalid sequence becomes U+FFFD, and the log no longer parses."
+
+[[decision]]
+id = "D5"
+text = "Pair each refusal with a control that succeeds, so a test shows the refusal is about the flag rather than about the input"
+kind = "act"
+evidence = "The control: without either flag the same input is fine, so the refusal is about the flags and not about CBOR being unreadable."
+
+[[decision]]
+id = "D6"
+text = "Compile the whole test file out when the cli feature is off, rather than let it look for a binary that was not built"
+kind = "act"
+evidence = "The binary only exists with `cli`, and a test that cannot find its subject is worse than one that is not there"
+
+[[decision]]
+id = "D7"
+text = "Name each test for the decision it pins rather than for the mutant that exposed it"
+kind = "act"
+evidence = "Each test below names the decision it pins rather than the mutant, because the decision is what a reader needs and the mutant is only how the gap was found."
+
+[[decision]]
+id = "D8"
+text = "Correct READINESS.md's own claim: record the re-measured rate of 40.0 percent of 275 viable, and say that the 64.2 percent it quoted was measured before the work the survivor count came after"
+kind = "act"
+evidence = "The rate is a different story, and it corrects a claim made in this file's own voice."
+
+[[decision]]
+id = "D9"
+text = "Narrow the generalisation that rates move slowly to a statement about whether anyone is aiming work at survivors"
+kind = "act"
+evidence = "Rates move when work is aimed at survivors and barely otherwise, so rates move slowly is not a property of the measurement"
+
+[[decision]]
+id = "D10"
+text = "Take the untouched counts for cmd_providers and cmd_merge as the check that the new measurement is honest"
+kind = "act"
+evidence = "cmd_providers and cmd_merge are untouched at 12 and 11, which is what a correct measurement of this change looks like."
+
+[[prerequisite]]
+id = "P1"
+decision = "D2"
+text = "cargo-mutants reuses build directories, so a mutant that misroutes a write leaves a rewritten fixture for every mutant tested there afterwards"
+kind = "tool-setting"
+normative = false
+evidence = "cargo-mutants reuses build directories, so a mutant that misroutes a write leaves a fixture rewritten"
+
+[[prerequisite]]
+id = "P2"
+decision = "D2"
+text = "cargo-mutants counts a spurious test failure as a mutant caught"
+kind = "tool-setting"
+normative = false
+evidence = "cargo-mutants counts a spurious failure as a catch"
+
+[[prerequisite]]
+id = "P3"
+decision = "D2"
+text = "A test must not depend on the state of the tree"
+kind = "invariant"
+normative = true
+evidence = "a test must not depend on the state of the tree either"
+
+[[prerequisite]]
+id = "P4"
+decision = "D2"
+text = "0.13 already established, from a TMPDIR failure in CI, that a test must not depend on the state of the machine"
+kind = "prior-change"
+normative = false
+evidence = "The rule is one level up from 0.13's TMPDIR lesson, which was that a test must not depend on the state of the machine"
+
+[[prerequisite]]
+id = "P5"
+decision = "D1"
+text = "cmd_fmt reads a filesystem, parses, writes and prints, with no seam to call, so its branches can only be reached by running the binary"
+kind = "existing-behaviour"
+normative = false
+evidence = "there is no seam to call, so the only way in is to run the binary"
+
+[[prerequisite]]
+id = "P6"
+decision = "D6"
+text = "The binary is built only with the cli feature"
+kind = "existing-behaviour"
+normative = false
+evidence = "The binary only exists with `cli`"
+
+[[prerequisite]]
+id = "P7"
+decision = "D1"
+text = "An unknown relation kind is SMY-W013, a warning rather than an error, and the document is otherwise valid"
+kind = "existing-behaviour"
+normative = false
+evidence = "An unknown relation kind is `SMY-W013`: a warning, not an error."
+
+[[prerequisite]]
+id = "P8"
+decision = "D1"
+text = "A CBOR log is canonical by construction, so --check has nothing to compare and --write would convert a binary store to text"
+kind = "existing-behaviour"
+normative = false
+evidence = "A CBOR log is canonical by construction, so there is nothing for `--check` to compare"
+
+[[prerequisite]]
+id = "P9"
+decision = "D1"
+text = "Comments are not part of any record, so canonical form cannot carry them"
+kind = "existing-behaviour"
+normative = false
+evidence = "Comments are not part of any record, so canonical form cannot reproduce them."
+
+[[prerequisite]]
+id = "P10"
+decision = "D3"
+text = "The round-trip guard fires only when write_surface produces something the parser reads back differently, which is a defect in the writer rather than an input"
+kind = "existing-behaviour"
+normative = false
+evidence = "The guard fires only when the writer produces something the parser reads back differently, which is a defect in `write_surface`, not an input a user can supply."
+
+[[prerequisite]]
+id = "P11"
+decision = "D3"
+text = "Tests elsewhere already assert the property the guard protects: that a document round-trips its declared version and that its records survive"
+kind = "prior-change"
+normative = false
+evidence = "`crates/smysl-core/tests/versioning.rs` asserts that a document round-trips declaring the version it declared, and `tests/surface.rs` asserts the records survive"
+
+[[prerequisite]]
+id = "P12"
+decision = "D3"
+text = "This project already records a survivor no test can kill as a fact about the code rather than as work outstanding"
+kind = "prior-change"
+normative = false
+evidence = "Recorded here the way 0.13 recorded `worse`'s `>=`, 1.1 recorded `Lineage::is_empty -> false` and `Style::detect`'s `||`"
+
+[[prerequisite]]
+id = "P13"
+decision = "D8"
+text = "The earlier rate was measured before the work of 2.2 and the survivor count of 110 after it, so the two describe different states of the tree"
+kind = "prior-change"
+normative = false
+evidence = "The recorded 64.2 was measured in 2.1, before 2.2 did the work; the survivor count of 110 was measured after."
+
+[[alternative]]
+id = "A1"
+decision = "D2"
+text = "Use repository fixtures for the properties the tests need - F1 for not canonical, F9 for having comments"
+evidence = "They depended on repository fixtures having properties - F1 not being canonical, F9 having comments."
+
+[[alternative]]
+id = "A2"
+decision = "D2"
+text = "Write the scratch documents into a fixed shared path under TMPDIR"
+evidence = "A shared path under `TMPDIR` failed in CI once already, in a test added in 0.13"
+
+[[alternative]]
+id = "A3"
+decision = "D1"
+text = "Aim the tests at the surviving mutants themselves"
+evidence = "aimed at decisions rather than at mutants"
+
+[[alternative]]
+id = "A4"
+decision = "D4"
+text = "Pipe the bundle step through the same lossy text helper as the rest"
+evidence = "The first version of the test below piped `bundle` through it and got `SMY-E004: malformed envelope at byte 0`, which is the encoder being blamed for the test harness."

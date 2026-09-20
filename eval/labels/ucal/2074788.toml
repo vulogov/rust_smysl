@@ -48,27 +48,199 @@
 schema = 1
 repo = "ucal"
 commit = "2074788f713ef4331ede63d3dc963f8e74e7565c"
-labeller = ""
-status = "todo"   # set to "done" when finished
+labeller = "vulogov"
+status = "done"
 
-# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
-#
-# [[decision]]
-# id = "D1"
-# text = ""
-# kind = "act"          # act | decline
-# evidence = ""       # optional verbatim span
-#
-# [[prerequisite]]
-# id = "P1"
-# decision = "D1"
-# text = ""
-# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
-# normative = false
-# evidence = ""
-#
-# [[alternative]]
-# id = "A1"
-# decision = "D1"
-# text = ""
-# evidence = ""
+[[decision]]
+id = "D1"
+text = "Put a process-wide session clock between the program and the system clock, so every reading in one process comes from one reading order"
+kind = "act"
+evidence = "A session clock: one process, one reading order. Every reading comes from it now"
+
+[[decision]]
+id = "D2"
+text = "Take the reading as max(wall_now, anchor + monotonic_elapsed), so a backward step of the wall clock loses to the monotonic branch and the reading keeps advancing at the oscillator's rate"
+kind = "act"
+evidence = "reading = max(wall_now, anchor + monotonic_elapsed)"
+
+[[decision]]
+id = "D3"
+text = "Let a forward step of the wall clock through rather than holding the reading back to the projection"
+kind = "decline"
+evidence = "A forward step wins, because a forward jump is a correction arriving and refusing it would prefer this process's opinion of the time to the system's."
+
+[[decision]]
+id = "D4"
+text = "Carry the largest reading handed out so far as a third term, so a caller passing a smaller elapsed still cannot move the reading back"
+kind = "act"
+evidence = "`last` is belt and braces: the first two cannot go backwards on their own, and a caller handing back a smaller elapsed would make them, and this type sells monotonicity."
+
+[[decision]]
+id = "D5"
+text = "Take the wall reading and the elapsed as arguments so the rule is a pure function and no clock is read inside it"
+kind = "act"
+evidence = "The rule is a pure function of its inputs, which is what lets a test drive a wall clock backwards repeatedly and assert the sequence is still monotone."
+
+[[decision]]
+id = "D6"
+text = "Anchor the session on first use rather than at start-up, so a command that never asks the time never reads a clock"
+kind = "act"
+evidence = "Anchored on first use rather than at start-up: a command that never asks the time should not read a clock, and most of them do not."
+
+[[decision]]
+id = "D7"
+text = "Hold the session state as an Option anchored where a failure can be returned, instead of filling the gap with an .expect() inside the OnceLock initialiser"
+kind = "act"
+evidence = "no-panic-in-cli refused an .expect() used to fill the gap where OnceLock's initialiser cannot return a Result - the state is an Option now, anchored where a failure can be returned."
+
+[[decision]]
+id = "D8"
+text = "Take the inner value of a poisoned session lock rather than treat the poisoning as a failure"
+kind = "act"
+evidence = "The state is a pair of tick counts and cannot be torn, so taking the inner value is correct rather than merely convenient"
+
+[[decision]]
+id = "D9"
+text = "Split the raw system reading out as wall_instant and keep doctor --clock sampling that, so the session clock is not measured through itself"
+kind = "act"
+evidence = "a session clock that measured itself would be measuring its own output"
+
+[[decision]]
+id = "D10"
+text = "Put the civil gate back on the raw reading, which the split had dropped"
+kind = "act"
+evidence = "splitting wall_instant out of now_instant dropped its `civil` gate, which --no-default-features --features u512,std caught"
+
+[[decision]]
+id = "D11"
+text = "Report divergence as a magnitude with its direction in a separate word rather than as a signed number"
+kind = "act"
+evidence = "Signed by a word rather than a number, because a tick count is unsigned (Rule B)"
+
+[[decision]]
+id = "D12"
+text = "Assert monotonicity over a wall clock that lurches back and forth repeatedly, not over a single backward step"
+kind = "act"
+evidence = "One backward step is a case; a clock being dragged around is the condition, and the guarantee is over the whole sequence."
+
+[[decision]]
+id = "D13"
+text = "Assert what the session clock does not buy: a session reading lands on exactly the same rung a raw one does"
+kind = "act"
+evidence = "Another test asserts what it does not buy: a session reading lands on the same rung a raw one does."
+
+[[prerequisite]]
+id = "P1"
+decision = "D2"
+text = "The monotonic clock does not go backwards and keeps counting at the oscillator's rate while the process lives"
+kind = "existing-behaviour"
+normative = false
+evidence = "the monotonic branch, which keeps advancing at the oscillator's rate"
+
+[[prerequisite]]
+id = "P2"
+decision = "D1"
+text = "Interpolating between wall ticks is worth 24/3125 of a rung and does not move the finest fillable tier, so there is no precision to be had here"
+kind = "existing-behaviour"
+normative = false
+evidence = "1000 ns to 41 ns is a factor of 24, and a rung is 3125, so it is 24/3125 of a rung and the finest fillable tier does not move"
+
+[[prerequisite]]
+id = "P3"
+decision = "D7"
+text = "OnceLock's initialiser cannot return a Result"
+kind = "existing-behaviour"
+normative = false
+evidence = "anchoring needs a clock reading, reading a clock can fail, and `OnceLock`'s initialiser cannot return a `Result`"
+
+[[prerequisite]]
+id = "P4"
+decision = "D7"
+text = "A failure in this crate leaves through a code and an exit status rather than a panic"
+kind = "invariant"
+normative = true
+evidence = "19.5 says a failure in this crate leaves through a code and an exit status"
+
+[[prerequisite]]
+id = "P5"
+decision = "D7"
+text = "The no-panic-in-cli lint runs over this crate and rejects an .expect()"
+kind = "tool-setting"
+normative = false
+evidence = "the `no-panic-in-cli` lint refused it"
+
+[[prerequisite]]
+id = "P6"
+decision = "D8"
+text = "The session state is a pair of tick counts and cannot be left torn by a thread that panicked holding the lock"
+kind = "invariant"
+normative = false
+evidence = "The state is a pair of tick counts and cannot be torn"
+
+[[prerequisite]]
+id = "P7"
+decision = "D10"
+text = "Turning a clock reading into an instant is a leap-table lookup, because Unix time is a UTC label"
+kind = "existing-behaviour"
+normative = false
+evidence = "converting a clock reading is a leap-table lookup, because Unix time is a UTC label"
+
+[[prerequisite]]
+id = "P8"
+decision = "D10"
+text = "The features workflow builds twenty-two feature combinations, among them --no-default-features --features u512,std"
+kind = "tool-setting"
+normative = false
+evidence = "one of the twenty-two the features workflow builds"
+
+[[prerequisite]]
+id = "P9"
+decision = "D11"
+text = "A tick count is unsigned, so a difference cannot carry its own sign"
+kind = "invariant"
+normative = true
+evidence = "a tick count is unsigned (Rule B)"
+
+[[prerequisite]]
+id = "P10"
+decision = "D11"
+text = "SignedWindow and the wall clock's odometer already report a magnitude beside a direction"
+kind = "existing-behaviour"
+normative = false
+evidence = "the same shape `SignedWindow` and the odometer take"
+
+[[alternative]]
+id = "A1"
+decision = "D2"
+text = "Freeze the reading until the wall clock catches up, instead of advancing at the oscillator's rate"
+evidence = "rather than freezing until the wall clock catches up"
+
+[[alternative]]
+id = "A2"
+decision = "D3"
+text = "Refuse a forward step as well, holding the reading to this process's projection"
+evidence = "refusing it would prefer this process's opinion of the time to the system's"
+
+[[alternative]]
+id = "A3"
+decision = "D7"
+text = "Keep the .expect() that filled the gap in the OnceLock initialiser"
+evidence = "The first draft filled the gap with an `.expect()`"
+
+[[alternative]]
+id = "A4"
+decision = "D8"
+text = "Treat a poisoned lock as a failure and return an error"
+evidence = "taking the inner value is correct rather than merely convenient"
+
+[[alternative]]
+id = "A5"
+decision = "D6"
+text = "Anchor the session at start-up"
+evidence = "Anchored on first use rather than at start-up"
+
+[[alternative]]
+id = "A6"
+decision = "D12"
+text = "Assert only the single backward step"
+evidence = "One backward step is a case; a clock being dragged around is the condition"

@@ -43,27 +43,87 @@
 schema = 1
 repo = "ucal"
 commit = "5880e472260eb32c58821c7fe4a7497154d590a8"
-labeller = ""
-status = "todo"   # set to "done" when finished
+labeller = "vulogov"
+status = "done"
 
-# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
-#
-# [[decision]]
-# id = "D1"
-# text = ""
-# kind = "act"          # act | decline
-# evidence = ""       # optional verbatim span
-#
-# [[prerequisite]]
-# id = "P1"
-# decision = "D1"
-# text = ""
-# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
-# normative = false
-# evidence = ""
-#
-# [[alternative]]
-# id = "A1"
-# decision = "D1"
-# text = ""
-# evidence = ""
+[[decision]]
+id = "D1"
+text = "Read the release-notes file for the version being built, derived from [workspace.package], instead of guessing which file is newest"
+kind = "act"
+evidence = "It now reads the notes for the version being built, derived from [workspace.package]. There is no ordering left to get wrong"
+
+[[decision]]
+id = "D2"
+text = "Do not repair the defect by sorting the filenames numerically"
+kind = "decline"
+evidence = "The first fix sorted numerically, which repairs the one bug 1.10.0 exposed and leaves the guess in place."
+
+[[decision]]
+id = "D3"
+text = "Refuse, naming the version, when the version being built has no notes file, rather than reading some other cycle's notes"
+kind = "act"
+evidence = "a version bumped and its notes never written silently read the previous cycle's file and passed. That is an error naming the version now."
+
+[[decision]]
+id = "D4"
+text = "Assert the specific missing-notes diagnostic in the second test, after the first draft passed with the check disabled"
+kind = "act"
+evidence = "A test that cannot tell the two branches apart is not testing the branch it claims to."
+
+[[decision]]
+id = "D5"
+text = "Give check_ci_covers_the_procedure its doc comment back, which the new function above it had swallowed"
+kind = "act"
+evidence = "the fix had stolen a doc comment. The new function's documentation swallowed check_ci_covers_the_procedure's, leaving that function undocumented"
+
+[[prerequisite]]
+id = "P1"
+decision = "D1"
+text = "The workspace and every package in it carry one and the same version, so the version being built names exactly one cycle"
+kind = "invariant"
+normative = false
+evidence = "Workspace and all seven packages at `1.10.0`."
+
+[[prerequisite]]
+id = "P2"
+decision = "D1"
+text = "A release-notes file is named for its version and nothing else, so <version>.md is the file to read"
+kind = "existing-behaviour"
+normative = false
+evidence = ".join(format!(\"{version}.md\"))"
+
+[[prerequisite]]
+id = "P3"
+decision = "D3"
+text = "A cycle's notes file is created when the cycle opens, so the version being built normally has one"
+kind = "existing-behaviour"
+normative = true
+evidence = "a cycle's notes are created when it opens"
+
+[[prerequisite]]
+id = "P4"
+decision = "D1"
+text = "Cargo.toml states the version as a quoted value on its own line under [workspace.package], which is all the reader parses"
+kind = "assumption"
+normative = false
+evidence = "if let Some(rest) = l.strip_prefix(\"version\")"
+
+[[prerequisite]]
+id = "P5"
+decision = "D1"
+text = "Every other site in the tree treats a version as an opaque string, so no other code depends on the ordering being removed"
+kind = "existing-behaviour"
+normative = false
+evidence = "every other site treats a version as an opaque string, `format!(\"v{version}\")` or an exact manifest match"
+
+[[alternative]]
+id = "A1"
+decision = "D3"
+text = "Fall back to another version's notes when the current version has none, which is what the sort did silently"
+evidence = "a version with no notes must not fall back to another's"
+
+[[alternative]]
+id = "A2"
+decision = "D4"
+text = "Assert only that some error came back and that its message names the version"
+evidence = "It asserted that some error came back and that the message named the version, which passed with the check disabled"

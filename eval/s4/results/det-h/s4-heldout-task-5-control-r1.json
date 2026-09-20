@@ -1,0 +1,176 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g4968383dc452-17-1",
+      "score": 75.71440124511719,
+      "terms": [
+        "uid:14.22",
+        "uids:6.70",
+        "store:6.49",
+        "stor:5.97",
+        "unit:5.83"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-8",
+      "score": 67.74304962158203,
+      "terms": [
+        "uid:13.52",
+        "with:7.76",
+        "src:7.62",
+        "fixtures:3.89",
+        "fixtur:3.48"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 50.49026870727539,
+      "terms": [
+        "tests:6.72",
+        "listed:6.44",
+        "assert:6.14",
+        "with:4.78",
+        "unit:4.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-5",
+      "score": 47.0018424987793,
+      "terms": [
+        "arg:16.37",
+        "args:8.19",
+        "argument:5.61",
+        "bar:5.61",
+        "bare:5.61"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g90ec2f781421-9",
+      "score": 43.84340286254883,
+      "terms": [
+        "assert:9.94",
+        "code:7.18",
+        "cod:6.58",
+        "every:5.52",
+        "store:4.87"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 41.33869171142578,
+      "terms": [
+        "assert:10.29",
+        "code:7.43",
+        "cod:6.81",
+        "every:5.71",
+        "store:5.15"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-26-1",
+      "score": 40.72541427612305,
+      "terms": [
+        "uid:14.34",
+        "says:7.00",
+        "say:6.35",
+        "grounds:5.74",
+        "ground:5.62"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-7-1",
+      "score": 40.565799713134766,
+      "terms": [
+        "path:10.49",
+        "none:7.77",
+        "report:5.70",
+        "every:4.78",
+        "non:4.57"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-4-1",
+      "score": 40.169437408447266,
+      "terms": [
+        "root:15.31",
+        "each:7.02",
+        "smy:6.03",
+        "run:4.94",
+        "smysl:3.93"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-7-1",
+      "score": 38.954261779785156,
+      "terms": [
+        "uid:11.59",
+        "with:6.65",
+        "grounds:5.67",
+        "ground:5.55",
+        "every:4.75"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g90ec2f781421-2-1",
+      "score": 38.279354095458984,
+      "terms": [
+        "tests:7.58",
+        "first:5.55",
+        "sam:5.27",
+        "same:5.27",
+        "argument:4.54"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 38.14640808105469,
+      "terms": [
+        "path:9.71",
+        "let:5.50",
+        "thi:4.44",
+        "this:4.44",
+        "new:3.88"
+      ]
+    }
+  ],
+  "contradicting": true,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 304,
+  "diff_truncated": false,
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/manual/ch11-13-merge-diff-trace.typ",
+    "src/main.rs",
+    "tests/cli-surface.txt",
+    "tests/trace_default_roots.rs"
+  ],
+  "fingerprint": "95820844e833173bf69c7781b256518d67285911334ecb7b6e28c2047da1b4b6",
+  "id": "s4-heldout-task-5-control-r1",
+  "kind": "agent",
+  "pack_text": "[d/g4968383dc452-1] decision (cited, source nodejs/README.md@4968383dc452)\n  Upgrade nodejs conformance target from C-Read to C-Produce.\n\n[d/g4968383dc452-12] decision (cited, source CHANGELOG.md@4968383dc452)\n  Correct README claims that tables were asserted against document.\n\n[d/g4968383dc452-15] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Revise gate 7 blocked command explanation, no longer 'decision about book'.\n\n[d/g4968383dc452-16] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Hold beta.smy repair rather than guess missing stanza.\n  -> causes q/g4968383dc452-16-1\n\n[d/g4968383dc452-17] decision (cited, source CHANGELOG.md@4968383dc452)\n  Do not implement rule M in outside readers.\n  -> causes q/g4968383dc452-17-1\n\n[d/g4968383dc452-21] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Do not apply 22% artefact fraction to other modules.\n\n[d/g4968383dc452-23] decision (cited, source nodejs/src/uid.js@4968383dc452)\n  Implement status integers and source/kind enums as constants in nodejs.\n\n[d/g4968383dc452-24] decision (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Implement RFC 4648 base32 alphabet in nodejs.\n  -> causes q/g4968383dc452-24-1\n\n[d/g4968383dc452-8] decision (cited, source CHANGELOG.md@4968383dc452)\n  Mark spec-derived constants with SPEC: in nodejs src/uid.js.\n  To record that these values were previously guessed from fixtures, making the method explicit.\n\n[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\n  -> causes q/g69ea5c05d859-12-1\n\n[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\n[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not add version lists to python/, nodejs/, go/ implementations.\n\n[d/g69ea5c05d859-6] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.\n\n[d/g69ea5c05d859-8] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update smysl-core unit tests to loop over FORMAT_VERSIONS_SUPPORTED and reject non-listed near misses (e.g. …\n  The old test asserted a literal list and used smysl/1.0 as an unknown version. Driving it from the actual list makes it grow with the list instead of failing or silently passing on new versions.\n\n[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Build Constraints via default and field assignment instead of struct literal\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n  -> causes q/g87345653cdf3-11-1\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n  -> causes q/g87345653cdf3-6-1\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n  This lets the new cargo test pass the binary cargo built for it, so mutation testing exercises the mutated binary rather than a stale one.\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n  -> causes q/g87345653cdf3-9-1\n\n[d/g90ec2f781421-10] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Update CHANGELOG, READINESS, and ROAD_TO_1.0 to record dispatch pass findings.\n\n[d/g90ec2f781421-12] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Do not change tests/doc_output.rs gating to run under --all-features.\n  -> causes q/g90ec2f781421-12-1\n\n[d/g90ec2f781421-2] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Compare all 380 arguments against a golden CLI surface inside cargo test.\n\n[d/g90ec2f781421-3] decision (cited, source Makefile@90ec2f781421)\n  Hardcode command names in tests and Makefile instead of deriving from --help.\n\n[d/g90ec2f781421-4] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Run each command in a scratch directory of its own.\n\n[d/g90ec2f781421-5] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Supply minimal_args for required-argument commands and treat clap refusal as failure.\n  Seven commands require arguments; bare name rejected before router. import not covered elsewhere and mutant survived. Treating refusal as failure prevents future coverage drop.\n\n[d/g90ec2f781421-6] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Set stdin to /dev/null for dispatch test commands.\n\n[d/g90ec2f781421-7] decision (cited, source src/main.rs@90ec2f781421)\n  Document the `==` to `!=` mutation of COMMANDS.iter().find as equivalent.\n  -> causes q/g90ec2f781421-7-1\n\n[d/g90ec2f781421-8] decision (cited, source src/main.rs@90ec2f781421)\n  Do not add a test to distinguish the equivalent `!=` mutation.\n  -> causes q/g90ec2f781421-8-1\n\n[d/g90ec2f781421-9] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Do not assert exit code in every_command_dispatches.\n  Most commands fail without a store; how they fail is rest of suite's job. Claim only that failure came from command not router.\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  -> causes q/ga18e230ae345-6-1\n\n[e/g69ea5c05d859-9-1] evidence (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Check: make ci green\n\n[p/g4968383dc452-17-1] constraint (cited, source CHANGELOG.md@4968383dc452)\n  Unit core carries grounds as uids, not statuses; rule M requires store.\n  -> conditions d/g4968383dc452-17\n\n[p/g4968383dc452-26-1] constraint (cited, source nodejs/src/uid.js@4968383dc452)\n  Spec says deps/grounds are sets, deduplicated and sorted by uid bytes.\n\n[p/g4968383dc452-8-1] constraint (cited, source nodejs/README.md@4968383dc452)\n  The CBOR reader already marks spec-derived constants with SPEC:.\n  -> conditions d/g4968383dc452-8\n\n[p/g69ea5c05d859-8-1] constraint (cited, source crates/smysl-core/src/lib.rs@69ea5c05d859)\n  Old unit test asserted smysl/1.0 as unknown version.\n  -> conditions d/g69ea5c05d859-8\n\n[p/g87345653cdf3-7-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  cargo sets CARGO_BIN_EXE_smysl to the binary built for the integration test.\n  -> conditions d/g87345653cdf3-7\n\n[p/g90ec2f781421-5-1] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Seven commands require an argument, so clap rejects bare names before the router runs.\n  -> conditions d/g90ec2f781421-5\n\n[p/g90ec2f781421-9-1] constraint (cited, source tests/dispatch.rs@90ec2f781421)\n  Most commands fail without a store, so exit code would only reflect command failure.\n  -> conditions d/g90ec2f781421-9\n\n[q/g4968383dc452-16-1] claim (inferred)\n  beta.smy repair declined; missing stanza cannot be reconstructed from page.\n\n[q/g4968383dc452-17-1] claim (inferred)\n  Rule M not implemented; validate claiming it would be check that cannot fail.\n\n[q/g4968383dc452-24-1] claim (inferred)\n  RFC 4648 base32 alphabet implemented, avoiding mutually unreadable names.\n\n[q/g69ea5c05d859-12-1] claim (inferred)\n  Format spec §8.5 records version-trap defect fixed in 0.14.\n\n[q/g69ea5c05d859-13-1] claim (inferred)\n  Format spec §8.6 says smysl/1.0 is not a break; format settled rather than changed.\n\n[q/g87345653cdf3-10-1] claim (inferred)\n  Count assertion prevents gate from confusing nothing wrong with nothing checked.\n\n[q/g87345653cdf3-11-1] claim (inferred)\n  Compile out doc output test outside default feature set to avoid false drift.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g87345653cdf3-6-1] claim (inferred)\n  Only compile fuzzers in CI; running remains separate due to nightly and time.\n\n[q/g87345653cdf3-9-1] claim (inferred)\n  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.\n\n[q/g90ec2f781421-12-1] claim (inferred)\n  Doc-output gating remains unchanged; design deliberate.\n\n[q/g90ec2f781421-7-1] claim (inferred)\n  Equivalent `!=` mutant documented instead of chased; records unreachability.\n\n[q/g90ec2f781421-8-1] claim (inferred)\n  No pointless test added for unreachable mutation; recorded rather than chased.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g4968383dc452-7-1] claim (cited, source Documentation/READINESS.md@4968383dc452)\n  Rejected: Encode empty deps/grounds as empty arrays.\n  A literal reading would produce a different uid for every unit with neither.\n\n[r/g87345653cdf3-7-1] claim (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Rejected: Hardcode the binary path as './target/debug/smysl'\n  A stale binary would report every mutant as caught while testing none of them.\n  -> contrasts d/g87345653cdf3-7\n\n[r/g90ec2f781421-2-1] claim (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Rejected: first version of tests/dispatch.rs assumed the two arms were the same mutation; only invoked …\n  It missed that deleting a cli() arm strips arguments, which a no-argument invocation cannot see.\n  -> contrasts d/g90ec2f781421-2\n\n[r/g90ec2f781421-4-1] claim (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Rejected: run each command in the repository root\n  It left .smysl/staged.smy and .smysl/usage.log behind, and usage read a ledger ingest had just written.\n  -> contrasts d/g90ec2f781421-4\n\n[r/g90ec2f781421-9-1] claim (cited, source tests/dispatch.rs@90ec2f781421)\n  Rejected: assert exit code in every_command_dispatches\n  Most commands fail without a store; how they fail is the rest of the suite's job.\n  -> contrasts d/g90ec2f781421-9\n\n",
+  "pack_tokens": 1493,
+  "pack_units": 63,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": 5
+}

@@ -1,0 +1,199 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-pro-v2"
+repo = "smysl"
+commit = "532e4d229a6c98c1cb4b98ba9709a1179deb897f"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Add six tests driving the binary for cmd_fmt."
+suggest = [
+    "D1",
+    "D6",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Leave the round-trip guard untested."
+suggest = ["D3"]
+match = "D3"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Build the required document in each test instead of using repository fixtures."
+suggest = [
+    "D2",
+    "D7",
+    "D5",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Use raw stdout for the step whose output is binary."
+suggest = [
+    "D4",
+    "D6",
+    "D1",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Correct the CLI's readiness rate to 40.0% in the documentation."
+suggest = [
+    "D8",
+    "D6",
+]
+match = "D8"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Create a unique scratch directory for each test run."
+suggest = [
+    "D7",
+    "D2",
+    "D5",
+]
+match = "D2"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "The command has no internal seams to call, requiring the binary to be run."
+suggest = [
+    "P5",
+    "P8",
+    "P6",
+]
+match = "P5"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "The binary is only built when the cli feature is enabled."
+suggest = [
+    "P6",
+    "P5",
+    "P8",
+]
+match = "P6"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "The guard only triggers when the parser reads back a different result from write_surface."
+suggest = [
+    "P10",
+    "P5",
+    "P6",
+]
+match = "P10"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "The mutation testing tool reuses build directories across test runs."
+suggest = [
+    "P1",
+    "P3",
+    "P2",
+]
+match = "P1"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "Tests must not rely on the state of the repository tree."
+suggest = [
+    "P3",
+    "P4",
+    "P11",
+]
+match = "P3"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "Decoding with from_utf8_lossy destroys CBOR data."
+suggest = ["P8"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P7"
+text = "The 64.2% rate was measured before the work in version 2.2."
+suggest = [
+    "P13",
+    "P12",
+    "P11",
+]
+match = "P13"
+
+[[item]]
+kind = "prerequisite"
+id = "P8"
+text = "Tests must not rely on the state of the machine."
+suggest = [
+    "P4",
+    "P3",
+    "P11",
+]
+match = "P4"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Naming the mutant in each test. — The decision is what a reader needs and the mutant is only how the gap was found."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Testing the round-trip guard. — No user input can reach it, so no test can distinguish a guard that checks from one that does not."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "Relying on a repository fixture having that property. — cargo-mutants reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten."
+suggest = [
+    "A1",
+    "A3",
+    "A2",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "Decoding stdout with from_utf8_lossy. — It destroys CBOR data, causing the encoder to be blamed for the test harness."
+suggest = []
+match = "A4"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "Quoting the 64.2% rate and 110 survivor count together. — It read as though both described the present, which was wrong by a whole phase."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "Writing into a fixed shared directory under TMPDIR. — It caused CI failures because tests depended on the state of the machine rather than on the code."
+suggest = [
+    "A2",
+    "A3",
+    "A1",
+]
+match = "A2"

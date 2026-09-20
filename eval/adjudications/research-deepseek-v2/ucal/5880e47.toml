@@ -1,0 +1,231 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-deepseek-v2"
+repo = "ucal"
+commit = "5880e472260eb32c58821c7fe4a7497154d590a8"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Read notes for version being built rather than newest sorted file"
+suggest = [
+    "D1",
+    "D3",
+    "D4",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Error naming the version when current release notes missing"
+suggest = [
+    "D1",
+    "D3",
+    "D4",
+]
+match = "D3"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Replace old version-sort tests with current-version and missing-notes tests"
+suggest = [
+    "D1",
+    "D3",
+    "D4",
+]
+match = "none"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Make missing-notes test strict about the diagnostic"
+suggest = [
+    "D4",
+    "D1",
+    "D3",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Restore doc comment for check_ci_covers_the_procedure"
+suggest = ["D5"]
+match = "D5"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Update release notes with the fix rationale and sweep findings"
+suggest = [
+    "D1",
+    "D3",
+    "D4",
+]
+match = "none"
+
+[[item]]
+kind = "decision"
+id = "D7"
+text = "Leave other version-ordering sites unchanged"
+suggest = [
+    "D3",
+    "D1",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "The workspace version is declared under [workspace.package] in Cargo.toml."
+suggest = [
+    "P4",
+    "P1",
+    "P2",
+]
+match = "P4"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "Release notes are stored as {version}.md files under Documentation/Release_Notes."
+suggest = [
+    "P2",
+    "P3",
+    "P4",
+]
+match = "P2"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "check_ci_covers_the_procedure returns Result<usize, Vec<String>>, so an Err is a failed check."
+suggest = ["P5"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "The current version is already derived from [workspace.package] by decision 1."
+suggest = [
+    "P1",
+    "P4",
+    "P2",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "The test can get the workspace root via crate::workspace_root()."
+suggest = [
+    "P1",
+    "P4",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "std::fs::read_to_string on a missing file returns an error message containing the path and version."
+suggest = [
+    "P2",
+    "P3",
+    "P1",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P7"
+text = "The missing-notes diagnostic produced by decision 2 contains the phrase a cycle's notes."
+suggest = [
+    "P3",
+    "P2",
+    "P1",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P8"
+text = "A Rust doc comment applies to the next item, so inserting an item above steals the comment."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P9"
+text = "Release notes for the current 1.10.0 cycle are kept in Documentation/Release_Notes/1.10.0.md."
+suggest = [
+    "P2",
+    "P3",
+    "P1",
+]
+match = "P3"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "sort filenames numerically / by version to pick the newest — Sorting numerically would fix only the one exposed bug and would leave the guess in place."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "silently fall back to the previous cycle's notes file — This fallback could not catch a version bumped without notes and would silently pass on the previous cycle's file."
+suggest = [
+    "A1",
+    "A2",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "keep the two old tests for version-sort behavior — The old tests exercised sorting behavior that no longer exists after replacing the sort with current-version lookup."
+suggest = [
+    "A1",
+    "A2",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "assert only that some error came back and the message named the version — The loose assertion passed even with the check disabled because read_to_string also fails and names the path containing the version."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "not restore the check's doc comment — Leaving it there made check_ci_covers_the_procedure undocumented."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "keep the old release-notes text describing the numeric sort — That text described the abandoned numeric sort and omitted the adjacent failure and sweep findings."
+suggest = ["A1"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A7"
+text = "change other sites that might assume version ordering — The sweep found no other version-ordering assumptions; every other site treats a version as an opaque string."
+suggest = [
+    "A2",
+    "A1",
+]
+match = "none"

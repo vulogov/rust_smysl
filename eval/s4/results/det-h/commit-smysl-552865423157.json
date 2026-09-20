@@ -1,0 +1,139 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-11",
+      "score": 85.54295349121094,
+      "terms": [
+        "documentation:16.11",
+        "claim:4.30",
+        "doe:3.89",
+        "does:3.89",
+        "that:3.37"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 81.9173355102539,
+      "terms": [
+        "cor:23.84",
+        "core:23.84",
+        "unit:11.22",
+        "smysl:6.50",
+        "tests:3.03"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 67.70556640625,
+      "terms": [
+        "cor:26.24",
+        "core:26.24",
+        "smysl:6.28",
+        "format:3.29",
+        "the:2.18"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-2",
+      "score": 51.80864334106445,
+      "terms": [
+        "cas:10.25",
+        "cases:5.12",
+        "produc:4.28",
+        "test:4.08",
+        "for:3.20"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g532e4d229a6c-3",
+      "score": 47.48841094970703,
+      "terms": [
+        "fixtures:11.94",
+        "fixtur:11.89",
+        "canonical:4.60",
+        "test:3.85",
+        "fixture:3.84"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g532e4d229a6c-4",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-10",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-12",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "d/ga18e230ae345-6",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g532e4d229a6c-4-1",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g532e4d229a6c-4-2",
+      "score": 40.95866775512695,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g69ea5c05d859-12-1",
+      "score": 40.95866775512695,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "files": [
+    ".github/workflows/ci.yml",
+    "CHANGELOG.md",
+    "Documentation/READINESS.md",
+    "Documentation/SMYSL_FORMAT_SPEC.md",
+    "crates/smysl-core/tests/gen_uid_fixtures.rs",
+    "fixtures/wire/uid/cases.json",
+    "go/README.md",
+    "go/blake3.go",
+    "go/blake3_test.go",
+    "go/uid.go",
+    "go/uid_test.go"
+  ],
+  "fingerprint": "26073c49751e32f7f54a179a52090bb79f32175b11c2c7ab77cf38467a182a63",
+  "id": "commit-smysl-552865423157",
+  "kind": "commit",
+  "pack_text": "[d/g532e4d229a6c-2] decision (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Do not write a test for the round-trip guard; record it as a known survivor.\n  The guard fires only when write_surface produces something the parser reads back differently, and no user input can reach it. A test cannot distinguish a guard that checks from one that does not, so the author records it like previous untestable cases with a pointer to the tests covering the property it protects.\n\n[d/g532e4d229a6c-3] decision (cited, source tests/cmd_fmt.rs@532e4d229a6c)\n  Make each test write its own document with the needed property instead of using repository fixtures.\n  The first version depended on repository fixtures like F1 not canonical and F9 having comments. cargo-mutants reuses build directories, so a mutant that misroutes a write can leave a fixture rewritten, causing spurious failures counted as catches. The rule is that a test must not depend on the state of the tree, just as it must not depend on the state of the machine.\n\n[d/g532e4d229a6c-4] decision (cited, source Documentation/READINESS.md@532e4d229a6c)\n  Update READINESS with corrected CLI mutant rate of 40.0% and re-measurement details.\n  A full sharded re-measurement reproduced the survivor count of 110 but showed the rate is 40.0% of 275 viable, not the previously implied 64.2%. The author updates the record to correct a claim made in the file's own voice and notes the distribution unchanged.\n\n[d/g69ea5c05d859-10] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update public API snapshots to include FORMAT_VERSION_DEFAULT and the new smysl-core count.\n  api-check detected the surface growth as intended; adding an export is not a breaking change, so the snapshot must be regenerated.\n\n[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\n  -> causes q/g69ea5c05d859-12-1\n\n[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\n[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not add version lists to python/, nodejs/, go/ implementations.\n\n[d/g69ea5c05d859-8] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update smysl-core unit tests to loop over FORMAT_VERSIONS_SUPPORTED and reject non-listed near misses (e.g. …\n  The old test asserted a literal list and used smysl/1.0 as an unknown version. Driving it from the actual list makes it grow with the list instead of failing or silently passing on new versions.\n\n[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Build Constraints via default and field assignment instead of struct literal\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n  -> causes q/g87345653cdf3-11-1\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n  -> causes q/g87345653cdf3-9-1\n\n[d/g90ec2f781421-10] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Update CHANGELOG, READINESS, and ROAD_TO_1.0 to record dispatch pass findings.\n  Document the 15->1 survivor reduction, the seven untested commands, and that dispatch pass is worth stating as finding.\n\n[d/g90ec2f781421-11] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Correct documentation that doc-output coverage is feature-dependent and unexplained.\n  tests/doc_output.rs header explains gating; at all-features test does not exist, not skipped. Prior claim 'nothing states it' was wrong.\n\n[d/g90ec2f781421-12] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Do not change tests/doc_output.rs gating to run under --all-features.\n  Design is deliberate; manual documents default build and exact-pack makes correct claim read as drift, so gating is correct.\n  -> causes q/g90ec2f781421-12-1\n\n[d/g90ec2f781421-2] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Compare all 380 arguments against a golden CLI surface inside cargo test.\n\n[d/g90ec2f781421-3] decision (cited, source Makefile@90ec2f781421)\n  Hardcode command names in tests and Makefile instead of deriving from --help.\n\n[d/g90ec2f781421-4] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Run each command in a scratch directory of its own.\n\n[d/g90ec2f781421-6] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Set stdin to /dev/null for dispatch test commands.\n\n[d/g90ec2f781421-7] decision (cited, source src/main.rs@90ec2f781421)\n  Document the `==` to `!=` mutation of COMMANDS.iter().find as equivalent.\n  -> causes q/g90ec2f781421-7-1\n\n[d/g90ec2f781421-8] decision (cited, source src/main.rs@90ec2f781421)\n  Do not add a test to distinguish the equivalent `!=` mutation.\n\n[d/g90ec2f781421-9] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Do not assert exit code in every_command_dispatches.\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  To record the removal and its justification for the 0.8.0 release notes.\n  -> causes q/ga18e230ae345-6-1\n\n[e/g69ea5c05d859-9-1] evidence (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Check: make ci green\n\n[p/g532e4d229a6c-2-1] constraint (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  The round-trip guard only fires when write_surface and the parser disagree, and no user input reaches it.\n  -> conditions d/g532e4d229a6c-2\n\n[p/g532e4d229a6c-2-2] constraint (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Earlier untestable survivors were recorded the same way, so this decline follows precedent.\n  -> conditions d/g532e4d229a6c-2\n\n[p/g532e4d229a6c-3-1] constraint (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  cargo-mutants reuses build directories across mutants, so mutant-induced fixture rewrites persist and affect …\n  -> conditions d/g532e4d229a6c-3\n\n[p/g532e4d229a6c-3-2] constraint (cited, source git:532e4d229a6c98c1cb4b98ba9709a1179deb897f)\n  Tests must not depend on the state of the tree, just as they must not depend on the state of …\n  -> conditions d/g532e4d229a6c-3\n\n[p/g532e4d229a6c-4-1] constraint (cited, source Documentation/READINESS.md@532e4d229a6c)\n  A full sharded re-measurement confirmed 110 survivors and reproduced the per-file distribution.\n  -> conditions d/g532e4d229a6c-4\n\n[p/g532e4d229a6c-4-2] constraint (cited, source Documentation/READINESS.md@532e4d229a6c)\n  The corrected mutant rate is 40.0% of 275 viable mutants.\n  -> conditions d/g532e4d229a6c-4\n\n[p/g69ea5c05d859-10-1] constraint (cited, source tests/public-api-counts.txt@69ea5c05d859)\n  API snapshots are regenerated with make api and checked by make api-check.\n  -> conditions d/g69ea5c05d859-10\n\n[p/g69ea5c05d859-12-1] constraint (cited, source Documentation/SMYSL_FORMAT_SPEC.md@69ea5c05d859)\n  Version trap existed: parser discarded declared version; writer used own FORMAT_VERSIONS_SUPPORTED[0].\n  -> conditions d/g69ea5c05d859-12\n\n[p/g69ea5c05d859-8-1] constraint (cited, source crates/smysl-core/src/lib.rs@69ea5c05d859)\n  Old unit test asserted smysl/1.0 as unknown version.\n  -> conditions d/g69ea5c05d859-8\n\n[p/g90ec2f781421-10-1] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  cli+main survivors went from 15 to 1.\n  -> conditions d/g90ec2f781421-10\n\n[p/g90ec2f781421-10-2] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Seven of twenty-two commands were untested.\n  -> conditions d/g90ec2f781421-10\n\n[p/g90ec2f781421-11-1] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  tests/doc_output.rs is gated to compile in exactly one matrix configuration.\n  -> conditions d/g90ec2f781421-11\n\n[p/g90ec2f781421-11-2] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  With --all-features, doc_output test runs 0 tests; it does not exist.\n  -> conditions d/g90ec2f781421-11\n\n[p/g90ec2f781421-12-1] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  The manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift.\n  -> conditions d/g90ec2f781421-12\n\n[p/ga18e230ae345-6-1] constraint (cited, source CHANGELOG.md@a18e230ae345)\n  The changelog has an Unreleased — 0.8.0 section where the removal can be recorded.\n  -> conditions d/ga18e230ae345-6\n\n[q/g69ea5c05d859-12-1] claim (inferred)\n  Format spec §8.5 records version-trap defect fixed in 0.14.\n\n[q/g87345653cdf3-11-1] claim (inferred)\n  Compile out doc output test outside default feature set to avoid false drift.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g87345653cdf3-9-1] claim (inferred)\n  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.\n\n[q/g90ec2f781421-12-1] claim (inferred)\n  Doc-output gating remains unchanged; design deliberate.\n\n[q/g90ec2f781421-7-1] claim (inferred)\n  Equivalent `!=` mutant documented instead of chased; records unreachability.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n",
+  "pack_tokens": 1497,
+  "pack_units": 53,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null
+}

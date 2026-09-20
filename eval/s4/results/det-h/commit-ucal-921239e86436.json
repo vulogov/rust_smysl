@@ -1,0 +1,183 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-3-2",
+      "score": 133.2970733642578,
+      "terms": [
+        "ucal:49.44",
+        "json:25.85",
+        "fields:7.80",
+        "field:5.36"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g449b762e3cca-10",
+      "score": 120.32733154296875,
+      "terms": [
+        "ucal:40.58",
+        "with:7.13",
+        "thi:4.87",
+        "this:4.87",
+        "sam:4.54"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g449b762e3cca-10-1",
+      "score": 118.34507751464844,
+      "terms": [
+        "ucal:37.46",
+        "with:6.79",
+        "thi:4.50",
+        "this:4.50",
+        "sam:4.19"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g31e52cc10b1f-8-2",
+      "score": 115.89241027832031,
+      "terms": [
+        "ucal:51.63",
+        "sam:5.78",
+        "same:5.78",
+        "field:5.60",
+        "the:2.28"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g5880e472260e-3",
+      "score": 109.15419006347656,
+      "terms": [
+        "tests:12.11",
+        "fil:9.87",
+        "file:8.97",
+        "with:5.93",
+        "new:4.46"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g5880e472260e-1-2",
+      "score": 108.23722839355469,
+      "terms": [
+        "documentation:28.93",
+        "fil:10.42",
+        "releas:5.72",
+        "release:5.72",
+        "notes:4.96"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g2074788f713e-1-1",
+      "score": 105.5398178100586,
+      "terms": [
+        "ucal:56.58",
+        "the:2.24",
+        "and:1.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g31e52cc10b1f-3-1",
+      "score": 89.6633071899414,
+      "terms": [
+        "ucal:53.51",
+        "json:27.98",
+        "field:5.81",
+        "the:2.36"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g31e52cc10b1f-3",
+      "score": 87.25222778320312,
+      "terms": [
+        "ucal:41.73",
+        "json:21.82",
+        "valu:6.31",
+        "value:6.31",
+        "field:5.48"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g31e52cc10b1f-3-1",
+      "score": 83.60692596435547,
+      "terms": [
+        "ucal:37.70",
+        "json:19.71",
+        "valu:5.93",
+        "value:5.93",
+        "its:5.70"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g449b762e3cca-1",
+      "score": 79.58920288085938,
+      "terms": [
+        "ucal:46.04",
+        "from:7.72",
+        "show:5.33",
+        "cod:4.95",
+        "code:4.95"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g5880e472260e-6-1",
+      "score": 67.42945098876953,
+      "terms": [
+        "documentation:27.53",
+        "cycl:5.65",
+        "cycle:5.65",
+        "releas:5.56",
+        "release:5.56"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "5880e47",
+    "31e52cc",
+    "8fdb9b3",
+    "21665b3",
+    "449b762"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "files": [
+    "Documentation/CLI-EXAMPLES.md",
+    "Documentation/CLI.md",
+    "Documentation/Release_Notes/1.12.0.md",
+    "Documentation/examples/ephemeris.hjson",
+    "crates/ucal-cosmo/src/dilate.rs",
+    "crates/ucal-cosmo/src/lib.rs",
+    "crates/ucal-events/src/ephem.rs",
+    "crates/ucal-events/src/lib.rs",
+    "crates/ucal/src/ephem_file.rs",
+    "crates/ucal/src/lib.rs",
+    "crates/ucal/src/main.rs",
+    "crates/ucal/tests/json_surface.rs",
+    "crates/ucal/tests/manual_fields.rs",
+    "fixtures/json-surface.txt",
+    "fixtures/ucal-json-1.schema.json",
+    "xtask/src/citations.rs",
+    "xtask/src/examples.rs"
+  ],
+  "fingerprint": "a71b051a68f049790b8f9b39c6676c48c840288def5de92d9b8ea2a3bfdabb44",
+  "id": "commit-ucal-921239e86436",
+  "kind": "commit",
+  "pack_text": "[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Route all time readings through a process-wide session clock.\n\n[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ignore poison on the session mutex and take the inner value.\n  -> causes q/g2074788f713e-11-1\n\n[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Make Session::reading a pure function of its inputs.\n  -> causes q/g2074788f713e-4-1\n\n[d/g2074788f713e-5] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Track the last reading to enforce monotonicity against smaller elapsed inputs.\n  -> causes q/g2074788f713e-5-1\n\n[d/g2074788f713e-6] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Store session state as Option and anchor lazily inside session_now, avoiding .expect.\n  -> causes q/g2074788f713e-6-1\n\n[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Split wall_instant out of now_instant to expose a raw system clock reading.\n  -> causes q/g2074788f713e-7-1\n\n[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)\n  Document the session clock and its rule in CLI.md and release notes.\n  -> causes q/g2074788f713e-9-1\n\n[d/g21665b3aac9b-1] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Set RUSTFLAGS=-D warnings in features.yml workflow\n\n[d/g21665b3aac9b-2] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Fix the six items with cfg attributes rather than warning suppressions\n  The author chose attributes over suppressions for the six items.\n  -> causes q/g21665b3aac9b-2-1\n\n[d/g21665b3aac9b-3] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate RatInterval import behind feature cosmo\n  -> causes q/g21665b3aac9b-3-1\n\n[d/g21665b3aac9b-4] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate qualified::Kind import behind feature civil\n  -> causes q/g21665b3aac9b-4-1\n\n[d/g21665b3aac9b-5] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate Rounding import behind feature civil\n  -> causes q/g21665b3aac9b-5-1\n\n[d/g21665b3aac9b-6] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate parse_form and codec::Form behind all(civil, std)\n  -> causes q/g21665b3aac9b-6-1\n\n[d/g21665b3aac9b-7] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Gate years_quantity behind any(events, cosmo)\n  -> causes q/g21665b3aac9b-7-1\n\n[d/g21665b3aac9b-9] decision (cited, source git:21665b3aac9be9a762eada806b9ccb56c3cbabea)\n  Split sign-release error message into two messages based on gh auth status\n\n[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add a clock section to doctor and now output.\n\n[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add doctor --clock flag to sample and report machine resolution.\n\n[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep precision field name and value unchanged.\n  It is a path in ucal-json/1; repurposing one is breaking.\n  -> causes q/g31e52cc10b1f-3-1\n\n[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep granularity, resolution, and accuracy as separate numbers.\n  -> causes q/g31e52cc10b1f-5-1\n\n[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Report which error terms cancel in a difference.\n\n[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)\n  Add note that precision is tier rendered to, not accuracy.\n\n[d/g449b762e3cca-1] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Add `ucal cal from` as inverse of `cal show`\n  Earth's legacy calendars had both directions since 0.1.0, but the fifteen derived calendars only went one way, contradicting §15.4's claim that Earth has no special code path.\n\n[d/g449b762e3cca-10] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse calendars with no anchor\n  The same error as the forward direction, UCAL-E0062; thirteen of fifteen derived calendars are in this state.\n\n[d/g449b762e3cca-11] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Add property test recovering every instant\n\n[d/g449b762e3cca-12] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Assert consecutive local days leave no gap\n  -> causes q/g449b762e3cca-12-1\n\n[d/g449b762e3cca-2] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Return a Window from the inverse\n  -> causes q/g449b762e3cca-2-1\n\n[d/g449b762e3cca-3] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Parse the exact form `cal show` prints\n  -> causes q/g449b762e3cca-3-1\n\n[d/g449b762e3cca-4] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Take window endpoints outward, never inward\n  -> causes q/g449b762e3cca-4-1\n\n[d/g449b762e3cca-5] decision (cited, source git:449b762e3cca6dc1d2b9b2838a4ecafbd541dcf2)\n  Do not use search to find the year\n  -> causes q/g449b762e3cca-5-1\n\n[d/g449b762e3cca-6] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse year 0\n  -> causes q/g449b762e3cca-6-1\n\n[d/g449b762e3cca-7] decision (cited, source crates/ucal-body/src/calendar.rs@449b762e3cca)\n  Refuse day 0\n  -> causes q/g449b762e3cca-7-1\n\n[d/g449b762e3cca-8] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a day past the year's end, not roll it forward\n  -> causes q/g449b762e3cca-8-1\n\n[d/g449b762e3cca-9] decision (cited, source Documentation/CLI.md@449b762e3cca)\n  Refuse a fraction of 1 or more\n  -> causes q/g449b762e3cca-9-1\n\n[d/g5880e472260e-1] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Read notes for version being built rather than newest sorted file\n\n[d/g5880e472260e-3] decision (cited, source xtask/src/citations.rs@5880e472260e)\n  Replace old version-sort tests with current-version and missing-notes tests\n  Old tests checked that sorting by version picks 1.10.0 and that stray files sort first. New tests assert the current version's notes file exists and that a missing file is refused.\n  -> causes q/g5880e472260e-3-1\n\n[d/g5880e472260e-5] decision (cited, source git:5880e472260eb32c58821c7fe4a7497154d590a8)\n  Restore doc comment for check_ci_covers_the_procedure\n  -> causes q/g5880e472260e-5-1\n\n[d/g5880e472260e-6] decision (cited, source Documentation/Release_Notes/1.10.0.md@5880e472260e)\n  Update release notes with the fix rationale and sweep findings\n\n[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Accept broken pipe as non-fatal when writing test stdin.\n\n[p/g2074788f713e-1-1] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)\n  `now_instant` is the single route shared by `ucal wallclock` and `ucal now`.\n  -> conditions d/g2074788f713e-1\n\n[p/g31e52cc10b1f-3-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  The precision field is a path in ucal-json/1.\n  -> conditions d/g31e52cc10b1f-3\n\n[p/g31e52cc10b1f-3-2] constraint (cited, source fixtures/ucal-json-1.schema.json@31e52cc10b1f)\n  ucal-json/1 promises existing fields never change name, shape or meaning.\n  -> conditions d/g31e52cc10b1f-3\n\n[p/g31e52cc10b1f-8-2] constraint (cited, source Documentation/CLI.md@31e52cc10b1f)\n  The same field name means something else in `ucal explain`.\n  -> conditions d/g31e52cc10b1f-8\n\n[p/g449b762e3cca-1-1] constraint (cited, source crates/ucal/src/lib.rs@449b762e3cca)\n  `ucal_body::calendar::by_id` resolves a calendar id to a calendar object.\n  -> conditions d/g449b762e3cca-1\n\n[p/g449b762e3cca-1-2] constraint (cited, source crates/ucal/src/main.rs@449b762e3cca)\n  The CLI dispatch already has `CalCommand` enum and `pick` helper.\n  -> conditions d/g449b762e3cca-1\n\n[p/g449b762e3cca-10-1] constraint (cited, source Documentation/CLI.md@449b762e3cca)\n  Forward direction already returns `UCAL-E0062` for unanchored calendars.\n  -> conditions d/g449b762e3cca-10\n\n[p/g5880e472260e-1-2] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  Release notes are stored as {version}.md files under Documentation/Release_Notes.\n  -> conditions d/g5880e472260e-1\n\n[p/g5880e472260e-3-1] constraint (cited, source xtask/src/citations.rs@5880e472260e)\n  The test can get the workspace root via crate::workspace_root().\n  -> conditions d/g5880e472260e-3\n\n[p/g5880e472260e-6-1] constraint (speculative)\n  Release notes for the current 1.10.0 cycle are kept in Documentation/Release_Notes/1.10.0.md.\n  -> conditions d/g5880e472260e-6\n\n[q/g2074788f713e-11-1] claim (inferred)\n  Taking inner value on poisoned mutex is correct because state cannot be torn.\n\n[q/g2074788f713e-4-1] claim (inferred)\n  Pure function lets tests drive wall clock backwards and assert monotonic sequence.\n\n[q/g2074788f713e-5-1] claim (inferred)\n  last prevents smaller elapsed inputs from making reading go backwards.\n\n[q/g2074788f713e-6-1] claim (inferred)\n  Option avoids .expect, allows anchoring where failure can be returned.\n\n[q/g2074788f713e-7-1] claim (inferred)\n  wall_instant exposes raw system clock for doctor --clock and measurements.\n\n[q/g2074788f713e-9-1] claim (inferred)\n  Documents one process, one clock and max rule in CLI.md and release notes.\n\n[q/g21665b3aac9b-2-1] claim (inferred)\n  Six items fixed with cfg attributes, not warning suppressions.\n\n[q/g21665b3aac9b-3-1] claim (inferred)\n  RatInterval import is gated to cosmo because only parse_redshift uses it.\n\n[q/g21665b3aac9b-4-1] claim (inferred)\n  qualified::Kind import is gated to civil because to-civil reads it.\n\n[q/g21665b3aac9b-5-1] claim (inferred)\n  Rounding import is gated to civil because to-civil uses it when --round absent.\n\n[q/g21665b3aac9b-6-1] claim (inferred)\n  parse_form and codec::Form gated behind all(civil, std) because run_now needs both.\n\n[q/g21665b3aac9b-7-1] claim (inferred)\n  years_quantity gated behind any(events, cosmo) because both features call it.\n\n[q/g31e52cc10b1f-3-1] claim (inferred)\n  Keeping precision unchanged avoids breaking ucal-json/1 paths.\n\n[q/g31e52cc10b1f-5-1] claim (inferred)\n  Separation makes clear what each number represents; conflating them is the defect.\n\n[q/g449b762e3cca-12-1] claim (inferred)\n  Consecutive local days leave no gap.\n\n[q/g449b762e3cca-2-1] claim (inferred)\n  The inverse returns a Window, an interval, not a point.\n\n[q/g449b762e3cca-3-1] claim (inferred)\n  The command accepts the exact format cal show prints, enabling manual round trips.\n\n[q/g449b762e3cca-4-1] claim (inferred)\n  Endpoints are taken outward, never inward, so the window contains the interval.\n\n[q/g449b762e3cca-5-1] claim (inferred)\n  The inverse evaluates directly without iterative search.\n\n[q/g449b762e3cca-6-1] claim (inferred)\n  Year 0 is refused with error E0020.\n\n[q/g449b762e3cca-7-1] claim (inferred)\n  Day 0 is refused with error E0018.\n\n[q/g449b762e3cca-8-1] claim (inferred)\n  Days beyond the year's end are refused, not rolled forward.\n\n[q/g449b762e3cca-9-1] claim (inferred)\n  Fractions of 1 or more are refused.\n\n[q/g5880e472260e-3-1] claim (inferred)\n  Old version-sort tests replaced with current-version and missing-notes tests.\n\n[q/g5880e472260e-5-1] claim (inferred)\n  Doc comment restored for check_ci_covers_the_procedure, leaving function documented.\n\n[r/g31e52cc10b1f-3-1] claim (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Rejected: Change the existing `precision` field name or repurpose its value.\n  It is a path in ucal-json/1 and changing it is breaking.\n  -> contrasts d/g31e52cc10b1f-3\n\n[r/g449b762e3cca-10-1] claim (cited, source Documentation/CLI.md@449b762e3cca)\n  Rejected: Allow the inverse for calendars with no anchor.\n  The same error as the forward direction, UCAL-E0062, applies; thirteen of fifteen derived calendars are in this state.\n  -> contrasts d/g449b762e3cca-10\n\n",
+  "pack_tokens": 1499,
+  "pack_units": 75,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null
+}

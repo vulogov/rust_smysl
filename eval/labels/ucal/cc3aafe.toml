@@ -40,27 +40,89 @@
 schema = 1
 repo = "ucal"
 commit = "cc3aafefb1da326e130fd890c1d575969cee7a2a"
-labeller = ""
-status = "todo"   # set to "done" when finished
+labeller = "vulogov"
+status = "done"
 
-# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
-#
-# [[decision]]
-# id = "D1"
-# text = ""
-# kind = "act"          # act | decline
-# evidence = ""       # optional verbatim span
-#
-# [[prerequisite]]
-# id = "P1"
-# decision = "D1"
-# text = ""
-# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
-# normative = false
-# evidence = ""
-#
-# [[alternative]]
-# id = "A1"
-# decision = "D1"
-# text = ""
-# evidence = ""
+[[decision]]
+id = "D1"
+text = "Read the residuals observations from a file committed to the tree instead of one the test writes into the shared temp directory"
+kind = "act"
+evidence = "The repair is that the observations are a committed file rather than one a test invents"
+
+[[decision]]
+id = "D2"
+text = "Build the fixture from predicted cycle centres displaced by stated whole seconds (0, +3, -7, +41), so every residual is known before the command runs"
+kind = "act"
+evidence = "four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye"
+
+[[decision]]
+id = "D3"
+text = "Place one of the four observations outside the window of its own cycle, so the fixture exercises the width that grows with distance from the epoch"
+kind = "act"
+evidence = "Three fall inside their own windows and the +41 does not, which is the property the width exists to carry"
+
+[[decision]]
+id = "D4"
+text = "Register the residuals run as a generated worked example, so the fixture is shown in the manual rather than only consumed by tests"
+kind = "act"
+evidence = "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest"
+
+[[prerequisite]]
+id = "P1"
+decision = "D1"
+text = "A test must not depend on the scheduling of the other test binaries that run beside it"
+kind = "invariant"
+normative = true
+evidence = "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+
+[[prerequisite]]
+id = "P2"
+decision = "D1"
+text = "Cargo sets CARGO_MANIFEST_DIR at compile time, so the fixture can be named by a path relative to the test crate"
+kind = "tool-setting"
+normative = false
+evidence = "env!(\"CARGO_MANIFEST_DIR\")"
+
+[[prerequisite]]
+id = "P3"
+decision = "D2"
+text = "Documentation/examples/ephemeris.hjson already holds the fit the observed instants were displaced from, and its predictions do not move"
+kind = "existing-behaviour"
+normative = false
+evidence = "ucal ephem residuals Documentation/examples/ephemeris.hjson --observed Documentation/examples/observations.txt"
+
+[[prerequisite]]
+id = "P4"
+decision = "D2"
+text = "O minus C is exact integer subtraction, so a displacement of a whole number of seconds comes back as exactly that residual"
+kind = "existing-behaviour"
+normative = false
+evidence = "`O - C` is exact integer subtraction"
+
+[[prerequisite]]
+id = "P5"
+decision = "D3"
+text = "The half-width is computed per cycle and grows with distance from the epoch, so the same displacement can fall inside one window and outside another"
+kind = "existing-behaviour"
+normative = false
+evidence = "each residual is placed against the window for its own cycle - which grows with distance from the epoch, so the same shift can be inside one window and outside another"
+
+[[prerequisite]]
+id = "P6"
+decision = "D4"
+text = "The examples generator runs each entry from the repository root, so repository-relative paths in its arguments resolve"
+kind = "existing-behaviour"
+normative = false
+evidence = "args: &[\"ephem\", \"residuals\", \"Documentation/examples/ephemeris.hjson\", \"--observed\", \"Documentation/examples/observations.txt\"]"
+
+[[alternative]]
+id = "A1"
+decision = "D1"
+text = "Keep writing the fixture at run time but give each test binary its own path, so the two cannot collide"
+evidence = "A fixture a reader can open is better than one a test writes, and it cannot race with anything."
+
+[[alternative]]
+id = "A2"
+decision = "D1"
+text = "Have the test compute the observed instants from the predictor itself rather than commit the digits"
+evidence = "let centre = ucal::cmd_ephem_at(EPH, 100, 1).unwrap();"

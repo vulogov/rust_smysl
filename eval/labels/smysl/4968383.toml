@@ -120,27 +120,361 @@
 schema = 1
 repo = "smysl"
 commit = "4968383dc452dba3c9ac9ab2c6abae4b3612bba5"
-labeller = ""
-status = "todo"   # set to "done" when finished
+labeller = "vulogov"
+status = "done"
 
-# Copy a block per item. Ids must be unique; prerequisites and alternatives name a decision.
-#
-# [[decision]]
-# id = "D1"
-# text = ""
-# kind = "act"          # act | decline
-# evidence = ""       # optional verbatim span
-#
-# [[prerequisite]]
-# id = "P1"
-# decision = "D1"
-# text = ""
-# kind = "existing-behaviour"   # existing-behaviour | invariant | tool-setting | prior-change | assumption
-# normative = false
-# evidence = ""
-#
-# [[alternative]]
-# id = "A1"
-# decision = "D1"
-# text = ""
-# evidence = ""
+[[decision]]
+id = "D1"
+text = "Take the nodejs implementation from C-Read to C-Produce, so section 2.1 has four independent derivations and section 2.3 three witnesses beyond the Rust"
+kind = "act"
+evidence = "nodejs/ at C-Produce ... 2.1 now has four independent derivations and 2.3 three witnesses beyond the Rust."
+
+[[decision]]
+id = "D2"
+text = "Hand-roll BLAKE3-256 in JavaScript rather than bind to the C library the Rust calls"
+kind = "act"
+evidence = "blake3.js is hand-rolled - a binding to the same C library the Rust calls would test two callers of one implementation"
+
+[[decision]]
+id = "D3"
+text = "Verify the hash against the published external vectors, including the lengths that straddle the chunk boundary"
+kind = "act"
+evidence = "passes the published vectors including the lengths straddling the chunk boundary"
+
+[[decision]]
+id = "D4"
+text = "Implement section 7's shape clause and run it first inside uid(), so a malformed unit cannot obtain an identity from the package"
+kind = "act"
+evidence = "implements 7's shape clause with uid() running it first, so a malformed unit cannot obtain an identity from the package"
+
+[[decision]]
+id = "D5"
+text = "Write the four facts the reading recovered from the fixtures into the specification, and mark them SPEC: at the point of use"
+kind = "act"
+evidence = "all four now written into the document and marked `SPEC:` in nodejs/src/uid.js"
+
+[[decision]]
+id = "D6"
+text = "Correct the unit-core table: an empty deps or grounds is omitted, and required MAY be empty is a statement about the set rather than about the encoding"
+kind = "act"
+evidence = "2.2 said the OPPOSITE of what the encoder does. deps and grounds are listed required, MAY be empty; an empty one is omitted."
+
+[[decision]]
+id = "D7"
+text = "Name the base32 alphabet as RFC 4648 lowercased and unpadded, most-significant bits first, rather than leave base32hex an equally faithful reading"
+kind = "act"
+evidence = "the base32 alphabet was unnamed; base32hex was an equally faithful reading of the sentence"
+
+[[decision]]
+id = "D8"
+text = "Normalise text to NFC in the nodejs CBOR encoder, which section 3's sixth constraint asks for by name"
+kind = "act"
+evidence = "the CBOR encoder now NFC-normalises text, which 3 constraint 6 asks for by name"
+
+[[decision]]
+id = "D9"
+text = "Break each of the eight new invariants first and watch the right check fail, before trusting any of them"
+kind = "act"
+evidence = "Eight new invariants, each verified capable of failing before being trusted ... Eight breakages, eight distinct failures, each naming its clause."
+
+[[decision]]
+id = "D10"
+text = "Leave rule M unimplemented in all three outside readers, because it constrains a unit against the statuses of its grounds and a validate claiming to enforce it would be a check that cannot fail"
+kind = "decline"
+evidence = "Rule M is implemented by none of the three outside readers, deliberately."
+
+[[decision]]
+id = "D11"
+text = "Add a gate that parses the specification's tables and compares every implementation's copy against them in both directions, rather than quoting them"
+kind = "act"
+evidence = "Parses the spec's tables rather than quoting them, and compares all four implementations against them in both directions."
+
+[[decision]]
+id = "D12"
+text = "Give the new gate its own CI job and add it to the make ci target"
+kind = "act"
+evidence = "38 comparisons, its own CI job."
+
+[[decision]]
+id = "D13"
+text = "Correct READINESS and the nodejs README, which described the tables as asserted against the document when every implementation read the spec only to assert it contained one string"
+kind = "act"
+evidence = "READINESS described the 2.2 and 3.1 tables as asserted against the document - corrected here."
+
+[[decision]]
+id = "D14"
+text = "Keep the hand-typed tables in the in-language tests, tying them to the page with the new gate instead of replacing them"
+kind = "act"
+evidence = "The in-language tests keep their hand-typed tables - they are fast and they belong next to the code - but this is what ties those copies to the document."
+
+[[decision]]
+id = "D15"
+text = "Fix what the first run found: the stale masthead version, and the three implementations citing a section of the format spec that has never existed"
+kind = "act"
+evidence = "the masthead read smysl/0.1 while 8.6 of the same document says smysl/1.0 is what new documents declare; and go/uid.go, python/smysl/uid.py and nodejs/src/uid.js each cited a section the format spec has never had."
+
+[[decision]]
+id = "D16"
+text = "Count the comparisons the gate makes and assert the count, so a gate that silently checks nothing fails"
+kind = "act"
+evidence = "One comparison, counted. The count is asserted at the end for the usual reason."
+
+[[decision]]
+id = "D17"
+text = "Replay each chapter as a chapter - a scratch copy walked in document order with fmt --write allowed to write - so later states are derived rather than recorded"
+kind = "act"
+evidence = "Chapters now replay as chapters: a scratch copy, walked in document order, with fmt --write allowed to write. Later states are derived rather than recorded."
+
+[[decision]]
+id = "D18"
+text = "Declare the reader's hand edits in edits.json anchored by prose and never by content, reading the edit body out of the chapter at run time"
+kind = "act"
+evidence = "Reader edits live in edits.json, anchored by prose and never by content, so the body is read out of the chapter at run time and nothing can go stale."
+
+[[decision]]
+id = "D19"
+text = "Fail on an anchor that appears twice as loudly as on one that appears never"
+kind = "act"
+evidence = "appearing twice fails as loudly as appearing never, because an ambiguous anchor would quietly pick whichever came first"
+
+[[decision]]
+id = "D20"
+text = "Run the replayed commands in a scratch copy rather than in the fixture folder, closing a hazard that had never fired"
+kind = "act"
+evidence = "The scratch copy also removes a hazard that had never fired: commands used to run in the fixture folder itself."
+
+[[decision]]
+id = "D21"
+text = "Hold back the chapter 29 repair rather than reconstruct the stanza beta.smy lost"
+kind = "decline"
+evidence = "Held back rather than repaired - the missing stanza cannot be reconstructed from the page."
+
+[[decision]]
+id = "D22"
+text = "Withdraw the framing that the blocked commands were a decision about the book, and record that the fixtures were keyed by filename where a chapter's state is keyed by position"
+kind = "act"
+evidence = "gate 7's blocked commands turn out never to have been a decision about the book"
+
+[[decision]]
+id = "D23"
+text = "Raise the replay's ratchet floor to just under the new count rather than to the count itself"
+kind = "act"
+evidence = "Set just under the real number: high enough that losing a chapter's worth of coverage fails, low enough that deleting one transcript does not."
+
+[[decision]]
+id = "D24"
+text = "Measure the difference between the per-package and the whole-workspace survivor figures on one module, chosen because it holds the one instance already named"
+kind = "act"
+evidence = "picked because it holds Store::matching_prefix, the one instance already named, so the run could be checked against a known answer"
+
+[[decision]]
+id = "D25"
+text = "Do not apply the measured fraction to the other 357 survivors"
+kind = "decline"
+evidence = "this is one module of one crate and applying the fraction to the other 357 would be the error this file records twice already"
+
+[[decision]]
+id = "D26"
+text = "Discard the first whole-workspace run as invalid and re-run it with an explicit timeout"
+kind = "act"
+evidence = "The first attempt was invalid and looked like a result ... --test-workspace needs an explicit --timeout."
+
+[[prerequisite]]
+id = "P1"
+decision = "D2"
+text = "Node has no BLAKE3 in its standard library"
+kind = "existing-behaviour"
+normative = false
+evidence = "Node has no BLAKE3 in its standard library, so there is no third option here anyway"
+
+[[prerequisite]]
+id = "P2"
+decision = "D3"
+text = "Section 2.1 names BLAKE3 without describing it, so the hash is the one file not written from the format spec and its ground truth is external"
+kind = "existing-behaviour"
+normative = false
+evidence = "It implements BLAKE3 from the BLAKE3 specification, and 2.1 names that algorithm without describing it."
+
+[[prerequisite]]
+id = "P3"
+decision = "D3"
+text = "A hasher that only ever compresses one chunk passes every short vector and fails the moment the tree has two leaves"
+kind = "existing-behaviour"
+normative = false
+evidence = "A hasher that only ever compresses one chunk passes every short vector and produces garbage the moment the tree has two leaves"
+
+[[prerequisite]]
+id = "P4"
+decision = "D1"
+text = "The uid fixtures carry the canonical bytes and uids the reference produced, checked separately from the hash"
+kind = "existing-behaviour"
+normative = false
+evidence = "reproduces all sixteen canonical encodings and all sixteen uids in fixtures/wire/uid/cases.json"
+
+[[prerequisite]]
+id = "P5"
+decision = "D5"
+text = "Rule M compares statuses as integers, so their order is normative rather than presentational"
+kind = "existing-behaviour"
+normative = false
+evidence = "Rule M compares them as integers, so a reader guessing a different order would derive wrong uids and enforce a different monotonicity rule while believing itself conformant."
+
+[[prerequisite]]
+id = "P6"
+decision = "D8"
+text = "The decoder rejects anything not already NFC, so normalising at the encoder was a no-op while the package only read"
+kind = "existing-behaviour"
+normative = false
+evidence = "It was a no-op for C-Read - the decoder rejects anything not already NFC"
+
+[[prerequisite]]
+id = "P7"
+decision = "D8"
+text = "Section 3's sixth constraint requires normalisation at the encoder, not only in the constructors that happen to be remembered"
+kind = "invariant"
+normative = true
+evidence = "Normalise at the encoder, not only in the constructors that happen to be remembered."
+
+[[prerequisite]]
+id = "P8"
+decision = "D4"
+text = "Section 7 forbids a uid for a unit with no gist, with derived or inferred and no grounds, with measured or cited and no source, or with an authored unfounded"
+kind = "invariant"
+normative = true
+evidence = "they refuse to derive a uid for a unit with no gist, with derived or inferred and no grounds, with measured or cited and no source, or with an authored unfounded"
+
+[[prerequisite]]
+id = "P9"
+decision = "D10"
+text = "A unit core carries its grounds as uids, so rule M can be checked against a store and not against a unit"
+kind = "existing-behaviour"
+normative = false
+evidence = "a unit core carries grounds as uids - so M is checkable against a store and not against a unit"
+
+[[prerequisite]]
+id = "P10"
+decision = "D11"
+text = "This suite's method is that a place a reader had to guess is marked SPEC:, and that mark is the evidence"
+kind = "invariant"
+normative = true
+evidence = "This suite's method is that a SPEC: mark is the evidence"
+
+[[prerequisite]]
+id = "P11"
+decision = "D19"
+text = "An anchor appears exactly once in its chapter"
+kind = "invariant"
+normative = true
+evidence = "An anchor must appear exactly once"
+
+[[prerequisite]]
+id = "P12"
+decision = "D17"
+text = "Each command runs with its working directory set to the folder holding its fixture, so the transcripts compare exactly as the page prints them"
+kind = "existing-behaviour"
+normative = false
+evidence = "the command runs with its working directory set to a scratch copy of the folder holding cycle.smy, so the diagnostics still print cycle.smy: error"
+
+[[prerequisite]]
+id = "P13"
+decision = "D22"
+text = "Two of chapter 1's four states are printed as a fragment and as a diff, never as a file, so no fixture layout could ever reach them"
+kind = "existing-behaviour"
+normative = false
+evidence = "state 2 is printed as a fragment the reader pastes in and state 3 as a diff, so neither can ever be the bytes the chapter prints"
+
+[[prerequisite]]
+id = "P14"
+decision = "D21"
+text = "alpha.smy beside it is in sync, contention uid included, so one document lost a stanza rather than a chapter drifting"
+kind = "existing-behaviour"
+normative = false
+evidence = "alpha.smy beside it is in sync, contention uid included, so one document lost a stanza rather than a chapter drifting."
+
+[[prerequisite]]
+id = "P15"
+decision = "D24"
+text = "cargo mutants -p X runs cargo test --package=X, so a function exercised only by a downstream crate is reported as a survivor"
+kind = "tool-setting"
+normative = false
+evidence = "comes from cargo mutants -p X, which runs cargo test --package=X. A function exercised only by a downstream crate is reported as a survivor while being perfectly well tested."
+
+[[prerequisite]]
+id = "P16"
+decision = "D26"
+text = "cargo-mutants takes its timeout from the baseline run it measured, so a workspace suite needs the timeout given explicitly"
+kind = "tool-setting"
+normative = false
+evidence = "cargo-mutants took its baseline at 1s of tests, auto-set a 20s timeout, then ran each mutant against the 109-second workspace suite"
+
+[[prerequisite]]
+id = "P17"
+decision = "D24"
+text = "The module measured holds the one survivor already known not to be a gap, so the run had a known answer to be checked against"
+kind = "existing-behaviour"
+normative = false
+evidence = "the one instance already named, so the run could be checked against a known answer"
+
+[[prerequisite]]
+id = "P18"
+decision = "D15"
+text = "Section 8.6 says smysl/1.0 arrived in 0.15 and is what new documents declare, while smysl/0.1 is still accepted"
+kind = "prior-change"
+normative = false
+evidence = "8.6 of the same document says smysl/1.0 arrived in 0.15 and is what new documents declare"
+
+[[prerequisite]]
+id = "P19"
+decision = "D15"
+text = "Section 1 has no subsections, so the cited 1.1 does not exist"
+kind = "existing-behaviour"
+normative = false
+evidence = "There is no 1.1 - 1 has no subsections."
+
+[[alternative]]
+id = "A1"
+decision = "D2"
+text = "Bind to the same C library the Rust calls"
+evidence = "a binding to the same C library the Rust calls would test two callers of one implementation"
+
+[[alternative]]
+id = "A2"
+decision = "D11"
+text = "Keep quoting the spec in hand-typed second copies, the file being read only to assert it contains one string"
+evidence = "every implementation read SMYSL_FORMAT_SPEC.md only to assert it contained the string Deterministic CBOR"
+
+[[alternative]]
+id = "A3"
+decision = "D17"
+text = "Commit a fixture for each state, keyed by filename"
+evidence = "The 57 blocked commands were fixtures keyed by filename when a chapter's state is keyed by position."
+
+[[alternative]]
+id = "A4"
+decision = "D17"
+text = "Split the files so each chapter names a different filename at each step"
+evidence = "Splitting them would mean the chapters naming a different file at each step, which changes what they teach."
+
+[[alternative]]
+id = "A5"
+decision = "D18"
+text = "Record the edit body in edits.json rather than read it out of the chapter"
+evidence = "Nothing is duplicated, so nothing can go stale"
+
+[[alternative]]
+id = "A6"
+decision = "D21"
+text = "Reconstruct the missing stanza and repair the chapter's transcripts"
+evidence = "guessing one into a published chapter is not a repair"
+
+[[alternative]]
+id = "A7"
+decision = "D14"
+text = "Replace the implementations' own tables with the parsed specification"
+evidence = "The in-language tests keep their hand-typed tables - they are fast and they belong next to the code"
+
+[[alternative]]
+id = "A8"
+decision = "D25"
+text = "Apply the measured overstatement to the whole backlog"
+evidence = "applying the fraction to the other 357 would be the error this file records twice already"

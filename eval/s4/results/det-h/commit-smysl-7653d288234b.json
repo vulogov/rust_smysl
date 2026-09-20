@@ -1,0 +1,190 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-11",
+      "score": 211.4610595703125,
+      "terms": [
+        "documentation:94.66",
+        "tests:17.68",
+        "test:5.50",
+        "noth:4.10",
+        "nothing:4.10"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-12",
+      "score": 155.83279418945312,
+      "terms": [
+        "manual:39.51",
+        "tests:22.81",
+        "test:7.10",
+        "all:4.77",
+        "run:4.45"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g90ec2f781421-9",
+      "score": 146.21038818359375,
+      "terms": [
+        "code:21.53",
+        "cod:19.74",
+        "dispatch:6.14",
+        "exit:5.80",
+        "assert:4.97"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "r/g90ec2f781421-9-1",
+      "score": 144.2310791015625,
+      "terms": [
+        "code:22.29",
+        "cod:20.44",
+        "dispatch:6.36",
+        "exit:6.00",
+        "store:5.15"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g90ec2f781421-1-1",
+      "score": 141.82479858398438,
+      "terms": [
+        "tests:25.93",
+        "smysl:24.13",
+        "test:8.07",
+        "path:5.42",
+        "for:3.98"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-12",
+      "score": 139.5743408203125,
+      "terms": [
+        "typ:29.50",
+        "readm:8.01",
+        "readme:8.01",
+        "tabl:6.44",
+        "assert:4.89"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 100.18311309814453,
+      "terms": [
+        "api:27.45",
+        "smysl:20.70",
+        "public:17.82",
+        "surfac:6.98",
+        "surface:6.98"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g4968383dc452-12-1",
+      "score": 90.64312744140625,
+      "terms": [
+        "typ:40.54",
+        "tests:25.30",
+        "table:8.08",
+        "test:7.88",
+        "tabl:6.02"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-16-1",
+      "score": 83.70626831054688,
+      "terms": [
+        "typ:36.03",
+        "public:18.01",
+        "type:8.48",
+        "surfac:7.10",
+        "surface:7.10"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g4968383dc452-9-1",
+      "score": 80.61315155029297,
+      "terms": [
+        "typ:38.37",
+        "table:7.64",
+        "test:5.94",
+        "tabl:5.69",
+        "assert:5.01"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-10-1",
+      "score": 72.48328399658203,
+      "terms": [
+        "api:30.39",
+        "public:19.18",
+        "surfac:7.83",
+        "surface:7.83",
+        "the:3.52"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "d/g4968383dc452-13",
+      "score": 70.48702239990234,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "4968383",
+    "90ec2f7",
+    "532e4d2",
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 400,
+  "diff_truncated": true,
+  "files": [
+    "CHANGELOG.md",
+    "Documentation/API_CONTRACT.md",
+    "Documentation/READINESS.md",
+    "Documentation/SMYSL_ARCHITECTURE_RFC.md",
+    "Documentation/SMYSL_MANUAL.pdf",
+    "Documentation/SPEC_DRAFT_1.4.md",
+    "Documentation/manual/about-the-author.typ",
+    "Documentation/manual/appendices.typ",
+    "Documentation/manual/ch01-02-why-shape.typ",
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch14-16-view-salience-retract.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "Makefile",
+    "README.md",
+    "crates/smysl-graph/src/lib.rs",
+    "crates/smysl-graph/src/merge/mod.rs",
+    "crates/smysl-graph/src/merge/review.rs",
+    "src/lib.rs",
+    "src/main.rs",
+    "tests/cli-surface.txt",
+    "tests/cmd_review.rs",
+    "tests/dispatch.rs",
+    "tests/public-api-counts.txt",
+    "tests/public-api-pure.txt",
+    "tests/public-api.txt"
+  ],
+  "fingerprint": "f392f725fcc353486a3805b0a9e796c45efe9080ce7721b060bcb4c47c2f9688",
+  "id": "commit-smysl-7653d288234b",
+  "kind": "commit",
+  "pack_text": "[d/g0bc1aeb96d6b-1] decision (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Gate `report_against` and its tests on `gemini` or `anthropic` features\n\n[d/g4968383dc452-1] decision (cited, source nodejs/README.md@4968383dc452)\n  Upgrade nodejs conformance target from C-Read to C-Produce.\n\n[d/g4968383dc452-12] decision (cited, source CHANGELOG.md@4968383dc452)\n  Correct README claims that tables were asserted against document.\n  The tables were hand-typed copies, not assertions against the document. Spec-tables gate now parses the document.\n\n[d/g4968383dc452-13] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Rework doc-output replay to scratch copy and derive states via edits.json.\n  Previous fixtures keyed by filename failed when a chapter's state is keyed by position. Replaying as a chapter with a scratch copy and derived states is stronger.\n\n[d/g4968383dc452-15] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Revise gate 7 blocked command explanation, no longer 'decision about book'.\n\n[d/g4968383dc452-16] decision (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Hold beta.smy repair rather than guess missing stanza.\n  -> causes q/g4968383dc452-16-1\n\n[d/g4968383dc452-17] decision (cited, source CHANGELOG.md@4968383dc452)\n  Do not implement rule M in outside readers.\n  -> causes q/g4968383dc452-17-1\n\n[d/g4968383dc452-21] decision (cited, source Documentation/READINESS.md@4968383dc452)\n  Do not apply 22% artefact fraction to other modules.\n\n[d/g4968383dc452-23] decision (cited, source nodejs/src/uid.js@4968383dc452)\n  Implement status integers and source/kind enums as constants in nodejs.\n\n[d/g4968383dc452-24] decision (cited, source Documentation/SMYSL_FORMAT_SPEC.md@4968383dc452)\n  Implement RFC 4648 base32 alphabet in nodejs.\n  -> causes q/g4968383dc452-24-1\n\n[d/g4968383dc452-8] decision (cited, source CHANGELOG.md@4968383dc452)\n  Mark spec-derived constants with SPEC: in nodejs src/uid.js.\n\n[d/g69ea5c05d859-10] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update public API snapshots to include FORMAT_VERSION_DEFAULT and the new smysl-core count.\n  api-check detected the surface growth as intended; adding an export is not a breaking change, so the snapshot must be regenerated.\n\n[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\n  -> causes q/g69ea5c05d859-12-1\n\n[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\n[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not add version lists to python/, nodejs/, go/ implementations.\n\n[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Build Constraints via default and field assignment instead of struct literal\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n  -> causes q/g87345653cdf3-11-1\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n  -> causes q/g87345653cdf3-6-1\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n  -> causes q/g87345653cdf3-9-1\n\n[d/g90ec2f781421-10] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Update CHANGELOG, READINESS, and ROAD_TO_1.0 to record dispatch pass findings.\n\n[d/g90ec2f781421-11] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Correct documentation that doc-output coverage is feature-dependent and unexplained.\n  tests/doc_output.rs header explains gating; at all-features test does not exist, not skipped. Prior claim 'nothing states it' was wrong.\n\n[d/g90ec2f781421-12] decision (cited, source Documentation/READINESS.md@90ec2f781421)\n  Do not change tests/doc_output.rs gating to run under --all-features.\n  Design is deliberate; manual documents default build and exact-pack makes correct claim read as drift, so gating is correct.\n  -> causes q/g90ec2f781421-12-1\n\n[d/g90ec2f781421-2] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Compare all 380 arguments against a golden CLI surface inside cargo test.\n\n[d/g90ec2f781421-3] decision (cited, source Makefile@90ec2f781421)\n  Hardcode command names in tests and Makefile instead of deriving from --help.\n\n[d/g90ec2f781421-4] decision (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  Run each command in a scratch directory of its own.\n\n[d/g90ec2f781421-6] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Set stdin to /dev/null for dispatch test commands.\n\n[d/g90ec2f781421-7] decision (cited, source src/main.rs@90ec2f781421)\n  Document the `==` to `!=` mutation of COMMANDS.iter().find as equivalent.\n  -> causes q/g90ec2f781421-7-1\n\n[d/g90ec2f781421-8] decision (cited, source src/main.rs@90ec2f781421)\n  Do not add a test to distinguish the equivalent `!=` mutation.\n  -> causes q/g90ec2f781421-8-1\n\n[d/g90ec2f781421-9] decision (cited, source tests/dispatch.rs@90ec2f781421)\n  Do not assert exit code in every_command_dispatches.\n  Most commands fail without a store; how they fail is rest of suite's job. Claim only that failure came from command not router.\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  -> causes q/ga18e230ae345-6-1\n\n[p/g4968383dc452-12-1] constraint (cited, source nodejs/README.md@4968383dc452)\n  Previous tests used hand-typed table copies, not assertions against document.\n  -> conditions d/g4968383dc452-12\n\n[p/g4968383dc452-13-1] constraint (cited, source Documentation/READINESS.md@4968383dc452)\n  Chapter state is keyed by position, but fixtures were keyed by filename.\n  -> conditions d/g4968383dc452-13\n\n[p/g4968383dc452-13-2] constraint (cited, source Documentation/READINESS.md@4968383dc452)\n  Commands used to run in fixture folder and could rewrite tracked files.\n  -> conditions d/g4968383dc452-13\n\n[p/g69ea5c05d859-10-1] constraint (cited, source tests/public-api-counts.txt@69ea5c05d859)\n  API snapshots are regenerated with make api and checked by make api-check.\n  -> conditions d/g69ea5c05d859-10\n\n[p/g90ec2f781421-1-1] constraint (cited, source tests/dispatch.rs@90ec2f781421)\n  Cargo provides the binary path via CARGO_BIN_EXE_smysl for integration tests.\n\n[p/g90ec2f781421-11-1] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  tests/doc_output.rs is gated to compile in exactly one matrix configuration.\n  -> conditions d/g90ec2f781421-11\n\n[p/g90ec2f781421-11-2] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  With --all-features, doc_output test runs 0 tests; it does not exist.\n  -> conditions d/g90ec2f781421-11\n\n[p/g90ec2f781421-12-1] constraint (cited, source git:90ec2f781421002876548124e9fe02073503372c)\n  The manual documents a default build, and exact-pack makes a correct SMY-W202 claim read as drift.\n  -> conditions d/g90ec2f781421-12\n\n[p/g90ec2f781421-9-1] constraint (cited, source tests/dispatch.rs@90ec2f781421)\n  Most commands fail without a store, so exit code would only reflect command failure.\n  -> conditions d/g90ec2f781421-9\n\n[q/g4968383dc452-16-1] claim (inferred)\n  beta.smy repair declined; missing stanza cannot be reconstructed from page.\n\n[q/g4968383dc452-17-1] claim (inferred)\n  Rule M not implemented; validate claiming it would be check that cannot fail.\n\n[q/g4968383dc452-24-1] claim (inferred)\n  RFC 4648 base32 alphabet implemented, avoiding mutually unreadable names.\n\n[q/g69ea5c05d859-12-1] claim (inferred)\n  Format spec §8.5 records version-trap defect fixed in 0.14.\n\n[q/g87345653cdf3-11-1] claim (inferred)\n  Compile out doc output test outside default feature set to avoid false drift.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g87345653cdf3-6-1] claim (inferred)\n  Only compile fuzzers in CI; running remains separate due to nightly and time.\n\n[q/g87345653cdf3-9-1] claim (inferred)\n  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.\n\n[q/g90ec2f781421-12-1] claim (inferred)\n  Doc-output gating remains unchanged; design deliberate.\n\n[q/g90ec2f781421-7-1] claim (inferred)\n  Equivalent `!=` mutant documented instead of chased; records unreachability.\n\n[q/g90ec2f781421-8-1] claim (inferred)\n  No pointless test added for unreachable mutation; recorded rather than chased.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g4968383dc452-9-1] claim (cited, source git:4968383dc452dba3c9ac9ab2c6abae4b3612bba5)\n  Rejected: Keep hand-typed table copies asserted against the document.\n  Nothing parsed the spec, so editing spec and test were separate acts.\n\n[r/g69ea5c05d859-10-1] claim (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Rejected: Leave public API snapshots unchanged and fail api-check.\n  An addition is not a breaking change, so the snapshot must be regenerated to reflect the intended surface growth.\n  -> contrasts d/g69ea5c05d859-10\n\n[r/g69ea5c05d859-16-1] claim (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Rejected: Treat the public type changes as breaking and bump major.\n  ParseOutcome and WriteContext are #[non_exhaustive], so adding fields does not break embedders and write_surface's signature never changed.\n\n[r/g90ec2f781421-9-1] claim (cited, source tests/dispatch.rs@90ec2f781421)\n  Rejected: assert exit code in every_command_dispatches\n  Most commands fail without a store; how they fail is the rest of the suite's job.\n  -> contrasts d/g90ec2f781421-9\n\n",
+  "pack_tokens": 1500,
+  "pack_units": 62,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null
+}

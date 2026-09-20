@@ -1,0 +1,117 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-pro-v2"
+repo = "ucal"
+commit = "cc3aafefb1da326e130fd890c1d575969cee7a2a"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Use a committed file for observations instead of generating it in tests."
+suggest = [
+    "D1",
+    "D4",
+    "D3",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Add the new observations fixture to the examples."
+suggest = [
+    "D3",
+    "D1",
+    "D4",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Do not fit the residuals in the example."
+suggest = [
+    "D4",
+    "D1",
+]
+match = "none"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Use synthetic observations moved by known amounts."
+suggest = [
+    "D1",
+    "D3",
+    "D2",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Include an observation outside its window."
+suggest = ["D3"]
+match = "D3"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "Reading no observations is an error, not a report of agreement."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "A committed fixture cannot race with anything."
+suggest = ["P2"]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "Examples are generated into the manual."
+suggest = [
+    "P6",
+    "P3",
+]
+match = "P6"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "Extracting a quadratic trend is least squares."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "O minus C is exact integer subtraction."
+suggest = ["P4"]
+match = "P4"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "The window for a cycle grows with distance from the epoch."
+suggest = ["P5"]
+match = "P5"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Writing the fixture into `std::env::temp_dir()` under a fixed name. — Two test binaries ran concurrently, causing one to truncate the file while the other read it."
+suggest = [
+    "A1",
+    "A2",
+]
+match = "A1"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Extracting a quadratic trend using least squares. — A reader most needs to know which code produced the number."
+suggest = []
+match = "none"

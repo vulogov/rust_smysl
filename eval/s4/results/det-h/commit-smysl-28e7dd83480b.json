@@ -1,0 +1,161 @@
+{
+  "candidates": [
+    {
+      "anchored": true,
+      "label": "d/g87345653cdf3-5",
+      "score": 87.57960510253906,
+      "terms": [
+        "cargo:12.01",
+        "return:6.19",
+        "print:5.33",
+        "fuzz:4.57",
+        "build:3.78"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 81.91267395019531,
+      "terms": [
+        "verify:17.19",
+        "cargo:11.90",
+        "doc:6.59",
+        "stal:5.25",
+        "stale:5.25"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-8",
+      "score": 79.52857971191406,
+      "terms": [
+        "manual:23.99",
+        "verify:17.38",
+        "nam:12.00",
+        "doc:6.67",
+        "name:6.00"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 73.66167449951172,
+      "terms": [
+        "transcript:7.36",
+        "doc:6.48",
+        "transcripts:5.73",
+        "rather:5.31",
+        "ran:4.69"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-11",
+      "score": 66.61674499511719,
+      "terms": [
+        "featur:8.75",
+        "compil:8.04",
+        "out:6.58",
+        "doc:6.39",
+        "feature:4.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-3",
+      "score": 56.52933883666992,
+      "terms": [
+        "compil:8.65",
+        "makefil:7.47",
+        "makefile:7.47",
+        "compiling:5.86",
+        "them:5.71"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-11-1",
+      "score": 46.088321685791016,
+      "terms": [
+        "featur:8.51",
+        "doc:6.64",
+        "compil:5.96",
+        "feature:4.95",
+        "out:4.88"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g0bc1aeb96d6b-1",
+      "score": 44.92236328125,
+      "terms": [
+        "featur:8.73",
+        "against:4.96",
+        "its:4.96",
+        "features:4.68",
+        "gat:4.68"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g87345653cdf3-10-1",
+      "score": 43.28461837768555,
+      "terms": [
+        "lin:8.47",
+        "line:8.47",
+        "print:7.54",
+        "ran:6.93",
+        "script:5.81"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g87345653cdf3-11-1",
+      "score": 41.43421936035156,
+      "terms": [
+        "featur:8.57",
+        "expect:8.33",
+        "script:5.72",
+        "features:5.37",
+        "output:4.41"
+      ]
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-1",
+      "score": 40.956336975097656,
+      "terms": []
+    },
+    {
+      "anchored": true,
+      "label": "p/g87345653cdf3-4-2",
+      "score": 40.956336975097656,
+      "terms": []
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 283,
+  "diff_truncated": true,
+  "files": [
+    "Documentation/manual/ch01-03-foundations.typ",
+    "Documentation/manual/ch19-21-verify.typ",
+    "Documentation/manual/ch25-27-library-walkthrough.typ",
+    "Makefile",
+    "scripts/verify-doc-cargo.py"
+  ],
+  "fingerprint": "832b6bbf31e8d660d10a632cd99ff4a151805a76cf9d227a0a3671e0222e690d",
+  "id": "commit-smysl-28e7dd83480b",
+  "kind": "commit",
+  "pack_text": "[d/g0bc1aeb96d6b-1] decision (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Gate `report_against` and its tests on `gemini` or `anthropic` features\n  The function is only reached from the feature-gated `gemini` and `anthropic` mappers, so builds without those features had an unused function and CI's `-D warnings` failed.\n\n[d/g69ea5c05d859-11] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update ROAD_TO_1.0.md to mark steps 1 and 2 done, step 3 deferred, and correct the assumption that python/, …\n  -> causes q/g69ea5c05d859-11-1\n\n[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\n  -> causes q/g69ea5c05d859-12-1\n\n[d/g69ea5c05d859-13] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.6 to say smysl/1.0 is not a break and means the format is settled rather than changed.\n  -> causes q/g69ea5c05d859-13-1\n\n[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n  -> causes q/g69ea5c05d859-14-1\n\n[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not add version lists to python/, nodejs/, go/ implementations.\n  -> causes q/g69ea5c05d859-15-1\n\n[d/g69ea5c05d859-4] decision (cited, source crates/smysl-core/src/surface/parse.rs@69ea5c05d859)\n  Implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.\n  -> causes q/g69ea5c05d859-4-1\n\n[d/g69ea5c05d859-6] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.\n  -> causes q/g69ea5c05d859-6-1\n\n[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Build Constraints via default and field assignment instead of struct literal\n  -> causes q/g87345653cdf3-1-1\n\n[d/g87345653cdf3-10] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Assert on transcript count rather than just MISMATCHED presence in doc output test\n  The first version asserted only that MISMATCHED appeared, which ran 0 transcripts satisfied; the count assertion ensures a gate that cannot confuse nothing wrong with nothing checked.\n  -> causes q/g87345653cdf3-10-1\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n  The script compares against a default-features build; running under other features caused false drift, and a compiled-out test is better than a runtime skip.\n  -> causes q/g87345653cdf3-11-1\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n  -> causes q/g87345653cdf3-2-1\n\n[d/g87345653cdf3-3] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Add a fuzz-build Makefile target to compile fuzz targets without running them\n  The fuzz workspace is separate and was never compiled by root workspace checks; compiling is cheap and catches breakages.\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-5] decision (cited, source Makefile@87345653cdf3)\n  Do not pipe fuzz-build's cargo check through tail\n  A pipeline's exit status is the last command's, so piping through tail would print errors but return 0; the gate must return non-zero on failure.\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n  -> causes q/g87345653cdf3-6-1\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n  This lets the new cargo test pass the binary cargo built for it, so mutation testing exercises the mutated binary rather than a stale one.\n  -> causes q/g87345653cdf3-7-1\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n  Token 0 is the binary name, not a manual input; if the binary path is absolute, the absolute-path rule would otherwise skip all commands.\n  -> causes q/g87345653cdf3-8-1\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n  -> causes q/g87345653cdf3-9-1\n\n[d/ga18e230ae345-2] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Remove `IMPROVEMENT_PASSES` constant and `PackRequest::improvement_passes` field.\n  -> causes q/ga18e230ae345-2-1\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n  -> causes q/ga18e230ae345-3-1\n\n[d/ga18e230ae345-4] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to update the golden file.\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  -> causes q/ga18e230ae345-6-1\n\n[e/g69ea5c05d859-16-1] evidence (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Check: make semver is 12/12 clean\n\n[e/g69ea5c05d859-9-1] evidence (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Check: make ci green\n\n[p/g0bc1aeb96d6b-1-1] constraint (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  `report_against` is only reached from the `gemini` and `anthropic` mappers, both feature-gated\n  -> conditions d/g0bc1aeb96d6b-1\n\n[p/g0bc1aeb96d6b-1-2] constraint (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  CI sets `-D warnings`, which refuses an unused function\n  -> conditions d/g0bc1aeb96d6b-1\n\n[p/g87345653cdf3-10-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  The script prints a summary line with a parseable ran count.\n  -> conditions d/g87345653cdf3-10\n\n[p/g87345653cdf3-11-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  The script expects default-features build output; other features cause drift.\n  -> conditions d/g87345653cdf3-11\n\n[p/g87345653cdf3-3-1] constraint (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  The fuzz directory is a separate workspace not compiled by root workspace checks.\n  -> conditions d/g87345653cdf3-3\n\n[p/g87345653cdf3-4-1] constraint (cited, source Makefile@87345653cdf3)\n  The fuzz-build target compiles fuzz targets and reports failure.\n  -> conditions d/g87345653cdf3-4\n\n[p/g87345653cdf3-4-2] constraint (cited, source Makefile@87345653cdf3)\n  make ci is the target that CI runs locally and remotely.\n  -> conditions d/g87345653cdf3-4\n\n[p/g87345653cdf3-5-1] constraint (cited, source Makefile@87345653cdf3)\n  Shell pipeline exit status is the last command's, so tail masks failure.\n  -> conditions d/g87345653cdf3-5\n\n[p/g87345653cdf3-7-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  cargo sets CARGO_BIN_EXE_smysl to the binary built for the integration test.\n  -> conditions d/g87345653cdf3-7\n\n[p/g87345653cdf3-8-1] constraint (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Token 0 is the binary path, and the absolute-path rule skips tokens containing '/'.\n  -> conditions d/g87345653cdf3-8\n\n[p/g87345653cdf3-8-2] constraint (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  SMYSL_BIN may be absolute because CARGO_BIN_EXE_smysl always is.\n  -> conditions d/g87345653cdf3-8\n\n[q/g69ea5c05d859-11-1] claim (inferred)\n  ROAD_TO_1.0 updated: steps 1-2 done, step 3 deferred; python/nodejs/go have no version lists.\n\n[q/g69ea5c05d859-12-1] claim (inferred)\n  Format spec §8.5 records version-trap defect fixed in 0.14.\n\n[q/g69ea5c05d859-13-1] claim (inferred)\n  Format spec §8.6 says smysl/1.0 is not a break; format settled rather than changed.\n\n[q/g69ea5c05d859-14-1] claim (inferred)\n  Writer default deferred to smysl/1.0 until 0.14 published; avoids other implementations rejecting output.\n\n[q/g69ea5c05d859-15-1] claim (inferred)\n  No version lists added to python/nodejs/go; they read CBOR only and never see @doc header.\n\n[q/g69ea5c05d859-4-1] claim (inferred)\n  Default ParseOutcome sets format_version to FORMAT_VERSION_DEFAULT, avoiding empty @doc header on CBOR path.\n\n[q/g69ea5c05d859-6-1] claim (inferred)\n  `smysl fmt` passes parsed format_version to WriteContext, preserving document self-description.\n\n[q/g87345653cdf3-1-1] claim (inferred)\n  Constraints built via default and field assignment compiles despite non_exhaustive; future fields stay …\n\n[q/g87345653cdf3-10-1] claim (inferred)\n  Count assertion prevents gate from confusing nothing wrong with nothing checked.\n\n[q/g87345653cdf3-11-1] claim (inferred)\n  Compile out doc output test outside default feature set to avoid false drift.\n\n[q/g87345653cdf3-2-1] claim (inferred)\n  Remove unused BTreeSet import after replacing struct literal with default construction.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g87345653cdf3-6-1] claim (inferred)\n  Only compile fuzzers in CI; running remains separate due to nightly and time.\n\n[q/g87345653cdf3-7-1] claim (inferred)\n  SMYSL_BIN override lets cargo test use freshly built binary, so mutation tests exercise mutated code.\n\n[q/g87345653cdf3-8-1] claim (inferred)\n  Skip token 0 in path extraction to avoid absolute binary path skipping every command.\n\n[q/g87345653cdf3-9-1] claim (inferred)\n  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.\n\n[q/ga18e230ae345-2-1] claim (inferred)\n  IMPROVEMENT_PASSES constant and PackRequest::improvement_passes field removed from the public API.\n\n[q/ga18e230ae345-3-1] claim (inferred)\n  The search test is removed; keeping it would compare two identical configurations.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g87345653cdf3-11-1] claim (cited, source tests/doc_output.rs@87345653cdf3)\n  Rejected: Skip the doc output test at runtime outside default feature set\n  Running under other features caused false drift; a compiled-out test is better than a silently passing skip.\n  -> contrasts d/g87345653cdf3-11\n\n",
+  "pack_tokens": 1500,
+  "pack_units": 58,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null
+}

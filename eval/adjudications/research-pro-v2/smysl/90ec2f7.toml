@@ -1,0 +1,346 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-pro-v2"
+repo = "smysl"
+commit = "90ec2f781421002876548124e9fe02073503372c"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Add a test that runs every command and compares all arguments against a golden file."
+suggest = [
+    "D2",
+    "D3",
+    "D8",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Compare the argument surface inside `cargo test` rather than using a Makefile target."
+suggest = [
+    "D3",
+    "D14",
+    "D6",
+]
+match = "D3"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Supply required arguments in the dispatch test and treat clap refusal as a failure."
+suggest = [
+    "D7",
+    "D10",
+    "D3",
+]
+match = "D7"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Leave the `==` to `!=` mutation in `COMMANDS.iter().find` unchased and document it."
+suggest = [
+    "D11",
+    "D1",
+    "D9",
+]
+match = "D11"
+
+[[item]]
+kind = "decision"
+id = "D5"
+text = "Correct the documentation regarding the `--all-features` coverage anomaly."
+suggest = ["D12"]
+match = "D12"
+
+[[item]]
+kind = "decision"
+id = "D6"
+text = "Run every command in the test from its own scratch directory."
+suggest = [
+    "D8",
+    "D4",
+    "D10",
+]
+match = "D8"
+
+[[item]]
+kind = "decision"
+id = "D7"
+text = "Hardcode the list of twenty-two subcommands rather than deriving it from the binary."
+suggest = [
+    "D4",
+    "D13",
+    "D9",
+]
+match = "D4"
+
+[[item]]
+kind = "decision"
+id = "D8"
+text = "Pass `/dev/null` as stdin to the commands in the dispatch test."
+suggest = [
+    "D13",
+    "D9",
+    "D10",
+]
+match = "D9"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "The cli() function registers all subcommands unconditionally."
+suggest = [
+    "P1",
+    "P11",
+    "P15",
+]
+match = "P1"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "Deleting a command's arm in main removes its routing."
+suggest = [
+    "P3",
+    "P10",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "Deleting a command's arm in cli() removes its arguments and nothing else."
+suggest = [
+    "P1",
+    "P10",
+    "P4",
+]
+match = "P1"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "The mutations in main and cli() are distinct."
+suggest = [
+    "P3",
+    "P11",
+    "P1",
+]
+match = "none"
+
+[[item]]
+kind = "prerequisite"
+id = "P5"
+text = "Makefile targets are not visible to coverage tools."
+suggest = ["P4"]
+match = "P4"
+
+[[item]]
+kind = "prerequisite"
+id = "P6"
+text = "The doc-output test was previously integrated into the suite for coverage visibility."
+suggest = [
+    "P5",
+    "P8",
+    "P4",
+]
+match = "P5"
+
+[[item]]
+kind = "prerequisite"
+id = "P7"
+text = "Seven commands require an argument."
+suggest = [
+    "P2",
+    "P1",
+]
+match = "P2"
+
+[[item]]
+kind = "prerequisite"
+id = "P8"
+text = "Clap rejects commands missing required arguments before routing occurs."
+suggest = [
+    "P2",
+    "P3",
+    "P1",
+]
+match = "P2"
+
+[[item]]
+kind = "prerequisite"
+id = "P9"
+text = "The only field read is in an unreachable arm."
+suggest = [
+    "P10",
+    "P9",
+    "P11",
+]
+match = "P10"
+
+[[item]]
+kind = "prerequisite"
+id = "P10"
+text = "Clap only yields subcommand names that were registered by cli()."
+suggest = [
+    "P11",
+    "P1",
+    "P2",
+]
+match = "P11"
+
+[[item]]
+kind = "prerequisite"
+id = "P11"
+text = "A previous equivalent mutation was recorded rather than chased."
+suggest = [
+    "P5",
+    "P13",
+]
+match = "P12"
+
+[[item]]
+kind = "prerequisite"
+id = "P12"
+text = "The doc_output test is restricted to compile in exactly one matrix configuration."
+suggest = [
+    "P13",
+    "P10",
+    "P8",
+]
+match = "P13"
+
+[[item]]
+kind = "prerequisite"
+id = "P13"
+text = "The manual documents a default build."
+suggest = [
+    "P14",
+    "P15",
+]
+match = "P14"
+
+[[item]]
+kind = "prerequisite"
+id = "P14"
+text = "The exact-pack feature causes a correct claim to be read as drift."
+suggest = [
+    "P14",
+    "P9",
+    "P15",
+]
+match = "P14"
+
+[[item]]
+kind = "prerequisite"
+id = "P15"
+text = "The ingest and usage commands write to files in the working directory."
+suggest = [
+    "P7",
+    "P1",
+]
+match = "P7"
+
+[[item]]
+kind = "prerequisite"
+id = "P16"
+text = "A dynamically derived list of commands shrinks silently if a command is removed."
+suggest = [
+    "P6",
+    "P3",
+    "P1",
+]
+match = "P6"
+
+[[item]]
+kind = "prerequisite"
+id = "P17"
+text = "The fmt and check commands read from stdin when no path is provided."
+suggest = [
+    "P9",
+    "P1",
+    "P14",
+]
+match = "P9"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Assuming the two arms were the same mutation and testing only half of them. — Deleting a command's arm in `main` removes routing, while deleting it in `cli()` removes arguments."
+suggest = [
+    "A4",
+    "A1",
+    "A2",
+]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Comparing the argument surface by a Makefile target. — A Makefile gate is invisible to coverage tools."
+suggest = [
+    "A3",
+    "A4",
+]
+match = "A3"
+
+[[item]]
+kind = "alternative"
+id = "A3"
+text = "Silently accepting clap refusal. — If a required argument is added later, the test will fail instead of quietly dropping coverage."
+suggest = [
+    "A7",
+    "A5",
+    "A3",
+]
+match = "A7"
+
+[[item]]
+kind = "alternative"
+id = "A4"
+text = "Answering with a test that cannot distinguish the two programs. — The mutation selects the wrong command, but the only field read is in an unreachable arm."
+suggest = [
+    "A2",
+    "A5",
+    "A4",
+]
+match = "A5"
+
+[[item]]
+kind = "alternative"
+id = "A5"
+text = "Skipping the test at `--all-features`. — The test `doc_output.rs` is deliberately gated to compile in exactly one matrix configuration."
+suggest = ["A5"]
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A6"
+text = "Running all twenty-two commands in the repo root. — Running commands in the repo root left untracked files behind."
+suggest = []
+match = "none"
+
+[[item]]
+kind = "alternative"
+id = "A7"
+text = "Reading the list of commands from `--help`. — If the list is derived from the binary, it would shrink silently if a command is removed."
+suggest = [
+    "A2",
+    "A1",
+    "A4",
+]
+match = "A2"
+
+[[item]]
+kind = "alternative"
+id = "A8"
+text = "Inheriting stdin. — Commands like `fmt` and `check` read stdin when given no path, which would hang the test."
+suggest = [
+    "A5",
+    "A2",
+    "A3",
+]
+match = "none"

@@ -1,0 +1,172 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-9",
+      "score": 86.66991424560547,
+      "terms": [
+        "notes:19.35",
+        "release:19.35",
+        "releas:12.90",
+        "record:5.86",
+        "its:4.86"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g8fdb9b3edb7c-1-1",
+      "score": 49.84999465942383,
+      "terms": [
+        "fil:10.35",
+        "file:5.17",
+        "body:5.15",
+        "events:4.37",
+        "event:3.97"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g8fdb9b3edb7c-1",
+      "score": 42.7408332824707,
+      "terms": [
+        "fil:7.06",
+        "event:4.75",
+        "body:4.19",
+        "with:4.19",
+        "whil:3.76"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g8fdb9b3edb7c-1-1",
+      "score": 33.55068588256836,
+      "terms": [
+        "fil:10.69",
+        "body:5.39",
+        "file:5.34",
+        "events:5.06",
+        "event:4.59"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g8fdb9b3edb7c-1-2",
+      "score": 31.779067993164062,
+      "terms": [
+        "features:6.18",
+        "build:5.49",
+        "events:5.49",
+        "body:5.22",
+        "event:4.99"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g2074788f713e-4-1",
+      "score": 31.091638565063477,
+      "terms": [
+        "hav:6.45",
+        "have:6.45",
+        "let:4.39",
+        "test:2.93",
+        "the:2.60"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-10",
+      "score": 29.136505126953125,
+      "terms": [
+        "say:5.45",
+        "says:5.45",
+        "than:4.82",
+        "for:3.61",
+        "test:2.73"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-11-2",
+      "score": 28.87938117980957,
+      "terms": [
+        "fil:10.88",
+        "file:5.44",
+        "its:5.15",
+        "body:4.89",
+        "the:2.52"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-5",
+      "score": 28.52452278137207,
+      "terms": [
+        "last:6.05",
+        "against:4.49",
+        "two:3.64",
+        "first:3.27",
+        "cannot:2.99"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g2074788f713e-8",
+      "score": 27.16716766357422,
+      "terms": [
+        "civil:5.01",
+        "when:4.12",
+        "featur:4.00",
+        "build:3.40",
+        "with:3.23"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g8fdb9b3edb7c-2",
+      "score": 27.10651397705078,
+      "terms": [
+        "when:5.43",
+        "whil:3.87",
+        "while:3.87",
+        "test:3.37",
+        "can:2.99"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "p/g2074788f713e-7-3",
+      "score": 26.40890884399414,
+      "terms": [
+        "cod:6.59",
+        "code:6.59",
+        "exists:4.51",
+        "exist:4.00",
+        "reading:2.52"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "2074788",
+    "31e52cc",
+    "8fdb9b3"
+  ],
+  "diff_lines_shown": 362,
+  "diff_truncated": true,
+  "files": [
+    "Cargo.lock",
+    "Cargo.toml",
+    "Documentation/Release_Notes/1.10.0.md",
+    "Documentation/Release_Notes/README.md",
+    "xtask/src/citations.rs"
+  ],
+  "fingerprint": "704817e8d42d34b68411f4c1ffbdac806195160f0f6b8613a5546be20f4f0ae6",
+  "id": "commit-ucal-44f0814034d0",
+  "kind": "commit",
+  "pack_text": "[d/g2074788f713e-1] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Route all time readings through a process-wide session clock.\n  -> causes q/g2074788f713e-1-1\n\n[d/g2074788f713e-10] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Add tests for backward steps, forward steps, monotonic sequence, and no-finer property.\n  The commit says tests drive wall clock backwards and assert monotone; another test asserts session reading no finer than raw.\n  -> causes q/g2074788f713e-10-2\n\n[d/g2074788f713e-11] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Ignore poison on the session mutex and take the inner value.\n  -> causes q/g2074788f713e-11-1\n\n[d/g2074788f713e-2] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Use max(wall_now, anchor + monotonic_elapsed) as the reading rule.\n  -> causes q/g2074788f713e-2-2\n\n[d/g2074788f713e-4] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Make Session::reading a pure function of its inputs.\n  Pure function lets tests drive wall clock backwards repeatedly and assert monotonic sequence.\n  -> causes q/g2074788f713e-4-1\n\n[d/g2074788f713e-5] decision (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Track the last reading to enforce monotonicity against smaller elapsed inputs.\n  The first two branches cannot go backwards on their own, but a caller could pass a smaller elapsed. `last` is belt and braces because the type sells monotonicity.\n  -> causes q/g2074788f713e-5-1\n\n[d/g2074788f713e-6] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Store session state as Option and anchor lazily inside session_now, avoiding .expect.\n  -> causes q/g2074788f713e-6-1\n\n[d/g2074788f713e-7] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Split wall_instant out of now_instant to expose a raw system clock reading.\n  -> causes q/g2074788f713e-7-1\n\n[d/g2074788f713e-8] decision (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Gate wall_instant (and session clock) under the civil feature.\n  Converting a clock reading is a leap-table lookup, because Unix time is a UTC label. The feature workflow caught the missing gate when building with u512,std.\n\n[d/g2074788f713e-9] decision (cited, source Documentation/CLI.md@2074788f713e)\n  Document the session clock and its rule in CLI.md and release notes.\n  Record one process, one clock and the max rule for users.\n  -> causes q/g2074788f713e-9-1\n\n[d/g31e52cc10b1f-1] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add a clock section to doctor and now output.\n  -> causes q/g31e52cc10b1f-1-1\n\n[d/g31e52cc10b1f-2] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Add doctor --clock flag to sample and report machine resolution.\n  -> causes q/g31e52cc10b1f-2-1\n\n[d/g31e52cc10b1f-3] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep precision field name and value unchanged.\n  It is a path in ucal-json/1; repurposing one is breaking.\n  -> causes q/g31e52cc10b1f-3-1\n\n[d/g31e52cc10b1f-4] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Do not measure accuracy.\n\n[d/g31e52cc10b1f-5] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Keep granularity, resolution, and accuracy as separate numbers.\n  Conflating them is the defect; separation makes clear what each number represents.\n  -> causes q/g31e52cc10b1f-5-1\n\n[d/g31e52cc10b1f-6] decision (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Report which error terms cancel in a difference.\n  -> causes q/g31e52cc10b1f-6-1\n\n[d/g31e52cc10b1f-8] decision (cited, source Documentation/CLI.md@31e52cc10b1f)\n  Add note that precision is tier rendered to, not accuracy.\n  -> causes q/g31e52cc10b1f-8-1\n\n[d/g8fdb9b3edb7c-1] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Replace interpolated event id with literal in event error message.\n  The interpolated id required body_file::leak, which is gated behind `body` while the arm is gated behind `events`, causing a feature-gating miss; the caller already typed the id.\n\n[d/g8fdb9b3edb7c-2] decision (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Accept broken pipe as non-fatal when writing test stdin.\n  The child can exit while the harness writes because `between - -` refuses before reading stdin; the behavior is correct and the assertions on status and output survive the error.\n  -> causes q/g8fdb9b3edb7c-2-2\n  -> causes q/g8fdb9b3edb7c-2-1\n\n[p/g2074788f713e-10-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  `Session::reading` is pure, allowing tests to drive wall clock backwards.\n  -> conditions d/g2074788f713e-10\n\n[p/g2074788f713e-10-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  `finest_tier_for` exists to compare a session reading's tier to raw.\n  -> conditions d/g2074788f713e-10\n\n[p/g2074788f713e-11-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  `body_file::leak` makes the same judgment about its intern pool.\n  -> conditions d/g2074788f713e-11\n\n[p/g2074788f713e-5-1] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  The first two branches cannot go backwards on their own.\n  -> conditions d/g2074788f713e-5\n\n[p/g2074788f713e-5-2] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  The type sells monotonicity, requiring protection against smaller elapsed inputs.\n  -> conditions d/g2074788f713e-5\n\n[p/g2074788f713e-7-3] constraint (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Raw `SystemTime` reading code already exists to move into `wall_instant`.\n  -> conditions d/g2074788f713e-7\n\n[p/g2074788f713e-8-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Converting a clock reading is a leap-table lookup because Unix time is a UTC label.\n  -> conditions d/g2074788f713e-8\n\n[p/g2074788f713e-8-2] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)\n  Feature workflow builds `--no-default-features --features u512,std` and caught the missing gate.\n  -> conditions d/g2074788f713e-8\n\n[p/g2074788f713e-8-3] constraint (cited, source crates/ucal/src/lib.rs@2074788f713e)\n  `now_instant` is gated under the `civil` feature.\n  -> conditions d/g2074788f713e-8\n\n[p/g2074788f713e-9-1] constraint (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Session clock with `max` rule exists to document.\n  -> conditions d/g2074788f713e-9\n\n[p/g31e52cc10b1f-3-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  The precision field is a path in ucal-json/1.\n  -> conditions d/g31e52cc10b1f-3\n\n[p/g31e52cc10b1f-3-2] constraint (cited, source fixtures/ucal-json-1.schema.json@31e52cc10b1f)\n  ucal-json/1 promises existing fields never change name, shape or meaning.\n  -> conditions d/g31e52cc10b1f-3\n\n[p/g31e52cc10b1f-5-1] constraint (cited, source git:31e52cc10b1f6079a130e3bc27479739d7e393eb)\n  Granularity is structural and fills T-2.\n  -> conditions d/g31e52cc10b1f-5\n\n[p/g8fdb9b3edb7c-1-1] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  `body_file::leak` is gated behind `body`; the arm is gated behind `events`.\n  -> conditions d/g8fdb9b3edb7c-1\n\n[p/g8fdb9b3edb7c-1-2] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Features workflow builds `events` without `body`.\n  -> conditions d/g8fdb9b3edb7c-1\n\n[p/g8fdb9b3edb7c-1-3] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  The caller already typed the event id, so omitting it is acceptable.\n  -> conditions d/g8fdb9b3edb7c-1\n\n[p/g8fdb9b3edb7c-2-1] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  `between - -` is refused before any byte of stdin is read.\n  -> conditions d/g8fdb9b3edb7c-2\n\n[p/g8fdb9b3edb7c-2-2] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Child can exit while harness writes, producing EPIPE.\n  -> conditions d/g8fdb9b3edb7c-2\n\n[p/g8fdb9b3edb7c-2-3] constraint (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Assertions are on status and output, which survive EPIPE.\n  -> conditions d/g8fdb9b3edb7c-2\n\n[p/g8fdb9b3edb7c-2-4] constraint (cited, source crates/ucal/tests/stdin_stream.rs@8fdb9b3edb7c)\n  `std::io::ErrorKind::BrokenPipe` represents EPIPE write errors.\n  -> conditions d/g8fdb9b3edb7c-2\n\n[q/g2074788f713e-1-1] claim (inferred)\n  All time readings go through session clock, preventing wallclock face from going back in time.\n\n[q/g2074788f713e-10-2] finding (cited, source git:2074788f713ef4331ede63d3dc963f8e74e7565c)\n  Test asserts session reading no finer than raw.\n\n[q/g2074788f713e-11-1] claim (inferred)\n  Taking inner value on poisoned mutex is correct because state cannot be torn.\n\n[q/g2074788f713e-2-2] claim (inferred)\n  Forward step wins, tracks system corrections arriving.\n\n[q/g2074788f713e-4-1] claim (inferred)\n  Pure function lets tests drive wall clock backwards and assert monotonic sequence.\n\n[q/g2074788f713e-5-1] claim (inferred)\n  last prevents smaller elapsed inputs from making reading go backwards.\n\n[q/g2074788f713e-6-1] claim (inferred)\n  Option avoids .expect, allows anchoring where failure can be returned.\n\n[q/g2074788f713e-7-1] claim (inferred)\n  wall_instant exposes raw system clock for doctor --clock and measurements.\n\n[q/g2074788f713e-9-1] claim (inferred)\n  Documents one process, one clock and max rule in CLI.md and release notes.\n\n[q/g31e52cc10b1f-1-1] claim (inferred)\n  Adding the clock section states what a reading can actually fill, answering the precision field's accuracy …\n\n[q/g31e52cc10b1f-2-1] claim (inferred)\n  Doctor --clock must be behind a flag because resolution varies by machine and ordinary output is compared …\n\n[q/g31e52cc10b1f-3-1] claim (inferred)\n  Keeping precision unchanged avoids breaking ucal-json/1 paths.\n\n[q/g31e52cc10b1f-5-1] claim (inferred)\n  Separation makes clear what each number represents; conflating them is the defect.\n\n[q/g31e52cc10b1f-6-1] claim (inferred)\n  Reporting cancellations helps interpret differences: constant offset cancels, rate error does not.\n\n[q/g31e52cc10b1f-8-1] claim (inferred)\n  Note clarifies precision means tier rendered to, not accuracy, preventing conflation with explain's precision.\n\n[q/g8fdb9b3edb7c-2-1] claim (inferred)\n  BrokenPipe on stdin write is treated as success, preventing EPIPE race from failing the test.\n\n[q/g8fdb9b3edb7c-2-2] claim (inferred)\n  Status and output assertions still execute after an EPIPE, so test validity remains.\n\n[r/g2074788f713e-4-1] claim (cited, source crates/ucal/src/clock.rs@2074788f713e)\n  Rejected: Have Session::reading read the wall clock itself.\n  A pure function lets tests drive a wall clock backwards and assert the answer does not follow.\n  -> contrasts d/g2074788f713e-4\n\n[r/g8fdb9b3edb7c-1-1] claim (cited, source git:8fdb9b3edb7cc175c1f940966840fdc24a6ad03c)\n  Rejected: Interpolate the event id using body_file::leak(format!(...)).\n  It caused a feature-gating miss because body_file::leak is gated behind body while the arm is gated behind events, so builds with events but not body fail.\n  -> contrasts d/g8fdb9b3edb7c-1\n\n",
+  "pack_tokens": 1492,
+  "pack_units": 58,
+  "repo": "ucal",
+  "set": "heldout",
+  "task": null
+}

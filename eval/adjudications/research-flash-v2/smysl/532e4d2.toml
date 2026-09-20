@@ -1,0 +1,107 @@
+# Set `match` for each item: a label id of the same kind, or "none". `suggest` is word overlap only.
+
+system = "research-flash-v2"
+repo = "smysl"
+commit = "532e4d229a6c98c1cb4b98ba9709a1179deb897f"
+
+[[item]]
+kind = "decision"
+id = "D1"
+text = "Add integration tests exercising `smysl fmt` binary command decisions."
+suggest = [
+    "D1",
+    "D6",
+]
+match = "D1"
+
+[[item]]
+kind = "decision"
+id = "D2"
+text = "Generate test document fixtures dynamically in process-isolated scratch directories instead of reusing repository fixtures."
+suggest = [
+    "D2",
+    "D7",
+    "D5",
+]
+match = "D2"
+
+[[item]]
+kind = "decision"
+id = "D3"
+text = "Do not write tests to eliminate the two remaining round-trip guard mutants in `cmd_fmt`."
+suggest = [
+    "D3",
+    "D1",
+    "D2",
+]
+match = "D3"
+
+[[item]]
+kind = "decision"
+id = "D4"
+text = "Update documentation readiness table with corrected CLI mutant survivor rates."
+suggest = [
+    "D8",
+    "D7",
+    "D9",
+]
+match = "D8"
+
+[[item]]
+kind = "prerequisite"
+id = "P1"
+text = "The smysl binary has no library seam for cmd_fmt, requiring direct process execution."
+suggest = [
+    "P5",
+    "P8",
+    "P6",
+]
+match = "P5"
+
+[[item]]
+kind = "prerequisite"
+id = "P2"
+text = "cargo-mutants reuses build directories across mutation test executions."
+suggest = [
+    "P1",
+    "P2",
+    "P3",
+]
+match = "P1"
+
+[[item]]
+kind = "prerequisite"
+id = "P3"
+text = "No user-supplied input can make write_surface output parse back differently."
+suggest = ["P10"]
+match = "P10"
+
+[[item]]
+kind = "prerequisite"
+id = "P4"
+text = "The survivor count of 110 was measured after the changes in 2.2."
+suggest = [
+    "P13",
+    "P12",
+]
+match = "P13"
+
+[[item]]
+kind = "alternative"
+id = "A1"
+text = "Aiming tests at individual mutants instead of binary decisions — A reader needs tests focused on decisions, whereas mutants are only the means by which gaps are discovered."
+suggest = [
+    "A3",
+    "A1",
+]
+match = "A3"
+
+[[item]]
+kind = "alternative"
+id = "A2"
+text = "Relying on existing repository fixtures having specific properties — Reused build directories allow mutated writes to alter fixtures, causing subsequent tests to fail spuriously and distort kill counts."
+suggest = [
+    "A1",
+    "A3",
+]
+match = "A1"

@@ -1,0 +1,171 @@
+{
+  "candidates": [
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-10",
+      "score": 51.66134262084961,
+      "terms": [
+        "with:5.58",
+        "rather:5.31",
+        "count:5.11",
+        "assert:5.05",
+        "nothing:4.63"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/ga18e230ae345-3-1",
+      "score": 46.99666976928711,
+      "terms": [
+        "measur:6.95",
+        "measured:6.95",
+        "with:6.12",
+        "two:4.54",
+        "that:4.24"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/ga18e230ae345-3",
+      "score": 46.54483413696289,
+      "terms": [
+        "measur:6.90",
+        "measured:6.90",
+        "with:6.04",
+        "two:4.48",
+        "that:4.22"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-8",
+      "score": 43.660125732421875,
+      "terms": [
+        "smysl:8.77",
+        "tests:8.21",
+        "unit:5.34",
+        "with:4.66",
+        "non:3.36"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g87345653cdf3-7",
+      "score": 43.37660598754883,
+      "terms": [
+        "smysl:8.84",
+        "let:4.51",
+        "rather:4.26",
+        "one:3.86",
+        "thi:3.86"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-1",
+      "score": 37.38789367675781,
+      "terms": [
+        "smysl:10.10",
+        "befor:4.67",
+        "before:4.67",
+        "both:4.12",
+        "first:3.91"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g69ea5c05d859-1-1",
+      "score": 35.994476318359375,
+      "terms": [
+        "smysl:8.78",
+        "befor:4.77",
+        "before:4.77",
+        "both:4.21",
+        "new:3.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-10",
+      "score": 35.086753845214844,
+      "terms": [
+        "smysl:8.47",
+        "detect:5.52",
+        "detected:5.52",
+        "count:4.51",
+        "new:4.34"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-7",
+      "score": 33.679473876953125,
+      "terms": [
+        "with:6.71",
+        "count:4.87",
+        "for:4.37",
+        "which:3.56",
+        "one:3.40"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-15",
+      "score": 33.19082260131836,
+      "terms": [
+        "ever:5.83",
+        "thre:4.46",
+        "three:4.46",
+        "all:4.21",
+        "read:3.53"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "d/g69ea5c05d859-16",
+      "score": 32.1284065246582,
+      "terms": [
+        "thi:4.60",
+        "this:4.60",
+        "are:3.49",
+        "exhaustiv:3.10",
+        "exhaustive:3.10"
+      ]
+    },
+    {
+      "anchored": false,
+      "label": "r/g87345653cdf3-7-1",
+      "score": 31.78745460510254,
+      "terms": [
+        "smysl:9.53",
+        "mutant:6.65",
+        "target:4.88",
+        "non:3.42",
+        "would:3.00"
+      ]
+    }
+  ],
+  "contradicting": null,
+  "corpus_commits": [
+    "a18e230",
+    "8734565",
+    "69ea5c0",
+    "0bc1aeb"
+  ],
+  "diff_lines_shown": 276,
+  "diff_truncated": false,
+  "files": [
+    "Documentation/READINESS.md",
+    "crates/smysl-graph/src/merge/mod.rs",
+    "crates/smysl-graph/tests/predicates.rs"
+  ],
+  "fingerprint": "873bde39dd7e4d2ab920ef3a8945d1b6f70407f3574dbf3e6d12726b4fde3bc2",
+  "id": "commit-smysl-ae6161e6722d",
+  "kind": "commit",
+  "pack_text": "[d/g0bc1aeb96d6b-1] decision (cited, source git:0bc1aeb96d6b6bd4140a24886064f1d60a42829e)\n  Gate `report_against` and its tests on `gemini` or `anthropic` features\n\n[d/g69ea5c05d859-1] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Accept smysl/1.0 in FORMAT_VERSIONS_SUPPORTED while keeping smysl/0.1.\n  The first migration step requires readers to accept both before the writer flips, so old documents keep working and the new version is not refused.\n\n[d/g69ea5c05d859-10] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update public API snapshots to include FORMAT_VERSION_DEFAULT and the new smysl-core count.\n  api-check detected the surface growth as intended; adding an export is not a breaking change, so the snapshot must be regenerated.\n\n[d/g69ea5c05d859-12] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update format spec §8.5 to record the version-trap defect as fixed in 0.14.\n  -> causes q/g69ea5c05d859-12-1\n\n[d/g69ea5c05d859-14] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Defer flipping the writer default to smysl/1.0 until 0.14 is published.\n\n[d/g69ea5c05d859-15] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not add version lists to python/, nodejs/, go/ implementations.\n  All three read CBOR only and the wire carries no version string, so no surface parser ever sees a @doc header there. The migration plan's assumption was wrong.\n  -> causes q/g69ea5c05d859-15-1\n\n[d/g69ea5c05d859-16] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Do not treat this as a breaking change or require a major version bump.\n  ParseOutcome and WriteContext are #[non_exhaustive], so adding fields does not break embedders, and write_surface's signature never changed. semver remains clean.\n\n[d/g69ea5c05d859-4] decision (cited, source crates/smysl-core/src/surface/parse.rs@69ea5c05d859)\n  Implement a custom Default for ParseOutcome that sets format_version to FORMAT_VERSION_DEFAULT.\n\n[d/g69ea5c05d859-6] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Pass the parsed format_version from ParseOutcome to WriteContext in `smysl fmt`.\n  -> causes q/g69ea5c05d859-6-1\n\n[d/g69ea5c05d859-7] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Replace the versioning tripwire count assertion with a round-trip property test for every supported version.\n  The tripwire fired as intended when the list grew. The property it was standing in for is that a document declaring either supported version comes back declaring the one it declared, which a count cannot say.\n\n[d/g69ea5c05d859-8] decision (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Update smysl-core unit tests to loop over FORMAT_VERSIONS_SUPPORTED and reject non-listed near misses (e.g. …\n  The old test asserted a literal list and used smysl/1.0 as an unknown version. Driving it from the actual list makes it grow with the list instead of failing or silently passing on new versions.\n\n[d/g87345653cdf3-1] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Build Constraints via default and field assignment instead of struct literal\n\n[d/g87345653cdf3-10] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Assert on transcript count rather than just MISMATCHED presence in doc output test\n  The first version asserted only that MISMATCHED appeared, which ran 0 transcripts satisfied; the count assertion ensures a gate that cannot confuse nothing wrong with nothing checked.\n  -> causes q/g87345653cdf3-10-1\n\n[d/g87345653cdf3-11] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Compile out the doc output test outside the default-ish feature set\n  -> causes q/g87345653cdf3-11-1\n\n[d/g87345653cdf3-2] decision (cited, source fuzz/fuzz_targets/pack_exact.rs@87345653cdf3)\n  Remove unused BTreeSet import from pack_exact.rs\n  -> causes q/g87345653cdf3-2-1\n\n[d/g87345653cdf3-4] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Make `make ci` depend on fuzz-build\n  -> causes q/g87345653cdf3-4-1\n\n[d/g87345653cdf3-6] decision (cited, source git:87345653cdf330199730f4e8a0afe2275902ad11)\n  Do not run fuzzers as part of make ci; only compile them\n  -> causes q/g87345653cdf3-6-1\n\n[d/g87345653cdf3-7] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Make verify-doc-output.py binary path overridable via SMYSL_BIN\n  This lets the new cargo test pass the binary cargo built for it, so mutation testing exercises the mutated binary rather than a stale one.\n\n[d/g87345653cdf3-8] decision (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Fix path extraction in verify-doc-output.py to skip token 0\n  -> causes q/g87345653cdf3-8-1\n\n[d/g87345653cdf3-9] decision (cited, source tests/doc_output.rs@87345653cdf3)\n  Add tests/doc_output.rs so cargo test runs the doc output replay\n  -> causes q/g87345653cdf3-9-1\n\n[d/ga18e230ae345-2] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Remove `IMPROVEMENT_PASSES` constant and `PackRequest::improvement_passes` field.\n\n[d/ga18e230ae345-3] decision (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Decline to keep the search that measured the pass.\n  With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.\n  -> causes q/ga18e230ae345-3-1\n\n[d/ga18e230ae345-5] decision (cited, source crates/smysl-pack/src/solve.rs@a18e230ae345)\n  Add a comment explaining the removal in place of the loop.\n  -> causes q/ga18e230ae345-5-1\n\n[d/ga18e230ae345-6] decision (cited, source CHANGELOG.md@a18e230ae345)\n  Document the removal in the changelog.\n  -> causes q/ga18e230ae345-6-1\n\n[p/g69ea5c05d859-1-1] constraint (cited, source crates/smysl-core/src/lib.rs@69ea5c05d859)\n  Readers accept only versions listed in FORMAT_VERSIONS_SUPPORTED.\n  -> conditions d/g69ea5c05d859-1\n\n[p/g69ea5c05d859-10-1] constraint (cited, source tests/public-api-counts.txt@69ea5c05d859)\n  API snapshots are regenerated with make api and checked by make api-check.\n  -> conditions d/g69ea5c05d859-10\n\n[p/g69ea5c05d859-15-1] constraint (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  All three implementations read CBOR only; wire carries no version string.\n  -> conditions d/g69ea5c05d859-15\n\n[p/g69ea5c05d859-16-1] constraint (cited, source Documentation/ROAD_TO_1.0.md@69ea5c05d859)\n  ParseOutcome and WriteContext are #[non_exhaustive]; write_surface signature unchanged.\n  -> conditions d/g69ea5c05d859-16\n\n[p/g69ea5c05d859-7-1] constraint (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Writer now preserves declared version, enabling round-trip property test.\n  -> conditions d/g69ea5c05d859-7\n\n[p/g69ea5c05d859-8-1] constraint (cited, source crates/smysl-core/src/lib.rs@69ea5c05d859)\n  Old unit test asserted smysl/1.0 as unknown version.\n  -> conditions d/g69ea5c05d859-8\n\n[p/g87345653cdf3-10-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  The script prints a summary line with a parseable ran count.\n  -> conditions d/g87345653cdf3-10\n\n[p/g87345653cdf3-7-1] constraint (cited, source tests/doc_output.rs@87345653cdf3)\n  cargo sets CARGO_BIN_EXE_smysl to the binary built for the integration test.\n  -> conditions d/g87345653cdf3-7\n\n[p/ga18e230ae345-3-1] constraint (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  The local-improvement pass has been removed, so the search would compare identical configurations.\n  -> conditions d/ga18e230ae345-3\n\n[q/g69ea5c05d859-12-1] claim (inferred)\n  Format spec §8.5 records version-trap defect fixed in 0.14.\n\n[q/g69ea5c05d859-13-1] claim (inferred)\n  Format spec §8.6 says smysl/1.0 is not a break; format settled rather than changed.\n\n[q/g69ea5c05d859-15-1] claim (inferred)\n  No version lists added to python/nodejs/go; they read CBOR only and never see @doc header.\n\n[q/g69ea5c05d859-6-1] claim (inferred)\n  `smysl fmt` passes parsed format_version to WriteContext, preserving document self-description.\n\n[q/g87345653cdf3-10-1] claim (inferred)\n  Count assertion prevents gate from confusing nothing wrong with nothing checked.\n\n[q/g87345653cdf3-11-1] claim (inferred)\n  Compile out doc output test outside default feature set to avoid false drift.\n\n[q/g87345653cdf3-2-1] claim (inferred)\n  Remove unused BTreeSet import after replacing struct literal with default construction.\n\n[q/g87345653cdf3-4-1] claim (inferred)\n  make ci depends on fuzz-build, so CI gates on fuzz compilation.\n\n[q/g87345653cdf3-6-1] claim (inferred)\n  Only compile fuzzers in CI; running remains separate due to nightly and time.\n\n[q/g87345653cdf3-8-1] claim (inferred)\n  Skip token 0 in path extraction to avoid absolute binary path skipping every command.\n\n[q/g87345653cdf3-9-1] claim (inferred)\n  Adding tests/doc_output.rs exposes replay to cargo test and coverage tools.\n\n[q/ga18e230ae345-3-1] claim (inferred)\n  The search test is removed; keeping it would compare two identical configurations.\n\n[q/ga18e230ae345-5-1] claim (inferred)\n  A comment in solve.rs documents the removal rationale and measurements.\n\n[q/ga18e230ae345-6-1] claim (inferred)\n  Changelog records the removal under Unreleased 0.8.0.\n\n[r/g69ea5c05d859-1-1] claim (cited, source git:69ea5c05d85933ca248ea9ca78669f8a76e2ed7e)\n  Rejected: Keep the supported list as only 'smysl/0.1' until the writer default flips.\n  Readers must accept both before the writer flips so old documents keep working and the new version is not refused.\n  -> contrasts d/g69ea5c05d859-1\n\n[r/g87345653cdf3-7-1] claim (cited, source scripts/verify-doc-output.py@87345653cdf3)\n  Rejected: Hardcode the binary path as './target/debug/smysl'\n  A stale binary would report every mutant as caught while testing none of them.\n  -> contrasts d/g87345653cdf3-7\n\n[r/ga18e230ae345-3-1] claim (cited, source git:a18e230ae34564f0a3d93538cf1a557b68a3f5aa)\n  Rejected: Keep the search that measured the pass\n  With the pass gone it would compare two identical configurations, and a test that cannot fail is the shape this project keeps deleting.\n  -> contrasts d/ga18e230ae345-3\n\n",
+  "pack_tokens": 1494,
+  "pack_units": 50,
+  "repo": "smysl",
+  "set": "heldout",
+  "task": null
+}
