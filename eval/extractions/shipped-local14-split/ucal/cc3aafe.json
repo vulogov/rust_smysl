@@ -1,0 +1,1739 @@
+{
+  "decisions": [
+    {
+      "decision": "The observations are a committed file rather than one a test invents.",
+      "kind": "act",
+      "rationale": "To fix the flaky test, the author decided to use a committed file for the residuals fixture instead of having tests write it. This ensures that the tests do not interfere with each other when run concurrently.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye."
+    },
+    {
+      "decision": "The fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "kind": "act",
+      "rationale": "To improve documentation and ensure that examples are always up-to-date, the author decided to generate worked examples from the code and include them in the manual.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": "`now` reads the system clock, so its output differs on every run and could never match a committed file.",
+      "kind": "decline",
+      "rationale": "The author decided not to include an example for the `ucal now` command in the documentation because its output varies with each execution and cannot be stored in a committed file.",
+      "quote": "`ucal now` and `ucal tour` are absent on purpose: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    },
+    {
+      "decision": "Colour is off and the width is 80 columns, so these match a redirected run rather than a terminal.",
+      "kind": "act",
+      "rationale": "To ensure consistency in the documentation examples, the author decided to disable color output and set the width to 80 columns when generating the examples. This makes the output predictable and suitable for inclusion in the manual.",
+      "quote": "Colour is off and the width is 80 columns, so these match a redirected run rather than a terminal."
+    },
+    {
+      "decision": "`cargo run -p xtask -- gen-examples` generates the worked examples.",
+      "kind": "act",
+      "rationale": "The author decided to use a specific command to generate the worked examples for inclusion in the documentation. This ensures that the examples are always up-to-date and consistent with the codebase.",
+      "quote": "Regenerate with:\n\n```\ncargo build --release -p ucal --features full\ncargo run -p xtask -- gen-examples\n```"
+    },
+    {
+      "decision": "`cargo run -p xtask -- check-docs` fails if this file is not what a fresh run produces, so an example cannot describe output the program does not produce.",
+      "kind": "act",
+      "rationale": "To maintain the integrity of the documentation examples, the author decided to enforce that the generated examples match exactly with what a fresh run of the program would produce. This ensures that the examples are always correct and up-to-date.",
+      "quote": "`cargo run -p xtask -- check-docs` fails if this file is not what a fresh run produces, so an example cannot describe output the program does not produce."
+    },
+    {
+      "decision": "Field-by-field documentation is in [`CLI.md`](CLI.md).",
+      "kind": "act",
+      "rationale": "The author decided to separate detailed field-level documentation into a different file (`CLI.md`) and link to it from the main examples page. This keeps the examples focused on usage and delegates more technical details to a dedicated reference.",
+      "quote": "Field-by-field documentation is in [`CLI.md`](CLI.md)."
+    },
+    {
+      "decision": "The `verify` command re-derives the constants it ships with, and says plainly that agreeing with itself is not verification.",
+      "kind": "act",
+      "rationale": "To provide clarity about the purpose of the `verify` command, the author decided to include a message stating that agreement with itself does not constitute verification. This helps users understand the limitations and intended use of the command.",
+      "quote": "This is a self-check. Every number above was computed by one implementation from one specification, so agreement means this build's arithmetic works and reproduces the published values — not that the specification is right."
+    },
+    {
+      "decision": "The `doctor` command provides information about the profile, backend, and features.",
+      "kind": "act",
+      "rationale": "To assist with debugging and ensure consistency across different environments, the author decided to include a `doctor` command that outputs details about the current configuration, including the profile, backend, and enabled features. This helps users quickly identify potential issues or discrepancies.",
+      "quote": "Report at most 12 decisions."
+    },
+    {
+      "decision": "The `ephem at` command includes a warning when evaluating outside the validity window of a fit.",
+      "kind": "act",
+      "rationale": "To inform users about potential extrapolation issues, the author decided to include a warning in the `ephem at` command output when the evaluation is performed outside the stated validity window of the fit. This helps users understand the limitations and reliability of the predictions.",
+      "quote": "UCAL-W0003: body parameter evaluated outside its validity window."
+    },
+    {
+      "decision": "The test binaries now write residuals fixture into a committed file instead of std::env::temp_dir()",
+      "kind": "act",
+      "rationale": "To avoid race conditions and ensure reproducibility, the fixtures are now committed files that can be checked by eye.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents"
+    },
+    {
+      "decision": "Added `--scale tcg` and `--scale tcb` options",
+      "kind": "act",
+      "rationale": "To provide exact linear conversions for coordinate time scales, which were previously not available.",
+      "quote": "--scale tcg and --scale tcb — the two coordinate time scales"
+    },
+    {
+      "decision": "Added `ucal ephem residuals` command",
+      "kind": "act",
+      "rationale": "To report residuals for variable-star and pulsar work, which is a standard instrument in this field.",
+      "quote": "`ucal ephem residuals` — O − C, the standard instrument of variable-star and pulsar work"
+    },
+    {
+      "decision": "Added `ucal lighttime` command",
+      "kind": "act",
+      "rationale": "To provide three distance units with exact or bracketed answers, addressing the need for precise time-distance conversions.",
+      "quote": "`ucal lighttime` — three distance units, three kinds of answer"
+    },
+    {
+      "decision": "Added `ucal dilate --orbiting` command",
+      "kind": "act",
+      "rationale": "To calculate gravitational time dilation for objects in circular orbits, which is useful for various astronomical applications.",
+      "quote": "`ucal dilate --orbiting` — a clock in a **circular orbit** rather than static"
+    },
+    {
+      "decision": "Added the characteristic age `τ = P/(2Ṗ)` to Ephemeris",
+      "kind": "act",
+      "rationale": "To provide an exact division of two fields already carried by Ephemeris, with a caveat about its assumptions.",
+      "quote": "The characteristic age, `τ = P/(2Ṗ)`"
+    },
+    {
+      "decision": "Added `Documentation/INTEROP.md`",
+      "kind": "act",
+      "rationale": "To document how to consume `ucal-json/1` from another language, ensuring interoperability and clarity.",
+      "quote": "`Documentation/INTEROP.md` — how to consume `ucal-json/1` from another language"
+    },
+    {
+      "decision": "Added `ucal ephem` command",
+      "kind": "act",
+      "rationale": "To provide a published linear ephemeris carrying the uncertainty it was published with, addressing the need for precise time predictions.",
+      "quote": "`ucal ephem` — a published linear ephemeris"
+    },
+    {
+      "decision": "Added `ucal dilate` command",
+      "kind": "act",
+      "rationale": "To calculate gravitational time dilation at a radius, providing certified intervals for various applications.",
+      "quote": "`ucal dilate` — gravitational time dilation at a radius"
+    },
+    {
+      "decision": "Added `ucal from-jd` and `ucal to-jd` commands",
+      "kind": "act",
+      "rationale": "To provide Julian Date conversions in named scales, ensuring exactness and clarity in astronomical calculations.",
+      "quote": "`ucal from-jd` and `ucal to-jd` — a Julian Date, in a named scale"
+    },
+    {
+      "decision": "Added `cargo run -p xtask -- check-releases` command",
+      "kind": "act",
+      "rationale": "To ensure every version marked released has a tag on the remote, a GitHub release, and all six crates on the registry.",
+      "quote": "`cargo run -p xtask -- check-releases` — every version the Contents table marks *released*"
+    },
+    {
+      "decision": "The test binaries now write the residuals fixture into a committed file rather than std::env::temp_dir() under a fixed name.",
+      "kind": "act",
+      "rationale": "To avoid race conditions where one binary truncates the file while another reads it, leading to flaky tests.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents."
+    },
+    {
+      "decision": "The residuals fixture is now generated into the manual alongside the rest.",
+      "kind": "act",
+      "rationale": "To ensure the fixture is a demonstrable example and to make it easier for readers to understand.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": "The `ephem-residuals` command now reads observations from a committed fixture instead of writing one to std::env::temp_dir().",
+      "kind": "act",
+      "rationale": "To avoid race conditions and ensure consistent test results.",
+      "quote": "O1 — residuals read observations from a **committed** fixture."
+    },
+    {
+      "decision": "The `json_surface` test now compares the current JSON surface against a committed baseline file.",
+      "kind": "act",
+      "rationale": "To enforce the stability promise that existing JSON fields never change name, shape or meaning, and to allow new fields to appear without breaking changes.",
+      "quote": "`fixtures/json-surface.txt` is a committed baseline: every field path every command emits, with the JSON kind it serialises to."
+    },
+    {
+      "decision": "The `json_surface` test now allows new fields to be added to the baseline without failing.",
+      "kind": "act",
+      "rationale": "To align with the stability promise that new fields may appear in the JSON surface.",
+      "quote": "- a path that disappears is a **failure**;\n- a path whose kind changes is a **failure**;\n- a path that appears is **fine**, and updates the baseline."
+    },
+    {
+      "decision": "The `json_surface` test now requires manual blessing to update the baseline.",
+      "kind": "act",
+      "rationale": "To ensure intentional changes to the JSON surface are recorded and reviewed.",
+      "quote": "Deliberately an environment variable rather than automatic. A baseline that rewrites itself records what happened; one that has to be asked records what was intended, and the diff is the thing a reviewer reads."
+    },
+    {
+      "decision": "The `json_surface` test now checks that every command contributes to the baseline.",
+      "kind": "act",
+      "rationale": "To ensure all commands are accounted for in the stability promise.",
+      "quote": "`the_baseline_covers_every_command`"
+    },
+    {
+      "decision": "The `json_surface` test now checks that adding a new field does not lose any existing paths.",
+      "kind": "act",
+      "rationale": "To ensure that widening the JSON surface does not inadvertently remove any existing fields.",
+      "quote": "`a_new_field_is_not_a_failure`"
+    },
+    {
+      "decision": "The `json_surface` test now checks for removed or changed paths in the JSON surface.",
+      "kind": "act",
+      "rationale": "To enforce the stability promise that removing or changing existing fields is a breaking change.",
+      "quote": "`the_json_surface_only_grows`"
+    },
+    {
+      "decision": "The `json_surface` test now includes commands under conditional features in its comparison.",
+      "kind": "act",
+      "rationale": "To ensure all commands, regardless of feature flags, are checked against the stability promise.",
+      "quote": "Only commands this build actually has are compared."
+    },
+    {
+      "decision": "The `json_surface` test now includes a check for paths that disappear from the JSON surface.",
+      "kind": "act",
+      "rationale": "To enforce the stability promise that removing existing fields is a breaking change.",
+      "quote": "`the_json_surface_only_grows`"
+    },
+    {
+      "decision": "The `json_surface` test now includes a check for paths whose kind changes in the JSON surface.",
+      "kind": "act",
+      "rationale": "To enforce the stability promise that changing existing fields is a breaking change.",
+      "quote": "`the_json_surface_only_grows`"
+    },
+    {
+      "decision": "The test binaries no longer write to std::env::temp_dir() under the same fixed name concurrently.",
+      "kind": "act",
+      "rationale": "This change prevents race conditions where one test binary truncates a file while another is reading it, causing flaky tests.",
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": "The observations fixture is now generated into the manual alongside the rest of the examples.",
+      "kind": "act",
+      "rationale": "This ensures that the observations fixture is a demonstrable example and is included in the documentation for clarity.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": "The test checks that every field name the manual documents appears in some command's output.",
+      "kind": "act",
+      "rationale": "This ensures that all documented fields are actually emitted by some command, catching descriptions of removed or non-existent fields.",
+      "quote": "It checks that every field name the manual documents appears in some command's output."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 1,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 1,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 2,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 2,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 2,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 3,
+      "text": "`now` reads the system clock, so its output differs on every run and could never match a committed file.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "DECISION 3: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    },
+    {
+      "decision": 4,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 4,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 4,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 5,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 5,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 5,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 6,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 6,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 6,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 7,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 7,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 7,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 8,
+      "text": "The `verify` command re-derives the constants it ships with.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "DECISION 8: The `verify` command re-derives the constants it ships with, and says plainly that agreeing with itself is not verification."
+    },
+    {
+      "decision": 9,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 9,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 9,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye. Three fall inside their own windows and the +41 does not, which is the property the width exists to carry. A fixture a reader can open is better than one a test writes, and it cannot race with anything."
+    },
+    {
+      "decision": 10,
+      "text": "The `ephem at` command evaluates predictions based on fits that have a defined validity window.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "UCAL-W0003: body parameter evaluated outside its validity window. Rule C makes a parameter valid over a stated interval and forbids silent extrapolation, so this instant lies outside the window at least one of this body's figures was published for."
+    },
+    {
+      "decision": 10,
+      "text": "Rule C requires that parameters be valid within a stated interval and prohibits silent extrapolation.",
+      "kind": "normative",
+      "normative": true,
+      "quote": "Rule C makes a parameter valid over a stated interval and forbids silent extrapolation, so this instant lies outside the window at least one of this body's figures was published for."
+    },
+    {
+      "decision": 11,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 11,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 11,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 12,
+      "text": "`TDB` is a ±1.7 ms bound because `TDB − TT` is a periodic series whose evaluation is floating point.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A2 shipped `TDB` as a ±1.7 ms bound because `TDB − TT` is a periodic series whose evaluation is floating point."
+    },
+    {
+      "decision": 12,
+      "text": "`L_G = 6.969290134 × 10⁻¹⁰` and `L_B = 1.550519768 × 10⁻⁸` are *defining* constants.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`L_G = 6.969290134 × 10⁻¹⁰` and `L_B = 1.550519768 × 10⁻⁸` are *defining* constants (IAU 2000 B1.9, IAU 2006 B3) — decisions, not measurements — and both are terminating decimals."
+    },
+    {
+      "decision": 12,
+      "text": "`TT ↔ TCG` and `TDB ↔ TCB` are exact linear conversions.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "So `TT ↔ TCG` and `TDB ↔ TCB` are exact linear conversions."
+    },
+    {
+      "decision": 13,
+      "text": "The project needs to support reporting residuals for variable-star and pulsar work.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To report residuals for variable-star and pulsar work, which is a standard instrument in this field."
+    },
+    {
+      "decision": 13,
+      "text": "The command should be part of the `ucal-json/1` promise.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "what makes a command reach the `ucal-json/1` promise."
+    },
+    {
+      "decision": 14,
+      "text": "The project needs a way to handle time-distance conversions accurately.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To provide three distance units with exact or bracketed answers, addressing the need for precise time-distance conversions."
+    },
+    {
+      "decision": 15,
+      "text": "The project needs a tool to calculate gravitational time dilation for objects in circular orbits.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To calculate gravitational time dilation for objects in circular orbits, which is useful for various astronomical applications."
+    },
+    {
+      "decision": 15,
+      "text": "The existing commands and features of the project support the addition of new functionality.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every one has the same structure: **the repository did the work, wrote down the outcome, and never asked the world whether the outcome happened.**"
+    },
+    {
+      "decision": 16,
+      "text": "The project carries an Ephemeris struct that includes fields P and Ṗ.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "An exact division of two fields it already carries, absent rather than infinite when there is no Ṗ."
+    },
+    {
+      "decision": 16,
+      "text": "The project aims to provide useful astronomical calculations and information.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "This release ships no ephemerides, and the reason is Rule C rather than effort: a shipped one must quote T₀, P and both σ verbatim from a paper."
+    },
+    {
+      "decision": 17,
+      "text": "The project supplies exact time and a pipeline supplies the science.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "This project supplies exact time and a pipeline supplies the science."
+    },
+    {
+      "decision": 17,
+      "text": "The JSONL streaming contract, the reason every number is a string, and which commands emit no document at all were each discoverable and nowhere stated.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the JSONL streaming contract, the reason every number is a string, and which commands emit no document at all were each discoverable and nowhere stated."
+    },
+    {
+      "decision": 17,
+      "text": "JSON's number type is a double in most parsers.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A tick count is 61 digits today and 155 at the ceiling; a parser that reads it as a number rounds it to 17 significant figures, which is the rounding this whole project exists to refuse."
+    },
+    {
+      "decision": 17,
+      "text": "Every number is a string because JSON's number type is a double in most parsers.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every number is a string because JSON's number type is a double in most parsers."
+    },
+    {
+      "decision": 17,
+      "text": "A stream is JSONL, one document per line, not an array — an array must be complete before it is valid, which is not a filter.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A stream is JSONL, one document per line, not an array — an array must be complete before it is valid, which is not a filter."
+    },
+    {
+      "decision": 17,
+      "text": "A warning is data and does not change the exit code.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A warning is data and does not change the exit code."
+    },
+    {
+      "decision": 18,
+      "text": "The project aims to supply exact time and a pipeline supplies the science.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "This project supplies exact time and a pipeline supplies the science."
+    },
+    {
+      "decision": 18,
+      "text": "Nearly every repeating astronomical event is published as T(E) = T₀ + E·P, and the useful answer is not T(E). It is the window ± k·√(σ_T₀² + (E·σ_P)²).",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Nearly every repeating astronomical event is published as T(E) = T₀ + E·P, and the useful answer is not T(E). It is the window ± k·√(σ_T₀² + (E·σ_P)²), because that is what decides whether an observation is worth scheduling."
+    },
+    {
+      "decision": 18,
+      "text": "A shipped one must quote T₀, P and both σ verbatim from a paper.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A shipped one must quote T₀, P and both σ verbatim from a paper."
+    },
+    {
+      "decision": 19,
+      "text": "The project needs to provide tools for calculating gravitational time dilation.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To calculate gravitational time dilation at a radius, providing certified intervals for various applications."
+    },
+    {
+      "decision": 19,
+      "text": "The existing commands in the project do not cover all necessary calculations.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Seven commands are absent from the baseline today and every one of them is legitimately absent — `cal`, `cosmo` and `events` are parents whose subcommands are listed; `completions`, `man` and `help` emit roff and shell rather than documents; `seq` emits bare lines under `--json` deliberately."
+    },
+    {
+      "decision": 20,
+      "text": "Every cited parameter in this project is indexed by JD in its source",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**Every cited parameter in this project is indexed by JD in its source**, and J2000.0 — the epoch the whole body layer hangs on — *is* JD 2451545.0 TT."
+    },
+    {
+      "decision": 20,
+      "text": "J2000.0 is derived rather than pasted",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**J2000.0 is derived rather than pasted**. `body_file.rs` carried it as a 61-digit literal since 0.9.0."
+    },
+    {
+      "decision": 20,
+      "text": "`--scale` is required and has no default, permanently",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "**`--scale` is required and has no default, permanently**. `TT − TAI` is 32.184 s exactly and `TT − UTC` is 69.184 s today and changes without warning; a converter that defaults is silently wrong by 69 seconds whenever it guesses."
+    },
+    {
+      "decision": 20,
+      "text": "`tdb` answers with a window, and that is the honest answer",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**`tdb` answers with a window, and that is the honest answer**. `TDB − TT` is a periodic series whose evaluation is floating point, which Rule E forbids in a shipped crate."
+    },
+    {
+      "decision": 20,
+      "text": "Two scales are refused with reasons rather than approximated",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**Two scales are refused with reasons rather than approximated**. `utc`, because a Julian Date counts days of 86400 SI seconds and a UTC day containing a leap second has 86401, so `JD(UTC)` is not a uniform day count — the error points at `from-civil --scale utc`, which has the leap table. And `ut1`, because it needs ΔUT1, an observed IERS quantity this repository does not carry and Rule C will not let it invent."
+    },
+    {
+      "decision": 21,
+      "text": "Every version marked released must exist where a reader can get it.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "**R1 — a version marked released must exist where a reader can get it.** For every row in the Contents table not marked unreleased: the tag resolves on the remote, a GitHub release exists for it, and every crate is on the registry at that version."
+    },
+    {
+      "decision": 21,
+      "text": "The repository did the work, wrote down the outcome, and never asked the world whether the outcome happened.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every one has the same structure: **the repository did the work, wrote down the outcome, and never asked the world whether the outcome happened.**"
+    },
+    {
+      "decision": 22,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 22,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 22,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 23,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 23,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 23,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 24,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 24,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 24,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 25,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 25,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 25,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 26,
+      "text": "The project promises that existing JSON fields never change name, shape or meaning, and that new fields may appear.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`Documentation/STABILITY.md` promises that existing JSON fields never change name, shape or meaning, and that new fields may appear."
+    },
+    {
+      "decision": 26,
+      "text": "The `json_surface` test compares the current tree against a committed baseline.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`fixtures/json-surface.txt` is a committed baseline: every field path every command emits, with the JSON kind it serialises to. This compares the current tree against it."
+    },
+    {
+      "decision": 26,
+      "text": "The `json_surface` test previously failed if new fields were added.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Adding a field is allowed and needs no discussion. Removing one, or changing what it serialises to, is a breaking change to ucal-json/1 and belongs in the release notes' Breaking section."
+    },
+    {
+      "decision": 27,
+      "text": "The existing JSON surface test was flaky due to concurrent writes of a temporary file.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently. One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 27,
+      "text": "The JSON surface test needs to be stable and reliable.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 28,
+      "text": "The `json_surface` test checks the JSON surface of commands.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The `ucal-json/1` promise, made checkable."
+    },
+    {
+      "decision": 28,
+      "text": "Commands are listed in the `commands` function.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every command, with the name it is recorded under."
+    },
+    {
+      "decision": 29,
+      "text": "The `json_surface` test already exists and checks for changes in the JSON surface.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The `ucal-json/1` promise, made checkable."
+    },
+    {
+      "decision": 29,
+      "text": "There is a need to ensure that adding new fields does not remove existing ones.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "To ensure that widening the JSON surface does not inadvertently remove any existing fields."
+    },
+    {
+      "decision": 30,
+      "text": "The project promises that existing JSON fields never change name, shape, or meaning.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`Documentation/STABILITY.md` promises that existing JSON fields never change name, shape or meaning, and that new fields may appear."
+    },
+    {
+      "decision": 30,
+      "text": "The `json_surface` test compares the current tree against a committed baseline.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`fixtures/json-surface.txt` is a committed baseline: every field path every command emits, with the JSON kind it serialises to. This compares the current tree against it."
+    },
+    {
+      "decision": 30,
+      "text": "The `json_surface` test checks for removed or changed paths in the JSON surface.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye."
+    },
+    {
+      "decision": 31,
+      "text": "The `json_surface` test compares current command outputs to a committed baseline.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "This compares the current tree against it."
+    },
+    {
+      "decision": 31,
+      "text": "Commands under conditional features may not be compiled in all builds.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The baseline is blessed under `--features full` and this test also runs under the default features, where `tui` is absent and `wallclock` contributes nothing — its paths would read as *removed* when they are merely not compiled."
+    },
+    {
+      "decision": 31,
+      "text": "CI runs the suite under `--features full`, ensuring all commands are checked.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It is not weakened where it counts, because CI runs this suite under `--features full` as well, and that run has every command and compares every path."
+    },
+    {
+      "decision": 32,
+      "text": "The project promises that existing JSON fields never change name, shape or meaning.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`Documentation/STABILITY.md` promises that existing JSON fields never change name, shape or meaning, and that new fields may appear."
+    },
+    {
+      "decision": 32,
+      "text": "The `json_surface` test compares the current tree against a committed baseline.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`fixtures/json-surface.txt` is a committed baseline: every field path every command emits, with the JSON kind it serialises to. This compares the current tree against it."
+    },
+    {
+      "decision": 32,
+      "text": "The `json_surface` test checks for paths that disappear from the JSON surface.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "let mut gone = Vec::new();\nfor (p, k) in &base {\n    if !mine(p) {\n        continue;\n    }\n    match now.get(p) {\n        None => gone.push(p.clone()),\n        Some(n) if n != k => changed.push(format!(\"{p}: {k} -> {n}\")),\n        _ => {}\n    }\n}\n\nassert!(\ngone.is_empty() && changed.is_empty(),\n    \"the ucal-json/1 surface changed in a way the promise forbids.\"\n);"
+    },
+    {
+      "decision": 33,
+      "text": "The project promises that existing JSON fields never change name, shape or meaning.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`Documentation/STABILITY.md` promises that existing JSON fields never change name, shape or meaning, and that new fields may appear."
+    },
+    {
+      "decision": 33,
+      "text": "The `json_surface` test compares the current tree against a committed baseline.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`fixtures/json-surface.txt` is a committed baseline: every field path every command emits, with the JSON kind it serialises to. This compares the current tree against it."
+    },
+    {
+      "decision": 33,
+      "text": "The `json_surface` test checks for paths that disappear or change kind.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "- a path that disappears is a **failure**;\n- a path whose kind changes is a **failure**;"
+    },
+    {
+      "decision": 34,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 34,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 34,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 35,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 35,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 35,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 36,
+      "text": "Every command emits a set of field names.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "fn emitted() -> BTreeSet<String> { ... }"
+    },
+    {
+      "decision": 36,
+      "text": "The manual documents field names in its markdown tables.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "fn documented() -> BTreeSet<String> { ... }"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Continue using the existing approach where tests write their own fixtures.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 1,
+      "alternative": "Use a different temporary directory for each test to avoid file conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Keep the existing approach where tests write to a shared temporary file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Use a different method to ensure that tests do not interfere with each other, such as using unique filenames or locking mechanisms.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Include an example for the `ucal now` command in the documentation.",
+      "reason": "",
+      "quote": "RATIONALE: The author decided not to include an example for the `ucal now` command in the documentation because its output varies with each execution and cannot be stored in a committed file."
+    },
+    {
+      "decision": 4,
+      "alternative": "Keep the tests writing to the same file concurrently.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Use a different file name for each test binary.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Keep using temporary files but ensure they are written and read in a non-concurrent manner.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Use a different method to generate fixtures that avoids concurrent access issues, such as writing to unique filenames or using locks.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Keep the existing approach where tests write to a shared temporary file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Use a different method for generating and checking residuals that avoids concurrent access issues.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Keep using a temporary file for residuals fixture.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Use a different naming scheme for temporary files to avoid conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "The `verify` command could be silent about its limitations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Continue using temporary files for residuals.",
+      "reason": "",
+      "quote": "It passed locally on every run, including the three I did before pushing, and failed on the bigint backend in CI on the cut commit itself. A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 10,
+      "alternative": "Do not include any warning when evaluating outside the validity window.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Include a different type of warning or message when evaluating outside the validity window.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Keep writing the residuals fixture into std::env::temp_dir() and handle concurrency issues within the tests.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Use a different naming scheme for the temporary files to avoid conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Approximate the conversion between coordinate time scales.",
+      "reason": "",
+      "quote": "A2 shipped `TDB` as a ±1.7 ms bound because `TDB − TT` is a periodic series whose evaluation is floating point."
+    },
+    {
+      "decision": 12,
+      "alternative": "Do not provide exact linear conversions for coordinate time scales.",
+      "reason": "",
+      "quote": "A2 shipped `TDB` as a ±1.7 ms bound because `TDB − TT` is a periodic series whose evaluation is floating point."
+    },
+    {
+      "decision": 13,
+      "alternative": "Implementing a different command for reporting residuals.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Not adding any new command for residual reporting.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Implementing a less precise conversion method.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Not adding any new command for time-distance conversions.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Not adding the `ucal dilate --orbiting` command.",
+      "reason": "",
+      "quote": "To calculate gravitational time dilation for objects in circular orbits, which is useful for various astronomical applications."
+    },
+    {
+      "decision": 15,
+      "alternative": "Adding a less specific or more general command for time dilation calculations.",
+      "reason": "",
+      "quote": "To calculate gravitational time dilation for objects in circular orbits, which is useful for various astronomical applications."
+    },
+    {
+      "decision": 16,
+      "alternative": "Do not add the characteristic age to Ephemeris.",
+      "reason": "",
+      "quote": "None of these alternatives are explicitly mentioned in the commit message."
+    },
+    {
+      "decision": 16,
+      "alternative": "Add the characteristic age but without any caveats.",
+      "reason": "",
+      "quote": "None of these alternatives are explicitly mentioned in the commit message."
+    },
+    {
+      "decision": 17,
+      "alternative": "Not documenting how to consume `ucal-json/1` from another language.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "Documenting the interoperability in a less clear manner.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 18,
+      "alternative": "Approximate the uncertainty or omit it.",
+      "reason": "",
+      "quote": "An uncertainty is carried when it is cited, and never when it is inferred. That is the line this feature draws, and it is why `ucal-body`'s parameters still have none: the planetary sources do not uniformly publish one and a fabricated σ is worse than an absent one."
+    },
+    {
+      "decision": 19,
+      "alternative": "Implementing the calculation as a library function instead of a command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "alternative": "Using an existing tool or library to perform the calculations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "approximate Julian Date conversions",
+      "reason": "",
+      "quote": "**A light-year is a time unit wearing a distance's clothes** — defined as a Julian year times `c`, so its light-travel time is that year with no remainder and the conversion is the identity."
+    },
+    {
+      "decision": 20,
+      "alternative": "default scale in conversions",
+      "reason": "",
+      "quote": "**`--scale` is required and has no default, permanently**. `TT − TAI` is 32.184 s exactly and `TT − UTC` is 69.184 s today and changes without warning; a converter that defaults is silently wrong by 69 seconds whenever it guesses."
+    },
+    {
+      "decision": 20,
+      "alternative": "approximate time scale conversions",
+      "reason": "",
+      "quote": "**Two scales are refused with reasons rather than approximated**. `utc`, because a Julian Date counts days of 86400 SI seconds and a UTC day containing a leap second has 86401, so `JD(UTC)` is not a uniform day count — the error points at `from-civil --scale utc`, which has the leap table. And `ut1`, because it needs ΔUT1, an observed IERS quantity this repository does not carry and Rule C will not let it invent."
+    },
+    {
+      "decision": 21,
+      "alternative": "Continue relying on manual checks to ensure releases are correctly published.",
+      "reason": "",
+      "quote": "A check that is known to fail trains its reader to ignore it, and *CI green with no known-failing job* was a 1.0 exit criterion."
+    },
+    {
+      "decision": 22,
+      "alternative": "Continue writing the residuals fixture into std::env::temp_dir() under a fixed name.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 22,
+      "alternative": "Use a different method to avoid race conditions, such as using locks or ensuring sequential execution of test binaries.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 23,
+      "alternative": "Keep the fixture as a file written by the test.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 23,
+      "alternative": "Generate the fixture dynamically during the test.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 24,
+      "alternative": "Continue writing the residuals fixture to std::env::temp_dir().",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 25,
+      "alternative": "Continue using the temporary file for residuals fixture.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 25,
+      "alternative": "Use a different naming scheme for the residuals fixture files to avoid concurrent write conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "The `json_surface` test continues to fail if new fields are added.",
+      "reason": "",
+      "quote": "Adding a field is allowed and needs no discussion. Removing one, or changing what it serialises to, is a breaking change to ucal-json/1 and belongs in the release notes' Breaking section."
+    },
+    {
+      "decision": 27,
+      "alternative": "Continue using a temporary file for the fixture.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Use a different method to ensure no concurrent writes occur.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "Do not check if every command contributes to the baseline.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "Do not modify the `json_surface` test to check for this condition.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "Modify the `json_surface` test to only check for additions and ignore removals.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 30,
+      "alternative": "Continue using a temporary file for observations.",
+      "reason": "",
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 31,
+      "alternative": "Do not include commands under conditional features in the comparison.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 31,
+      "alternative": "Only check commands that are always compiled.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "The `json_surface` test does not include a check for paths that disappear from the JSON surface.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 33,
+      "alternative": "The `json_surface` test does not check for paths whose kind changes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 34,
+      "alternative": "Continue writing to std::env::temp_dir() under the same fixed name concurrently.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 34,
+      "alternative": "Use a different method to handle file I/O in tests that avoids race conditions.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 35,
+      "alternative": "Keep the fixture as a file written by the test.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 35,
+      "alternative": "Use a different method to ensure the fixture is available for both tests without conflict.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 36,
+      "alternative": "Do not check if documented fields are emitted by commands.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 36,
+      "alternative": "Check only a subset of commands for field emission.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The `now` command is absent from the worked examples section.",
+      "quote": "RATIONALE: The author decided not to include an example for the `ucal now` command in the documentation because its output varies with each execution and cannot be stored in a committed file.",
+      "verified": true,
+      "verification_quote": "`ucal now` and `ucal tour` are absent on purpose: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    },
+    {
+      "decision": 4,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The repair is that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Users understand the limitations and intended use of the `verify` command.",
+      "quote": "RATIONALE: To provide clarity about the purpose of the `verify` command, the author decided to include a message stating that agreeing with itself does not constitute verification. This helps users understand the limitations and intended use of the command.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The number of worked examples increased to 37.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": true,
+      "verification_quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": 10,
+      "text": "Users are informed about potential extrapolation issues, which helps them understand the limitations and reliability of the predictions.",
+      "quote": "To inform users about potential extrapolation issues, the author decided to include a warning in the `ephem at` command output when the evaluation is performed outside the stated validity window of the fit. This helps users understand the limitations and reliability of the predictions.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "`TCG` converts to a zero-width window.",
+      "quote": "`TCG` converts to a zero-width window;",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "`TCB` carries `TDB`'s bound and **not a tick more**.",
+      "quote": "`TCB` carries `TDB`'s bound and **not a tick more**,",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The difference between `TCB` and `TDB` is **0.489 s per Julian year**.",
+      "quote": "`TCB` runs ahead of `TDB` by **0.489 s per Julian year**",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The difference between `TCG` and `TT` is **0.022 s**.",
+      "quote": "`TCG` ahead of `TT` by 0.022 s",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "The `ucal ephem residuals` command is added to the project.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "- **`ucal ephem residuals`** (O1) — `O − C`, the standard instrument of variable-star and pulsar work. Exact integer subtraction, each residual placed against the window for **its own cycle**, so the same shift can be inside one window and outside another — invisible to anything comparing only centres."
+    },
+    {
+      "decision": 13,
+      "text": "The command reports residuals without fitting them.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "**It reports and does not fit.** A quadratic trend in the residuals is `Ṗ`, and extracting it is least squares, which is where a reader most needs to know which code produced the number."
+    },
+    {
+      "decision": 14,
+      "text": "The project now supports three distance units with exact or bracketed answers, enhancing its precision in time-distance calculations.",
+      "quote": "**`ucal lighttime`** (E2, with B1) — three distance units, three kinds of answer, because two of them are exact *by definition* and one is not.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The project gains the ability to perform gravitational time dilation calculations for circular orbits, enhancing its utility for astronomical research.",
+      "quote": "To calculate gravitational time dilation for objects in circular orbits, which is useful for various astronomical applications.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The new command will be documented and included in the project's manual fields.",
+      "quote": "Two hand-maintained lists enumerate the same commands: `commands()` in `json_surface.rs` and `all_commands()` in `manual_fields.rs`.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "The Ephemeris struct now includes a new field τ for the characteristic age.",
+      "quote": "An exact division of two fields it already carries, absent rather than infinite when there is no Ṗ.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "Users can now calculate the characteristic age using the Ephemeris struct.",
+      "quote": "Worth shipping for its caveat rather than its arithmetic: it assumes a braking index of exactly 3 and is routinely wrong by a factor of a few — the Crab's is 1240 years against a historically known 972.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "Ensures that users can consume `ucal-json/1` from another language effectively.",
+      "quote": "To document how to consume `ucal-json/1` from another language, ensuring interoperability and clarity.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "Improves the clarity of the project's documentation.",
+      "quote": "To document how to consume `ucal-json/1` from another language, ensuring interoperability and clarity.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "The format ships; the figures wait for somebody holding the papers.",
+      "quote": "**This release ships no ephemerides**, and the reason is Rule C rather than effort: a shipped one must quote `T₀`, `P` and both σ verbatim from a paper, and a figure typed from memory is the defect `cal validate` found in this project's own `europa.hjson`. D5 reached the same conclusion about Titan's anchor and the answer there was *no anchor*. The format ships; the figures wait for somebody holding the papers.",
+      "verified": true,
+      "verification_quote": "**This release ships no ephemerides**, and the reason is Rule C rather than effort: a shipped one must quote `T₀`, `P` and both σ verbatim from a paper, and a figure typed from memory is the defect `cal validate` found in this project's own `europa.hjson`. D5 reached the same conclusion about Titan's anchor and the answer there was *no anchor*."
+    },
+    {
+      "decision": 19,
+      "text": "The project now includes a new command for calculating gravitational time dilation, enhancing its functionality.",
+      "quote": "Added `ucal dilate` — gravitational time dilation at a radius, as a **certified** interval.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "Users can now use the new command to calculate gravitational time dilation for various applications.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "Exact Julian Date conversions in named scales are provided",
+      "quote": "**`ucal from-jd` and `ucal to-jd`** (A1) — a Julian Date, in a named scale, as absolute time.",
+      "verified": true,
+      "verification_quote": "**Every cited parameter in this project is indexed by JD in its source**, and J2000.0 — the epoch the whole body layer hangs on — *is* JD 2451545.0 TT."
+    },
+    {
+      "decision": 20,
+      "text": "Exactness and clarity in astronomical calculations are ensured",
+      "quote": "**`ucal from-jd` and `ucal to-jd`** (A1) — a Julian Date, in a named scale, as absolute time.",
+      "verified": true,
+      "verification_quote": "**Every cited parameter in this project is indexed by JD in its source**, and J2000.0 — the epoch the whole body layer hangs on — *is* JD 2451545.0 TT."
+    },
+    {
+      "decision": 20,
+      "text": "Exact conversions between different time scales are provided",
+      "quote": "**`ucal from-jd` and `ucal to-jd`** (A1) — a Julian Date, in a named scale, as absolute time.",
+      "verified": true,
+      "verification_quote": "**`tdb` answers with a window, and that is the honest answer**. `TDB − TT` is a periodic series whose evaluation is floating point, which Rule E forbids in a shipped crate."
+    },
+    {
+      "decision": 20,
+      "text": "Exact conversions between different scales are provided",
+      "quote": "**`ucal from-jd` and `ucal to-jd`** (A1) — a Julian Date, in a named scale, as absolute time.",
+      "verified": true,
+      "verification_quote": "**Two scales are refused with reasons rather than approximated**. `utc`, because a Julian Date counts days of 86400 SI seconds and a UTC day containing a leap second has 86401, so `JD(UTC)` is not a uniform day count — the error points at `from-civil --scale utc`, which has the leap table. And `ut1`, because it needs ΔUT1, an observed IERS quantity this repository does not carry and Rule C will not let it invent."
+    },
+    {
+      "decision": 21,
+      "text": "The `cargo run -p xtask -- check-releases` command ensures that every version marked released has a tag on the remote, a GitHub release, and all six crates on the registry.",
+      "quote": "**R1 — a version marked released must exist where a reader can get it.** For every row in the Contents table not marked unreleased: the tag resolves on the remote, a GitHub release exists for it, and every crate is on the registry at that version.",
+      "verified": true,
+      "verification_quote": "**20 released versions** confirmed to exist on the remote, on GitHub and on the registry"
+    },
+    {
+      "decision": 22,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "A fixture a reader can open is better than one a test writes.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "A fixture a reader can open is better than one a test writes.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "The `json_surface` test now compares the current JSON surface against a committed baseline file.",
+      "quote": "The `json_surface` test now compares the current JSON surface against a committed baseline file.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 26,
+      "text": "The `json_surface` test now allows new fields to be added to the baseline without failing.",
+      "quote": "The `json_surface` test now allows new fields to be added to the baseline without failing.",
+      "verified": true,
+      "verification_quote": "Adding a field is allowed and needs no discussion. Removing one, or changing what it serialises to, is a breaking change to ucal-json/1 and belongs in the release notes' Breaking section."
+    },
+    {
+      "decision": 27,
+      "text": "The JSON surface test now requires manual blessing to update the baseline.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 27,
+      "text": "The fixture is now a committed file, reducing the risk of race conditions.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 28,
+      "text": "The test ensures all commands are accounted for in the stability promise.",
+      "quote": "To ensure all commands are accounted for in the stability promise.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 29,
+      "text": "The `json_surface` test now includes a check that adding a new field does not lose any existing paths.",
+      "quote": "The `json_surface` test now checks that adding a new field does not lose any existing paths.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 30,
+      "text": "The `json_surface` test now checks for removed or changed paths in the JSON surface.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": true,
+      "verification_quote": "assert!(gone.is_empty() && changed.is_empty(), \"the ucal-json/1 surface changed in a way the promise forbids.\n\nremoved ({}):\n  {}\n\nkind changed ({}):\n  {}\n\nAdding a field is allowed and needs no discussion. Removing one, or\nchanging what it serialises to, is a breaking change to ucal-json/1 and\nbelongs in the release notes' Breaking section — after which:\nUCAL_BLESS=1 cargo test -p ucal --test json_surface\", gone.len(), gone.join(\"\\n  \"), changed.len(), changed.join(\"\\n  \"));"
+    },
+    {
+      "decision": 31,
+      "text": "The `json_surface` test now includes all commands, regardless of feature flags, in its comparison.",
+      "quote": "To ensure all commands, regardless of feature flags, are checked against the stability promise.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 31,
+      "text": "The baseline may need to be updated to include paths from commands under conditional features.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 32,
+      "text": "The project enforces its stability promise by checking for removed fields in the `json_surface` test.",
+      "quote": "To enforce the stability promise that removing existing fields is a breaking change.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 33,
+      "text": "The `json_surface` test now includes a check for paths whose kind changes in the JSON surface.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "- a path that disappears is a **failure**;\n- a path whose kind changes is a **failure**;"
+    },
+    {
+      "decision": 34,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 34,
+      "text": "A fixture a reader can open is better than one a test writes.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 35,
+      "text": "The observations fixture is now generated into the manual alongside the rest of the examples.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": true,
+      "verification_quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": 35,
+      "text": "A fixture a reader can open is better than one a test writes.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 36,
+      "text": "Catches descriptions of removed or non-existent fields in the manual.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert!(missing.is_empty(), \"Documentation/CLI.md documents fields no command emits: ...\")"
+    },
+    {
+      "decision": 36,
+      "text": "Ensures that all documented fields are actually emitted by some command.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert!(missing.is_empty(), \"these fields reach the output and are undocumented: ...\")"
+    }
+  ]
+}

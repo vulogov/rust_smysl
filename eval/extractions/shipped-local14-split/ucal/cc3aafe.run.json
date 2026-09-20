@@ -1,0 +1,15 @@
+{
+  "at": 1789936844,
+  "calls": 41,
+  "judge": "ollama:qwen2.5-coder:14b",
+  "max_decisions": 12,
+  "max_input": 0,
+  "recipe": "v1",
+  "seconds": 1813,
+  "tool_commit": "c6cb7a35719c41ac5385eb138d98b7b58b57459b",
+  "warnings": [
+    "the commit is 324739 characters and this model takes about 57440; it was read in 5 parts, and a decision spanning parts may be reported once per part",
+    "4 decision(s) were reported by more than one part and kept once",
+    "54 decisions were found and 36 kept: each one costs a call, and this recipe stops there"
+  ]
+}
