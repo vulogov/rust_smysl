@@ -12,6 +12,11 @@ pub mod judge;
 pub mod pass;
 
 pub use judge::{Charged, Judge, JudgeError, Provider, ProviderJudge, RawVerdict};
+/// The decisions prompt, for a caller that must recognise the tool's own words quoted back.
+pub fn pass_decisions_system() -> &'static str {
+    pass::DECISIONS_SYSTEM
+}
+
 pub use pass::{
     check_quote, commit_input, extract, Cache, Checked, Recipe, Report, Source, SourceFile, Support,
 };

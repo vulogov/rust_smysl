@@ -422,7 +422,7 @@ fn a_quote_is_placed_by_the_commit_and_not_by_the_model() {
 }
 
 #[test]
-fn the_cap_keeps_what_the_commit_bears_out() {
+fn the_cap_keeps_what_the_commit_bears_out_when_asked_to() {
     // Four decisions, worst-supported first, and room for two.
     let answer = r#"{"decisions":[
         {"decision":"Invented","kind":"act","rationale":"","quote":"nothing like this is in the commit"},
@@ -433,6 +433,7 @@ fn the_cap_keeps_what_the_commit_bears_out() {
     let judge = Scripted::new(&[answer, r#"{"prerequisites":[]}"#, r#"{"prerequisites":[]}"#]);
     let recipe = Recipe {
         max_decisions_total: 2,
+        rank_by_quote: true,
         ..Recipe::default()
     };
     let (extraction, report) = extract(&commit(), &judge, &recipe).unwrap();

@@ -37,8 +37,12 @@ pub struct Recipe {
     /// knob that bounds what a large commit costs.
     pub max_decisions_total: usize,
     /// Keep the best-supported decisions when the cap binds, rather than whichever came back first.
-    /// On by default: the cap already discards decisions, and discarding by checked evidence cannot be
-    /// worse than discarding by the order a model happened to emit.
+    ///
+    /// **Off, because it was measured and the signal is not there.** Against the owner's adjudication of
+    /// three systems over six commits: decisions whose quote is in the commit are 88% real, decisions
+    /// whose quote is absent are 97% real, and on one system the order reverses (78% against 100%). A
+    /// quote the model could not place is not a decision it got wrong, so ranking by that would reorder
+    /// on noise. Kept as a setting because the local runs it was built for are unlabelled.
     pub rank_by_quote: bool,
     /// Drop a decision whose quote is a span of the tool's own instructions. On by default: it is a
     /// fabrication the tool can prove, and nothing is lost that was ever in the commit.
@@ -59,7 +63,7 @@ impl Default for Recipe {
             max_input: 0,
             max_parts: 6,
             max_decisions_total: 36,
-            rank_by_quote: true,
+            rank_by_quote: false,
             drop_prompt_quotes: true,
             drop_prose_only_quotes: false,
             require_added_quote: false,

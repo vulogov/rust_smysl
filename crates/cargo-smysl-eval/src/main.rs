@@ -81,6 +81,13 @@ enum Cmd {
         #[arg(long, env = "SMYSL_CHECK_WINDOW", default_value_t = 32768)]
         window: u32,
     },
+    /// What the commits say about the quotes in an extraction: the quote checks, on results already
+    /// on disk. No model call — the checks are the tool's, not a judgement.
+    CheckQuotes {
+        /// Which extractions to check, by system name under eval/extractions.
+        #[arg(long)]
+        system: String,
+    },
     /// Export S4 cases as trees the shipped `cargo smysl check` can read: a `.smysl/` corpus and the
     /// change, one directory per case. The reproduction of the held-out figures runs against these.
     S4Export {
@@ -192,6 +199,7 @@ fn main() -> ExitCode {
         Cmd::S3Context => s3_context(&cli.eval_dir),
         Cmd::S4Check(args) => s4_check(&cli.eval_dir, args),
         Cmd::S4Export { set, to, id } => s4_export(&cli.eval_dir, set, to, id),
+        Cmd::CheckQuotes { system } => check_quotes(&cli.eval_dir, system),
         Cmd::ExtractShipped {
             system,
             sha,
@@ -838,6 +846,101 @@ struct S4Case {
     source: String,
     task: Option<u32>,
     contradicting: Option<bool>,
+}
+
+/// Apply the shipped quote checks to extractions already made, and count what they would change.
+///
+/// Deterministic and free: the checks read the commit, which the tool already has. Re-extracting to
+/// learn this would spend an hour of a local model to produce the same answer about the same answers.
+fn check_quotes(eval: &Path, system: &str) -> Result<(), String> {
+    use cargo_smysl_extract::{check_quote, Source, SourceFile, Support};
+    let set = commits(eval)?;
+    let framing = [
+        cargo_smysl_extract::pass_decisions_system(),
+        "Report at most",
+    ];
+    println!(
+        "{:<16}{:>7}{:>7}{:>9}{:>7}{:>8}{:>8}{:>10}",
+        "commit", "kept", "added", "incommit", "loose", "absent", "prompt", "prose-only"
+    );
+    let (mut total, mut t_added, mut t_in, mut t_loose, mut t_absent, mut t_prompt, mut t_prose) =
+        (0, 0, 0, 0, 0, 0, 0);
+    for c in &set.commits {
+        let path = eval
+            .join("extractions")
+            .join(system)
+            .join(&c.repo)
+            .join(format!("{}.json", c.sha));
+        if !path.exists() {
+            continue;
+        }
+        let extraction: cargo_smysl_corpus::Extraction =
+            serde_json::from_str(&read(&path)?).map_err(|e| format!("{}: {e}", path.display()))?;
+        let repo = set
+            .repos
+            .get(&c.repo)
+            .ok_or_else(|| format!("unknown repo {}", c.repo))?;
+        let dir = repo_dir(eval, &c.repo, &repo.url)?;
+        let commit = cargo_smysl_git::read_commit(&dir, &c.sha).map_err(|e| e.to_string())?;
+        let source = Source {
+            message: commit.message.clone(),
+            files: commit
+                .files
+                .iter()
+                .map(|f| SourceFile {
+                    path: f.path.clone(),
+                    before: f.before.clone().unwrap_or_default(),
+                    after: f.after.clone().unwrap_or_default(),
+                })
+                .collect(),
+        };
+        let (mut added, mut incommit, mut loose, mut absent, mut prompt, mut prose) =
+            (0, 0, 0, 0, 0, 0);
+        for d in &extraction.decisions {
+            let checked = check_quote(&d.quote, &source, &framing);
+            match checked.support {
+                Support::Added => added += 1,
+                Support::InCommit => incommit += 1,
+                Support::Loose => loose += 1,
+                Support::Absent => absent += 1,
+                Support::Prompt => prompt += 1,
+            }
+            if checked.prose_only {
+                prose += 1;
+            }
+        }
+        println!(
+            "{:<16}{:>7}{:>7}{:>9}{:>7}{:>8}{:>8}{:>10}",
+            format!("{}/{}", c.repo, c.sha),
+            extraction.decisions.len(),
+            added,
+            incommit,
+            loose,
+            absent,
+            prompt,
+            prose
+        );
+        total += extraction.decisions.len();
+        t_added += added;
+        t_in += incommit;
+        t_loose += loose;
+        t_absent += absent;
+        t_prompt += prompt;
+        t_prose += prose;
+    }
+    println!(
+        "{:<16}{total:>7}{t_added:>7}{t_in:>9}{t_loose:>7}{t_absent:>8}{t_prompt:>8}{t_prose:>10}",
+        "ALL"
+    );
+    println!(
+        "\nrank_by_quote keeps {} of {total} ahead of the {} the commit does not bear out.",
+        t_added + t_in + t_loose,
+        t_absent + t_prompt
+    );
+    println!(
+        "drop_prompt_quotes would drop {t_prompt}; drop_prose_only_quotes would drop {t_prose}."
+    );
+    Ok(())
 }
 
 /// Run the shipped extraction over every labelled commit, writing what S0 scores.
