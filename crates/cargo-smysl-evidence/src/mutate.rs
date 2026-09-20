@@ -22,7 +22,7 @@ use std::path::{Path, PathBuf};
 
 use cargo_smysl_facts::item::Function;
 
-use crate::run::{run, Plan, Reading, RunError};
+use crate::run::{run_capturing, Plan, Reading, RunError};
 
 /// One change to the code under test.
 #[derive(Debug, Clone, PartialEq)]
@@ -45,6 +45,9 @@ pub struct Score {
     pub missed: Vec<Mutant>,
     /// Mutants that did not compile, which say nothing either way.
     pub unviable: Vec<Mutant>,
+    /// Why nothing ran, for each unviable mutant: a mutant the compiler refused and a workspace that
+    /// would not build at all look the same from here, and only the first says something about the code.
+    pub notes: Vec<String>,
 }
 
 impl Score {
@@ -156,17 +159,39 @@ pub fn gate(
         let guard = Guard::hold(root, &target.file, &path, &source)?;
         let mutated = replace_line(&source, mutant.line, &mutant.after);
         std::fs::write(&path, &mutated).map_err(RunError::Spawn)?;
-        let readings = run(root, plan, commit);
+        let ran = run_capturing(root, plan, commit);
         drop(guard);
-        match readings {
-            // Nothing ran: the mutant did not compile, so it says nothing about the test.
-            Ok(r) if r.is_empty() => score.unviable.push(mutant),
-            Ok(r) if r.iter().all(Reading::passed) => score.missed.push(mutant),
+        match ran {
+            // Nothing ran. Usually the mutant did not compile, which says nothing about the test — but
+            // it can also be the workspace refusing to build for its own reasons, so the first error
+            // cargo printed is kept and shown.
+            Ok((r, output)) if r.is_empty() => {
+                score.notes.push(format!(
+                    "{}:{} — nothing ran: {}",
+                    mutant.file,
+                    mutant.line,
+                    first_error(&output)
+                ));
+                score.unviable.push(mutant);
+            }
+            Ok((r, _)) if r.iter().all(Reading::passed) => score.missed.push(mutant),
             Ok(_) => score.caught.push(mutant),
             Err(e) => return Err(e),
         }
     }
     Ok(score)
+}
+
+/// The first line cargo called an error, which is what a person needs to see.
+fn first_error(output: &str) -> String {
+    output
+        .lines()
+        .find(|l| l.trim_start().starts_with("error"))
+        .unwrap_or("cargo printed no error")
+        .trim()
+        .chars()
+        .take(160)
+        .collect()
 }
 
 fn replace_line(source: &str, line: usize, with: &str) -> String {

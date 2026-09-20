@@ -84,6 +84,17 @@ impl Plan {
 
 /// Run the plan and read what libtest said.
 pub fn run(root: &Path, plan: &Plan, commit: &str) -> Result<Vec<Reading>, RunError> {
+    run_capturing(root, plan, commit).map(|(readings, _)| readings)
+}
+
+/// The same, keeping what cargo printed: a caller that gets no reading needs to know why, because
+/// "nothing ran" can be a mutant that does not compile or a lock file that needs updating, and those
+/// mean opposite things.
+pub fn run_capturing(
+    root: &Path,
+    plan: &Plan,
+    commit: &str,
+) -> Result<(Vec<Reading>, String), RunError> {
     let cargo = std::env::var("CARGO").unwrap_or_else(|_| "cargo".into());
     let out = Command::new(&cargo)
         .args(plan.args())
@@ -95,7 +106,7 @@ pub fn run(root: &Path, plan: &Plan, commit: &str) -> Result<Vec<Reading>, RunEr
         String::from_utf8_lossy(&out.stdout),
         String::from_utf8_lossy(&out.stderr)
     );
-    Ok(readings(&text, commit, &toolchain(&cargo)))
+    Ok((readings(&text, commit, &toolchain(&cargo)), text))
 }
 
 fn toolchain(cargo: &str) -> String {

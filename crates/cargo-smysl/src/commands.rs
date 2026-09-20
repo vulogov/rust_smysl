@@ -633,6 +633,9 @@ fn link_evidence(root: &Path, l: Linking<'_>) -> u8 {
             match cargo_smysl_evidence::gate(root, target, &one, "", mutate) {
                 Ok(score) => {
                     println!("  {}: {}", c.test, score.because());
+                    for note in &score.notes {
+                        println!("      {note}");
+                    }
                     if !score.backs() {
                         vacuous.insert(c.test.clone());
                     }

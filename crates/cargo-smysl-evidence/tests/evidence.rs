@@ -604,3 +604,68 @@ fn an_interrupted_run_leaves_the_source_as_it_found_it() {
     );
     std::fs::remove_dir_all(&root).ok();
 }
+
+/// The gate end to end, on a package built for the purpose: mutate, run, restore.
+///
+/// It compiles a crate twice, so it is the slowest test here — and the only one that proves the loop
+/// itself: that a mutant reaches the compiler, that the test's verdict is read, and that the file is
+/// the one it started as afterwards.
+#[test]
+fn the_gate_runs_the_test_against_a_mutant_and_puts_the_file_back() {
+    let root = std::env::temp_dir().join(format!("smysl-gate-{}", std::process::id()));
+    std::fs::create_dir_all(root.join("src")).unwrap();
+    std::fs::write(
+        root.join("Cargo.toml"),
+        "[workspace]\n\n[package]\nname = \"gated\"\nversion = \"0.0.0\"\nedition = \"2021\"\n",
+    )
+    .unwrap();
+    let source = "pub fn within(value: usize, limit: usize) -> bool {\n    \
+                  let ok = value < limit;\n    ok\n}\n\n\
+                  #[cfg(test)]\nmod tests {\n    use super::*;\n\n    \
+                  #[test]\n    fn small_is_within() {\n        \
+                  assert!(within(1, 2));\n        assert!(!within(3, 2));\n    }\n}\n";
+    std::fs::write(root.join("src/lib.rs"), source).unwrap();
+    // The plan runs cargo with `--locked`, so the package needs a lock file of its own.
+    std::fs::write(
+        root.join("Cargo.lock"),
+        "version = 4\n\n[[package]]\nname = \"gated\"\nversion = \"0.0.0\"\n",
+    )
+    .unwrap();
+
+    let all = facts("src/lib.rs", source).unwrap();
+    let within = all
+        .iter()
+        .find_map(|f| match f {
+            cargo_smysl_facts::Fact::Function(x) if x.name == "within" => Some(x),
+            _ => None,
+        })
+        .unwrap();
+    let plan = Plan {
+        tests: vec!["tests::small_is_within".into()],
+        ..Plan::default()
+    };
+    let score = cargo_smysl_evidence::gate(&root, within, &plan, "test", 1).unwrap();
+
+    assert_eq!(
+        score.viable(),
+        1,
+        "one mutation, and it compiled: {score:?} {:?}",
+        score.notes
+    );
+    assert_eq!(
+        score.caught.len(),
+        1,
+        "a test of `within` notices `<` becoming `>=`: {score:?}"
+    );
+    assert!(score.backs(), "so the edge may be proposed");
+    assert_eq!(
+        std::fs::read_to_string(root.join("src/lib.rs")).unwrap(),
+        source,
+        "and the file is as it was"
+    );
+    assert!(
+        !root.join(".smysl/mutation-backup/src%lib.rs.orig").exists(),
+        "with no backup left behind"
+    );
+    std::fs::remove_dir_all(&root).ok();
+}
