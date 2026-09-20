@@ -19,6 +19,40 @@ impl Scripted {
     }
 }
 
+/// A scripted judge that also states a window, so the splitting can be tested without a model.
+struct Sized {
+    inner: Scripted,
+    chars: usize,
+}
+
+impl Sized {
+    fn new(chars: usize, answers: &[&str]) -> Sized {
+        Sized {
+            inner: Scripted::new(answers),
+            chars,
+        }
+    }
+}
+
+impl std::ops::Deref for Sized {
+    type Target = Scripted;
+    fn deref(&self) -> &Scripted {
+        &self.inner
+    }
+}
+
+impl Judge for Sized {
+    fn describe(&self) -> String {
+        self.inner.describe()
+    }
+    fn ask_text(&self, system: &str, user: &str) -> Result<(String, Charged), JudgeError> {
+        self.inner.ask_text(system, user)
+    }
+    fn input_chars(&self) -> Option<usize> {
+        Some(self.chars)
+    }
+}
+
 impl Judge for Scripted {
     fn describe(&self) -> String {
         "scripted".into()
@@ -254,4 +288,67 @@ fn an_answer_cut_off_mid_item_is_read_up_to_its_last_whole_one() {
 fn an_answer_that_is_not_json_at_all_is_an_error() {
     let judge = Scripted::new(&["I cannot help with that.", "I cannot help with that."]);
     assert!(extract("a commit", &judge, &Recipe::default()).is_err());
+}
+
+/// A commit too large for one call is read in parts, each carrying the message.
+#[test]
+fn a_large_commit_is_read_in_parts_and_each_part_carries_the_message() {
+    let message = "Move the parser off the old lexer\n\nThe old one could not see raw strings.";
+    let files: Vec<(String, String)> = (1..=4)
+        .map(|n| (format!("src/f{n}.rs"), "x".repeat(3_000)))
+        .collect();
+    let input = cargo_smysl_extract::commit_input(message, &files);
+
+    // A judge whose window admits about two files per part.
+    let judge = Sized::new(
+        7_000,
+        &[
+            // Pass one runs over every part first, and both parts report the same decision in the same
+            // words: it is one decision. Pass two then asks about it once.
+            r#"{"decisions":[{"decision":"Move to the new lexer","kind":"act","rationale":"raw strings","quote":"raw strings"}]}"#,
+            r#"{"decisions":[{"decision":"Move to the new lexer","kind":"act","rationale":"raw strings","quote":"raw strings"}]}"#,
+            r#"{"prerequisites":[]}"#,
+        ],
+    );
+    let (extraction, report) = extract(&input, &judge, &Recipe::default()).unwrap();
+
+    let asked = judge.asked.borrow().clone();
+    let parts: Vec<&(String, String)> = asked
+        .iter()
+        .filter(|(system, _)| system.contains("report the decisions"))
+        .collect();
+    assert!(
+        parts.len() >= 2,
+        "it was read in parts: {} call(s)",
+        parts.len()
+    );
+    for (_, user) in &parts {
+        assert!(
+            user.contains("could not see raw strings"),
+            "every part carries the message, or a diff has no reasons in it"
+        );
+        assert!(
+            user.len() <= 7_100,
+            "and every part fits: {} chars",
+            user.len()
+        );
+    }
+    assert_eq!(
+        extraction.decisions.len(),
+        1,
+        "the same decision from two parts is one decision"
+    );
+    assert!(
+        report.warnings.iter().any(|w| w.contains("read in")),
+        "and the split is reported: {:?}",
+        report.warnings
+    );
+    assert!(
+        report
+            .warnings
+            .iter()
+            .any(|w| w.contains("more than one part")),
+        "as is the duplicate: {:?}",
+        report.warnings
+    );
 }

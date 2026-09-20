@@ -9,6 +9,8 @@
 //! `cargo-smysl-corpus` from the commit it read. Quotes are checked there too (D8): a quote that is not
 //! in the commit caps its unit at speculative, which is why every pass is asked for verbatim quotes.
 
+use std::collections::BTreeSet;
+
 use cargo_smysl_corpus::build::{
     ExAlternative, ExConsequence, ExDecision, ExPrerequisite, Extraction,
 };
@@ -21,13 +23,19 @@ use crate::judge::{Judge, JudgeError};
 pub struct Recipe {
     /// What to call this way of extracting, in the cache and in the record.
     pub name: String,
-    /// Decisions asked for at most; 0 is no limit.
+    /// Decisions asked for in one call; 0 is no limit. It is a cap on the *answer*, so the model can
+    /// finish it — not a belief about how many decisions a commit contains.
     pub max_decisions: usize,
-    /// Characters of the commit (message and diff) the model is shown.
     /// Characters of the commit the model is shown. `0` means "ask the judge": the window less the
     /// answer's room (D17), which is what a provider-neutral tool should do. A number here overrides
     /// that, for a recipe that wants runs comparable across models.
     pub max_input: usize,
+    /// Parts a commit too large for one call may be split into (D17). Each part carries the message and
+    /// as many whole files as fit. `1` truncates instead, as the tool did before it could split.
+    pub max_parts: usize,
+    /// Decisions kept across all parts; 0 is no limit. Each one costs a second call, so this is the
+    /// knob that bounds what a large commit costs.
+    pub max_decisions_total: usize,
 }
 
 impl Default for Recipe {
@@ -36,6 +44,8 @@ impl Default for Recipe {
             name: "v1".into(),
             max_decisions: 12,
             max_input: 0,
+            max_parts: 6,
+            max_decisions_total: 36,
         }
     }
 }
@@ -168,62 +178,75 @@ pub fn extract(
         0 => judge.input_chars().unwrap_or(40_000),
         n => n,
     };
-    let mut shown = truncate(input, room);
-    if shown.len() < input.len() {
+    // A commit too large for one call is split into parts, each carrying the message and whole files
+    // (D17). Truncating instead would decide, silently, that the reasons live at the front of the diff:
+    // measured on a 739 000-character commit, the model saw 8% of it and found 11 of 26 decisions.
+    let parts = split(input, room, recipe.max_parts.max(1));
+    if parts.len() > 1 {
+        report.warnings.push(format!(
+            "the commit is {} characters and this model takes about {room}; it was read in {} parts, \
+             and a decision spanning parts may be reported once per part",
+            input.len(),
+            parts.len()
+        ));
+    } else if parts[0].len() < input.len() {
         report.warnings.push(format!(
             "the commit is {} characters; the model was shown the first {}",
             input.len(),
-            shown.len()
+            parts[0].len()
         ));
     }
 
-    report.calls += 1;
-    let asked = format!(
-        "COMMIT:\n{shown}\n\nReport at most {} decisions.\n",
-        recipe.max_decisions.max(1)
-    );
-    let answer: DecisionsAnswer = match ask(judge, DECISIONS_SYSTEM, &asked) {
-        Ok((answer, salvaged)) => {
-            if salvaged {
-                report.warnings.push(
-                    "the answer stopped part way and was read up to its last whole \
-                           decision"
-                        .into(),
-                );
+    // Pass one, once per part: what was decided. A decision the parts agree on is one decision, so the
+    // same wording from two parts is kept once, and the part it came from is remembered — pass two asks
+    // about it against the text it was found in, not against a part that never mentioned it.
+    let mut found: Vec<(DecisionAnswer, usize)> = Vec::new();
+    let mut seen: BTreeSet<String> = BTreeSet::new();
+    let mut duplicates = 0usize;
+    for (n, part) in parts.iter().enumerate() {
+        let answer = match decisions_of(judge, part, recipe, &mut report) {
+            Ok(answer) => answer,
+            // One part failing is not the commit failing: the others still say something, and the
+            // failure is named.
+            Err(e) if parts.len() > 1 => {
+                report.warnings.push(format!(
+                    "part {} of {}: no decisions ({e})",
+                    n + 1,
+                    parts.len()
+                ));
+                continue;
             }
-            answer
+            Err(e) => return Err(e),
+        };
+        for d in answer.decisions {
+            if d.decision.trim().is_empty() {
+                report.empty += 1;
+                continue;
+            }
+            if !seen.insert(normalise(&d.decision)) {
+                duplicates += 1;
+                continue;
+            }
+            found.push((d, n));
         }
-        // An answer that is not the JSON asked for is usually an answer the model ran out of room to
-        // finish: it was given more than it could summarise. Halving what it is shown is the one retry
-        // worth making, and it is said out loud rather than passed off as a clean run.
-        Err(JudgeError::Shape(e)) if shown.len() > 4_000 => {
-            shown = truncate(input, shown.len() / 2);
-            report.warnings.push(format!(
-                "the first answer could not be read ({e}); asked again with the first {} characters",
-                shown.len()
-            ));
-            report.calls += 1;
-            let asked = format!(
-                "COMMIT:\n{shown}\n\nReport at most {} decisions.\n",
-                recipe.max_decisions.max(1)
-            );
-            ask(judge, DECISIONS_SYSTEM, &asked)?.0
-        }
-        Err(e) => return Err(e),
-    };
+    }
+    if duplicates > 0 {
+        report.warnings.push(format!(
+            "{duplicates} decision(s) were reported by more than one part and kept once"
+        ));
+    }
+    if recipe.max_decisions_total > 0 && found.len() > recipe.max_decisions_total {
+        report.warnings.push(format!(
+            "{} decisions were found and {} kept: each one costs a call, and this recipe stops there",
+            found.len(),
+            recipe.max_decisions_total
+        ));
+        found.truncate(recipe.max_decisions_total);
+    }
+
     let mut extraction = Extraction::default();
-    for (i, d) in answer.decisions.into_iter().enumerate() {
-        if recipe.max_decisions > 0 && i >= recipe.max_decisions {
-            report.warnings.push(format!(
-                "the model reported more than {} decisions; the rest were not asked about",
-                recipe.max_decisions
-            ));
-            break;
-        }
-        if d.decision.trim().is_empty() {
-            report.empty += 1;
-            continue;
-        }
+    for (d, part) in found {
+        let shown = &parts[part];
         let number = extraction.decisions.len() + 1;
         extraction.decisions.push(ExDecision {
             decision: d.decision.clone(),
@@ -303,6 +326,97 @@ pub fn extract(
         }
     }
     Ok((extraction, report))
+}
+
+/// Pass one against one part, with the one retry that is worth making.
+fn decisions_of(
+    judge: &dyn Judge,
+    part: &str,
+    recipe: &Recipe,
+    report: &mut Report,
+) -> Result<DecisionsAnswer, JudgeError> {
+    let asked = |text: &str| {
+        format!(
+            "COMMIT:\n{text}\n\nReport at most {} decisions.\n",
+            recipe.max_decisions.max(1)
+        )
+    };
+    report.calls += 1;
+    match ask(judge, DECISIONS_SYSTEM, &asked(part)) {
+        Ok((answer, salvaged)) => {
+            if salvaged {
+                report.warnings.push(
+                    "an answer stopped part way and was read up to its last whole decision".into(),
+                );
+            }
+            Ok(answer)
+        }
+        // An answer that is not the JSON asked for is usually an answer the model ran out of room to
+        // finish. Halving what it is shown is the one retry worth making, and it is said out loud
+        // rather than passed off as a clean run.
+        Err(JudgeError::Shape(e)) if part.len() > 4_000 => {
+            let half = truncate(part, part.len() / 2);
+            report.warnings.push(format!(
+                "an answer could not be read ({e}); asked again with the first {} characters of that \
+                 part",
+                half.len()
+            ));
+            report.calls += 1;
+            Ok(ask(judge, DECISIONS_SYSTEM, &asked(half))?.0)
+        }
+        Err(e) => Err(e),
+    }
+}
+
+/// Split a commit into parts that each fit `room`: the message first, then whole files.
+///
+/// The message goes in every part, because it is where the reasons are and a file without them is a
+/// diff to guess at. A file too large to share a part with the message is cut, and that is the only
+/// place this still truncates. `max_parts` bounds the cost: what does not fit in them is left out, and
+/// the caller says so.
+fn split(input: &str, room: usize, max_parts: usize) -> Vec<String> {
+    if input.len() <= room {
+        return vec![input.to_string()];
+    }
+    let (message, rest) = match input.find("\n\n--- ") {
+        Some(at) => (&input[..at], &input[at..]),
+        // No file sections: one part, cut, as before.
+        None => return vec![truncate(input, room).to_string()],
+    };
+    let head = truncate(message, room / 2).to_string();
+    let mut parts: Vec<String> = Vec::new();
+    let mut current = head.clone();
+    for section in rest.split("\n\n--- ").filter(|s| !s.is_empty()) {
+        let section = format!("\n\n--- {section}");
+        let fits = current.len() + section.len() <= room;
+        if !fits && current.len() > head.len() {
+            parts.push(std::mem::replace(&mut current, head.clone()));
+            if parts.len() >= max_parts {
+                return parts;
+            }
+        }
+        if current.len() + section.len() <= room {
+            current.push_str(&section);
+        } else {
+            // One file larger than a whole part: it is cut, and what is kept is its beginning.
+            let left = room.saturating_sub(current.len());
+            current.push_str(truncate(&section, left));
+        }
+    }
+    if current.len() > head.len() || parts.is_empty() {
+        parts.push(current);
+    }
+    parts.truncate(max_parts);
+    parts
+}
+
+/// A decision's wording, reduced to what two parts would have to share to be the same decision.
+fn normalise(text: &str) -> String {
+    text.split(|c: char| !c.is_alphanumeric())
+        .filter(|w| w.len() > 2)
+        .map(|w| w.to_lowercase())
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 /// Ask, and say whether the answer had to be salvaged.
