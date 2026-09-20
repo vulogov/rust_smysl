@@ -36,6 +36,19 @@ pub struct Recipe {
     /// Decisions kept across all parts; 0 is no limit. Each one costs a second call, so this is the
     /// knob that bounds what a large commit costs.
     pub max_decisions_total: usize,
+    /// Keep the best-supported decisions when the cap binds, rather than whichever came back first.
+    /// On by default: the cap already discards decisions, and discarding by checked evidence cannot be
+    /// worse than discarding by the order a model happened to emit.
+    pub rank_by_quote: bool,
+    /// Drop a decision whose quote is a span of the tool's own instructions. On by default: it is a
+    /// fabrication the tool can prove, and nothing is lost that was ever in the commit.
+    pub drop_prompt_quotes: bool,
+    /// Drop a decision quoted only from a changelog, release note or manual. Off by default: a real
+    /// decision can be argued in a release note, and this has not been measured.
+    pub drop_prose_only_quotes: bool,
+    /// Keep only decisions quoted from text this commit added. Off by default and strict: it discards a
+    /// decision argued in the message, which is where authors argue.
+    pub require_added_quote: bool,
 }
 
 impl Default for Recipe {
@@ -46,6 +59,10 @@ impl Default for Recipe {
             max_input: 0,
             max_parts: 6,
             max_decisions_total: 36,
+            rank_by_quote: true,
+            drop_prompt_quotes: true,
+            drop_prose_only_quotes: false,
+            require_added_quote: false,
         }
     }
 }
@@ -154,11 +171,48 @@ pub struct Report {
 ///
 /// `input` is the commit as the tool read it — message first, then the diff — already the tool's own
 /// reading of git, never the model's.
-/// What the model is shown for one commit: the message, then each file's text, exactly as the shipped
-/// command assembles it.
-///
-/// It lives here rather than in the command so that a measurement of extraction measures the prompt the
-/// tool really sends. A copy in the evaluation would drift, and the drift would be invisible.
+/// One file as the commit left it, and as it was before.
+#[derive(Debug, Clone, Default)]
+pub struct SourceFile {
+    pub path: String,
+    /// Text before the commit; empty when the file was added.
+    pub before: String,
+    /// Text after the commit; empty when it was deleted.
+    pub after: String,
+}
+
+/// The commit as the tool read it: the message and the files, keeping the structure the quote checks
+/// need. The model is shown `text()`; the tool keeps the rest to check what comes back (D5, D8).
+#[derive(Debug, Clone, Default)]
+pub struct Source {
+    pub message: String,
+    pub files: Vec<SourceFile>,
+}
+
+impl Source {
+    /// A commit with no structure: for a caller that has only the text, and for tests.
+    pub fn from_text(text: &str) -> Source {
+        Source {
+            message: text.to_string(),
+            files: Vec::new(),
+        }
+    }
+
+    /// What the model is shown: the message, then each file's text.
+    ///
+    /// It lives here rather than in the command so that a measurement of extraction measures the prompt
+    /// the tool really sends. A copy in the evaluation would drift, and the drift would be invisible.
+    pub fn text(&self) -> String {
+        let files: Vec<(String, String)> = self
+            .files
+            .iter()
+            .map(|f| (f.path.clone(), format!("{}\n{}", f.before, f.after)))
+            .collect();
+        commit_input(&self.message, &files)
+    }
+}
+
+/// What the model is shown for one commit: the message, then each file's text.
 pub fn commit_input(message: &str, files: &[(String, String)]) -> String {
     let mut input = message.to_string();
     for (path, text) in files {
@@ -168,10 +222,11 @@ pub fn commit_input(message: &str, files: &[(String, String)]) -> String {
 }
 
 pub fn extract(
-    input: &str,
+    source: &Source,
     judge: &dyn Judge,
     recipe: &Recipe,
 ) -> Result<(Extraction, Report), JudgeError> {
+    let input = &source.text();
     let mut report = Report::default();
     // D17: the input is fitted to the model in front of us unless the recipe names a size.
     let room = match recipe.max_input {
@@ -233,6 +288,69 @@ pub fn extract(
     if duplicates > 0 {
         report.warnings.push(format!(
             "{duplicates} decision(s) were reported by more than one part and kept once"
+        ));
+    }
+
+    // What the commit says about each quote. The tool reads the commit, so this is checked rather than
+    // trusted — and it is the only filter here that a model cannot talk its way past.
+    let framing = [DECISIONS_SYSTEM, ITEMS_SYSTEM, "Report at most"];
+    let mut checked: Vec<(DecisionAnswer, usize, Checked)> = found
+        .into_iter()
+        .map(|(d, part)| {
+            let c = check_quote(&d.quote, source, &framing);
+            (d, part, c)
+        })
+        .collect();
+
+    let before = checked.len();
+    if recipe.drop_prompt_quotes {
+        checked.retain(|(_, _, c)| c.support != Support::Prompt);
+        let dropped = before - checked.len();
+        if dropped > 0 {
+            report.warnings.push(format!(
+                "{dropped} decision(s) quoted this tool's own instructions rather than the commit, \
+                 and were dropped"
+            ));
+        }
+    }
+    if recipe.drop_prose_only_quotes {
+        let was = checked.len();
+        checked.retain(|(_, _, c)| !c.prose_only);
+        if was > checked.len() {
+            report.warnings.push(format!(
+                "{} decision(s) were quoted only from a changelog, release note or manual, and were \
+                 dropped",
+                was - checked.len()
+            ));
+        }
+    }
+    if recipe.require_added_quote {
+        let was = checked.len();
+        checked.retain(|(_, _, c)| c.support == Support::Added);
+        if was > checked.len() {
+            report.warnings.push(format!(
+                "{} decision(s) were not quoted from text this commit added, and were dropped",
+                was - checked.len()
+            ));
+        }
+    }
+    if recipe.rank_by_quote {
+        // Best support first, and the model's own order within a level: the cap then keeps what the
+        // commit bears out rather than what came back first.
+        checked.sort_by(|a, b| b.2.support.cmp(&a.2.support));
+    }
+    let mut found: Vec<(DecisionAnswer, usize)> = Vec::new();
+    let mut unsupported = 0;
+    for (d, part, c) in checked {
+        if c.support <= Support::Absent {
+            unsupported += 1;
+        }
+        found.push((d, part));
+    }
+    if unsupported > 0 {
+        report.warnings.push(format!(
+            "{unsupported} decision(s) carry a quote that is not in the commit; their units stay \
+             speculative (D8)"
         ));
     }
     if recipe.max_decisions_total > 0 && found.len() > recipe.max_decisions_total {
@@ -326,6 +444,114 @@ pub fn extract(
         }
     }
     Ok((extraction, report))
+}
+
+/// How well the commit bears out a quote. The tool reads the commit itself (D5), so this is checked,
+/// not asked for: the prompt asking for a span "in which the author chooses" was measured and changed
+/// nothing, while the same question answered here costs no model call and cannot be ignored.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum Support {
+    /// The tool's own instructions, quoted back as if they came from the commit. Measured: a local 14B
+    /// returned "Report at most 12 decisions." as evidence for a decision.
+    Prompt,
+    /// Not in the commit at all.
+    Absent,
+    /// There once whitespace is ignored: the model reflowed it.
+    Loose,
+    /// Somewhere in the commit — existing text, context, or the message.
+    InCommit,
+    /// In text this commit added: the author writing, rather than the author quoting.
+    Added,
+}
+
+/// What the commit says about one quote, and where.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Checked {
+    pub support: Support,
+    /// Every file it was found in is prose — a changelog, release note or manual. Such a file lists
+    /// what exists; editing it is not deciding what it lists.
+    pub prose_only: bool,
+}
+
+/// Check one quote against the commit.
+pub fn check_quote(quote: &str, source: &Source, framing: &[&str]) -> Checked {
+    let quote = quote.trim();
+    if quote.is_empty() {
+        return Checked {
+            support: Support::Absent,
+            prose_only: false,
+        };
+    }
+    // Either direction: the model may quote a whole instruction, or a marker of one.
+    if framing
+        .iter()
+        .any(|f| !f.is_empty() && (f.contains(quote) || quote.contains(f)))
+    {
+        return Checked {
+            support: Support::Prompt,
+            prose_only: false,
+        };
+    }
+    let mut support = Support::Absent;
+    let mut found_in: Vec<&str> = Vec::new();
+    if source.message.contains(quote) {
+        support = Support::InCommit;
+        found_in.push("<message>");
+    }
+    for file in &source.files {
+        let added = file.after.contains(quote) && !file.before.contains(quote);
+        let present = added || file.after.contains(quote) || file.before.contains(quote);
+        if present {
+            found_in.push(&file.path);
+            support = support.max(if added {
+                Support::Added
+            } else {
+                Support::InCommit
+            });
+        }
+    }
+    if support == Support::Absent && loose(quote, source) {
+        support = Support::Loose;
+    }
+    Checked {
+        support,
+        prose_only: !found_in.is_empty() && found_in.iter().all(|p| is_prose_file(p)),
+    }
+}
+
+/// The same text with its spacing ignored: a model that reflows a quote has still pointed at the line.
+fn loose(quote: &str, source: &Source) -> bool {
+    let flat = |s: &str| {
+        s.split_whitespace()
+            .collect::<Vec<_>>()
+            .join(" ")
+            .to_lowercase()
+    };
+    let needle = flat(quote);
+    if needle.is_empty() {
+        return false;
+    }
+    if flat(&source.message).contains(&needle) {
+        return true;
+    }
+    source
+        .files
+        .iter()
+        .any(|f| flat(&f.before).contains(&needle) || flat(&f.after).contains(&needle))
+}
+
+/// A file that lists what exists rather than doing it.
+fn is_prose_file(path: &str) -> bool {
+    let lower = path.to_lowercase();
+    lower == "<message>"
+        || lower.ends_with(".md")
+        || lower.ends_with(".txt")
+        || lower.ends_with(".rst")
+        || lower.starts_with("docs/")
+        || lower.starts_with("documentation/")
+        || lower.contains("changelog")
+        || lower.contains("release_notes")
+        || lower.contains("release-notes")
 }
 
 /// Pass one against one part, with the one retry that is worth making.

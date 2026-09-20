@@ -873,16 +873,22 @@ fn extract_shipped(
             .ok_or_else(|| format!("unknown repo {}", c.repo))?;
         let dir = repo_dir(eval, &c.repo, &repo.url)?;
         let commit = cargo_smysl_git::read_commit(&dir, &c.sha).map_err(|e| e.to_string())?;
-        let files: Vec<(String, String)> = commit
-            .files
-            .iter()
-            .map(|f| (f.path.clone(), f.text()))
-            .collect();
-        let input = cargo_smysl_extract::commit_input(&commit.message, &files);
+        let source = cargo_smysl_extract::Source {
+            message: commit.message.clone(),
+            files: commit
+                .files
+                .iter()
+                .map(|f| cargo_smysl_extract::SourceFile {
+                    path: f.path.clone(),
+                    before: f.before.clone().unwrap_or_default(),
+                    after: f.after.clone().unwrap_or_default(),
+                })
+                .collect(),
+        };
         let began = std::time::Instant::now();
         // One commit failing is not the run failing: the rest are still worth having, and the failure
         // is named so it can be redone on its own.
-        let (extraction, report) = match cargo_smysl_extract::extract(&input, &judge, &recipe) {
+        let (extraction, report) = match cargo_smysl_extract::extract(&source, &judge, &recipe) {
             Ok(x) => x,
             Err(e) => {
                 println!("{:<6} {:<8} FAILED: {e}", c.repo, c.sha);

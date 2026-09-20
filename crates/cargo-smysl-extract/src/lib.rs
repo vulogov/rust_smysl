@@ -12,4 +12,6 @@ pub mod judge;
 pub mod pass;
 
 pub use judge::{Charged, Judge, JudgeError, Provider, ProviderJudge, RawVerdict};
-pub use pass::{commit_input, extract, Cache, Recipe, Report};
+pub use pass::{
+    check_quote, commit_input, extract, Cache, Checked, Recipe, Report, Source, SourceFile, Support,
+};

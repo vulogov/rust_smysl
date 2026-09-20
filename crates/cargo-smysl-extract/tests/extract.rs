@@ -3,7 +3,7 @@
 
 use std::cell::RefCell;
 
-use cargo_smysl_extract::{extract, Cache, Charged, Judge, JudgeError, Recipe};
+use cargo_smysl_extract::{extract, Cache, Charged, Judge, JudgeError, Recipe, Source};
 
 struct Scripted {
     answers: RefCell<Vec<String>>,
@@ -93,7 +93,8 @@ const ITEMS: &str = r#"{"prerequisites":[
 #[test]
 fn decisions_come_first_and_each_one_is_asked_about_on_its_own() {
     let judge = Scripted::new(&[DECISIONS, ITEMS]);
-    let (extraction, report) = extract(COMMIT, &judge, &Recipe::default()).unwrap();
+    let (extraction, report) =
+        extract(&Source::from_text(COMMIT), &judge, &Recipe::default()).unwrap();
 
     let asked = judge.asked.borrow();
     assert_eq!(
@@ -137,7 +138,7 @@ fn decisions_come_first_and_each_one_is_asked_about_on_its_own() {
 #[test]
 fn every_item_names_the_decision_it_belongs_to_and_keeps_its_quote() {
     let judge = Scripted::new(&[DECISIONS, ITEMS]);
-    let (extraction, _) = extract(COMMIT, &judge, &Recipe::default()).unwrap();
+    let (extraction, _) = extract(&Source::from_text(COMMIT), &judge, &Recipe::default()).unwrap();
 
     let p = &extraction.prerequisites[0];
     assert_eq!(p.decision, 1);
@@ -164,7 +165,7 @@ fn what_the_model_returns_is_content_only_the_tool_assigns_the_rest() {
     // D5: the extraction carries no labels, sources or statuses — the corpus assigns those from the
     // commit it read. Building it proves the shapes meet.
     let judge = Scripted::new(&[DECISIONS, ITEMS]);
-    let (extraction, _) = extract(COMMIT, &judge, &Recipe::default()).unwrap();
+    let (extraction, _) = extract(&Source::from_text(COMMIT), &judge, &Recipe::default()).unwrap();
     let batch = cargo_smysl_corpus::build(
         &extraction,
         &cargo_smysl_corpus::CommitText {
@@ -191,7 +192,8 @@ fn what_the_model_returns_is_content_only_the_tool_assigns_the_rest() {
 fn a_decision_whose_items_fail_still_stands() {
     // One failed call is not a failed extraction: the decision was read, its items were not.
     let judge = Scripted::new(&[DECISIONS]);
-    let (extraction, report) = extract(COMMIT, &judge, &Recipe::default()).unwrap();
+    let (extraction, report) =
+        extract(&Source::from_text(COMMIT), &judge, &Recipe::default()).unwrap();
     assert_eq!(extraction.decisions.len(), 1);
     assert!(extraction.prerequisites.is_empty());
     assert!(
@@ -205,7 +207,7 @@ fn a_decision_whose_items_fail_still_stands() {
 fn a_first_pass_that_fails_is_an_error_not_an_empty_extraction() {
     let judge = Scripted::new(&["not json at all"]);
     assert!(
-        extract(COMMIT, &judge, &Recipe::default()).is_err(),
+        extract(&Source::from_text(COMMIT), &judge, &Recipe::default()).is_err(),
         "an unreadable first answer must not read as a commit with no decisions"
     );
 }
@@ -217,7 +219,7 @@ fn a_long_commit_is_cut_and_says_so() {
         max_input: 120,
         ..Recipe::default()
     };
-    let (_, report) = extract(COMMIT, &judge, &recipe).unwrap();
+    let (_, report) = extract(&Source::from_text(COMMIT), &judge, &recipe).unwrap();
     assert!(judge.asked.borrow()[0].1.len() < COMMIT.len() + 40);
     assert!(
         report.warnings.iter().any(|w| w.contains("the first 120")),
@@ -236,7 +238,7 @@ fn a_commit_is_extracted_once_per_recipe() {
 
     assert!(cache.read(sha, &recipe).is_none(), "nothing yet");
     let judge = Scripted::new(&[DECISIONS, ITEMS]);
-    let (extraction, _) = extract(COMMIT, &judge, &recipe).unwrap();
+    let (extraction, _) = extract(&Source::from_text(COMMIT), &judge, &recipe).unwrap();
     cache.write(sha, &recipe, &extraction).unwrap();
 
     let again = cache.read(sha, &recipe).expect("the extraction is kept");
@@ -266,7 +268,8 @@ fn an_answer_cut_off_mid_item_is_read_up_to_its_last_whole_one() {
         {"decision": "Do not vendor it", "kind": "decline", "rationale": "size", "quote": "vendor"},
         {"decision": "Rewrite the parser", "kind": "act", "rationale": "the old one cannot rep"#;
     let judge = Scripted::new(&[cut, r#"{"prerequisites": []}"#, r#"{"prerequisites": []}"#]);
-    let (extraction, report) = extract("a commit", &judge, &Recipe::default()).unwrap();
+    let (extraction, report) =
+        extract(&Source::from_text("a commit"), &judge, &Recipe::default()).unwrap();
     assert_eq!(
         extraction.decisions.len(),
         2,
@@ -287,7 +290,7 @@ fn an_answer_cut_off_mid_item_is_read_up_to_its_last_whole_one() {
 #[test]
 fn an_answer_that_is_not_json_at_all_is_an_error() {
     let judge = Scripted::new(&["I cannot help with that.", "I cannot help with that."]);
-    assert!(extract("a commit", &judge, &Recipe::default()).is_err());
+    assert!(extract(&Source::from_text("a commit"), &judge, &Recipe::default()).is_err());
 }
 
 /// A commit too large for one call is read in parts, each carrying the message.
@@ -297,7 +300,17 @@ fn a_large_commit_is_read_in_parts_and_each_part_carries_the_message() {
     let files: Vec<(String, String)> = (1..=4)
         .map(|n| (format!("src/f{n}.rs"), "x".repeat(3_000)))
         .collect();
-    let input = cargo_smysl_extract::commit_input(message, &files);
+    let source = Source {
+        message: message.to_string(),
+        files: files
+            .iter()
+            .map(|(path, text)| cargo_smysl_extract::SourceFile {
+                path: path.clone(),
+                before: String::new(),
+                after: text.clone(),
+            })
+            .collect(),
+    };
 
     // A judge whose window admits about two files per part.
     let judge = Sized::new(
@@ -310,7 +323,7 @@ fn a_large_commit_is_read_in_parts_and_each_part_carries_the_message() {
             r#"{"prerequisites":[]}"#,
         ],
     );
-    let (extraction, report) = extract(&input, &judge, &Recipe::default()).unwrap();
+    let (extraction, report) = extract(&source, &judge, &Recipe::default()).unwrap();
 
     let asked = judge.asked.borrow().clone();
     let parts: Vec<&(String, String)> = asked
@@ -351,4 +364,147 @@ fn a_large_commit_is_read_in_parts_and_each_part_carries_the_message() {
         "as is the duplicate: {:?}",
         report.warnings
     );
+}
+
+// -------------------------------------------------------------------------------------------------
+// What the commit says about a quote (checked, not asked for)
+// -------------------------------------------------------------------------------------------------
+
+fn commit() -> Source {
+    Source {
+        message: "Pin the dependency\n\nBuilds drifted between machines.".into(),
+        files: vec![
+            cargo_smysl_extract::SourceFile {
+                path: "src/lib.rs".into(),
+                before: "const VERSION: &str = \"*\";\nfn unchanged() {}\n".into(),
+                after: "const VERSION: &str = \"1.2.3\";\nfn unchanged() {}\n".into(),
+            },
+            cargo_smysl_extract::SourceFile {
+                path: "CHANGELOG.md".into(),
+                before: String::new(),
+                after: "- Added the residuals command\n".into(),
+            },
+        ],
+    }
+}
+
+#[test]
+fn a_quote_is_placed_by_the_commit_and_not_by_the_model() {
+    use cargo_smysl_extract::{check_quote, Support};
+    let framing = ["Report at most 12 decisions."];
+    let at = |q: &str| check_quote(q, &commit(), &framing);
+
+    // Text the commit added: the author writing.
+    assert_eq!(at("\"1.2.3\"").support, Support::Added);
+    // Text that was already there: present, but not this commit's doing.
+    assert_eq!(at("fn unchanged() {}").support, Support::InCommit);
+    // The message is the commit too.
+    assert_eq!(
+        at("Builds drifted between machines").support,
+        Support::InCommit
+    );
+    // Reflowed: the model pointed at the line and retyped it.
+    assert_eq!(
+        at("Builds   drifted\nbetween machines").support,
+        Support::Loose
+    );
+    // Nowhere in the commit.
+    assert_eq!(
+        at("the author considered vendoring").support,
+        Support::Absent
+    );
+    // Our own instructions, quoted back as evidence. Measured on a local 14B.
+    assert_eq!(at("Report at most 12 decisions.").support, Support::Prompt);
+
+    // A changelog lists what exists; editing it is not deciding what it lists.
+    assert!(at("Added the residuals command").prose_only);
+    assert!(!at("\"1.2.3\"").prose_only);
+}
+
+#[test]
+fn the_cap_keeps_what_the_commit_bears_out() {
+    // Four decisions, worst-supported first, and room for two.
+    let answer = r#"{"decisions":[
+        {"decision":"Invented","kind":"act","rationale":"","quote":"nothing like this is in the commit"},
+        {"decision":"Echoed","kind":"act","rationale":"","quote":"Report at most 12 decisions."},
+        {"decision":"Old code","kind":"act","rationale":"","quote":"fn unchanged() {}"},
+        {"decision":"Pinned","kind":"act","rationale":"","quote":"\"1.2.3\""}
+    ]}"#;
+    let judge = Scripted::new(&[answer, r#"{"prerequisites":[]}"#, r#"{"prerequisites":[]}"#]);
+    let recipe = Recipe {
+        max_decisions_total: 2,
+        ..Recipe::default()
+    };
+    let (extraction, report) = extract(&commit(), &judge, &recipe).unwrap();
+
+    let kept: Vec<&str> = extraction
+        .decisions
+        .iter()
+        .map(|d| d.decision.as_str())
+        .collect();
+    assert_eq!(
+        kept,
+        vec!["Pinned", "Old code"],
+        "the cap keeps the best-supported, not the first two"
+    );
+    assert!(
+        report
+            .warnings
+            .iter()
+            .any(|w| w.contains("own instructions")),
+        "and the echo is reported: {:?}",
+        report.warnings
+    );
+    assert!(
+        report
+            .warnings
+            .iter()
+            .any(|w| w.contains("stay speculative")),
+        "as is the unsupported quote: {:?}",
+        report.warnings
+    );
+}
+
+#[test]
+fn the_stricter_filters_are_off_until_someone_turns_them_on() {
+    let answer = r#"{"decisions":[
+        {"decision":"From the changelog","kind":"act","rationale":"","quote":"Added the residuals command"},
+        {"decision":"Pinned","kind":"act","rationale":"","quote":"\"1.2.3\""}
+    ]}"#;
+    let default = Scripted::new(&[answer, r#"{"prerequisites":[]}"#, r#"{"prerequisites":[]}"#]);
+    let (kept, _) = extract(&commit(), &default, &Recipe::default()).unwrap();
+    assert_eq!(
+        kept.decisions.len(),
+        2,
+        "by default nothing more is dropped"
+    );
+
+    let strict = Scripted::new(&[answer, r#"{"prerequisites":[]}"#, r#"{"prerequisites":[]}"#]);
+    let recipe = Recipe {
+        drop_prose_only_quotes: true,
+        ..Recipe::default()
+    };
+    let (filtered, report) = extract(&commit(), &strict, &recipe).unwrap();
+    assert_eq!(filtered.decisions.len(), 1);
+    assert_eq!(filtered.decisions[0].decision, "Pinned");
+    assert!(report.warnings.iter().any(|w| w.contains("changelog")));
+
+    // `require_added_quote` asks a different question: was this text added here? The changelog line
+    // was, so it survives that filter — a reminder that the two settings do not overlap.
+    let existing = r#"{"decisions":[
+        {"decision":"Old code","kind":"act","rationale":"","quote":"fn unchanged() {}"},
+        {"decision":"Pinned","kind":"act","rationale":"","quote":"\"1.2.3\""}
+    ]}"#;
+    let strictest = Scripted::new(&[
+        existing,
+        r#"{"prerequisites":[]}"#,
+        r#"{"prerequisites":[]}"#,
+    ]);
+    let recipe = Recipe {
+        require_added_quote: true,
+        ..Recipe::default()
+    };
+    let (added_only, _) = extract(&commit(), &strictest, &recipe).unwrap();
+    assert_eq!(added_only.decisions.len(), 1, "only what the commit added");
+    assert_eq!(added_only.decisions[0].decision, "Pinned");
 }

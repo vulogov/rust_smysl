@@ -967,12 +967,18 @@ fn extract(
         }
         None => {
             // What the model sees: the commit as the tool read it, message then diff.
-            let files: Vec<(String, String)> = commit
-                .files
-                .iter()
-                .map(|f| (f.path.clone(), f.text()))
-                .collect();
-            let input = cargo_smysl_extract::commit_input(&commit.message, &files);
+            let source = cargo_smysl_extract::Source {
+                message: commit.message.clone(),
+                files: commit
+                    .files
+                    .iter()
+                    .map(|f| cargo_smysl_extract::SourceFile {
+                        path: f.path.clone(),
+                        before: f.before.clone().unwrap_or_default(),
+                        after: f.after.clone().unwrap_or_default(),
+                    })
+                    .collect(),
+            };
             let judge = ProviderJudge {
                 provider: Provider {
                     kind: how.provider.to_string(),
@@ -983,7 +989,7 @@ fn extract(
                     ..Provider::local(how.model)
                 },
             };
-            match cargo_smysl_extract::extract(&input, &judge, &recipe) {
+            match cargo_smysl_extract::extract(&source, &judge, &recipe) {
                 Ok((extraction, report)) => {
                     for w in &report.warnings {
                         eprintln!("cargo smysl extract: {w}");
