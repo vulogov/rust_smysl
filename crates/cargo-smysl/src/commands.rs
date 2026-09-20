@@ -124,7 +124,7 @@ pub fn run(args: SmyslArgs) -> u8 {
             },
         ),
         Command::Bench { step } => bench(&args, step),
-        Command::Stale { .. } => not_yet("stale", "a later phase (item 5, staleness)"),
+        Command::Stale { since, json } => stale(&args, since.as_deref(), *json),
         Command::Review {
             as_person,
             item,
@@ -1292,13 +1292,6 @@ fn workspace_root(args: &SmyslArgs) -> Result<std::path::PathBuf, String> {
     Ok(metadata.workspace_root.into_std_path_buf())
 }
 
-fn not_yet(name: &str, phase: &str) -> u8 {
-    eprintln!(
-        "cargo smysl {name}: not implemented yet; planned in {phase} (docs/implementation-plan.md)"
-    );
-    exit::NOT_IMPLEMENTED
-}
-
 /// What the tool sees, with no model and no network: proves the subcommand runs under cargo, finds
 /// the workspace the way cargo does, links smysl, and parses the workspace's Rust with syn.
 fn doctor(args: &SmyslArgs) -> u8 {
@@ -1681,4 +1674,167 @@ fn bench_score(root: &Path, recipe: &str) -> u8 {
          96% precision on decisions and 61% on prerequisites; a local 14B over-produces both."
     );
     exit::OK
+}
+
+// -------------------------------------------------------------------------------------------------
+// stale: reasoning whose code has moved
+// -------------------------------------------------------------------------------------------------
+
+/// `stale`: which recorded commits rest on code that has since changed.
+///
+/// The comparison is by item and by body hash, so a function that moved down a file without changing is
+/// not stale. It reports; it never withdraws a unit or lowers a status (D15).
+fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl stale: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let corpus = Corpus::at(&root);
+    let store = match corpus.load() {
+        Ok(store) if store.units().count() > 0 => store,
+        Ok(_) => {
+            eprintln!("cargo smysl stale: no corpus recorded yet");
+            return exit::FAILURE;
+        }
+        Err(e) => {
+            eprintln!("cargo smysl stale: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let documents = match corpus.commit_documents() {
+        Ok(docs) => docs,
+        Err(e) => {
+            eprintln!("cargo smysl stale: {e}");
+            return exit::FAILURE;
+        }
+    };
+    // Which commits the corpus holds, oldest first by their own order on disk.
+    let mut shas: Vec<String> = documents
+        .iter()
+        .filter_map(|p| p.file_stem().map(|s| s.to_string_lossy().into_owned()))
+        .collect();
+    if let Some(since) = since {
+        match cargo_smysl_git::read_commit(&root, since) {
+            Ok(base) => shas.retain(|sha| {
+                base.sha.starts_with(sha.as_str()) || is_after(&root, sha, &base.sha)
+            }),
+            Err(e) => {
+                eprintln!("cargo smysl stale: {since}: {e}");
+                return exit::FAILURE;
+            }
+        }
+    }
+    let units_of = |sha: &str| -> usize {
+        store
+            .units()
+            .filter(|(_, u)| {
+                u.core
+                    .source
+                    .as_ref()
+                    .map(|s| s.reference.contains(sha))
+                    .unwrap_or(false)
+            })
+            .count()
+    };
+
+    let mut reports = Vec::new();
+    for sha in &shas {
+        let commit = match cargo_smysl_git::read_commit(&root, sha) {
+            Ok(c) => c,
+            Err(e) => {
+                eprintln!("cargo smysl stale: {sha}: {e}");
+                continue;
+            }
+        };
+        let mut recorded = Vec::new();
+        let mut now = Vec::new();
+        let mut unreadable = Vec::new();
+        for file in &commit.files {
+            if !file.path.ends_with(".rs") {
+                continue;
+            }
+            // The file as the commit left it: the code the reasoning was recorded about.
+            if let Some(after) = &file.after {
+                match cargo_smysl_facts::facts(&file.path, after) {
+                    Ok(facts) => recorded.extend(facts),
+                    Err(e) => unreadable.push(format!("{} as recorded: {e}", file.path)),
+                }
+            }
+            // The file as it is now. A file that is gone leaves its items gone, which is the answer.
+            if let Ok(text) = std::fs::read_to_string(root.join(&file.path)) {
+                match cargo_smysl_facts::facts(&file.path, &text) {
+                    Ok(facts) => now.extend(facts),
+                    Err(e) => unreadable.push(format!("{}: {e}", file.path)),
+                }
+            }
+        }
+        reports.push(cargo_smysl_verdict::stale::Report {
+            commit: sha.clone(),
+            units: units_of(sha),
+            changes: cargo_smysl_verdict::stale::compare(&recorded, &now),
+            unreadable,
+        });
+    }
+
+    if json {
+        let value: Vec<serde_json::Value> = reports
+            .iter()
+            .map(|r| {
+                serde_json::json!({
+                    "commit": r.commit,
+                    "units": r.units,
+                    "changed": r.counts().0,
+                    "gone": r.counts().1,
+                    "items": r.changes.iter().map(|c| serde_json::json!({
+                        "item": c.label, "file": c.file, "because": c.because(),
+                    })).collect::<Vec<_>>(),
+                    "unreadable": r.unreadable,
+                })
+            })
+            .collect();
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&value).unwrap_or_default()
+        );
+        return exit::OK;
+    }
+
+    let stale: Vec<_> = reports.iter().filter(|r| r.is_stale()).collect();
+    for r in &stale {
+        let (changed, gone) = r.counts();
+        println!(
+            "{}: {} unit(s) rest on code that has moved — {changed} item(s) changed, {gone} gone",
+            r.commit, r.units
+        );
+        for c in r.changes.iter().take(12) {
+            println!("  {}", c.because());
+        }
+        if r.changes.len() > 12 {
+            println!("  … {} more", r.changes.len() - 12);
+        }
+        for u in &r.unreadable {
+            println!("  warning: {u}");
+        }
+        println!();
+    }
+    println!(
+        "{} of {} recorded commit(s) rest on code that has moved.\n\
+         Nothing is withdrawn: whether the reasoning still holds is a person's call, and the answer \
+         belongs in cargo smysl review.",
+        stale.len(),
+        reports.len()
+    );
+    exit::OK
+}
+
+/// Whether `sha` is a descendant of `base`: the corpus holds commits, and `--since` asks for the recent
+/// ones. A commit the repository cannot resolve is left in rather than silently dropped.
+fn is_after(root: &Path, sha: &str, base: &str) -> bool {
+    let Ok(commit) = cargo_smysl_git::read_commit(root, sha) else {
+        return true;
+    };
+    commit.sha != base
 }

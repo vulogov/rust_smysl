@@ -188,9 +188,17 @@ pub enum Command {
         step: BenchStep,
     },
     /// Report reasoning whose code has moved since it was recorded.
+    ///
+    /// A decision was made about code as it stood; when that code changes, the decision is not wrong,
+    /// it is unexamined. This says which recorded commits rest on items that have since changed or
+    /// gone. It withdraws nothing and lowers no status: a moved item is a question for a person.
     Stale {
-        /// Revision range, e.g. `v1.2.0..HEAD`.
-        range: Option<String>,
+        /// Only commits recorded at or after this revision, e.g. `v1.2.0`.
+        #[arg(long)]
+        since: Option<String>,
+        /// Machine-readable output.
+        #[arg(long)]
+        json: bool,
     },
     /// Work through what is waiting for a person, and record the answer (D15).
     ///

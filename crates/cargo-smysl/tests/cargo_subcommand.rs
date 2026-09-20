@@ -85,11 +85,27 @@ fn the_binary_also_runs_directly() {
 }
 
 #[test]
-fn an_unimplemented_command_says_where_it_is_planned() {
-    // `why` is implemented (Phase 1); `stale` is not, and says where it is planned.
-    let out = cargo(&["smysl", "stale"]);
-    assert_eq!(out.status.code(), Some(3), "{}", text(&out));
-    assert!(text(&out).contains("docs/implementation-plan.md"));
+fn every_command_the_help_lists_is_implemented() {
+    // Nothing answers "not implemented yet" any more: `stale` was the last, and a command that exits
+    // 3 has been added to the help without being written.
+    let help = cargo(&["smysl", "--help"]);
+    let listed: Vec<String> = text(&help)
+        .lines()
+        .skip_while(|l| !l.starts_with("Commands:"))
+        .skip(1)
+        .take_while(|l| !l.trim().is_empty())
+        .filter_map(|l| l.split_whitespace().next().map(str::to_string))
+        .filter(|w| w.chars().all(|c| c.is_ascii_lowercase()) && w != "help")
+        .collect();
+    assert!(listed.len() >= 7, "the help lists the commands: {listed:?}");
+    for command in listed {
+        let out = cargo(&["smysl", &command, "--help"]);
+        assert_ne!(
+            out.status.code(),
+            Some(3),
+            "{command} is listed but not implemented"
+        );
+    }
 }
 
 /// `why` answers from the corpus beside the workspace, and says so when there is none.

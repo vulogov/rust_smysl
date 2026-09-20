@@ -8,6 +8,7 @@ pub mod check;
 pub mod matching;
 pub mod policy;
 pub mod review;
+pub mod stale;
 
 pub use check::{check, Change, Finding, Outcome, Settings, DEFAULT_SYSTEM};
 pub use matching::{match_claim, retrieve, Matched, Retrieval, Shown};
