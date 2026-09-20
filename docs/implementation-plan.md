@@ -215,6 +215,10 @@ Known weak spots, all in extraction rather than smysl:
 - **Measure (updated after S3):** by `check` (S4). A later change that contradicts each arm's recorded
   prerequisites is checked against each arm's corpus, and the arm whose corpus lets `check` find more
   contradictions, at equal precision, wins. Label scoring is added only if S0 is labelled by then.
+- **Blocked on the instrument (2026-09-19).** S4 measured `check` at recall 0.38 and precision 0.10 on a
+  free local model. An instrument that is wrong nine times in ten cannot separate two arms that differ by
+  less than that, so S2 as written needs either the S0 labels or a hosted model for the scoring pass.
+  **S0 comes first.**
 
 ### S3 — does packed rationale change what an agent does? (done: information)
 
@@ -597,8 +601,10 @@ The requests, with reproductions and acceptance tests, are in
 1. Name of the tool and subcommand (`cargo smysl`, `cargo why`, other).
 2. Who labels S0, and which third repository with ordinary commit messages?
 3. Budget per commit for model calls, and whether proprietary code may go to a hosted model.
-4. Is the corpus committed to the analysed repository, or kept beside it?
-5. **S4 adjudication:** the owner judges every flag blind (correct, wrong, arguable). Confirm the
-   hit patterns in `eval/s4-protocol.md` §3 before the detector is frozen.
+4. Is the corpus committed to the analysed repository, or kept beside it? **Answered 2026-09-19 for this
+   repository: kept beside it.** `.smysl/` is ignored here, because the corpus this tool writes about
+   itself is a trial artefact. The question stays open for repositories that adopt the tool.
+5. **S4 adjudication: answered 2026-09-19.** All 96 held-out flags judged blind: 10 correct, 5 arguable,
+   81 wrong. Hit patterns confirmed before the run; the detector is frozen (`eval/s4/frozen.txt`).
 6. **Model for `check`:** DeepSeek (the extraction model) for S4; the shipped choice follows item 7 and
    item 8.
