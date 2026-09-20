@@ -248,12 +248,12 @@ fn a_commit_is_extracted_once_per_recipe() {
 
     // Another recipe is another entry: an improvement is a new recipe, never a re-extraction merged
     // into the old one (D7).
-    let other = Recipe {
-        name: "tighter-prompt".into(),
+    let v2 = Recipe {
+        name: "v2".into(),
         ..Recipe::default()
     };
-    assert!(cache.read(sha, &other).is_none());
-    assert_ne!(cache.path(sha, &recipe), cache.path(sha, &other));
+    assert!(cache.read(sha, &v2).is_none());
+    assert_ne!(cache.path(sha, &recipe), cache.path(sha, &v2));
     std::fs::remove_dir_all(&root).ok();
 }
 

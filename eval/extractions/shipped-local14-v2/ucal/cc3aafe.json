@@ -1,0 +1,1685 @@
+{
+  "decisions": [
+    {
+      "decision": "The observations are a committed file rather than one a test invents.",
+      "kind": "act",
+      "rationale": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents:"
+    },
+    {
+      "decision": "Four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds.",
+      "kind": "act",
+      "rationale": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds"
+    },
+    {
+      "decision": "The residuals are known in advance and can be checked by eye.",
+      "kind": "act",
+      "rationale": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "so the residuals are known in advance and can be checked by eye"
+    },
+    {
+      "decision": "Three fall inside their own windows and the +41 does not, which is the property the width exists to carry.",
+      "kind": "act",
+      "rationale": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "Three fall inside their own windows and the +41 does not, which is the property the width exists to carry"
+    },
+    {
+      "decision": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "kind": "act",
+      "rationale": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest"
+    },
+    {
+      "decision": "The test binaries now write residuals fixture into a committed file instead of std::env::temp_dir()",
+      "kind": "act",
+      "rationale": "To avoid race conditions and ensure reproducibility",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents"
+    },
+    {
+      "decision": "Added `--scale tcg` and `--scale tcb` options",
+      "kind": "act",
+      "rationale": "To provide exact conversions for coordinate time scales",
+      "quote": "--scale tcg and --scale tcb — the two coordinate time scales, which are exactly what TDB is not"
+    },
+    {
+      "decision": "Added `ucal ephem residuals` command",
+      "kind": "act",
+      "rationale": "To report residuals for variable-star and pulsar work",
+      "quote": "`ucal ephem residuals` — O − C, the standard instrument of variable-star and pulsar work"
+    },
+    {
+      "decision": "Added `ucal lighttime` command with three distance units",
+      "kind": "act",
+      "rationale": "To provide exact conversions for light-travel times",
+      "quote": "`ucal lighttime` — three distance units, three kinds of answer"
+    },
+    {
+      "decision": "Added `ucal dilate --orbiting` command",
+      "kind": "act",
+      "rationale": "To calculate gravitational time dilation in a circular orbit",
+      "quote": "`ucal dilate --orbiting` — a clock in a circular orbit rather than static"
+    },
+    {
+      "decision": "Added the characteristic age, `τ = P/(2Ṗ)`, to Ephemeris",
+      "kind": "act",
+      "rationale": "To provide a useful calculation for ephemerides",
+      "quote": "The characteristic age, τ = P/(2Ṗ), on Ephemeris"
+    },
+    {
+      "decision": "Added `Documentation/INTEROP.md`",
+      "kind": "act",
+      "rationale": "To document how to consume `ucal-json/1` from another language",
+      "quote": "`Documentation/INTEROP.md` — how to consume ucal-json/1 from another language"
+    },
+    {
+      "decision": "Added `ucal ephem` command for published linear ephemeris",
+      "kind": "act",
+      "rationale": "To provide a format for published linear ephemerides with uncertainty",
+      "quote": "`ucal ephem` — a published linear ephemeris, carrying the uncertainty it was published with"
+    },
+    {
+      "decision": "Added `ucal dilate` command for gravitational time dilation",
+      "kind": "act",
+      "rationale": "To calculate certified intervals of gravitational time dilation",
+      "quote": "`ucal dilate` — gravitational time dilation at a radius, as a certified interval"
+    },
+    {
+      "decision": "Added `ucal from-jd` and `ucal to-jd` commands for Julian Date conversions",
+      "kind": "act",
+      "rationale": "To provide exact conversions for Julian Dates in various scales",
+      "quote": "`ucal from-jd` and `ucal to-jd` — a Julian Date, in a named scale, as absolute time"
+    },
+    {
+      "decision": "Added `cargo run -p xtask -- check-releases` command",
+      "kind": "act",
+      "rationale": "To verify that every version marked released exists where a reader can get it",
+      "quote": "`cargo run -p xtask -- check-releases` — every version the Contents table marks released has a tag on the remote, a GitHub release, and all six crates on the registry"
+    },
+    {
+      "decision": "Updated the release procedure to include `check-releases` step",
+      "kind": "act",
+      "rationale": "To ensure that the check is run at the point the Contents row is written",
+      "quote": "The release procedure has a fourteenth step: check-releases, run at the point the Contents row is written rather than only on the daily schedule"
+    },
+    {
+      "decision": "The test binaries now write the residuals fixture into a committed file rather than std::env::temp_dir() under a fixed name.",
+      "kind": "act",
+      "rationale": "To avoid race conditions where one binary truncates the file while another reads it, causing the read to see nothing and the command to fail.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents."
+    },
+    {
+      "decision": "The residuals fixture is now a demonstrable example generated into the manual alongside the rest.",
+      "kind": "act",
+      "rationale": "To provide a clear and verifiable example of the residuals, improving documentation and understanding.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": "The ephem-residuals command now reads observations from a committed fixture file instead of writing one to std::env::temp_dir().",
+      "kind": "act",
+      "rationale": "To avoid race conditions where one binary truncates the file while another reads it, causing the read to see nothing and the command to fail.",
+      "quote": "O1 — residuals read observations from a **committed** fixture."
+    },
+    {
+      "decision": "The ephem-residuals command now uses a fixed path for the observations fixture.",
+      "kind": "act",
+      "rationale": "To avoid race conditions where one binary truncates the file while another reads it, causing the read to see nothing and the command to fail.",
+      "quote": "const OBS: &str = concat!(env!("
+    },
+    {
+      "decision": "The residuals fixture is now a committed file rather than one a test invents.",
+      "kind": "act",
+      "rationale": "A fixture that can be read by anyone is better than one that a test writes, and it cannot race with anything.",
+      "quote": "const OBS: &str = concat!(\n            env!("
+    },
+    {
+      "decision": "The residuals fixture contains four synthetic instants moved by 0, +3, -7, and +41 seconds.",
+      "kind": "act",
+      "rationale": "These known values allow the residuals to be checked by eye, ensuring that three fall inside their own windows and the +41 does not.",
+      "quote": "// The observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye. Three fall inside their own windows and the +41 does not, which is the property the width exists to carry."
+    },
+    {
+      "decision": "The test now checks that every field name a command emits is documented.",
+      "kind": "act",
+      "rationale": "To ensure that every field a command emits has a corresponding description in the manual, catching fields nobody wrote down.",
+      "quote": "// The other direction: a field nobody wrote down. A reader meeting it in output has nowhere to look, which is the whole reason the manual exists."
+    },
+    {
+      "decision": "The test now checks that every field name documented in the CLI.md file is emitted by some command.",
+      "kind": "act",
+      "rationale": "To ensure that every description in the manual corresponds to a real field emitted by a command, catching descriptions of fields that no longer exist.",
+      "quote": "// Catches a description of something that no longer exists — which is how `arithmetic_width` and `parameter_width` survived in the manual naming Rust struct fields that never reach any output."
+    },
+    {
+      "decision": "The test now includes a check to ensure that the CLI.md file states what its checks do and do not cover.",
+      "kind": "act",
+      "rationale": "To clarify that the manual's completeness and currency are verified, but its correctness is not mechanically checkable.",
+      "quote": "// Stated as a test so it is not quietly dropped. This file verifies that the manual is complete and current. Whether a description is *true* is not mechanically checkable, and claiming otherwise would be the overclaim the whole project is about."
+    },
+    {
+      "decision": "The test now includes commands for all features under `#[cfg(feature = \"events\")]`.",
+      "kind": "act",
+      "rationale": "To ensure that all fields emitted by commands with the 'events' feature are checked.",
+      "quote": "// Both halves: the anchor rows only appear when a pair is given, and the manual documents them."
+    },
+    {
+      "decision": "The test now includes commands for all features under `#[cfg(all(feature = \"body\", feature = \"civil\"))]`.",
+      "kind": "act",
+      "rationale": "To ensure that all fields emitted by commands with both 'body' and 'civil' features are checked.",
+      "quote": "// Both kinds of answer: an exact unit and the bracketed one."
+    },
+    {
+      "decision": "The test now includes commands for all features under `#[cfg(feature = \"tui\")]`.",
+      "kind": "act",
+      "rationale": "To ensure that all fields emitted by commands with the 'tui' feature are checked.",
+      "quote": "// G8 — the face is a document now, so the manual's account of its fields is held to the same standard as every other command's."
+    },
+    {
+      "decision": "The test now includes commands for all features under `#[cfg(feature = \"cosmo\")]`.",
+      "kind": "act",
+      "rationale": "To ensure that all fields emitted by commands with the 'cosmo' feature are checked.",
+      "quote": "// The manual documents `ucal --json wallclock`, and this suite also runs under the default features where `tui` is absent and that command does not exist — so its fields would read as *documented and never emitted*. The same reasoning as `json_surface`'s presence filter, and the same mitigation: CI runs this suite under `--features full` too, where nothing is skipped."
+    },
+    {
+      "decision": "The test now includes commands for all features under `#[cfg(feature = \"civil\")]`.",
+      "kind": "act",
+      "rationale": "To ensure that all fields emitted by commands with the 'civil' feature are checked.",
+      "quote": "// E2 — both kinds of answer: an exact unit and the bracketed one."
+    },
+    {
+      "decision": "The test now includes a check for structural field names that should not be considered as actual fields.",
+      "kind": "act",
+      "rationale": "To exclude structural elements like 'ticks', 'window', etc., which are concepts rather than actual fields emitted by commands.",
+      "quote": "// The recurring-fields section documents these as concepts."
+    },
+    {
+      "decision": "The examples document is generated by executing commands and capturing their output.",
+      "kind": "act",
+      "rationale": "To ensure the examples always match the current program's output, avoiding stale documentation issues.",
+      "quote": "So the examples are generated by **executing the commands** and capturing what they print."
+    },
+    {
+      "decision": "The examples document is stored in a separate file (CLI-EXAMPLES.md) rather than being injected into CLI.md.",
+      "kind": "act",
+      "rationale": "To avoid issues with generators rewriting hand-written parts of the documentation, ensuring only generated content is overwritten.",
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts."
+    },
+    {
+      "decision": "The examples document includes a warning at the top stating it is generated and should not be edited.",
+      "kind": "act",
+      "rationale": "To prevent users from manually editing the generated content, which would be overwritten on the next generation.",
+      "quote": "The generated file says at the top that it is generated, since a reader who edits it will otherwise lose the edit at the next `gen-examples`."
+    },
+    {
+      "decision": "The 'now' and 'tour' commands are excluded from the examples document.",
+      "kind": "act",
+      "rationale": "These commands read the system clock, so their output differs on every run and cannot be committed to a file.",
+      "quote": "`ucal now` and `ucal tour` are absent on purpose: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 1,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 1,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 2,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 2,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 2,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 3,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 3,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 3,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 4,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 4,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 4,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 5,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 5,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 5,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 6,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 6,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 6,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 7,
+      "text": "`TDB` is a ±1.7 ms bound because `TDB − TT` is a periodic series whose evaluation is floating point.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A2 shipped `TDB` as a ±1.7 ms bound because `TDB − TT` is a periodic series whose evaluation is floating point."
+    },
+    {
+      "decision": 7,
+      "text": "`L_G = 6.969290134 × 10⁻¹⁰` and `L_B = 1.550519768 × 10⁻⁸` are *defining* constants.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`L_G = 6.969290134 × 10⁻¹⁰` and `L_B = 1.550519768 × 10⁻⁸` are *defining* constants (IAU 2000 B1.9, IAU 2006 B3) — decisions, not measurements — and both are terminating decimals."
+    },
+    {
+      "decision": 7,
+      "text": "`TT ↔ TCG` and `TDB ↔ TCB` are exact linear conversions.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "So `TT ↔ TCG` and `TDB ↔ TCB` are exact linear conversions."
+    },
+    {
+      "decision": 8,
+      "text": "The project needs a way to report residuals for variable-star and pulsar work.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To report residuals for variable-star and pulsar work"
+    },
+    {
+      "decision": 9,
+      "text": "The project needs a way to convert light-travel times into different units.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A2 shipped `TDB` as a ±1.7 ms bound because `TDB − TT` is a periodic series whose evaluation is floating point."
+    },
+    {
+      "decision": 9,
+      "text": "The project aims to provide exact conversions for light-travel times.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A light-year is a time unit wearing a distance's clothes — defined as a Julian year times `c`, so its light-travel time is that year with no remainder and the conversion is the identity."
+    },
+    {
+      "decision": 10,
+      "text": "The project aims to provide exact calculations for various astronomical phenomena.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Gravitational time dilation in a circular orbit is an important calculation in astrophysics.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The project already carries fields P and Ṗ on Ephemeris.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "An exact division of two fields it already carries, absent rather than infinite when there is no Ṗ."
+    },
+    {
+      "decision": 11,
+      "text": "The calculation assumes a braking index of exactly 3.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "it assumes a braking index of exactly 3 and is routinely wrong by a factor of a few — the Crab's is 1240 years against a historically known 972."
+    },
+    {
+      "decision": 12,
+      "text": "The project supplies exact time and a pipeline supplies the science.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "This project supplies exact time and a pipeline supplies the science."
+    },
+    {
+      "decision": 12,
+      "text": "The JSONL streaming contract, the reason every number is a string, and which commands emit no document at all were each discoverable and nowhere stated.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That only works if the seam is documented rather than inferred, and it was inferred: the JSONL streaming contract, the reason every number is a string, and which commands emit no document at all were each discoverable and nowhere stated."
+    },
+    {
+      "decision": 13,
+      "text": "The project aims to supply exact time and a pipeline supplies the science.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "This project supplies exact time and a pipeline supplies the science."
+    },
+    {
+      "decision": 13,
+      "text": "Nearly every repeating astronomical event is published as T(E) = T₀ + E·P, and the useful answer is not T(E). It is the window ± k·√(σ_T₀² + (E·σ_P)²), because that is what decides whether an observation is worth scheduling.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Nearly every repeating astronomical event is published as T(E) = T₀ + E·P, and the useful answer is not T(E). It is the window ± k·√(σ_T₀² + (E·σ_P)²), because that is what decides whether an observation is worth scheduling."
+    },
+    {
+      "decision": 13,
+      "text": "A shipped one must quote T₀, P and both σ verbatim from a paper.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A shipped one must quote T₀, P and both σ verbatim from a paper."
+    },
+    {
+      "decision": 14,
+      "text": "The project needs a tool to calculate gravitational time dilation.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To calculate certified intervals of gravitational time dilation"
+    },
+    {
+      "decision": 14,
+      "text": "The existing tools do not cover the required calculations for gravitational time dilation.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "This is not only a black-hole tool: the solar gravitational redshift is a measured quantity and white dwarf redshifts are how their masses are checked, and both sit where `f64` has already lost half its digits."
+    },
+    {
+      "decision": 15,
+      "text": "Every cited parameter in this project is indexed by JD in its source",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**Every cited parameter in this project is indexed by JD in its source**, and J2000.0 — the epoch the whole body layer hangs on — *is* JD 2451545.0 TT."
+    },
+    {
+      "decision": 15,
+      "text": "J2000.0 is derived rather than pasted",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**J2000.0 is derived rather than pasted**. `body_file.rs` carried it as a 61-digit literal since 0.9.0."
+    },
+    {
+      "decision": 15,
+      "text": "`--scale` is required and has no default, permanently",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "**`--scale` is required and has no default, permanently**. `TT − TAI` is 32.184 s exactly and `TT − UTC` is 69.184 s today and changes without warning; a converter that defaults is silently wrong by 69 seconds whenever it guesses."
+    },
+    {
+      "decision": 15,
+      "text": "`tdb` answers with a window, and that is the honest answer",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**`tdb` answers with a window, and that is the honest answer**. `TDB − TT` is a periodic series whose evaluation is floating point, which Rule E forbids in a shipped crate."
+    },
+    {
+      "decision": 15,
+      "text": "Two scales are refused with reasons rather than approximated",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**Two scales are refused with reasons rather than approximated**. `utc`, because a Julian Date counts days of 86400 SI seconds and a UTC day containing a leap second has 86401, so `JD(UTC)` is not a uniform day count — the error points at `from-civil --scale utc`, which has the leap table. And `ut1`, because it needs ΔUT1, an observed IERS quantity this repository does not carry and Rule C will not let it invent."
+    },
+    {
+      "decision": 16,
+      "text": "Every version marked released must exist where a reader can get it.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "**R1 — a version marked released must exist where a reader can get it.** For every row in the Contents table not marked unreleased: the tag resolves on the remote, a GitHub release exists for it, and every crate is on the registry at that version."
+    },
+    {
+      "decision": 16,
+      "text": "The repository did the work, wrote down the outcome, and never asked the world whether the outcome happened.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every one has the same structure: **the repository did the work, wrote down the outcome, and never asked the world whether the outcome happened.**"
+    },
+    {
+      "decision": 17,
+      "text": "The repository did the work, wrote down the outcome, and never asked the world whether the outcome happened.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every one has the same structure: **the repository did the work, wrote down the outcome, and never asked the world whether the outcome happened.**"
+    },
+    {
+      "decision": 17,
+      "text": "Step 13 said to run `check-releases` where the Contents row is written.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Step 13 said to run `check-releases` where the Contents row is written, which is step 1 — and the row becomes true at steps 9–12, so the check failed on the row this cut had just written."
+    },
+    {
+      "decision": 18,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 18,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 18,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 19,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 19,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 19,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 20,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 20,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 20,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 21,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 21,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 21,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 22,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 22,
+      "text": "One truncated the file while the other read it, so the read saw nothing and the command refused.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused."
+    },
+    {
+      "decision": 22,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails."
+    },
+    {
+      "decision": 23,
+      "text": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two test binaries wrote the residuals fixture into std::env::temp_dir() under the same fixed name, and they run concurrently."
+    },
+    {
+      "decision": 23,
+      "text": "One truncated the file while the other read it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "One truncated the file while the other read it, so the read saw nothing and the command refused — correctly, because 'no observations were read' is an error rather than a report of agreement having compared nothing."
+    },
+    {
+      "decision": 23,
+      "text": "A test that passes sometimes is worse than one that fails.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A test that passes sometimes is worse than one that fails, and the reason this one passed locally is scheduling."
+    },
+    {
+      "decision": 24,
+      "text": "Every command's output fields need to be documented.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "It checks that every field name the manual documents appears in some command's output, and that every field a command emits is documented."
+    },
+    {
+      "decision": 24,
+      "text": "The test needs to verify that all emitted fields are documented.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "It checks that every field name the manual documents appears in some command's output, and that every field a command emits is documented."
+    },
+    {
+      "decision": 25,
+      "text": "Every command's output includes field names.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "The CLI.md file documents field names.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "text": "The test needs to assert that the CLI.md file contains a statement about what it checks and does not check.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It cannot check that the prose is true. Nothing mechanical can."
+    },
+    {
+      "decision": 27,
+      "text": "The project has a feature called 'events'.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "text": "There are commands that emit fields under the 'events' feature.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "text": "The test needs to cover all commands, including those under specific feature flags.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It needs the *real output* of every command, and here the commands are ordinary functions. In `xtask` they would have to be shelled out to."
+    },
+    {
+      "decision": 28,
+      "text": "The project has feature flags that enable certain commands.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The manual documents `ucal --json wallclock`, and this suite also runs under the default features where `tui` is absent and that command does not exist — so its fields would read as *documented and never emitted*."
+    },
+    {
+      "decision": 28,
+      "text": "There are specific commands that require both 'body' and 'civil' features to be enabled.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "v.push((\"cal list\", ucal::cmd_cal_list().unwrap()));\n        v.push((\"cal show\", ucal::cmd_cal_show(\"earth-d\", T).unwrap()));\n        v.push((\"cal anchor\", ucal::cmd_cal_anchor(\"earth-d\").unwrap()));\n        v.push((\"cal derive\", ucal::cmd_cal_derive(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/../../Documentation/examples/europa.hjson\")).unwrap()));"
+    },
+    {
+      "decision": 29,
+      "text": "The manual check needs to verify fields emitted by commands with the 'tui' feature.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The manual documents `ucal --json wallclock`, and this suite also runs under the default features where `tui` is absent and that command does not exist — so its fields would read as *documented and never emitted*."
+    },
+    {
+      "decision": 29,
+      "text": "CI runs this suite under `--features full` too, where nothing is skipped.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The same reasoning as `json_surface`'s presence filter, and the same mitigation: CI runs this suite under `--features full` too, where nothing is skipped."
+    },
+    {
+      "decision": 30,
+      "text": "The project has a feature called 'cosmo'.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 30,
+      "text": "There are commands that emit fields under the 'cosmo' feature.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 31,
+      "text": "The project has a feature called 'civil'.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 31,
+      "text": "There are commands that emit fields under the 'civil' feature.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "text": "The test checks that every field name the manual documents appears in some command's output, and that every field a command emits is documented.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It checks that every field name the manual documents appears in some command's output, and that every field a command emits is documented."
+    },
+    {
+      "decision": 32,
+      "text": "There are structural elements like 'ticks', 'window', etc., which are concepts rather than actual fields emitted by commands.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Names that are structural rather than fields a command emits."
+    },
+    {
+      "decision": 33,
+      "text": "`Documentation/CLI.md` documents 28 items but showed almost no complete invocation.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`Documentation/CLI.md` documents 28 items and, until 1.2.0, showed almost no complete invocation."
+    },
+    {
+      "decision": 33,
+      "text": "The obvious fix is to paste some output into the manual.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The obvious fix is to paste some output into the manual."
+    },
+    {
+      "decision": 33,
+      "text": "This repository has learned what that costs twice in one year: `D-A16` sat recorded and unapplied in the normative specification for two releases, and the `NASA_FACT_SHEET` citation pointed at a URL that had stopped resolving.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "This repository has learned what that costs twice in one year: `D-A16` sat recorded and unapplied in the normative specification for two releases, and the `NASA_FACT_SHEET` citation pointed at a URL that had stopped resolving."
+    },
+    {
+      "decision": 33,
+      "text": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts."
+    },
+    {
+      "decision": 33,
+      "text": "`cargo run -p xtask -- gen-examples` generates the examples document.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo run -p xtask -- gen-examples`"
+    },
+    {
+      "decision": 34,
+      "text": "`Documentation/CLI.md` documents 28 items and, until 1.2.0, showed almost no complete invocation.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`Documentation/CLI.md` documents 28 items and, until 1.2.0, showed almost no complete invocation."
+    },
+    {
+      "decision": 34,
+      "text": "The obvious fix is to paste some output into the manual.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The obvious fix is to paste some output into the manual."
+    },
+    {
+      "decision": 34,
+      "text": "This repository has learned what that costs twice in one year: `D-A16` sat recorded and unapplied in the normative specification for two releases, and the `NASA_FACT_SHEET` citation pointed at a URL that had stopped resolving.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "This repository has learned what that costs twice in one year: `D-A16` sat recorded and unapplied in the normative specification for two releases, and the `NASA_FACT_SHEET` citation pointed at a URL that had stopped resolving."
+    },
+    {
+      "decision": 34,
+      "text": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts."
+    },
+    {
+      "decision": 35,
+      "text": "The examples are generated by executing commands and capturing their output.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`ucal {}` was rejected by the binary: it is probably built without `--features full`. Run `cargo build --release -p ucal --features full`."
+    },
+    {
+      "decision": 35,
+      "text": "The examples document should not be manually edited to prevent overwriting.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts."
+    },
+    {
+      "decision": 36,
+      "text": "The 'now' and 'tour' commands read the system clock.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`ucal now` and `ucal tour` are absent on purpose: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the tests writing to the same file concurrently and handle the race condition in the code.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 1,
+      "alternative": "Use a different naming scheme for the residual files to avoid conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Keep the existing approach where tests write to a shared temporary file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Use a different mechanism for generating and accessing fixtures, such as a database or a network service.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep the existing approach where tests write to a shared temporary file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Use a different mechanism for generating and checking residuals, such as using a database or an in-memory store.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Keep the existing approach where tests write to a shared temporary file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Use a different mechanism for generating and using fixtures in tests, such as unique filenames or locking mechanisms.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Keep the tests writing to the same file concurrently.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Use a different naming scheme for the residual files to avoid conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Keep writing the residuals fixture into std::env::temp_dir() and handle concurrency issues.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Use a different method to ensure reproducibility without changing the file location.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Approximate the conversion between coordinate time scales.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Do not provide options for new coordinate time scales.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Implementing a different command to handle residual reporting.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Modifying an existing command to include residual reporting functionality.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Approximate conversions for light-travel times.",
+      "reason": "",
+      "quote": "A parsec cannot convert exactly, for a reason about its definition rather than about this program."
+    },
+    {
+      "decision": 9,
+      "alternative": "No conversion command for light-travel times.",
+      "reason": "",
+      "quote": "The project needs a way to convert light-travel times into different units."
+    },
+    {
+      "decision": 10,
+      "alternative": "Not adding the `ucal dilate --orbiting` command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Adding a less precise or more complex calculation for gravitational time dilation in a circular orbit.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Not adding the characteristic age calculation.",
+      "reason": "",
+      "quote": "Worth shipping for its caveat rather than its arithmetic: it assumes a braking index of exactly 3 and is routinely wrong by a factor of a few — the Crab's is 1240 years against a historically known 972."
+    },
+    {
+      "decision": 12,
+      "alternative": "Not documenting how to consume `ucal-json/1` from another language.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Continue without providing a format for published linear ephemerides with uncertainty.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Provide a different format for published linear ephemerides that does not include uncertainty.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Continue using existing tools that may not handle gravitational time dilation calculations accurately.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Develop a new tool specifically for calculating gravitational time dilation, but with less precision and certification.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Approximate conversions for Julian Dates",
+      "reason": "",
+      "quote": "A parsec cannot convert exactly, for a reason about its definition rather than about this program."
+    },
+    {
+      "decision": 15,
+      "alternative": "Default scale in the conversion commands",
+      "reason": "",
+      "quote": "**`--scale` is required and has no default, permanently**. `TT − TAI` is 32.184 s exactly and `TT − UTC` is 69.184 s today and changes without warning; a converter that defaults is silently wrong by 69 seconds whenever it guesses."
+    },
+    {
+      "decision": 16,
+      "alternative": "Continue relying on manual checks to ensure released versions exist.",
+      "reason": "",
+      "quote": "A check that reddens the tree because `crates.io` is having a bad morning trains its reader to ignore it, which is the defect this item is about."
+    },
+    {
+      "decision": 17,
+      "alternative": "Keep the `check-releases` step in its original position.",
+      "reason": "",
+      "quote": "Step 13 said to run `check-releases` where the Contents row is written, which is step 1 — and the row becomes true at steps 9–12, so the check failed on the row this cut had just written."
+    },
+    {
+      "decision": 18,
+      "alternative": "Continue writing the residuals fixture into std::env::temp_dir() under a fixed name.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 18,
+      "alternative": "Use a different method to avoid race conditions, such as using locks or ensuring exclusive access.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "alternative": "Keep the residuals fixture as a file written by tests.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "alternative": "Use a different method to generate and manage the residuals fixture during testing.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "Continue writing the residuals fixture to std::env::temp_dir() and handle potential race conditions.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "Use a different method to ensure no race conditions occur when writing and reading the residuals fixture.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "Continue using the temporary directory for the observations fixture.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "Use a different naming scheme for the residuals fixture files to avoid conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 22,
+      "alternative": "Keep the residuals fixture as a file written by the test.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 23,
+      "alternative": "Continue writing the residuals fixture into std::env::temp_dir() under a fixed name.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 23,
+      "alternative": "Use a different method to generate and manage the residuals fixture that avoids concurrent write/read conflicts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 24,
+      "alternative": "The test could only check that documented fields are emitted by commands.",
+      "reason": "",
+      "quote": "It checks that every field name the manual documents appears in some command's output, and that every field a command emits is documented."
+    },
+    {
+      "decision": 24,
+      "alternative": "The test could be skipped or not enforced.",
+      "reason": "",
+      "quote": "A check that finds real defects the first time it runs should not depend on someone thinking to run it."
+    },
+    {
+      "decision": 25,
+      "alternative": "Continue with the previous test that only checks if every emitted field is documented.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 25,
+      "alternative": "Do not check for any correspondence between CLI.md and command outputs.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "The test could be modified to include a check for the presence of a specific phrase in the CLI.md file.",
+      "reason": "",
+      "quote": "Stated as a test so it is not quietly dropped."
+    },
+    {
+      "decision": 26,
+      "alternative": "The test could be left without this additional check, relying on manual verification.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Do not include commands for all features under #[cfg(feature = \"events\")]",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "The test could exclude commands that require specific feature flags.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "The test could conditionally include commands based on the presence of feature flags, but not explicitly list them all under `#[cfg(all(feature = \"body\", feature = \"civil\"))]`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "Do not include commands for all features under `#[cfg(feature = \"tui\")]`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 30,
+      "alternative": "Do not include commands for all features under #[cfg(feature = \"cosmo\")]",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 31,
+      "alternative": "Do not include commands for all features under #[cfg(feature = \"civil\")]",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "Do not exclude structural elements and consider them as actual fields.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "Exclude structural elements but use a different method to identify them.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 33,
+      "alternative": "Manually paste some output into the manual.",
+      "reason": "",
+      "quote": "The obvious fix is to paste some output into the manual."
+    },
+    {
+      "decision": 33,
+      "alternative": "Inject generated examples directly into `CLI.md`.",
+      "reason": "",
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts."
+    },
+    {
+      "decision": 34,
+      "alternative": "Injecting generated examples directly into `CLI.md`.",
+      "reason": "",
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts."
+    },
+    {
+      "decision": 35,
+      "alternative": "Allow manual edits and merge them with generated content.",
+      "reason": "",
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts."
+    },
+    {
+      "decision": 36,
+      "alternative": "Include 'now' and 'tour' commands in the examples document.",
+      "reason": "",
+      "quote": "`ucal now` and `ucal tour` are absent on purpose: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The repair ensures that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The repair ensures that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The repair ensures that the observations are a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "DECISION 5: 37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": true,
+      "verification_quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest."
+    },
+    {
+      "decision": 6,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "`TCG` converts to a zero-width window.",
+      "quote": "`TCG` converts to a zero-width window;",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "`TCB` carries `TDB`'s bound and **not a tick more**.",
+      "quote": "`TCB` carries `TDB`'s bound and **not a tick more**,",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The difference between `TCB` and `TDB` is large, running ahead of `TDB` by **0.489 s per Julian year**.",
+      "quote": "`TCB` runs ahead of `TDB` by **0.489 s per Julian year**",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The difference between `TCG` and `TT` is also large, running ahead of `TT` by 0.022 s.",
+      "quote": "`TCG` ahead of `TT` by 0.022 s",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The project now has the capability to report residuals for variable-star and pulsar work, enhancing its utility in astronomical research.",
+      "quote": "To report residuals for variable-star and pulsar work",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The `ucal lighttime` command is added to the project.",
+      "quote": "To provide exact conversions for light-travel times.",
+      "verified": true,
+      "verification_quote": "- **`ucal lighttime`** (E2, with B1) — three distance units, three kinds of answer, because two of them are exact *by definition* and one is not."
+    },
+    {
+      "decision": 9,
+      "text": "The command supports three distance units: `ly`, `au`, and `pc`.",
+      "quote": "To provide exact conversions for light-travel times.",
+      "verified": true,
+      "verification_quote": "| | light-travel time | kind |\n|---|---|---|\n| `ly` | **31 557 600 s exactly** | an integer |\n| `au` | `1024642950/2053373` s | an exact rational |\n| `pc` | `648000/π` au | **bracketed** |"
+    },
+    {
+      "decision": 10,
+      "text": "The project now includes the capability to calculate gravitational time dilation in a circular orbit, enhancing its utility for astrophysical calculations.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Users can now use the `ucal dilate --orbiting` command to perform precise calculations related to gravitational time dilation in circular orbits.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The project now provides a useful calculation for ephemerides.",
+      "quote": "To provide a useful calculation for ephemerides",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "Users can calculate the characteristic age of an ephemeris using P and Ṗ.",
+      "quote": "The characteristic age, `τ = P/(2Ṗ)`",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The seam between the project and other languages is now documented, reducing inference and potential errors.",
+      "quote": "That only works if the seam is documented rather than inferred.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "The project now provides a command to handle published linear ephemerides with uncertainty, which can be useful for scheduling observations.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "The window grows, and that is the whole feature. On the format example the half-width runs 7.5 s at the epoch, 33.7 s at cycle 1000, 164 s at cycle 5000."
+    },
+    {
+      "decision": 13,
+      "text": "The project now has a new command that can be used to handle published linear ephemerides with uncertainty, which can be useful for scheduling observations.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "On the format example the half-width runs 7.5 s at the epoch, 33.7 s at cycle 1000, 164 s at cycle 5000."
+    },
+    {
+      "decision": 14,
+      "text": "The project gains the capability to calculate certified intervals of gravitational time dilation accurately.",
+      "quote": "Exactness earns its keep at the two ends, not in the middle.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "Users can now perform more precise and reliable calculations related to gravitational time dilation using the `ucal dilate` command.",
+      "quote": "So this is not only a black-hole tool: the solar gravitational redshift is a measured quantity and white dwarf redshifts are how their masses are checked, and both sit where `f64` has already lost half its digits.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "Exact conversions for Julian Dates in various scales are provided",
+      "quote": "**`ucal from-jd` and `ucal to-jd`** (A1) — a Julian Date, in a named scale, as absolute time.",
+      "verified": true,
+      "verification_quote": "**Every cited parameter in this project is indexed by JD in its source**, and J2000.0 — the epoch the whole body layer hangs on — *is* JD 2451545.0 TT."
+    },
+    {
+      "decision": 15,
+      "text": "Exactness earns its keep at the two ends, not in the middle",
+      "quote": "**Exactness earns its keep at the two ends, not in the middle**. Computing `z = 1/√(1−x) − 1` in `f64`, against the exact value:",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The Julian Date conversions are checked against an independent implementation",
+      "quote": "**The oracle is one-directional and says so**. `hifitime` returns `f64` days, and a Julian Date near 2 460 000 has ~2 µs of representation spacing in a double, so it cannot check this crate past that.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "The command `cargo run -p xtask -- check-releases` is added to verify that every version marked released exists where a reader can get it.",
+      "quote": "To verify that every version marked released exists where a reader can get it.",
+      "verified": true,
+      "verification_quote": "**R1 — a version marked released must exist where a reader can get it.** For every row in the Contents table not marked unreleased: the tag resolves on the remote, a GitHub release exists for it, and every crate is on the registry at that version."
+    },
+    {
+      "decision": 17,
+      "text": "The check is run last, after the tag, the release, and the signature.",
+      "quote": "It now runs **last**, after the tag, the release and the signature.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "A fixture a reader can open is better than one a test writes.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "A fixture a reader can open is better than one a test writes.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "Three worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "quote": "37 worked examples now, because the fixture is a demonstrable example and is generated into the manual alongside the rest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 21,
+      "text": "The ephem-residuals command now uses a fixed path for the observations fixture.",
+      "quote": "const OBS: &str = concat!(env!(",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "The observations are now a committed file rather than one a test invents.",
+      "quote": "The repair is that the observations are a committed file rather than one a test invents: four synthetic instants that are the predicted centres of four cycles moved by 0, +3, -7 and +41 seconds, so the residuals are known in advance and can be checked by eye.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "Three fall inside their own windows and the +41 does not.",
+      "quote": "Three fall inside their own windows and the +41 does not, which is the property the width exists to carry.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "A fixture a reader can open is better than one a test writes.",
+      "quote": "A fixture a reader can open is better than one a test writes, and it cannot race with anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "The test now ensures that all emitted fields are documented, improving the completeness of the manual.",
+      "quote": "It checks that every field name the manual documents appears in some command's output, and that every field a command emits is documented.",
+      "verified": true,
+      "verification_quote": "assert!(missing.is_empty(), \"these fields reach the output and are undocumented:\\n  {}\\n Add them to Documentation/CLI.md.\", missing.join(\"\\n  \"))"
+    },
+    {
+      "decision": 25,
+      "text": "The test now ensures that every field name in CLI.md corresponds to a real field emitted by some command.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "Descriptions of fields that no longer exist will be caught, preventing stale documentation.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 26,
+      "text": "The CLI.md file will now include a statement clarifying that its completeness and currency are verified, but its correctness is not mechanically checkable.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert!(md.contains(\"complete and current\") || md.contains(\"not that the prose is true\"), \"Documentation/CLI.md should say what its checks do and do not cover\");"
+    },
+    {
+      "decision": 27,
+      "text": "All fields emitted by commands with the 'events' feature are checked.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 28,
+      "text": "The test now includes commands for all features under `#[cfg(all(feature = \"body\", feature = \"civil\"))]`, ensuring that all fields emitted by these commands are checked.",
+      "quote": "To ensure that all fields emitted by commands with both 'body' and 'civil' features are checked.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 29,
+      "text": "All fields emitted by commands with the 'tui' feature are checked.",
+      "quote": "To ensure that all fields emitted by commands with the 'tui' feature are checked.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 30,
+      "text": "All fields emitted by commands with the 'cosmo' feature are checked.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 31,
+      "text": "All fields emitted by commands with the 'civil' feature are checked.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 32,
+      "text": "The test now correctly identifies and excludes structural field names that should not be considered as actual fields.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "const NOT_A_FIELD: &[&str] = &[\n    // The recurring-fields section documents these as concepts.\n    \"ticks\",\n    \"window\",\n    \"kind\",\n    \"citation\",\n    \"notes\",\n    \"precision\",\n    // Shape placeholders in path examples.\n    \"T\",\n    \"id\",\n    // Command names, which appear in the contents table.\n    \"show\",\n    \"now\",\n    \"datum\",\n    \"explain\",\n    \"ladder\",\n    \"cal\",\n    \"events\",\n    \"timeline\",\n    \"ruler\",\n    \"cosmo\",\n    \"doctor\",\n];"
+    },
+    {
+      "decision": 33,
+      "text": "The examples document always matches the current program's output.",
+      "quote": "To ensure the examples always match the current program's output, avoiding stale documentation issues.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 33,
+      "text": "`cargo run -p xtask -- check-docs` fails if the committed examples are not what a fresh run produces.",
+      "quote": "`cargo run -p xtask -- check-docs` fails if this file is not what a fresh run produces, so an example cannot describe output the program does not produce.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 33,
+      "text": "The examples document says at the top that it is generated.",
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 34,
+      "text": "The examples document is stored in a separate file (CLI-EXAMPLES.md) rather than being injected into CLI.md.",
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 35,
+      "text": "Users are warned not to edit the generated content.",
+      "quote": "`CLI-EXAMPLES.md` rather than injection into `CLI.md`, because a generator that rewrites a hand-written file in place has to be trusted with the hand-written parts.",
+      "verified": true,
+      "verification_quote": "**Generated — do not edit.** Every block below is the real output of the command above it, captured by running it."
+    },
+    {
+      "decision": 36,
+      "text": "The examples document does not include the 'now' and 'tour' commands.",
+      "quote": "`ucal now` and `ucal tour` are absent on purpose: `now` reads the system clock, so its output differs on every run and could never match a committed file.",
+      "verified": true,
+      "verification_quote": "`ucal now` and `ucal tour` are absent on purpose: `now` reads the system clock, so its output differs on every run and could never match a committed file."
+    }
+  ]
+}

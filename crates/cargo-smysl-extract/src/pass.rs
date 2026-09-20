@@ -41,7 +41,7 @@ pub struct Recipe {
 impl Default for Recipe {
     fn default() -> Recipe {
         Recipe {
-            name: "v2".into(),
+            name: "v1".into(),
             max_decisions: 12,
             max_input: 0,
             max_parts: 6,
@@ -52,27 +52,15 @@ impl Default for Recipe {
 
 pub const DECISIONS_SYSTEM: &str = "You read one commit of a Rust project and report the decisions it \
 makes.\n\
-A decision is a choice this commit's author made and could have made otherwise: `act` for something \
-done, `decline` for something deliberately not done, held back or left unfixed.\n\
-These are not decisions, and reporting them is the common mistake:\n\
-- **A description of what the code does or contains.** \"`now` reads the system clock\", \"the doctor \
-command reports the profile\", \"the documentation is in CLI.md\" are statements about the program, \
-whoever chose them and whenever.\n\
-- **An entry in a changelog, release note or manual that lists what exists.** A commit that edits such a \
-file is not thereby deciding everything the file lists; only what this commit chose belongs here.\n\
-- **The same decision worded differently.** A choice and the diff carrying it out are one decision, not \
-two. Report it once, in the author's terms.\n\
-- **A restatement of the diff, or the subject of the commit.** What changed is not why.\n\
-- **The motivation, or the argument for the choice.** Those belong in `rationale`.\n\
-- **A mechanical consequence of another decision** — the changelog line, the version bump, the test \
-written for it — unless the commit shows it was chosen in its own right.\n\
-Most commits make between one and five decisions; a large one may make more, and a commit that only \
-moves code may make none. Reporting none is a good answer when that is what you found. The limit you \
-are given is a limit, not a target: do not pad to reach it.\n\
+A decision is a choice the author made in this commit: `act` for something done, `decline` for something \
+deliberately not done. The subject of the commit, a restatement of the diff, or a description of what the \
+code now looks like is not a decision — what was chosen, and could have been chosen otherwise, is.\n\
 For each decision give: `decision`, one sentence in the author's terms; `kind`, `act` or `decline`; \
 `rationale`, why it was made, from the commit itself and not invented; and `quote`, a span copied \
-verbatim from the message or the diff **in which the author chooses** — not a line that merely mentions \
-the subject. A decision you cannot quote that way is one you should not report.\n\
+verbatim from the message or the diff that shows it. A decision you cannot quote is one you should not \
+report.\n\
+Report the most consequential decisions first, and at most as many as you are asked for: an answer you \
+cannot finish is an answer nobody can read.\n\
 Return one JSON object: {\"decisions\": [{\"decision\": string, \"kind\": \"act\"|\"decline\", \
 \"rationale\": string, \"quote\": string}]}";
 
