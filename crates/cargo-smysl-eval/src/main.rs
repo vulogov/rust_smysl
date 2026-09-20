@@ -849,6 +849,7 @@ fn extract_shipped(
     provider: cargo_smysl_extract::Provider,
 ) -> Result<(), String> {
     let set = commits(eval)?;
+    use cargo_smysl_extract::Judge as _;
     let judge = cargo_smysl_extract::ProviderJudge { provider };
     let recipe = cargo_smysl_extract::Recipe::default();
     let (mut done, mut kept) = (0, 0);
@@ -896,6 +897,29 @@ fn extract_shipped(
         std::fs::write(
             &out,
             serde_json::to_string_pretty(&extraction).map_err(|e| e.to_string())?,
+        )
+        .map_err(|e| e.to_string())?;
+        // Beside every extraction, what produced it. Two runs of different builds once landed in one
+        // directory and the result had to be thrown away for want of this; a result whose provenance is
+        // recorded can always be sorted out later, and is never wasted.
+        let made_by = out.with_extension("run.json");
+        std::fs::write(
+            &made_by,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "tool_commit": git(&eval.join(".."), &["rev-parse", "HEAD"]).unwrap_or_default().trim(),
+                "judge": judge.describe(),
+                "recipe": recipe.name,
+                "max_input": recipe.max_input,
+                "max_decisions": recipe.max_decisions,
+                "calls": report.calls,
+                "warnings": report.warnings,
+                "seconds": began.elapsed().as_secs(),
+                "at": std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_secs())
+                    .unwrap_or(0),
+            }))
+            .map_err(|e| e.to_string())?,
         )
         .map_err(|e| e.to_string())?;
         println!(
