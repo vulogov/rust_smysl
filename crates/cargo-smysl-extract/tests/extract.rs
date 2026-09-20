@@ -222,3 +222,36 @@ fn a_commit_is_extracted_once_per_recipe() {
     assert_ne!(cache.path(sha, &recipe), cache.path(sha, &v2));
     std::fs::remove_dir_all(&root).ok();
 }
+
+/// An answer the model ran out of room to finish keeps everything it managed to say.
+#[test]
+fn an_answer_cut_off_mid_item_is_read_up_to_its_last_whole_one() {
+    // Two complete decisions, then a third the model never finished: the string is still open.
+    let cut = r#"{"decisions": [
+        {"decision": "Pin the dependency", "kind": "act", "rationale": "reproducible builds", "quote": "pin"},
+        {"decision": "Do not vendor it", "kind": "decline", "rationale": "size", "quote": "vendor"},
+        {"decision": "Rewrite the parser", "kind": "act", "rationale": "the old one cannot rep"#;
+    let judge = Scripted::new(&[cut, r#"{"prerequisites": []}"#, r#"{"prerequisites": []}"#]);
+    let (extraction, report) = extract("a commit", &judge, &Recipe::default()).unwrap();
+    assert_eq!(
+        extraction.decisions.len(),
+        2,
+        "the two finished decisions are kept, the unfinished one dropped"
+    );
+    assert_eq!(extraction.decisions[0].decision, "Pin the dependency");
+    assert!(
+        report
+            .warnings
+            .iter()
+            .any(|w| w.contains("stopped part way")),
+        "and the run says so: {:?}",
+        report.warnings
+    );
+}
+
+/// A malformed answer that is not truncated is still an error: there is nothing to salvage.
+#[test]
+fn an_answer_that_is_not_json_at_all_is_an_error() {
+    let judge = Scripted::new(&["I cannot help with that.", "I cannot help with that."]);
+    assert!(extract("a commit", &judge, &Recipe::default()).is_err());
+}

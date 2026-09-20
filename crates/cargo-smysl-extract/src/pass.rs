@@ -49,6 +49,8 @@ For each decision give: `decision`, one sentence in the author's terms; `kind`, 
 `rationale`, why it was made, from the commit itself and not invented; and `quote`, a span copied \
 verbatim from the message or the diff that shows it. A decision you cannot quote is one you should not \
 report.\n\
+Report the most consequential decisions first, and at most as many as you are asked for: an answer you \
+cannot finish is an answer nobody can read.\n\
 Return one JSON object: {\"decisions\": [{\"decision\": string, \"kind\": \"act\"|\"decline\", \
 \"rationale\": string, \"quote\": string}]}";
 
@@ -176,9 +178,21 @@ pub fn extract(
     }
 
     report.calls += 1;
-    let answer: DecisionsAnswer = match ask(judge, DECISIONS_SYSTEM, &format!("COMMIT:\n{shown}\n"))
-    {
-        Ok(answer) => answer,
+    let asked = format!(
+        "COMMIT:\n{shown}\n\nReport at most {} decisions.\n",
+        recipe.max_decisions.max(1)
+    );
+    let answer: DecisionsAnswer = match ask(judge, DECISIONS_SYSTEM, &asked) {
+        Ok((answer, salvaged)) => {
+            if salvaged {
+                report.warnings.push(
+                    "the answer stopped part way and was read up to its last whole \
+                           decision"
+                        .into(),
+                );
+            }
+            answer
+        }
         // An answer that is not the JSON asked for is usually an answer the model ran out of room to
         // finish: it was given more than it could summarise. Halving what it is shown is the one retry
         // worth making, and it is said out loud rather than passed off as a clean run.
@@ -189,7 +203,11 @@ pub fn extract(
                 shown.len()
             ));
             report.calls += 1;
-            ask(judge, DECISIONS_SYSTEM, &format!("COMMIT:\n{shown}\n"))?
+            let asked = format!(
+                "COMMIT:\n{shown}\n\nReport at most {} decisions.\n",
+                recipe.max_decisions.max(1)
+            );
+            ask(judge, DECISIONS_SYSTEM, &asked)?.0
         }
         Err(e) => return Err(e),
     };
@@ -228,7 +246,15 @@ pub fn extract(
             extraction.decisions[number - 1].rationale
         );
         let items: ItemsAnswer = match ask(judge, ITEMS_SYSTEM, &user) {
-            Ok(items) => items,
+            Ok((items, salvaged)) => {
+                if salvaged {
+                    report.warnings.push(format!(
+                        "decision {number}: the answer stopped part way and was read up to its last \
+                         whole item"
+                    ));
+                }
+                items
+            }
             // One decision's items failing is not the whole extraction failing; the decision stands.
             Err(e) => {
                 report
@@ -279,13 +305,55 @@ pub fn extract(
     Ok((extraction, report))
 }
 
+/// Ask, and say whether the answer had to be salvaged.
+///
+/// A model that runs out of generation room stops mid-string, and everything it had already said is
+/// still good. Throwing the whole answer away loses a commit over its last item, so the array is closed
+/// after its last complete element and the caller is told — a salvaged answer is a fact about the run,
+/// not a detail to keep quiet.
 fn ask<T: serde::de::DeserializeOwned + Default>(
     judge: &dyn Judge,
     system: &str,
     user: &str,
-) -> Result<T, JudgeError> {
+) -> Result<(T, bool), JudgeError> {
     let (text, _charged) = judge.ask_text(system, user)?;
-    serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))
+    match serde_json::from_str(&text) {
+        Ok(value) => Ok((value, false)),
+        Err(first) => match salvage(&text).and_then(|t| serde_json::from_str(&t).ok()) {
+            Some(value) => Ok((value, true)),
+            None => Err(JudgeError::Shape(first.to_string())),
+        },
+    }
+}
+
+/// Close a JSON object that stops part way through: drop the unfinished element, then shut whatever is
+/// open. It repairs a truncated answer and nothing else — a malformed answer that is not truncated has
+/// no last complete element to keep, and parses no better afterwards.
+fn salvage(text: &str) -> Option<String> {
+    let cut = text.rfind("},")?;
+    let head = &text[..cut + 1];
+    let mut out = head.to_string();
+    let (mut braces, mut brackets, mut in_string, mut escaped) = (0i32, 0i32, false, false);
+    for c in head.chars() {
+        match c {
+            '\\' if in_string => escaped = !escaped,
+            '"' if !escaped => in_string = !in_string,
+            '{' if !in_string => braces += 1,
+            '}' if !in_string => braces -= 1,
+            '[' if !in_string => brackets += 1,
+            ']' if !in_string => brackets -= 1,
+            _ => escaped = false,
+        }
+        if c != '\\' {
+            escaped = false;
+        }
+    }
+    if in_string || braces < 0 || brackets < 0 {
+        return None;
+    }
+    out.push_str(&"]".repeat(brackets as usize));
+    out.push_str(&"}".repeat(braces as usize));
+    Some(out)
 }
 
 /// Cut on a character boundary, keeping the head: a commit's message and the start of its diff say more
