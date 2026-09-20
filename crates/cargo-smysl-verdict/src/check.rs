@@ -125,6 +125,11 @@ pub struct Change {
 }
 
 impl Change {
+    /// The diff as the model sees it, numbered and capped.
+    pub fn shown(&self) -> &str {
+        &self.shown
+    }
+
     /// Read a unified diff, numbering the lines the model may quote and capping what it is shown.
     pub fn from_diff(text: &str, s: &Settings) -> Change {
         let (mut files, mut changed, mut shown) = (Vec::new(), Vec::new(), Vec::new());
@@ -137,7 +142,13 @@ impl Change {
                 if let Some(b) = rest.split(" b/").nth(1) {
                     files.push(b.to_string());
                 }
-                shown.push(format!("{:>4}| {line}", shown.len() as u32 + 1));
+                // A file's header counts against the cap like any other line: past it, the change is
+                // truncated, and saying "no more files" by silence would be a lie of omission.
+                if shown.len() < s.diff_lines {
+                    shown.push(format!("{:>4}| {line}", shown.len() as u32 + 1));
+                } else {
+                    truncated = true;
+                }
                 continue;
             }
             if !started {
@@ -263,6 +274,14 @@ fn kind_of(label: &str) -> Option<&'static str> {
 }
 
 /// Step 1 and 2: the units worth asking about, packed with what they rest on.
+/// What `check` would show a model, without asking one: the packed units and the labels to be judged.
+///
+/// Everything up to the model call is deterministic, and a reader — or a second implementation being
+/// compared against this one — can see all of it for nothing.
+pub fn preview(store: &Store, change: &Change, s: &Settings) -> Option<(String, Vec<String>)> {
+    context(store, change, s)
+}
+
 fn context(store: &Store, change: &Change, s: &Settings) -> Option<(String, Vec<String>)> {
     let names = label_index(store);
     let name = |uid: &Uid| -> String {
@@ -324,7 +343,23 @@ fn context(store: &Store, change: &Change, s: &Settings) -> Option<(String, Vec<
         if let Ok(packed) = pack(store, &sal, &req) {
             let mut judged: Vec<String> = ranked.iter().map(|(_, l, _)| l.clone()).collect();
             let mut blocks: Vec<String> = Vec::new();
-            for (uid, level) in &packed.selection {
+            // The edges between units that were both packed: a decision arriving with the prerequisite
+            // it rests on says more than either alone, and this is where the reader sees the link.
+            let selected: BTreeSet<Uid> = packed.selection.keys().copied().collect();
+            let mut edges: BTreeMap<Uid, Vec<String>> = BTreeMap::new();
+            for r in store.relations() {
+                if selected.contains(&r.from) && selected.contains(&r.to) {
+                    edges
+                        .entry(r.from)
+                        .or_default()
+                        .push(format!("{} {}", r.kind, name(&r.to)));
+                }
+            }
+            // By label, so a commit's decision stands beside its own prerequisites. Uid order, which is
+            // what the pack comes back in, scatters them.
+            let mut order: Vec<(&Uid, &Lod)> = packed.selection.iter().collect();
+            order.sort_by_key(|(uid, _)| name(uid));
+            for (uid, level) in order {
                 let Some(unit) = store.get(uid) else { continue };
                 let label = name(uid);
                 if kind_of(&label).is_some() && !judged.contains(&label) {
@@ -345,6 +380,9 @@ fn context(store: &Store, change: &Change, s: &Settings) -> Option<(String, Vec<
                         block.push('\n');
                         block.push_str(&b.lines().map(|l| format!("  {l}\n")).collect::<String>());
                     }
+                }
+                for e in edges.get(uid).into_iter().flatten() {
+                    block.push_str(&format!("\n  -> {e}"));
                 }
                 blocks.push(block);
             }

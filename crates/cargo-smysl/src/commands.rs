@@ -72,6 +72,7 @@ pub fn run(args: SmyslArgs) -> u8 {
             chars_per_token,
             prompt_file,
             passes,
+            dry_run,
         } => check(
             &args,
             CheckArgs {
@@ -87,6 +88,7 @@ pub fn run(args: SmyslArgs) -> u8 {
                 chars_per_token: *chars_per_token,
                 prompt_file: prompt_file.as_deref(),
                 passes: *passes,
+                dry_run: *dry_run,
             },
         ),
         Command::Evidence {
@@ -1095,6 +1097,7 @@ struct CheckArgs<'a> {
     chars_per_token: f32,
     prompt_file: Option<&'a Path>,
     passes: usize,
+    dry_run: bool,
 }
 
 /// `check`: what this change contradicts in the corpus.
@@ -1153,6 +1156,22 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         },
     };
     let change = Change::from_diff(&diff, &settings);
+    if c.dry_run {
+        let (text, judged) =
+            cargo_smysl_verdict::check::preview(&store, &change, &settings).unwrap_or_default();
+        let shown = serde_json::json!({
+            "judged": judged,
+            "units_judged": judged.len(),
+            "pack_text": text,
+            "diff_lines_shown": change.shown().lines().count(),
+            "diff_truncated": change.truncated,
+        });
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&shown).unwrap_or_default()
+        );
+        return exit::OK;
+    }
     // Two passes by default, which is the configuration the quoted figures were measured at.
     let seeds: Vec<usize> = cargo_smysl_verdict::check::AGREEMENT_SEEDS
         .iter()
