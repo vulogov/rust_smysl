@@ -45,6 +45,11 @@ def main(argv):
         cases.append((d, case))
     if limit:
         cases = cases[:limit]
+    # The binary must work before 93 cases are spent on finding out that it does not. Overwriting the
+    # file while a run launches it is enough to make every launch die with no output at all.
+    probe = subprocess.run([str(BINARY), "smysl", "doctor"], capture_output=True, text=True)
+    if probe.returncode != 0:
+        sys.exit(f"{BINARY} does not run: {probe.stderr.strip()[:200] or 'killed with no output'}")
     print(f"{len(cases)} case(s), {passes} pass(es) each, into {out}")
 
     for n, (d, case) in enumerate(cases, 1):
@@ -59,7 +64,11 @@ def main(argv):
         try:
             outcome = json.loads(p.stdout)
         except json.JSONDecodeError:
-            print(f"  {case['id']}: no JSON ({p.stderr.strip()[:200]})")
+            why = p.stderr.strip()[:200] or f"no output, exit {p.returncode}"
+            print(f"  {case['id']}: no JSON ({why})")
+            # A first case that answers nothing is a broken run, not a hard case.
+            if not any(out.glob("*.json")):
+                sys.exit("nothing came back from the first case; stopping rather than spending the set")
             continue
         # A case whose calls failed found nothing for a reason that has nothing to do with `check`.
         # Writing it would score a dead provider as a clean commit, so it is left for the next run.
