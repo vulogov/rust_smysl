@@ -104,11 +104,13 @@ pub fn run(args: SmyslArgs) -> u8 {
         } => evidence(
             &args,
             label,
-            run,
-            *tests,
-            *link,
-            *mutate,
-            *chars_per_token,
+            EvidenceHow {
+                run,
+                shortlist_tests: *tests,
+                link_tests: *link,
+                mutate: *mutate,
+                chars_per_token: *chars_per_token,
+            },
             ExtractHow {
                 recipe: "",
                 provider,
@@ -383,16 +385,25 @@ fn walk(root: &Path, dir: &Path, out: &mut Vec<(String, String)>) {
 }
 
 /// `evidence <label>`: check one recorded claim against the code (D11, D12).
-fn evidence(
-    args: &SmyslArgs,
-    label: &str,
-    run: &str,
+/// What the caller asked `evidence` for, beside the claim itself.
+struct EvidenceHow<'a> {
+    /// Names this run, so two runs can be told apart when agreement is counted (D12).
+    run: &'a str,
     shortlist_tests: bool,
     link_tests: bool,
+    /// Changes the mutation gate may make per test; 0 leaves it off (S1).
     mutate: usize,
     chars_per_token: f32,
-    how: ExtractHow<'_>,
-) -> u8 {
+}
+
+fn evidence(args: &SmyslArgs, label: &str, e: EvidenceHow<'_>, how: ExtractHow<'_>) -> u8 {
+    let EvidenceHow {
+        run,
+        shortlist_tests,
+        link_tests,
+        mutate,
+        chars_per_token,
+    } = e;
     let root = match workspace_root(args) {
         Ok(root) => root,
         Err(e) => {
@@ -472,7 +483,18 @@ fn evidence(
         }
         println!();
         if link_tests {
-            return link_evidence(&root, &store, label, &claim, &picked, &all, &judge, mutate);
+            return link_evidence(
+                &root,
+                Linking {
+                    store: &store,
+                    label,
+                    claim: &claim,
+                    shortlist: &picked,
+                    facts: &all,
+                    judge: &judge,
+                    mutate,
+                },
+            );
         }
     }
 
@@ -532,16 +554,27 @@ fn evidence(
 /// Run the shortlisted tests, record what they did, and propose the edges (D13).
 ///
 /// Nothing here concludes anything: the readings are measurements, and every edge waits for a person.
-fn link_evidence(
-    root: &Path,
-    store: &smysl::Store,
-    label: &str,
-    claim: &str,
-    shortlist: &[cargo_smysl_evidence::Candidate],
-    facts: &[cargo_smysl_facts::Fact],
-    judge: &ProviderJudge,
+struct Linking<'a> {
+    store: &'a smysl::Store,
+    label: &'a str,
+    claim: &'a str,
+    shortlist: &'a [cargo_smysl_evidence::Candidate],
+    facts: &'a [cargo_smysl_facts::Fact],
+    judge: &'a ProviderJudge,
+    /// Changes the mutation gate may make per test; 0 leaves it off (S1).
     mutate: usize,
-) -> u8 {
+}
+
+fn link_evidence(root: &Path, l: Linking<'_>) -> u8 {
+    let Linking {
+        store,
+        label,
+        claim,
+        shortlist,
+        facts,
+        judge,
+        mutate,
+    } = l;
     if shortlist.is_empty() {
         println!("no test to run");
         return exit::OK;
