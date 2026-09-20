@@ -581,6 +581,30 @@ goes.
 
 
 
+### Item 11 in detail — `cargo smysl bench` (Phase 4)
+
+**The shape.** Four steps, each a subcommand, each resumable, none of them needing a network:
+
+| Step | What it does |
+|---|---|
+| `bench init [<rev>…]` | Writes a label template per commit and a reading sheet beside it: why, the message, the diff as one document. Defaults to the last ten commits that touched code |
+| `bench sheets` | Rewrites the sheets and prints the labelling order, studied-first, saying what each label would score |
+| `bench adjudicate` | Pairs what the tool extracted with what the person labelled, suggesting matches by word overlap; the person sets `match` |
+| `bench score` | Precision and recall per kind, per repository, overall — for **their** model, on **their** commits |
+
+**Where the code comes from.** The kit exists in `cargo-smysl-eval` (label files, `extracted_items`, `suggest`,
+`adjudication`, `score`, the worklist) and that crate is development-only and never published. Under D19 this
+has to ship, so the shared part moves into a published crate (`cargo-smysl-bench`) and the evaluation
+depends on it — the same rule that moved `commit_input`: one implementation, so the figures an operator
+sees and the figures this project quotes come from the same code.
+
+**What ships beside it.** The measured reference table (§6), each row naming its model, and the sentence that
+makes it readable: these are properties of those models, and the operator's own run is the only figure about
+theirs.
+
+**Cost to build:** about a day, no model calls, no tokens. It is deterministic and testable without a model,
+which is the point of D19.
+
 ---
 
 ## 9. Risks and known limits
