@@ -623,6 +623,34 @@ theirs.
 **Cost to build:** about a day, no model calls, no tokens. It is deterministic and testable without a model,
 which is the point of D19.
 
+### Phase 4 in detail — using it on this repository (planned 2026-09-20)
+
+The owner will use the tool, and `rust_smysl` is the first project. That settles questions the earlier
+table left open, because the answers follow from what has been measured rather than from taste.
+
+**What the measurements rule out before anything is built.** Extraction costs 7–30 minutes of a local
+model per commit, so it cannot run at commit time. `check` is right about one flag in ten on that model,
+so it cannot block a merge. S3 found that rationale in an agent's prompt did not change what the agent
+did (1 of 14 runs even mentioned it), so feeding the corpus to an agent is not where the value is. What
+is left is the honest shape: **record in batches, read at review time, gate only on what is
+deterministic.**
+
+| Stage | Work | Needs a model | Why this and not the obvious thing |
+|---|---|---|---|
+| 4.1 | **Recording as a habit.** `extract --since <rev>` over a range, resumable, with `--max-commits` and a printed estimate before it starts; `doctor` gains a line saying how many commits since the last recorded one | at run time only | A post-commit hook would put a half-hour model call between the author and their next commit |
+| 4.2 | **Reading at review time.** `why --commit <sha>` prints a commit's record as prose; `render <sha> --markdown` produces a block to paste into a pull request | no | The corpus is worth most where a person is already deciding something |
+| 4.3 | **CI, advisory.** A workflow that gates on `doctor` and `stale --json` (both deterministic) and runs `check` for its output without failing the build | for `check` only | A gate wrong nine times in ten teaches people to ignore it |
+| 4.4 | **Git integration that costs nothing.** A `post-commit` hook that only *queues* the commit in `.smysl/queue`, never calling a model; a merge driver for `.smysl/commits/*.smy` using smysl's merge | no | Queuing is instant and reversible; extraction stays something you choose to spend time on |
+| 4.5 | **What gets committed.** `.smysl/commits/` (the record) and `.smysl/bench/` (labels: a person's work, expensive to redo) tracked; `.smysl/store.cbor` and `.smysl/facts/` ignored, both being derived and rebuildable | no | Answers open question 4 for a repository that actually uses the tool, as against this one's trial output |
+
+**Done when:** a week of ordinary work on this repository goes by in which recording happened without
+being a chore, a pull request carried a rendered record, and `stale` was read after a refactor — and the
+owner can say whether any of it was worth the time. That last part is the measurement, and it is a
+judgement, not a number.
+
+**Explicitly not in Phase 4:** blocking gates on model output; hooks that push the corpus into an agent's
+prompt (S3); anything that spends a model call without being asked.
+
 ---
 
 ## 9. Risks and known limits
