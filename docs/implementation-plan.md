@@ -37,6 +37,11 @@ settled it.
 > - **Next:** the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own
 >   benchmark (§8, item 11) so model choice is an informed decision by whoever installs this.
 
+**Documentation for using it:** [`../README.md`](../README.md) (commands and the measured figures, each
+named by its model), [`cargo-smysl-install.md`](cargo-smysl-install.md) (installing, cargo integration,
+choosing a model, CI), [`smysl-workflow.md`](smysl-workflow.md) (every command in the order you would use
+them, on this repository).
+
 **What the tool is:** a cargo subcommand that records *why* Rust code changed — the decisions a
 change makes, what had to be true for them (prerequisites), what was rejected, and what follows —
 as a smysl corpus, and keeps that record honest over time: deterministic facts about the code and
