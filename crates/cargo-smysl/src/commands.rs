@@ -67,7 +67,14 @@ pub fn run(args: SmyslArgs) -> u8 {
                 window: *window,
             },
         ),
-        Command::Why { item } => why(&args, item),
+        Command::Why {
+            item,
+            commit,
+            markdown,
+        } => match commit {
+            Some(sha) => why_commit(&args, sha, *markdown),
+            None => why(&args, item.as_deref().unwrap_or_default()),
+        },
         Command::Check {
             rev,
             patch,
@@ -156,6 +163,51 @@ pub fn run(args: SmyslArgs) -> u8 {
 ///
 /// The corpus is read from `.smysl` beside the workspace root. A label that names no unit, or more than
 /// one, is an error rather than an empty answer: silence would read as "nothing depends on this".
+/// `why --commit`: everything one commit recorded, in the shape a reviewer reads.
+///
+/// No model and no search: the grouping is the labels the tool assigned when it recorded the commit.
+fn why_commit(args: &SmyslArgs, sha: &str, markdown: bool) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl why: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let corpus = Corpus::at(&root);
+    let store = match corpus.load() {
+        Ok(store) => store,
+        Err(e) => {
+            eprintln!("cargo smysl why: {e}");
+            return exit::FAILURE;
+        }
+    };
+    // A revision the corpus does not hold is usually a revision the person has not recorded yet, so say
+    // that rather than "nothing found".
+    let resolved = cargo_smysl_git::read_commit(&root, sha)
+        .map(|c| c.sha)
+        .unwrap_or_else(|_| sha.to_string());
+    let record =
+        cargo_smysl_corpus::report::commit_record(&store, &corpus.labels(&store), &resolved);
+    if record.is_empty() {
+        println!(
+            "{}: nothing recorded for this commit — cargo smysl extract {}",
+            &resolved[..12.min(resolved.len())],
+            &resolved[..12.min(resolved.len())]
+        );
+        return exit::OK;
+    }
+    print!(
+        "{}",
+        if markdown {
+            cargo_smysl_corpus::report::as_markdown(&record)
+        } else {
+            cargo_smysl_corpus::report::as_text(&record)
+        }
+    );
+    exit::OK
+}
+
 fn why(args: &SmyslArgs, item: &str) -> u8 {
     let root = match workspace_root(args) {
         Ok(root) => root,

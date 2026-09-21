@@ -94,7 +94,14 @@ pub enum Command {
     /// Explain why an item is the way it is, from the corpus.
     Why {
         /// Item path or label, e.g. `crate::cli::cli` or `d/g90ec2f7-1`.
-        item: String,
+        #[arg(required_unless_present = "commit")]
+        item: Option<String>,
+        /// Read back everything recorded for a commit, rather than what rests on one item.
+        #[arg(long, conflicts_with = "item")]
+        commit: Option<String>,
+        /// Markdown, for a pull request or a change log.
+        #[arg(long)]
+        markdown: bool,
     },
     /// Report what a change contradicts in the recorded corpus.
     ///

@@ -6,6 +6,7 @@
 
 pub mod build;
 pub mod query;
+pub mod report;
 pub mod store;
 
 pub use build::{
