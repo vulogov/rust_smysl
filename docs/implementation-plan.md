@@ -641,7 +641,12 @@ deterministic.**
 | 4.2 | **Reading at review time.** `why --commit <sha>` prints a commit's record as prose; `render <sha> --markdown` produces a block to paste into a pull request | no | The corpus is worth most where a person is already deciding something |
 | 4.3 | **CI, advisory.** A workflow that gates on `doctor` and `stale --json` (both deterministic) and runs `check` for its output without failing the build | for `check` only | A gate wrong nine times in ten teaches people to ignore it |
 | 4.4 | **Git integration that costs nothing.** A `post-commit` hook that only *queues* the commit in `.smysl/queue`, never calling a model; a merge driver for `.smysl/commits/*.smy` using smysl's merge | no | Queuing is instant and reversible; extraction stays something you choose to spend time on |
-| 4.5 | **What gets committed.** `.smysl/commits/` (the record) and `.smysl/bench/` (labels: a person's work, expensive to redo) tracked; `.smysl/store.cbor` and `.smysl/facts/` ignored, both being derived and rebuildable | no | Answers open question 4 for a repository that actually uses the tool, as against this one's trial output |
+| 4.5 | **What gets committed — decided 2026-09-21.** `.smysl/commits/` (the record) and `.smysl/bench/` (labels: a person's work, expensive to redo) tracked; `.smysl/store.cbor`, `.smysl/facts/`, `.smysl/queue` and `.smysl/mutation-backup/` ignored, all derived | no | Answers open question 4 for a repository that actually uses the tool, as against this one's trial output |
+
+**Open after 4.5:** `.smysl/extractions/` — the raw model answers behind each record — is ignored for now.
+It is not derived (a model is not deterministic) and a fresh clone without it re-extracts, which is 7 to
+30 minutes of a model per commit. Tracking it would make D7's "extract once" true across clones at the
+cost of a few hundred KB per commit. The owner's call.
 
 **Done when:** a week of ordinary work on this repository goes by in which recording happened without
 being a chore, a pull request carried a rendered record, and `stale` was read after a refactor — and the

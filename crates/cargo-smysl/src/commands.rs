@@ -35,8 +35,11 @@ pub fn run(args: SmyslArgs) -> u8 {
                 hops: *hops,
             }),
         ),
+        Command::Hooks { what } => hooks(&args, what),
+        Command::MergeDriver { base, ours, theirs } => merge_driver(base, ours, theirs),
         Command::Extract {
             rev,
+            queued,
             since,
             max_commits,
             estimate,
@@ -52,6 +55,7 @@ pub fn run(args: SmyslArgs) -> u8 {
             &args,
             Recording {
                 rev: rev.as_deref(),
+                queued: *queued,
                 since: since.as_deref(),
                 max_commits: *max_commits,
                 estimate: *estimate,
@@ -992,6 +996,7 @@ struct ExtractHow<'a> {
 /// What a recording run covers: one commit, or everything since a revision.
 struct Recording<'a> {
     rev: Option<&'a str>,
+    queued: bool,
     since: Option<&'a str>,
     max_commits: usize,
     estimate: bool,
@@ -1005,6 +1010,9 @@ struct Recording<'a> {
 /// nothing to skip. Before anything is spent, the run says what it expects to cost — extraction is the
 /// slowest thing this tool does, and a person deserves to know that before it starts rather than after.
 fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u8 {
+    if r.queued {
+        return extract_queued(args, &r, how);
+    }
     let Some(since) = r.since else {
         return extract(args, r.rev, r.force, r.dry_run, how);
     };
@@ -1077,6 +1085,65 @@ fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u
         done += 1;
     }
     println!("\n{done} of {} commit(s) recorded", todo.len());
+    exit::OK
+}
+
+/// Record what the post-commit hook queued, oldest first.
+///
+/// A commit is forgotten only when it is recorded, so an interrupted run resumes where it stopped and a
+/// commit that fails stays queued to be tried again.
+fn extract_queued(args: &SmyslArgs, r: &Recording<'_>, how: ExtractHow<'_>) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl extract: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let path = queue_path(&root);
+    let queued: Vec<String> = std::fs::read_to_string(&path)
+        .unwrap_or_default()
+        .lines()
+        .map(str::trim)
+        .filter(|l| !l.is_empty())
+        .map(str::to_string)
+        .collect();
+    // The same commit twice in the queue is one commit to record.
+    let mut seen = BTreeSet::new();
+    let queued: Vec<String> = queued
+        .into_iter()
+        .filter(|s| seen.insert(s.clone()))
+        .collect();
+    if queued.is_empty() {
+        println!("nothing queued (the post-commit hook queues; cargo smysl hooks install)");
+        return exit::OK;
+    }
+    let take = if r.max_commits == 0 {
+        queued.len()
+    } else {
+        r.max_commits.min(queued.len())
+    };
+    println!("{} queued, recording {take}", queued.len());
+    if r.estimate {
+        println!("nothing was run: --estimate only says what it would cost");
+        return exit::OK;
+    }
+
+    let mut left: Vec<String> = queued.clone();
+    for sha in queued.iter().take(take) {
+        println!("\n{}", &sha[..12.min(sha.len())]);
+        if extract(args, Some(sha), r.force, r.dry_run, how) == exit::OK {
+            left.retain(|s| s != sha);
+            // Written after each one, so an interrupted run does not redo what it finished.
+            let _ = std::fs::write(&path, left.join("\n"));
+        } else {
+            eprintln!(
+                "cargo smysl extract: {} stays queued",
+                &sha[..12.min(sha.len())]
+            );
+        }
+    }
+    println!("\n{} left in the queue", left.len());
     exit::OK
 }
 
@@ -2116,4 +2183,181 @@ fn is_after(root: &Path, sha: &str, base: &str) -> bool {
         return true;
     };
     commit.sha != base
+}
+
+// -------------------------------------------------------------------------------------------------
+// hooks: git integration that costs nothing until you ask for it
+// -------------------------------------------------------------------------------------------------
+
+/// What the post-commit hook writes: a sha per line, in `.smysl/queue`.
+///
+/// It runs on every commit, so it must be instant and must never fail a commit. Appending a line is
+/// both. Extraction — which is 7 to 30 minutes of a model — stays something a person starts.
+const POST_COMMIT: &str = "#!/bin/sh\n\
+# Written by `cargo smysl hooks install`.\n\
+# Queues this commit for recording. It calls no model and cannot fail your commit.\n\
+# Record what is queued when you choose to: cargo smysl extract --queued\n\
+root=$(git rev-parse --show-toplevel) || exit 0\n\
+mkdir -p \"$root/.smysl\" || exit 0\n\
+git rev-parse HEAD >> \"$root/.smysl/queue\" 2>/dev/null || true\n\
+exit 0\n";
+
+fn queue_path(root: &Path) -> std::path::PathBuf {
+    root.join(cargo_smysl_corpus::CORPUS_DIR).join("queue")
+}
+
+fn hooks(args: &SmyslArgs, what: &cli::HooksStep) -> u8 {
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl hooks: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let hook = root.join(".git").join("hooks").join("post-commit");
+    let attributes = root.join(".gitattributes");
+    let ours = |text: &str| text.contains("cargo smysl hooks install");
+
+    match what {
+        cli::HooksStep::Status => {
+            let installed = std::fs::read_to_string(&hook)
+                .map(|t| ours(&t))
+                .unwrap_or(false);
+            println!(
+                "post-commit hook: {}",
+                if installed {
+                    "installed (queues commits, calls no model)"
+                } else if hook.exists() {
+                    "a hook is there, but this tool did not write it"
+                } else {
+                    "not installed"
+                }
+            );
+            let driver = std::fs::read_to_string(&attributes)
+                .map(|t| t.contains("merge=smysl"))
+                .unwrap_or(false);
+            println!(
+                "merge driver: {}",
+                if driver {
+                    "registered in .gitattributes (run `git config merge.smysl.driver …` per clone)"
+                } else {
+                    "not registered"
+                }
+            );
+            let queued = std::fs::read_to_string(queue_path(&root))
+                .map(|t| t.lines().filter(|l| !l.trim().is_empty()).count())
+                .unwrap_or(0);
+            println!("queued: {queued} commit(s)");
+            exit::OK
+        }
+        cli::HooksStep::Install { force } => {
+            if hook.exists() {
+                let existing = std::fs::read_to_string(&hook).unwrap_or_default();
+                if !ours(&existing) && !force {
+                    eprintln!(
+                        "cargo smysl hooks: {} was written by something else; --force to replace it",
+                        hook.display()
+                    );
+                    return exit::FAILURE;
+                }
+            }
+            if let Some(dir) = hook.parent() {
+                if let Err(e) = std::fs::create_dir_all(dir) {
+                    eprintln!("cargo smysl hooks: {}: {e}", dir.display());
+                    return exit::FAILURE;
+                }
+            }
+            if let Err(e) = std::fs::write(&hook, POST_COMMIT) {
+                eprintln!("cargo smysl hooks: {}: {e}", hook.display());
+                return exit::FAILURE;
+            }
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                let _ = std::fs::set_permissions(&hook, std::fs::Permissions::from_mode(0o755));
+            }
+            println!("post-commit hook written to {}", hook.display());
+
+            // The corpus documents are append-only records, so two branches recording different commits
+            // is not a conflict — it is a merge smysl already knows how to do.
+            let line = "*.smy merge=smysl\n";
+            let existing = std::fs::read_to_string(&attributes).unwrap_or_default();
+            if !existing.contains("merge=smysl") {
+                if let Err(e) = std::fs::write(&attributes, format!("{existing}{line}")) {
+                    eprintln!("cargo smysl hooks: {}: {e}", attributes.display());
+                    return exit::FAILURE;
+                }
+                println!("registered `*.smy merge=smysl` in {}", attributes.display());
+            }
+            println!(
+                "\nand once per clone, because git keeps drivers out of the repository:\n  \
+                 git config merge.smysl.name 'smysl corpus'\n  \
+                 git config merge.smysl.driver 'cargo smysl merge-driver %O %A %B'"
+            );
+            exit::OK
+        }
+        cli::HooksStep::Uninstall => {
+            if std::fs::read_to_string(&hook)
+                .map(|t| ours(&t))
+                .unwrap_or(false)
+            {
+                let _ = std::fs::remove_file(&hook);
+                println!("removed {}", hook.display());
+            } else {
+                println!("no hook of ours to remove");
+            }
+            println!("leave or remove `*.smy merge=smysl` in .gitattributes as you prefer");
+            exit::OK
+        }
+    }
+}
+
+/// The merge driver git calls for `*.smy`: merge two versions of a corpus document.
+///
+/// Records are append-only and smysl's merge is idempotent and order-independent, so two branches that
+/// recorded different commits merge without anyone choosing. A document one side could not parse is
+/// left to a person rather than half-merged.
+fn merge_driver(base: &Path, ours: &Path, theirs: &Path) -> u8 {
+    let read = |p: &Path| std::fs::read_to_string(p).unwrap_or_default();
+    let parse = |text: &str, what: &str| match smysl::parse_surface(text) {
+        // Text we understood nothing of is not an empty document. Rewriting it would replace a person's
+        // file with nothing, so it is refused and git is told the merge failed.
+        Ok(parsed) if parsed.records.is_empty() && !text.trim().is_empty() => {
+            eprintln!(
+                "cargo smysl merge-driver: {what} has content but no records; leaving it to you"
+            );
+            None
+        }
+        Ok(parsed) => Some(parsed),
+        Err(e) => {
+            eprintln!("cargo smysl merge-driver: {what} does not parse ({e}); leaving it to you");
+            None
+        }
+    };
+    let (Some(mine), Some(other)) = (
+        parse(&read(ours), "our version"),
+        parse(&read(theirs), "their version"),
+    ) else {
+        return exit::FAILURE;
+    };
+    let _ = base;
+
+    let mut store = smysl::Store::from_records(mine.records.clone());
+    let incoming = smysl::Store::from_records(other.records.clone());
+    if smysl::merge(&mut store, &incoming, smysl::MergeOptions::default()).is_err() {
+        eprintln!("cargo smysl merge-driver: the two versions do not merge; leaving it to you");
+        return exit::FAILURE;
+    }
+    let mut labels = mine.labels.clone();
+    labels.extend(other.labels.clone());
+    let records: Vec<smysl::Record> = store.iter().cloned().collect();
+    let ctx = smysl::WriteContext::from_labels(&labels);
+    let merged = smysl::write_surface(None, &records, &ctx);
+    match std::fs::write(ours, merged) {
+        Ok(()) => exit::OK,
+        Err(e) => {
+            eprintln!("cargo smysl merge-driver: {}: {e}", ours.display());
+            exit::FAILURE
+        }
+    }
 }

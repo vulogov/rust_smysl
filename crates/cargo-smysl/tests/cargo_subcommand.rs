@@ -199,3 +199,88 @@ fn why_reports_what_rests_on_a_prerequisite() {
     );
     std::fs::remove_dir_all(&root).ok();
 }
+
+/// The merge driver git calls for `*.smy`: two branches that recorded different commits merge without
+/// anyone choosing, because records are append-only and smysl's merge is order-independent.
+#[test]
+fn two_corpus_documents_merge_without_a_conflict() {
+    use cargo_smysl_corpus::store::surface;
+    use cargo_smysl_corpus::{build, stage, CommitText, Extraction};
+    use smysl::Store;
+
+    let document = |sha: &str, decision: &str| -> String {
+        let ex: Extraction = serde_json::from_value(serde_json::json!({
+            "decisions": [{"decision": decision, "kind": "act", "rationale": "", "quote": ""}],
+            "prerequisites": [], "alternatives": [], "consequences": []
+        }))
+        .unwrap();
+        let commit = CommitText {
+            touched: Vec::new(),
+            sha,
+            message: decision,
+            files: vec![],
+        };
+        let batch = build(&ex, &commit, 0).unwrap();
+        surface(&stage(&Store::from_records(Vec::new()), batch, 0))
+    };
+
+    let dir = std::env::temp_dir().join(format!("smysl-merge-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let base = dir.join("base.smy");
+    let ours = dir.join("ours.smy");
+    let theirs = dir.join("theirs.smy");
+    std::fs::write(&base, "").unwrap();
+    std::fs::write(&ours, document("aaaaaaaaaaaa", "Pin the dependency")).unwrap();
+    std::fs::write(&theirs, document("bbbbbbbbbbbb", "Split the crate")).unwrap();
+
+    let out = cargo(&[
+        "smysl",
+        "merge-driver",
+        base.to_str().unwrap(),
+        ours.to_str().unwrap(),
+        theirs.to_str().unwrap(),
+    ]);
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out));
+
+    // Both branches' reasoning is in the file git will keep.
+    let merged = std::fs::read_to_string(&ours).unwrap();
+    assert!(
+        merged.contains("Pin the dependency"),
+        "ours survives: {merged}"
+    );
+    assert!(
+        merged.contains("Split the crate"),
+        "theirs arrives: {merged}"
+    );
+    assert!(
+        smysl::parse_surface(&merged).is_ok(),
+        "and the result is a document, not a conflict marker"
+    );
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+/// A document that does not parse is left to a person rather than half-merged.
+#[test]
+fn a_document_that_does_not_parse_is_left_alone() {
+    let dir = std::env::temp_dir().join(format!("smysl-merge-bad-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let (base, ours, theirs) = (dir.join("b"), dir.join("o"), dir.join("t"));
+    std::fs::write(&base, "").unwrap();
+    std::fs::write(&ours, "this is not a smysl document").unwrap();
+    std::fs::write(&theirs, "nor is this").unwrap();
+
+    let out = cargo(&[
+        "smysl",
+        "merge-driver",
+        base.to_str().unwrap(),
+        ours.to_str().unwrap(),
+        theirs.to_str().unwrap(),
+    ]);
+    assert_ne!(out.status.code(), Some(0), "git is told the merge failed");
+    assert_eq!(
+        std::fs::read_to_string(&ours).unwrap(),
+        "this is not a smysl document",
+        "and our file is untouched"
+    );
+    std::fs::remove_dir_all(&dir).ok();
+}

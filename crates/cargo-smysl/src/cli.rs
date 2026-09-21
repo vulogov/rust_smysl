@@ -56,6 +56,9 @@ pub enum Command {
     Extract {
         /// Commit or revision; defaults to `HEAD`.
         rev: Option<String>,
+        /// Record everything the post-commit hook queued, oldest first, and forget each as it is done.
+        #[arg(long, conflicts_with_all = ["rev", "since"])]
+        queued: bool,
         /// Record every commit after this revision instead of one, newest first. Resumable: a commit
         /// already recorded for this recipe is skipped.
         #[arg(long, conflicts_with = "rev")]
@@ -204,6 +207,24 @@ pub enum Command {
         #[command(subcommand)]
         step: BenchStep,
     },
+    /// Set up git so recording is easy and merging a corpus is not a conflict.
+    ///
+    /// The hook only *queues* a commit — it never calls a model, so committing stays instant. Drain the
+    /// queue when you choose to: `cargo smysl extract --queued`.
+    Hooks {
+        #[command(subcommand)]
+        what: HooksStep,
+    },
+    /// Merge two versions of a corpus document (git calls this; you do not).
+    #[command(hide = true)]
+    MergeDriver {
+        /// The common ancestor's version, `%O`.
+        base: PathBuf,
+        /// Ours, `%A`: the merged result is written here.
+        ours: PathBuf,
+        /// Theirs, `%B`.
+        theirs: PathBuf,
+    },
     /// Report reasoning whose code has moved since it was recorded.
     ///
     /// A decision was made about code as it stood; when that code changes, the decision is not wrong,
@@ -241,6 +262,20 @@ pub enum Command {
         #[arg(long)]
         all: bool,
     },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum HooksStep {
+    /// Write the post-commit hook and register the merge driver.
+    Install {
+        /// Replace a hook this tool did not write.
+        #[arg(long)]
+        force: bool,
+    },
+    /// Remove both, leaving anything this tool did not write alone.
+    Uninstall,
+    /// Say what is installed.
+    Status,
 }
 
 #[derive(Subcommand, Debug)]
