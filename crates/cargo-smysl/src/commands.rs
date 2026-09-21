@@ -1016,7 +1016,7 @@ fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u
     let mut done = 0;
     for (n, sha) in todo.iter().enumerate() {
         println!("\n[{}/{}] {}", n + 1, todo.len(), &sha[..12.min(sha.len())]);
-        let code = extract(args, Some(sha), r.force, r.dry_run, how.clone());
+        let code = extract(args, Some(sha), r.force, r.dry_run, how);
         if code != exit::OK {
             // One commit failing is not the run failing: the rest are still worth recording.
             eprintln!("cargo smysl extract: {} failed; carrying on", &sha[..12]);
@@ -1485,7 +1485,7 @@ fn doctor(args: &SmyslArgs) -> u8 {
         if corpus.is_dir() { "present" } else { "absent" }
     );
     // What is not recorded yet, so the backlog is something you see rather than something you remember.
-    let store = Corpus::at(&root);
+    let store = Corpus::at(root);
     let recorded: BTreeSet<String> = store
         .commit_documents()
         .unwrap_or_default()
@@ -1493,7 +1493,7 @@ fn doctor(args: &SmyslArgs) -> u8 {
         .filter_map(|p| p.file_stem().map(|s| s.to_string_lossy().into_owned()))
         .collect();
     if !recorded.is_empty() {
-        match cargo_smysl_git::commits_between(&root, None, "HEAD", 200) {
+        match cargo_smysl_git::commits_between(root, None, "HEAD", 200) {
             Ok(history) => {
                 let behind = history
                     .iter()
