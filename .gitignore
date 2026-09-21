@@ -37,12 +37,14 @@ eval/labels/**/*.diff
 # `.smysl/bench/` holds labels and adjudications, which are a person's work and expensive to redo. Both
 # are tracked.
 #
-# What is derived is not: the store is rebuilt from the documents, the facts from the code, the queue
-# from git, and a mutation backup should never outlive the run that made it.
+# `.smysl/extractions/` is tracked too (2026-09-21): the raw model answers behind each record are not
+# derived — a model is not deterministic — and a clone without them re-extracts, which is 7 to 30
+# minutes of a model per commit. They are what makes D7's "extract once per commit and recipe" true
+# across clones.
+#
+# What is derived is not tracked: the store is rebuilt from the documents, the facts from the code, the
+# queue from git, and a mutation backup should never outlive the run that made it.
 .smysl/store.cbor
 .smysl/facts/
-# The raw model answers behind the record. Ignored for now, but see the open question in the plan: a
-# fresh clone without them re-extracts, and that is 7-30 minutes of a model per commit.
-.smysl/extractions/
 .smysl/queue
 .smysl/mutation-backup/

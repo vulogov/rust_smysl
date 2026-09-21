@@ -1,0 +1,437 @@
+{
+  "decisions": [
+    {
+      "decision": "Add `cargo-smysl-facts` as a dependency",
+      "kind": "act",
+      "rationale": "To support the retrieval and matching of facts, which is part of the verdict stage.",
+      "quote": "cargo-smysl-facts = { workspace = true }"
+    },
+    {
+      "decision": "Add `matching` module to `lib.rs`",
+      "kind": "act",
+      "rationale": "To handle the checking of one claim against the facts, as part of the matching process.",
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": "Update `Cargo.toml` with new dependencies and features",
+      "kind": "act",
+      "rationale": "To include necessary crates for the new functionality and to define features like `hosted` that require TLS.",
+      "quote": "[dependencies]\ncargo-smysl-facts = { workspace = true }\n\n[features]\ndefault = []\n# Hosted providers need TLS; the default build has no network stack at all, which is what the self-contained objective and the CI rule mean (D18).\nhosted = [\"cargo-smysl-extract/hosted\"]"
+    },
+    {
+      "decision": "Add `Evidence` command to `cli.rs`",
+      "kind": "act",
+      "rationale": "To allow checking a recorded claim against the code and saying what may be concluded, as part of Phase 3.",
+      "quote": "/// Check a recorded claim against the code, and say what may be concluded (D11, D12).\nEvidence { .. } => not_yet(\"evidence\", \"Phase 3 — verdicts and test evidence\"),"
+    },
+    {
+      "decision": "Add `retrieve` function to `matching.rs`",
+      "kind": "act",
+      "rationale": "To retrieve the facts worth showing for one claim based on the overlap with the claim's terms.",
+      "quote": "pub fn retrieve<'a>(claim: &str, facts: &'a [Fact], r: &Retrieval) -> Shown<'a> {"
+    },
+    {
+      "decision": "Add `match_claim` function to `matching.rs`",
+      "kind": "act",
+      "rationale": "To ask about one claim and validate the citations provided by the model.",
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {"
+    },
+    {
+      "decision": "Add `SYSTEM` constant to `matching.rs`",
+      "kind": "act",
+      "rationale": "To define the system prompt for the model when checking one claim against facts.",
+      "quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n...\""
+    },
+    {
+      "decision": "Add `Answer` struct to `matching.rs`",
+      "kind": "act",
+      "rationale": "To represent the JSON answer provided by the model after checking a claim.",
+      "quote": "[derive(Debug, Default, Deserialize)]\nstruct Answer {"
+    },
+    {
+      "decision": "Add `Matched` struct to `matching.rs`",
+      "kind": "act",
+      "rationale": "To represent the result of matching a claim against the shown facts, including any invented citations.",
+      "quote": "[derive(Debug, Clone)]\npub struct Matched {"
+    },
+    {
+      "decision": "Add tests for `matching.rs`",
+      "kind": "act",
+      "rationale": "To ensure that the retrieval and matching of claims against facts works as expected.",
+      "quote": "/// Checking one claim against facts (D11): what is retrieved, what is asked, and what a citation must be.\n\nuse std::cell::RefCell;\n\nuse cargo_smysl_extract::{Charged, Judge, JudgeError};\nuse cargo_smysl_facts::facts;\nuse cargo_smysl_verdict::matching::{match_claim, retrieve, Retrieval};\nuse cargo_smysl_verdict::policy::{decide, Verdict};"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The project needs to retrieve and match facts as part of the verdict stage.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To support the retrieval and matching of facts, which is part of the verdict stage."
+    },
+    {
+      "decision": 2,
+      "text": "The project needs a way to check one claim against the facts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)."
+    },
+    {
+      "decision": 2,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 3,
+      "text": "The project needs new crates for additional functionality.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "TLS is required for certain features, specifically the `hosted` feature.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The project is in Phase 3, focusing on verdicts and test evidence.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Phase 3: per-prerequisite retrieval and matching (D11) with validated citations, and cargo smysl evidence"
+    },
+    {
+      "decision": 4,
+      "text": "The `cargo-smysl-verdict` crate is responsible for the verdict stage.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "description = \"cargo-smysl: verdict stage\""
+    },
+    {
+      "decision": 5,
+      "text": "The research measured that asking about several claims at once causes a model to spread one claim's evidence over its neighbors.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**One claim at a time.** The research measured this: asked about several claims at once a model spreads one claim's evidence over its neighbours, and the round that scored best asked about a single prerequisite with its own retrieved facts."
+    },
+    {
+      "decision": 5,
+      "text": "Structural facts and prose are shown apart.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**Structural facts and prose are shown apart** (D10). A doc comment says what someone believed; it is shown because it helps a model find the right code, and it is labelled so that a claim covered only by prose cannot come back `Supported` (the policy refuses it)."
+    },
+    {
+      "decision": 5,
+      "text": "Every citation must be validated.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every citation is validated the way `check` validates a quote: a fact the model names must be one it was shown. A verdict resting on an invented fact is worse than none."
+    },
+    {
+      "decision": 6,
+      "text": "The research measured that asking about several claims at once causes a model to spread one claim's evidence over its neighbors.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**One claim at a time.** The research measured this: asked about several claims at once a model spreads one claim's evidence over its neighbours, and the round that scored best asked about a single prerequisite with its own retrieved facts."
+    },
+    {
+      "decision": 6,
+      "text": "Structural facts and prose are shown apart.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**Structural facts and prose are shown apart** (D10). A doc comment says what someone believed; it is shown because it helps a model find the right code, and it is labelled so that a claim covered only by prose cannot come back `Supported` (the policy refuses it)."
+    },
+    {
+      "decision": 6,
+      "text": "Every citation must be validated.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every citation is validated the way `check` validates a quote: a fact the model names must be one it was shown. A verdict resting on an invented fact is worse than none."
+    },
+    {
+      "decision": 7,
+      "text": "The research measured that asking about several claims at once causes a model to spread one claim's evidence over its neighbors.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**One claim at a time.** The research measured this: asked about several claims at once a model spreads one claim's evidence over its neighbours, and the round that scored best asked about a single prerequisite with its own retrieved facts."
+    },
+    {
+      "decision": 7,
+      "text": "Structural facts and prose are shown apart.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**Structural facts and prose are shown apart** (D10). A doc comment says what someone believed; it is shown because it helps a model find the right code, and it is labelled so that a claim covered only by prose cannot come back `Supported` (the policy refuses it)."
+    },
+    {
+      "decision": 7,
+      "text": "Every citation must be validated.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every citation is validated the way `check` validates a quote: a fact the model names must be one it was shown. A verdict resting on an invented fact is worse than none."
+    },
+    {
+      "decision": 8,
+      "text": "The model checks one claim against facts and provides a JSON answer.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {"
+    },
+    {
+      "decision": 8,
+      "text": "The JSON answer includes covered parts, uncovered parts, contradictions, and cited facts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "pub struct Answer {\n    #[serde(default)]\n    covered: Vec<Covered>,\n    #[serde(default)]\n    uncovered: Vec<String>,\n    #[serde(default)]\n    contradicted: bool,\n    #[serde(default)]\n    contradicted_by: Vec<String>,\n}"
+    },
+    {
+      "decision": 9,
+      "text": "The model client lives in `cargo-smysl-extract` (D18): one client, two callers.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "// The model client lives in `cargo-smysl-extract` (D18): one client, two callers."
+    },
+    {
+      "decision": 9,
+      "text": "A claim is checked against facts taken from the code.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "You check one claim about a Rust codebase against facts taken from the code.\n"
+    },
+    {
+      "decision": 10,
+      "text": "The research measured that asking about several claims at once causes a model to spread one claim's evidence over its neighbors.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**One claim at a time.** The research measured this: asked about several claims at once a model spreads one claim's evidence over its neighbours, and the round that scored best asked about a single prerequisite with its own retrieved facts."
+    },
+    {
+      "decision": 10,
+      "text": "Structural facts and prose are shown apart.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**Structural facts and prose are shown apart** (D10). A doc comment says what someone believed; it is shown because it helps a model find the right code, and it is labelled so that a claim covered only by prose cannot come back `Supported` (the policy refuses it)."
+    },
+    {
+      "decision": 10,
+      "text": "Every citation is validated the way `check` validates a quote: a fact the model names must be one it was shown.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every citation is validated the way `check` validates a quote: a fact the model names must be one it was shown. A verdict resting on an invented fact is worse than none."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Implement fact retrieval and matching within an existing crate.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 1,
+      "alternative": "Use a different library for fact retrieval and matching.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Keep the existing structure without adding a new module.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Add the functionality directly into an existing module.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Do not update dependencies and features.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Update only the dependencies without defining new features.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Define new features but do not update dependencies.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Not adding the `Evidence` command, continuing without this functionality.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Retrieve all facts without considering overlap with claim terms.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Combine structural and prose facts together when showing to the model.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Do not validate citations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Ask about multiple claims at once.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Do not define a system prompt for the model.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Define a different system prompt that does not specify how to handle structural facts and prose separately.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Use a different data structure to represent the JSON answer.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Parse the JSON answer manually without defining a struct.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Do not add `Matched` struct to `matching.rs`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Not adding tests for `matching.rs`",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching facts.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "The dependency on `cargo-smysl-facts` will be added to the `Cargo.toml` file of the `cargo-smysl-verdict` crate.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "[dependencies]\ncargo-smysl-corpus = { workspace = true }\ncargo-smysl-facts  = { workspace = true }\nserde              = { workspace = true }\nserde_json         = { workspace = true }\nthiserror          = { workspace = true }\ncargo-smysl-extract = { workspace = true }\nimara-diff         = \"0.2\"\nsmysl = { workspace = true, features = [\"stage\"] }"
+    },
+    {
+      "decision": 2,
+      "text": "The `matching` module is added to `lib.rs`.",
+      "quote": "pub mod matching;",
+      "verified": true,
+      "verification_quote": "pub mod matching;"
+    },
+    {
+      "decision": 2,
+      "text": "The project now has a dedicated module for checking one claim against the facts.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The project will include necessary crates for new functionality.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The `hosted` feature will require TLS, as defined in the features section of `Cargo.toml`.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The `Evidence` command is added to the CLI, allowing users to check a recorded claim against the code and determine what may be concluded.",
+      "quote": "/// Check a recorded claim against the code, and say what may be concluded (D11, D12).",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The `retrieve` function is added to `matching.rs` to retrieve the facts worth showing for one claim based on the overlap with the claim's terms.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "The `match_claim` function is added to `matching.rs` to ask about one claim and validate the citations provided by the model.",
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The model will receive a clear instruction on how to check one claim against facts, including the distinction between structural facts and prose.",
+      "quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n\\\nThe facts are `F1`, `F2`, … (what the code does) and `P1`, `P2`, … (what the code says about itself: doc comments, string literals, string constants).\\n\\\nBreak the claim into its parts — each thing it asserts — and for each part say whether the facts show it. Cite the facts you used by name.\\n\\\nRules you must follow:\\n- Cite only facts you were shown. Do not recall anything about this project from memory.\\n- A part no fact shows is uncovered. Saying so is the useful answer; guessing is not.\\n- If a fact shows the claim is false, set `contradicted` and cite it.\\n- `P` facts are what someone wrote, not what the code does: they may point at the right place, and they never establish a part on their own.\\n\\\nReturn one JSON object: {\"covered\": [{\"part\": string, \"facts\": [string]}], \"uncovered\": [string], \"contradicted\": boolean, \"contradicted_by\": [string]}\";",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The `Answer` struct is used to deserialize the JSON response from the model.",
+      "quote": "pub struct Answer {\n    #[serde(default)]\n    covered: Vec<Covered>,\n    #[serde(default)]\n    uncovered: Vec<String>,\n    #[serde(default)]\n    contradicted: bool,\n    #[serde(default)]\n    contradicted_by: Vec<String>,\n}",
+      "verified": true,
+      "verification_quote": "let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?"
+    },
+    {
+      "decision": 8,
+      "text": "The `match_claim` function uses the `Answer` struct to process the model's response.",
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {",
+      "verified": true,
+      "verification_quote": "let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?"
+    },
+    {
+      "decision": 9,
+      "text": "The result of matching a claim against the shown facts, including any invented citations, is represented by the `Matched` struct.",
+      "quote": "/// What the model made of one claim, with its citations validated.\n#[derive(Debug, Clone)]\npub struct Matched {\n    pub judgement: Judgement,\n    /// Citations dropped because the model named a fact it was not shown.\n    pub invented: Vec<String>,\n}",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Ensures that the retrieval and matching of claims against facts works as expected.",
+      "quote": "RATIONALE: To ensure that the retrieval and matching of claims against facts works as expected.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

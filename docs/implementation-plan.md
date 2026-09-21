@@ -643,10 +643,11 @@ deterministic.**
 | 4.4 | **Git integration that costs nothing.** A `post-commit` hook that only *queues* the commit in `.smysl/queue`, never calling a model; a merge driver for `.smysl/commits/*.smy` using smysl's merge | no | Queuing is instant and reversible; extraction stays something you choose to spend time on |
 | 4.5 | **What gets committed — decided 2026-09-21.** `.smysl/commits/` (the record) and `.smysl/bench/` (labels: a person's work, expensive to redo) tracked; `.smysl/store.cbor`, `.smysl/facts/`, `.smysl/queue` and `.smysl/mutation-backup/` ignored, all derived | no | Answers open question 4 for a repository that actually uses the tool, as against this one's trial output |
 
-**Open after 4.5:** `.smysl/extractions/` — the raw model answers behind each record — is ignored for now.
-It is not derived (a model is not deterministic) and a fresh clone without it re-extracts, which is 7 to
-30 minutes of a model per commit. Tracking it would make D7's "extract once" true across clones at the
-cost of a few hundred KB per commit. The owner's call.
+**Answered 2026-09-21:** `.smysl/extractions/` is tracked as well. The raw model answers behind each
+record are not derived — a model is not deterministic — and a clone without them re-extracts at 7 to 30
+minutes of a model per commit. They are what makes D7's "extract once per commit and recipe" true across
+clones, and a few hundred KB per commit is a cheaper thing to carry than half an hour of anyone's
+machine.
 
 **Done when:** a week of ordinary work on this repository goes by in which recording happened without
 being a chore, a pull request carried a rendered record, and `stale` was read after a refactor — and the
