@@ -145,6 +145,53 @@ it too high and the provider silently keeps the last N tokens and drops your sys
 exactly what happened here on a 16k window, visible only in Ollama's own log. Every run records predicted
 against charged tokens, and a call the provider truncated is an error rather than an answer.
 
+## 5a. Which provider and model — measured on this repository
+
+Every model below was actually run against `rust_smysl`'s evaluation set by this project. The last column
+is what matters most in practice: how many findings `check` produced per change. The set contains a
+handful of real contradictions, so **fewer is not automatically better and more is not automatically
+worse** — a model finding ten things per commit is not finding ten problems, and a model finding none is
+not agreeing with you.
+
+| Provider | Model | Size on disk | Cases run | Findings per change | Verdict for this repository |
+|---|---|---|---|---|---|
+| ollama | **`qwen2.5-coder:14b`** | 9.0 GB | 35 | **3.9** | **The default, and the one to use.** Every figure in the README comes from it. Needs ~15 GB of RAM while loaded |
+| hosted | **`deepseek-v4-pro`** | — | 35 | **1.0** | Twice the recall of the 14B and far less noise, about $2 per pass over 93 changes. Worth it when a judgement matters |
+| ollama | `Qwen2.5-Coder:7B-Instruct` | 4.7 GB | 35 | 9.7 | Runs, and floods you. At a 16k window it also answered badly on ~50 units at a time and usefully on 6 — the chunking exists because of this model |
+| ollama | `llama3.1:latest` | 4.9 GB | 3 | 12.7 | Over-flags worse than the 7B on the few cases tried. Not a code model |
+| ollama | `deepseek-coder:6.7b` | 3.8 GB | 6 | **0.0** | Found nothing at all on six changes. Silence is not agreement |
+
+Two things this table cannot tell you, and one it can:
+
+- **It cannot rank precision** except for the top two. Only `qwen2.5-coder:14b` (10 correct of 96 flags,
+  adjudicated) and `deepseek-v4-pro` (~89% of judged flags on the development set) have been judged
+  flag-by-flag by a person. For the rest, the count is all there is.
+- **It cannot tell you about your repository.** These are figures from `smysl` and `ucal` commits. Run
+  `cargo smysl bench` to get yours.
+- **It can tell you what not to bother with.** A 7B model on this task produces about ten findings per
+  change, and `check` is already advisory at one-in-ten precision on the 14B.
+
+### What to run for what
+
+| | `extract` | `check` | `evidence` |
+|---|---|---|---|
+| **Everyday, free** | `qwen2.5-coder:14b` | `qwen2.5-coder:14b`, two passes | `qwen2.5-coder:14b` |
+| **When it matters** | a hosted pro-class model | `deepseek-v4-pro` | a hosted pro-class model |
+| **Not worth it** | 7B and below: over-produces decisions | 7B and below | — |
+
+Extraction is the one worth paying for if you pay for anything: it is written once per commit and
+everything else reads it. `check` is advisory whatever model you use.
+
+### Hardware
+
+`qwen2.5-coder:14b` needs about 15 GB resident. On a 24 GB machine that leaves room for a build but not
+for a second model — this project lost two hours to a model runner dying under memory pressure while
+another model was loaded. `ollama ps` shows what is loaded; `ollama stop <model>` frees it.
+
+Smaller machine, three honest options: use a 7B and treat everything it says as a prompt to look; use a
+hosted provider; or use only the deterministic commands (`facts`, `why`, `stale`, `review`, `bench`
+scoring), which need no model at all and are most of what the tool does.
+
 ## 6. Cost and time, measured on this repository
 
 On a local `qwen2.5-coder:14b`, 32k window, Apple silicon:
