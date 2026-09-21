@@ -56,6 +56,16 @@ pub enum Command {
     Extract {
         /// Commit or revision; defaults to `HEAD`.
         rev: Option<String>,
+        /// Record every commit after this revision instead of one, newest first. Resumable: a commit
+        /// already recorded for this recipe is skipped.
+        #[arg(long, conflicts_with = "rev")]
+        since: Option<String>,
+        /// Most commits to record in one run, with `--since`.
+        #[arg(long, default_value_t = 10)]
+        max_commits: usize,
+        /// Say what a run would cost and stop. No model call.
+        #[arg(long)]
+        estimate: bool,
         /// Extract again even if this commit and recipe are already recorded.
         #[arg(long)]
         force: bool,

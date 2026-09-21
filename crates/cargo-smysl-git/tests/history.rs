@@ -70,3 +70,33 @@ fn an_unknown_revision_is_a_revision_error() {
         Err(GitError::Revision { .. })
     ));
 }
+
+/// A range names what the newer revision reaches and the older one does not, newest first.
+#[test]
+fn a_range_is_what_the_newer_revision_reaches_and_the_older_does_not() {
+    use cargo_smysl_git::commits_between;
+    let repo = repo();
+    let Ok(all) = commits_between(&repo, None, "HEAD", 5) else {
+        eprintln!("history not in this clone (shallow?); skipping");
+        return;
+    };
+    if all.len() < 5 {
+        eprintln!("shallow clone; skipping");
+        return;
+    }
+
+    let from_third = commits_between(&repo, Some("HEAD~3"), "HEAD", 0).unwrap();
+    assert_eq!(from_third.len(), 3, "HEAD~3..HEAD is three commits");
+    assert_eq!(
+        from_third,
+        all[..3].to_vec(),
+        "and they are the newest three, newest first"
+    );
+
+    let none = commits_between(&repo, Some("HEAD"), "HEAD", 0).unwrap();
+    assert!(none.is_empty(), "a range that reaches nothing new is empty");
+    assert!(
+        commits_between(&repo, Some("no-such-rev"), "HEAD", 0).is_err(),
+        "an unknown revision is an error, not silence"
+    );
+}

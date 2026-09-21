@@ -37,6 +37,9 @@ pub fn run(args: SmyslArgs) -> u8 {
         ),
         Command::Extract {
             rev,
+            since,
+            max_commits,
+            estimate,
             force,
             dry_run,
             recipe,
@@ -45,11 +48,16 @@ pub fn run(args: SmyslArgs) -> u8 {
             endpoint,
             key_var,
             window,
-        } => extract(
+        } => extract_command(
             &args,
-            rev.as_deref(),
-            *force,
-            *dry_run,
+            Recording {
+                rev: rev.as_deref(),
+                since: since.as_deref(),
+                max_commits: *max_commits,
+                estimate: *estimate,
+                force: *force,
+                dry_run: *dry_run,
+            },
             ExtractHow {
                 recipe,
                 provider,
@@ -914,6 +922,7 @@ fn review(
     }
 }
 
+#[derive(Clone, Copy)]
 struct ExtractHow<'a> {
     recipe: &'a str,
     provider: &'a str,
@@ -928,6 +937,105 @@ struct ExtractHow<'a> {
 /// The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content
 /// only, and every quote it gives is checked against the commit (D8). A commit is extracted once per
 /// recipe (D7) — `--force` is for a deliberate redo, not for a retry loop.
+/// What a recording run covers: one commit, or everything since a revision.
+struct Recording<'a> {
+    rev: Option<&'a str>,
+    since: Option<&'a str>,
+    max_commits: usize,
+    estimate: bool,
+    force: bool,
+    dry_run: bool,
+}
+
+/// `extract`, over one commit or a range.
+///
+/// A range is recorded newest first and is resumable: a commit already recorded for this recipe costs
+/// nothing to skip. Before anything is spent, the run says what it expects to cost — extraction is the
+/// slowest thing this tool does, and a person deserves to know that before it starts rather than after.
+fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u8 {
+    let Some(since) = r.since else {
+        return extract(args, r.rev, r.force, r.dry_run, how);
+    };
+    let root = match workspace_root(args) {
+        Ok(root) => root,
+        Err(e) => {
+            eprintln!("cargo smysl extract: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let shas = match cargo_smysl_git::commits_between(&root, Some(since), "HEAD", r.max_commits) {
+        Ok(shas) => shas,
+        Err(e) => {
+            eprintln!("cargo smysl extract: {e}");
+            return exit::FAILURE;
+        }
+    };
+    let corpus = Corpus::at(&root);
+    let recorded: BTreeSet<String> = corpus
+        .commit_documents()
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|p| p.file_stem().map(|s| s.to_string_lossy().into_owned()))
+        .collect();
+    let todo: Vec<String> = shas
+        .iter()
+        .filter(|sha| r.force || !recorded.contains(&sha[..12.min(sha.len())]))
+        .cloned()
+        .collect();
+
+    println!(
+        "{} commit(s) since {since}, {} already recorded, {} to do",
+        shas.len(),
+        shas.len() - todo.len(),
+        todo.len()
+    );
+    let mut minutes = 0.0;
+    for sha in &todo {
+        let size = cargo_smysl_git::read_commit(&root, sha)
+            .map(|c| c.files.iter().map(|f| f.text().len()).sum::<usize>())
+            .unwrap_or(0);
+        minutes += estimate_minutes(size);
+        if r.estimate {
+            println!(
+                "  {}  {:>7} KB  about {:.0} min",
+                &sha[..12.min(sha.len())],
+                size / 1024,
+                estimate_minutes(size)
+            );
+        }
+    }
+    println!(
+        "estimated {:.0} minute(s) on {}; measured on this project, and a guess about your model",
+        minutes, how.model
+    );
+    if r.estimate {
+        println!("nothing was run: --estimate only says what it would cost");
+        return exit::OK;
+    }
+
+    let mut done = 0;
+    for (n, sha) in todo.iter().enumerate() {
+        println!("\n[{}/{}] {}", n + 1, todo.len(), &sha[..12.min(sha.len())]);
+        let code = extract(args, Some(sha), r.force, r.dry_run, how.clone());
+        if code != exit::OK {
+            // One commit failing is not the run failing: the rest are still worth recording.
+            eprintln!("cargo smysl extract: {} failed; carrying on", &sha[..12]);
+            continue;
+        }
+        done += 1;
+    }
+    println!("\n{done} of {} commit(s) recorded", todo.len());
+    exit::OK
+}
+
+/// Minutes a commit of this size is likely to take, from what this project measured on a local 14B:
+/// 7-11 minutes for about 100 KB, about 29 for 700 KB read in six parts. A hosted model is much faster
+/// and this will overstate it — which is the safe direction for a number someone decides on.
+fn estimate_minutes(bytes: usize) -> f64 {
+    let kb = bytes as f64 / 1024.0;
+    (4.0 + kb / 25.0).min(35.0)
+}
+
 fn extract(
     args: &SmyslArgs,
     rev: Option<&str>,
@@ -1376,6 +1484,37 @@ fn doctor(args: &SmyslArgs) -> u8 {
         corpus.display(),
         if corpus.is_dir() { "present" } else { "absent" }
     );
+    // What is not recorded yet, so the backlog is something you see rather than something you remember.
+    let store = Corpus::at(&root);
+    let recorded: BTreeSet<String> = store
+        .commit_documents()
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|p| p.file_stem().map(|s| s.to_string_lossy().into_owned()))
+        .collect();
+    if !recorded.is_empty() {
+        match cargo_smysl_git::commits_between(&root, None, "HEAD", 200) {
+            Ok(history) => {
+                let behind = history
+                    .iter()
+                    .take_while(|sha| !recorded.contains(&sha[..12.min(sha.len())]))
+                    .count();
+                println!(
+                    "recorded: {} commit(s); {behind} newer commit(s) not recorded{}",
+                    recorded.len(),
+                    if behind > 0 {
+                        " (cargo smysl extract --since <rev> --estimate)"
+                    } else {
+                        ""
+                    }
+                );
+            }
+            Err(e) => println!(
+                "recorded: {} commit(s); history unreadable ({e})",
+                recorded.len()
+            ),
+        }
+    }
 
     let mut files = 0usize;
     let mut fns = 0usize;

@@ -181,3 +181,59 @@ fn text(repo: &gix::Repository, id: Option<&gix::ObjectId>) -> Result<Option<Str
     }
     Ok(Some(String::from_utf8_lossy(data).into_owned()))
 }
+
+/// The commits in `from..to`, newest first: what `to` reaches that `from` does not.
+///
+/// `from` of `None` walks back from `to` without a stopping point, which is what "everything so far"
+/// means for a young repository. Reading is still `gix`: the tool never runs the `git` binary, so it
+/// behaves the same wherever it is installed.
+pub fn commits_between(
+    repo: impl AsRef<Path>,
+    from: Option<&str>,
+    to: &str,
+    limit: usize,
+) -> Result<Vec<String>, GitError> {
+    let path = repo.as_ref();
+    let repo = gix::open(path).map_err(|e| GitError::Open {
+        path: path.display().to_string(),
+        source: Box::new(e),
+    })?;
+    let head = repo.rev_parse_single(to).map_err(|e| GitError::Revision {
+        rev: to.to_string(),
+        message: e.to_string(),
+    })?;
+    // What `from` already covers, so the walk can stop at it rather than reading the whole history.
+    let base = match from {
+        Some(rev) => Some(repo.rev_parse_single(rev).map_err(|e| GitError::Revision {
+            rev: rev.to_string(),
+            message: e.to_string(),
+        })?),
+        None => None,
+    };
+    let stop: std::collections::BTreeSet<gix::ObjectId> = match base {
+        Some(base) => base
+            .ancestors()
+            .all()
+            .map_err(|e| GitError::Object(e.to_string()))?
+            .filter_map(|c| c.ok().map(|c| c.id))
+            .take(4096)
+            .collect(),
+        None => Default::default(),
+    };
+    let mut out = Vec::new();
+    for info in head
+        .ancestors()
+        .all()
+        .map_err(|e| GitError::Object(e.to_string()))?
+    {
+        let info = info.map_err(|e| GitError::Object(e.to_string()))?;
+        if stop.contains(&info.id) {
+            continue;
+        }
+        out.push(info.id.to_string());
+        if limit > 0 && out.len() >= limit {
+            break;
+        }
+    }
+    Ok(out)
+}
