@@ -477,11 +477,24 @@ unit. `cargo smysl why <label>` is the first command past `doctor` that does its
   for a paid provider. `extract` will use the same client.
 - **Done when (restated 2026-09-20, D19):** the tool-side properties hold, each provable without a model,
   and the model-side figures are published with the model named rather than treated as a bar to clear.
-  - **Tool-side, and held by tests:** facts regenerate byte-identically; the tool assigns every label,
-    source and status (D5); a quote absent from the commit caps its unit at `speculative` (D8); the
-    commit shown to the model is fitted to that model's window rather than to a constant (D17); an input
-    that had to be cut and an answer that had to be salvaged are both reported; one commit failing does
-    not abandon a run.
+  - **Tool-side, audited 2026-09-20 and each held by a named test:**
+
+    | Property | Held by |
+    |---|---|
+    | Facts regenerate byte-identically, and a function that only moved keeps its hash | `the_same_source_gives_byte_identical_facts`, `moving_a_function_does_not_change_its_body_hash`, `the_cache_returns_the_same_facts_and_regenerates_what_it_cannot_read` |
+    | The tool assigns every label, source and status; a model proposes content only (D5) | `what_the_model_returns_is_content_only_the_tool_assigns_the_rest`, `statuses_and_sources_come_from_the_commit_text` |
+    | A quote absent from the commit caps its unit at `speculative` (D8) | `statuses_and_sources_come_from_the_commit_text` |
+    | What the model is shown is sized to *that* model, not to a constant (D17) | `what_the_model_is_shown_is_sized_to_that_model` (written by this audit) |
+    | A commit too large is read in parts, each carrying the message | `a_large_commit_is_read_in_parts_and_each_part_carries_the_message` |
+    | An input that had to be cut says so | `a_long_commit_is_cut_and_says_so` |
+    | An answer that had to be salvaged says so, and a malformed one is still an error | `an_answer_cut_off_mid_item_is_read_up_to_its_last_whole_one`, `an_answer_that_is_not_json_at_all_is_an_error` |
+    | One part failing does not lose the parts that answered | `a_part_that_fails_does_not_lose_the_parts_that_did_not` (written by this audit) |
+    | A decision whose items fail still stands | `a_decision_whose_items_fail_still_stands` |
+    | A decision is anchored to the code its quote came from (D4) | `a_decision_is_anchored_to_the_code_its_quote_came_from` |
+
+    The audit found two gaps and closed them: nothing held that the input size follows the provider
+    rather than a number in this code, and nothing held that a failed part leaves the rest of a large
+    commit intact. Both were true; neither was tested, which is the same as not being true tomorrow.
   - **Model-side, measured once and named** (blind labels, six commits, 2026-09-20):
 
     | System | decision P / R | prerequisite P / R | alternative P / R |

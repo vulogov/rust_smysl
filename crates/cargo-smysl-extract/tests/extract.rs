@@ -510,3 +510,100 @@ fn the_stricter_filters_are_off_until_someone_turns_them_on() {
     assert_eq!(added_only.decisions.len(), 1, "only what the commit added");
     assert_eq!(added_only.decisions[0].decision, "Pinned");
 }
+
+// -------------------------------------------------------------------------------------------------
+// Phase 2's tool-side properties: fitted to the provider, and one failure is not the run
+// -------------------------------------------------------------------------------------------------
+
+/// D17: what the model is shown is sized to *that* model, not to a number in this code.
+///
+/// The same commit, two providers, two different amounts shown — and the shipped recipe asks the judge
+/// rather than carrying a constant, which is what makes that true for a model nobody here has tried.
+#[test]
+fn what_the_model_is_shown_is_sized_to_that_model() {
+    assert_eq!(
+        Recipe::default().max_input,
+        0,
+        "0 means ask the judge; a number here would be fitted to nothing"
+    );
+
+    let message = "Pin the dependency\n\nBuilds drifted.";
+    let files: Vec<(String, String)> = (1..=6)
+        .map(|n| (format!("src/f{n}.rs"), "x".repeat(2_000)))
+        .collect();
+    let source = Source {
+        message: message.into(),
+        files: files
+            .iter()
+            .map(|(path, text)| cargo_smysl_extract::SourceFile {
+                path: path.clone(),
+                before: String::new(),
+                after: text.clone(),
+            })
+            .collect(),
+    };
+    let answer = r#"{"decisions":[]}"#;
+
+    let shown_by = |chars: usize| -> usize {
+        let judge = Sized::new(chars, &[answer, answer, answer, answer, answer, answer]);
+        extract(&source, &judge, &Recipe::default()).unwrap();
+        let longest = judge
+            .asked
+            .borrow()
+            .iter()
+            .map(|(_, user)| user.len())
+            .max()
+            .unwrap_or(0);
+        longest
+    };
+    let small = shown_by(5_000);
+    let large = shown_by(12_000);
+    assert!(small <= 5_200, "a small window is respected: {small}");
+    assert!(large > small, "a larger window is used: {large} vs {small}");
+    assert!(large <= 12_200, "and still respected: {large}");
+}
+
+/// One part of a large commit failing is not the commit failing: the others still say something, and the
+/// failure is named rather than folded into a quiet result.
+#[test]
+fn a_part_that_fails_does_not_lose_the_parts_that_did_not() {
+    let message = "Move the parser off the old lexer\n\nIt could not see raw strings.";
+    let files: Vec<(String, String)> = (1..=4)
+        .map(|n| (format!("src/f{n}.rs"), "y".repeat(3_000)))
+        .collect();
+    let source = Source {
+        message: message.into(),
+        files: files
+            .iter()
+            .map(|(path, text)| cargo_smysl_extract::SourceFile {
+                path: path.clone(),
+                before: String::new(),
+                after: text.clone(),
+            })
+            .collect(),
+    };
+    // Part one answers. Part two returns something that is not JSON, twice (the answer, then the retry
+    // on half the part), which is a failed part.
+    let judge = Sized::new(
+        7_000,
+        &[
+            r#"{"decisions":[{"decision":"Move to the new lexer","kind":"act","rationale":"","quote":"raw strings"}]}"#,
+            "I cannot help with that.",
+            "I cannot help with that.",
+            r#"{"prerequisites":[]}"#,
+        ],
+    );
+    let (extraction, report) = extract(&source, &judge, &Recipe::default()).unwrap();
+
+    assert_eq!(
+        extraction.decisions.len(),
+        1,
+        "the part that answered is kept: {:?}",
+        extraction.decisions
+    );
+    assert!(
+        report.warnings.iter().any(|w| w.contains("no decisions")),
+        "and the part that failed is named: {:?}",
+        report.warnings
+    );
+}
