@@ -263,6 +263,26 @@ Deterministic commands are safe to gate on today, because they involve no model 
 - run: cargo smysl stale --json         # what rests on code that has moved
 ```
 
+This repository does both in its own `ci.yml`, in a job called `corpus`, which skips quietly when no
+corpus is tracked. Two ready-made workflows to copy:
+
+- **`.github/workflows/ci.yml`**, job `corpus` — the deterministic gate: install, `doctor`, `stale --json`
+  summarised in the log and kept as an artefact.
+- **`.github/workflows/smysl-advisory.yml`** — what a pull request looks like when a model is available.
+  It builds the pull request as one diff, runs `check --patch … --json`, and **comments**; it cannot fail
+  the build. It is `workflow_dispatch` only until you set `SMYSL_MODEL`, `SMYSL_ENDPOINT` and the
+  `SMYSL_API_KEY` secret, because paying for a model on every push is a cost nobody asked for.
+
+The advisory comment names the model that judged and repeats the caveat, so a reader who has never used
+the tool knows what weight to give it:
+
+```
+### `cargo smysl check`: 2 thing(s) worth a look
+
+_Advisory. Judged by `openai:deepseek-v4-pro`; read each as a place to look, not as a claim that
+something is wrong._
+```
+
 ## 8. Uninstalling, and what is left behind
 
 ```sh

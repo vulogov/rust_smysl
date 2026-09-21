@@ -1,0 +1,81 @@
+# What a pull request looks like with cargo-smysl, when a model is available.
+#
+# Nothing here can fail your build. `check` is advisory — measured at about one correct flag in ten on a
+# free local model, and ~0.89 precision on a hosted one — so it comments and the deterministic commands
+# gate. Copy this into your own repository and set the secrets, or delete it.
+#
+# This repository does not run it on its own pull requests: CI has no model, and paying for one on every
+# push is a cost nobody asked for.
+name: smysl (advisory)
+
+on:
+  workflow_dispatch:
+  # pull_request:      # uncomment when a provider is configured
+
+jobs:
+  advise:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      # `--features hosted` is what brings a TLS stack in; the default build has none by design.
+      - run: cargo install --path crates/cargo-smysl --features hosted --locked --root "${{ runner.temp }}/root"
+
+      - name: what this change contradicts, if anything
+        id: check
+        shell: bash
+        env:
+          SMYSL_CHECK_PROVIDER: openai
+          SMYSL_CHECK_MODEL: ${{ vars.SMYSL_MODEL }}
+          SMYSL_CHECK_ENDPOINT: ${{ vars.SMYSL_ENDPOINT }}
+          SMYSL_CHECK_KEY_VAR: SMYSL_API_KEY
+          SMYSL_API_KEY: ${{ secrets.SMYSL_API_KEY }}
+        run: |
+          export PATH="${{ runner.temp }}/root/bin:$PATH"
+          if [ ! -d .smysl/commits ]; then
+            echo "no corpus in this repository; nothing to check against"
+            exit 0
+          fi
+          # The pull request as one diff, checked against what the corpus already records.
+          git diff "origin/${{ github.base_ref }}...HEAD" > pr.diff
+          cargo smysl check --patch pr.diff --json > findings.json || true
+          python3 - <<'EOF' > comment.md
+          import json, pathlib
+          out = json.loads(pathlib.Path("findings.json").read_text() or "{}")
+          findings = out.get("findings", [])
+          if not findings:
+              print("_`cargo smysl check` found nothing this change contradicts._")
+          else:
+              print(f"### `cargo smysl check`: {len(findings)} thing(s) worth a look\n")
+              print(f"_Advisory. Judged by `{out.get('judge','a model')}`; "
+                    "read each as a place to look, not as a claim that something is wrong._\n")
+              for f in findings:
+                  print(f"**{f['label']}** — {f['text']}\n")
+                  print(f"- at: `{f['diff_line'].strip()}`")
+                  print(f"- because: {f['reason']}\n")
+          for w in out.get("warnings", []):
+              print(f"> {w}")
+          EOF
+          cat comment.md
+
+      # Comment, never fail. A gate people learn to ignore is worse than no gate.
+      - uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('comment.md', 'utf8');
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });

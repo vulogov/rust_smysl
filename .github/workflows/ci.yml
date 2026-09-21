@@ -54,6 +54,48 @@ jobs:
           cargo smysl --help
           cargo smysl doctor
 
+  # The corpus, checked with the deterministic commands only. No model runs here: `check` is advisory
+  # (measured at about one correct flag in ten on a free local model), so gating a build on it would
+  # teach people to ignore it. What is gated is what is provable — the corpus loads, the documents
+  # rebuild the store, and staleness can be computed.
+  corpus:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install --path crates/cargo-smysl --locked --root "${{ runner.temp }}/root"
+      - name: what the tool sees
+        shell: bash
+        run: |
+          export PATH="${{ runner.temp }}/root/bin:$PATH"
+          cargo smysl doctor
+      - name: the corpus loads, and staleness is computable
+        shell: bash
+        run: |
+          export PATH="${{ runner.temp }}/root/bin:$PATH"
+          if [ ! -d .smysl/commits ]; then
+            echo "no corpus tracked in this repository; nothing to check"
+            exit 0
+          fi
+          cargo smysl stale --json > stale.json
+          python3 - <<'EOF'
+          import json
+          rows = json.load(open("stale.json"))
+          moved = [r for r in rows if r["items"]]
+          print(f"{len(moved)} of {len(rows)} recorded commit(s) rest on code that has moved")
+          for r in moved:
+              print(f"  {r['commit']}: {r['changed']} changed, {r['gone']} gone")
+          EOF
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stale
+          path: stale.json
+          if-no-files-found: ignore
+
   # The objective: self-contained. smysl is linked with the model-free `stage` feature only, and the
   # model-free crates never pull in the model-facing ones.
   self-contained:
