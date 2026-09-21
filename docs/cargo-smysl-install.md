@@ -161,6 +161,40 @@ not agreeing with you.
 | ollama | `llama3.1:latest` | 4.9 GB | 3 | 12.7 | Over-flags worse than the 7B on the few cases tried. Not a code model |
 | ollama | `deepseek-coder:6.7b` | 3.8 GB | 6 | **0.0** | Found nothing at all on six changes. Silence is not agreement |
 
+That table is about `check`. **Extraction was measured separately, and on different models** — three
+hosted systems, judged item by item against six commits the owner labelled blind:
+
+| Provider | Model | decisions P / R | prerequisites P / R | alternatives P / R | Verdict for this repository |
+|---|---|---|---|---|---|
+| hosted | **Gemini pro-class** (`research-pro-v2`) | 96% / 63% | **61% / 54%** | 42% / 69% | The best all-round extractor measured here: finds most decisions and gets nearly all of them right |
+| hosted | **DeepSeek** (`research-deepseek-v2`) | 82% / 67% | 41% / 59% | 31% / 69% | Finds the most of everything and is right least often. Use when you would rather sift than miss |
+| hosted | **Gemini flash-class** (`research-flash-v2`) | 100% / 37% | **88% / 22%** | 79% / 52% | Says little and is almost always right. Use when the corpus must stay clean |
+| ollama | `qwen2.5-coder:14b` | unjudged | unjudged | unjudged | Over-produces: on a commit labelled with 4 decisions it reported 54. Free, and the corpus shows it |
+
+The exact Gemini and DeepSeek versions are not recorded in this repository — the research runs are kept by
+system name — so treat the rows as *that class of model*, not as a version you can pin. What the three
+say together is stable across versions and worth more than any one number: **decisions are the reliable
+kind, prerequisites are not, and where systems differ most is recall rather than correctness.**
+
+### Reaching Gemini
+
+Gemini exposes an OpenAI-compatible endpoint, so it needs no separate provider — check Google's current
+documentation for the exact URL and model names:
+
+```sh
+cargo install --path crates/cargo-smysl --features hosted    # hosted providers need TLS
+export SMYSL_CHECK_PROVIDER=openai
+export SMYSL_CHECK_MODEL=<a current pro-class model>
+export SMYSL_CHECK_ENDPOINT=https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
+export SMYSL_CHECK_KEY_VAR=GEMINI_API_KEY
+export GEMINI_API_KEY=…
+export SMYSL_CHECK_CHARS_PER_TOKEN=4.0     # prose-ish tokenizer; measure yours, see below
+```
+
+`chars_per_token` is per model. Run one command and compare what the tool predicted with what the
+provider charged — every run records both — then set it so the prediction is the higher of the two. A
+value that is too optimistic is how a provider ends up silently dropping your system prompt.
+
 Two things this table cannot tell you, and one it can:
 
 - **It cannot rank precision** except for the top two. Only `qwen2.5-coder:14b` (10 correct of 96 flags,
@@ -176,7 +210,8 @@ Two things this table cannot tell you, and one it can:
 | | `extract` | `check` | `evidence` |
 |---|---|---|---|
 | **Everyday, free** | `qwen2.5-coder:14b` | `qwen2.5-coder:14b`, two passes | `qwen2.5-coder:14b` |
-| **When it matters** | a hosted pro-class model | `deepseek-v4-pro` | a hosted pro-class model |
+| **When it matters** | Gemini pro-class, or DeepSeek if you would rather sift than miss | `deepseek-v4-pro` | a hosted pro-class model |
+| **When the corpus must stay clean** | Gemini flash-class: 100% / 88% precision on decisions and prerequisites, at a fifth to a third of the recall | — | — |
 | **Not worth it** | 7B and below: over-produces decisions | 7B and below | — |
 
 Extraction is the one worth paying for if you pay for anything: it is written once per commit and
