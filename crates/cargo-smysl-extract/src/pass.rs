@@ -102,61 +102,61 @@ Return one JSON object: {\"prerequisites\": [{\"text\": string, \"kind\": string
 
 #[derive(Debug, Default, Deserialize)]
 struct DecisionsAnswer {
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     decisions: Vec<DecisionAnswer>,
 }
 
 #[derive(Debug, Deserialize)]
 struct DecisionAnswer {
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     decision: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     kind: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     rationale: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     quote: String,
 }
 
 #[derive(Debug, Default, Deserialize)]
 struct ItemsAnswer {
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     prerequisites: Vec<PrerequisiteAnswer>,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     alternatives: Vec<AlternativeAnswer>,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     consequences: Vec<ConsequenceAnswer>,
 }
 
 #[derive(Debug, Deserialize)]
 struct PrerequisiteAnswer {
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     text: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     kind: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     normative: bool,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     quote: String,
 }
 
 #[derive(Debug, Deserialize)]
 struct AlternativeAnswer {
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     alternative: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     quote: String,
 }
 
 #[derive(Debug, Deserialize)]
 struct ConsequenceAnswer {
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     consequence: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     verified: bool,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     verification_quote: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "nullable")]
     quote: String,
 }
 
@@ -556,6 +556,20 @@ fn is_prose_file(path: &str) -> bool {
         || lower.contains("changelog")
         || lower.contains("release_notes")
         || lower.contains("release-notes")
+}
+
+/// Read a field that a model may have written as `null`.
+///
+/// Measured on this project: a model answered `"quote": null` for one item, serde refused the whole
+/// answer, and a decision lost every prerequisite, alternative and consequence it had — a call's work
+/// thrown away over one field. A null is an absent value, which every field here already has a default
+/// for.
+fn nullable<'de, D, T>(deserializer: D) -> Result<T, D::Error>
+where
+    D: serde::Deserializer<'de>,
+    T: Default + Deserialize<'de>,
+{
+    Ok(Option::deserialize(deserializer)?.unwrap_or_default())
 }
 
 /// Pass one against one part, with the one retry that is worth making.

@@ -655,3 +655,48 @@ fn plain_http_will_not_carry_a_commit_off_this_machine() {
         "localhost is reached, not refused: {message}"
     );
 }
+
+/// A `null` where a string was asked for costs that field, not the whole answer.
+///
+/// Measured on this project: a model wrote `"quote": null` for one item, serde refused the answer, and
+/// the decision it belonged to lost every prerequisite, alternative and consequence — about a minute of
+/// a model, thrown away over one field.
+#[test]
+fn a_null_field_does_not_cost_the_whole_answer() {
+    let decisions = r#"{"decisions":[
+        {"decision":"Pin the dependency","kind":"act","rationale":null,"quote":"pin"}
+    ]}"#;
+    // Three items, the middle one with a null where a string belongs.
+    let items = r#"{"prerequisites":[
+        {"decision":1,"text":"the registry keeps it","kind":"assumption","quote":"pin"},
+        {"decision":1,"text":"builds are reproducible","kind":null,"quote":null}
+      ],
+      "alternatives":[{"decision":1,"alternative":"vendor it","reason":null,"quote":null}],
+      "consequences":[]}"#;
+
+    let judge = Scripted::new(&[decisions, items]);
+    let (extraction, report) = extract(
+        &Source::from_text("a commit that says pin"),
+        &judge,
+        &Recipe::default(),
+    )
+    .unwrap();
+
+    assert_eq!(extraction.decisions.len(), 1);
+    assert_eq!(
+        extraction.decisions[0].rationale, "",
+        "a null rationale is an absent one"
+    );
+    assert_eq!(
+        extraction.prerequisites.len(),
+        2,
+        "both prerequisites survive, including the one with nulls: {:?}",
+        extraction.prerequisites
+    );
+    assert_eq!(extraction.alternatives.len(), 1);
+    assert!(
+        !report.warnings.iter().any(|w| w.contains("no items")),
+        "and nothing was lost: {:?}",
+        report.warnings
+    );
+}
