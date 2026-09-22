@@ -37,10 +37,31 @@ for c in cargo-smysl-git cargo-smysl-facts cargo-smysl-corpus \
          cargo-smysl-verdict cargo-smysl-evidence \
          cargo-smysl; do
   cargo publish -p "$c" --locked || break
-  # crates.io needs a moment to index each one before the next can resolve it.
-  sleep 30
+  sleep 630     # see the rate limit below: a new crate every 10 minutes after the first five
 done
 ```
+
+**crates.io rate-limits new crates, and this workspace is eight of them.** The allowance is a burst of
+five, then one new crate per ten minutes. Publishing 0.2.0 stopped after the fifth with:
+
+```
+429 Too Many Requests: You have published too many new crates in a short period of time.
+```
+
+Nothing is lost when that happens — the crates already accepted stay accepted, and the rest publish when
+the clock allows. Check what landed before resuming:
+
+```sh
+for c in cargo-smysl-git cargo-smysl-facts cargo-smysl-corpus cargo-smysl-bench \
+         cargo-smysl-extract cargo-smysl-verdict cargo-smysl-evidence cargo-smysl; do
+  printf "%-22s " "$c"
+  curl -s "https://crates.io/api/v1/crates/$c" | python3 -c \
+    "import sys,json;print(json.load(sys.stdin).get('crate',{}).get('max_version','not published'))"
+done
+```
+
+Then publish only what is missing, in wave order, ten minutes apart. The limit is on *new* crates only:
+later versions of a crate that already exists are not held back this way.
 
 **`cargo package` fails before the first publish, and that is expected.** Until `cargo-smysl-git` exists
 on crates.io, any crate depending on it reports `no matching package named cargo-smysl-git found`. Only
