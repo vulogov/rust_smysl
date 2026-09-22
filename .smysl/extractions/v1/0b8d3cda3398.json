@@ -1,0 +1,1077 @@
+{
+  "decisions": [
+    {
+      "decision": "A commit that touches nothing but `.smysl/` is skipped by `extract --since`, dropped from the queue by `extract --queued`, and not counted as behind by `doctor`.",
+      "kind": "act",
+      "rationale": "This change ensures that commits that only affect the tool's own output are not considered part of the backlog or pending extraction, focusing on real changes to the source code.",
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output. It carries no decisions that were not already recorded, so `extract --since` skips it, `extract --queued` drops it from the queue, and `doctor` does not count it as behind."
+    },
+    {
+      "decision": "The `why_commit` function now prints a message indicating that nothing was recorded for a given commit if no records are found.",
+      "kind": "act",
+      "rationale": "This change improves user feedback by clearly stating when a commit has not been recorded, guiding users to use the `extract` command to record it.",
+      "quote": "println!(\"{}: nothing recorded for this commit — cargo smysl extract {}\", short(&resolved), short(&resolved));"
+    },
+    {
+      "decision": "The `facts` function now includes a scope parameter that allows users to specify which files or names to consider when selecting facts.",
+      "kind": "act",
+      "rationale": "This change enhances the functionality of the `facts` command by allowing more granular selection of facts based on user input, improving its usefulness for specific analysis needs.",
+      "quote": "if let Some(mut around) = scope {"
+    },
+    {
+      "decision": "The `evidence` function now includes a shortlist_tests parameter that allows users to specify whether to shortlist tests when checking evidence against the code.",
+      "kind": "act",
+      "rationale": "This change provides more flexibility in the `evidence` command, allowing users to focus on specific tests or automatically select relevant ones based on their input.",
+      "quote": "if shortlist_tests {"
+    },
+    {
+      "decision": "The `extract_command` function now includes an estimate parameter that allows users to estimate the cost of extraction without actually running it.",
+      "kind": "act",
+      "rationale": "This change gives users a way to plan and budget for extraction runs by providing an estimated time and resource cost before committing to a full run.",
+      "quote": "if r.estimate {"
+    },
+    {
+      "decision": "The `extract_queued` function now includes an estimate parameter that allows users to estimate the cost of extracting queued commits without actually running them.",
+      "kind": "act",
+      "rationale": "This change provides similar functionality as the previous decision, but for queued commits, allowing users to plan and budget extraction runs more effectively.",
+      "quote": "if r.estimate {"
+    },
+    {
+      "decision": "The `extract` function now includes a dry_run parameter that allows users to simulate an extraction run without actually recording any changes.",
+      "kind": "act",
+      "rationale": "This change enables users to test and validate the extraction process without making permanent changes, ensuring that the tool behaves as expected before committing to actual recordings.",
+      "quote": "if dry_run {"
+    },
+    {
+      "decision": "The `check` function now includes a dry_run parameter that allows users to simulate a check run without actually performing any checks.",
+      "kind": "act",
+      "rationale": "This change provides similar functionality as the previous decision, but for the `check` command, allowing users to test and validate their configurations before running actual checks.",
+      "quote": "if c.dry_run {"
+    },
+    {
+      "decision": "The `check` function now includes a no_corpus_order parameter that allows users to specify whether to order the corpus by relevance when checking for contradictions.",
+      "kind": "act",
+      "rationale": "This change gives users more control over how the corpus is processed during checks, allowing them to prioritize certain units or maintain a specific order based on their needs.",
+      "quote": "if let Some(path) = c.prompt_file {"
+    },
+    {
+      "decision": "The `check` function now includes a parts parameter that allows users to specify the maximum number of parts into which the change should be divided for checking.",
+      "kind": "act",
+      "rationale": "This change enables more efficient and manageable checks by allowing users to divide large changes into smaller, more digestible parts, improving the overall performance and accuracy of the check process.",
+      "quote": "let seeds: Vec<usize> = cargo_smysl_verdict::check::AGREEMENT_SEEDS.iter().copied().cycle().take(c.passes.max(1)).collect();"
+    },
+    {
+      "decision": "The `check` function now includes a jobs parameter that allows users to specify the maximum number of concurrent jobs to run during checking.",
+      "kind": "act",
+      "rationale": "This change improves the performance and efficiency of the check process by allowing users to leverage multiple CPU cores or threads, reducing overall execution time for large changes.",
+      "quote": "let seeds: Vec<usize> = cargo_smysl_verdict::check::AGREEMENT_SEEDS.iter().copied().cycle().take(c.passes.max(1)).collect();"
+    },
+    {
+      "decision": "The `check` function now includes a strict parameter that allows users to specify whether the command should return a non-zero exit code if any contradictions are found.",
+      "kind": "act",
+      "rationale": "This change provides more control over how the check command behaves in response to findings, allowing users to enforce stricter adherence to recorded claims or treat all findings as advisory by default.",
+      "quote": "if c.json {"
+    },
+    {
+      "decision": "A commit that touches nothing but `.smysl/` is skipped by `extract --since`, `extract --queued`, and the backlog `doctor` reports.",
+      "kind": "act",
+      "rationale": "The owner noticed the shape of commits where recording a commit writes files, leading to an infinite loop. By skipping commits that only touch `.smysl/`, the tool avoids this issue.",
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output. It carries no decisions that were not already recorded, so `extract --since` skips it, `extract --queued` drops it from the queue, and `doctor` does not count it as behind."
+    },
+    {
+      "decision": "A commit that touches `.smysl/` *and* source is recorded like any other.",
+      "kind": "act",
+      "rationale": "To distinguish between tool-generated commits and actual changes, the tool records commits that touch both `.smysl/` and source files. This ensures that real changes are captured while avoiding infinite loops with tool-generated commits.",
+      "quote": "A commit that touches `.smysl/` *and* source is a real change and is recorded like any other."
+    },
+    {
+      "decision": "The backlog can reach zero because corpus commits are not considered work.",
+      "kind": "act",
+      "rationale": "By skipping corpus commits from the backlog, the tool ensures that only actual changes are tracked, allowing the backlog to reach zero when all real changes have been processed.",
+      "quote": "Recording a commit writes files, and those files are a commit. Recording that one writes more files. The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction."
+    },
+    {
+      "decision": "The tool reads git itself, labels, sources, and statuses are its own; a model proposes wording only.",
+      "kind": "act",
+      "rationale": "This decision ensures that the tool has full control over its data and can make independent judgments based on the actual code and commit history.",
+      "quote": "The tool reads git itself. Labels, sources and statuses are its own; a model proposes wording only."
+    },
+    {
+      "decision": "Every quote is checked. A quote that is not in the commit caps its unit at `speculative`.",
+      "kind": "act",
+      "rationale": "This decision ensures that all claims made by the tool are backed by actual code, preventing speculative or unfounded assertions.",
+      "quote": "Every quote is checked. A quote that is not in the commit caps its unit at `speculative`."
+    },
+    {
+      "decision": "Nothing a model proposes changes a status on its own. Proposals queue for a person.",
+      "kind": "act",
+      "rationale": "This decision ensures that all automated proposals are reviewed by humans, preventing automatic acceptance of potentially incorrect or misleading claims.",
+      "quote": "Nothing a model proposes changes a status on its own. Proposals queue for a person."
+    },
+    {
+      "decision": "The `extract` command must ask a model and is the slowest thing here.",
+      "kind": "act",
+      "rationale": "This decision acknowledges that understanding and recording the reasons behind code changes requires human-like intelligence, which is provided by the model. The slowness reflects the complexity of this task.",
+      "quote": "This is the one command that must ask a model, and the slowest thing here."
+    },
+    {
+      "decision": "A commit larger than the model's window is read in parts, not truncated, and says so.",
+      "kind": "act",
+      "rationale": "This decision allows the tool to handle large commits by breaking them into manageable parts, ensuring that no information is lost or misinterpreted due to size limitations.",
+      "quote": "A commit larger than the model's window is **read in parts**, not truncated, and says so."
+    },
+    {
+      "decision": "Extraction happens once per commit and recipe. Improvements arrive as a new recipe, never as a re-extraction merged into the old record.",
+      "kind": "act",
+      "rationale": "This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records.",
+      "quote": "Extraction happens once per commit and recipe. Improvements arrive as a new recipe, never as a re-extraction merged into the old record."
+    },
+    {
+      "decision": "The `check` command is advisory and does not block changes.",
+      "kind": "act",
+      "rationale": "This decision allows developers to use the tool's insights as guidance without imposing strict rules that could hinder productivity or creativity.",
+      "quote": "**Advisory.** On a local 14B, about one flag in ten was correct; read a finding as a place to look."
+    },
+    {
+      "decision": "The `evidence` command checks claims against the code and tests, with optional mutation testing.",
+      "kind": "act",
+      "rationale": "This decision ensures that all claims made by the tool are thoroughly tested against both the code and relevant tests, providing a robust verification process.",
+      "quote": "With `--tests --link` the tests run at that commit and their results are imported as `measured` units:"
+    },
+    {
+      "decision": "The `review` command allows human reviewers to confirm, reject, or close model proposals.",
+      "kind": "act",
+      "rationale": "This decision ensures that all automated proposals are reviewed by humans, allowing for the correction of errors and the incorporation of human judgment into the tool's reasoning.",
+      "quote": "Everything a model proposed waits here. Nothing is ever deleted or rewritten."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 1,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 1,
+      "text": "`extract --since` skips commits that only affect `.smysl/`.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "`extract --since` skips it"
+    },
+    {
+      "decision": 1,
+      "text": "`extract --queued` drops commits that only affect `.smysl/` from the queue.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "`extract --queued` drops it from the queue"
+    },
+    {
+      "decision": 1,
+      "text": "`doctor` does not count commits that only affect `.smysl/` as behind.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "and `doctor` does not count it as behind."
+    },
+    {
+      "decision": 2,
+      "text": "The function checks if there are any records for a given commit SHA.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "let resolved = cargo_smysl_git::read_commit(&root, sha)\n            .map(|c| c.sha)\n            .unwrap_or_else(|_| sha.to_string());\n        let record =\n            cargo_smysl_corpus::report::commit_record(&store, &corpus.labels(&store), &resolved);"
+    },
+    {
+      "decision": 2,
+      "text": "If no records are found for the commit, a message is printed to inform the user.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "if record.is_empty() {\n            println!(\n                \"{}: nothing recorded for this commit — cargo smysl extract {}\",\n                short(&resolved),\n                short(&resolved)\n            );"
+    },
+    {
+      "decision": 3,
+      "text": "The `facts` function previously did not include a scope parameter.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The cache is keyed by each file's bytes and the extractor version, so a second run reparses nothing and a changed file cannot hit a stale entry."
+    },
+    {
+      "decision": 3,
+      "text": "Users needed more granular selection of facts based on specific files or names.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 4,
+      "text": "The `evidence` function now includes a shortlist_tests parameter that allows users to specify whether to shortlist tests when checking evidence against the code.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "/// What the caller asked `evidence` for, beside the claim itself.\nstruct EvidenceHow<'a> {\n    /// Names this run, so two runs can be told apart when agreement is counted (D12).\n    run: &'a str,\n    shortlist_tests: bool,\n    link_tests: bool,\n    /// Changes the mutation gate may make per test; 0 leaves it off (S1).\n    mutate: usize,\n    chars_per_token: f32,\n}"
+    },
+    {
+      "decision": 5,
+      "text": "The `extract_command` function handles recording commits based on various parameters.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "/// `extract <rev>`: read the commit, ask the model, record what it said."
+    },
+    {
+      "decision": 5,
+      "text": "Users need a way to plan and budget for extraction runs.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "This change gives users a way to plan and budget for extraction runs by providing an estimated time and resource cost before committing to a full run."
+    },
+    {
+      "decision": 6,
+      "text": "The `extract_queued` function now includes an estimate parameter that allows users to estimate the cost of extracting queued commits without actually running them.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Record what the post-commit hook queued, oldest first."
+    },
+    {
+      "decision": 6,
+      "text": "A commit is forgotten only when it is recorded, so an interrupted run resumes where it stopped and a commit that fails stays queued to be tried again.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit is forgotten only when it is recorded, so an interrupted run resumes where it stopped and a commit that fails stays queued to be tried again."
+    },
+    {
+      "decision": 7,
+      "text": "The `extract` function needs a way to simulate runs without recording changes.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "This change enables users to test and validate the extraction process without making permanent changes, ensuring that the tool behaves as expected before committing to actual recordings."
+    },
+    {
+      "decision": 7,
+      "text": "The `extract` function should have a parameter to control whether changes are recorded.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The dry_run parameter allows users to simulate an extraction run without actually recording any changes."
+    },
+    {
+      "decision": 8,
+      "text": "The `check` function previously did not include a dry_run parameter.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The `check` function now includes a dry_run parameter that allows users to simulate a check run without actually performing any checks."
+    },
+    {
+      "decision": 8,
+      "text": "Users need a way to test and validate their configurations before running actual checks.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "This change provides similar functionality as the previous decision, but for the `check` command, allowing users to test and validate their configurations before running actual checks."
+    },
+    {
+      "decision": 9,
+      "text": "The `check` function processes changes against the recorded corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "/// `check`: what this change contradicts in the corpus."
+    },
+    {
+      "decision": 9,
+      "text": "Users may want to control the order of processing units in the corpus for specific needs.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "This change gives users more control over how the corpus is processed during checks, allowing them to prioritize certain units or maintain a specific order based on their needs."
+    },
+    {
+      "decision": 10,
+      "text": "The `check` function previously did not include a parts parameter.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4)."
+    },
+    {
+      "decision": 10,
+      "text": "Users may need to divide large changes into smaller parts for more efficient checking.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "This change enables more efficient and manageable checks by allowing users to divide large changes into smaller, more digestible parts, improving the overall performance and accuracy of the check process."
+    },
+    {
+      "decision": 11,
+      "text": "The `check` function previously did not include a jobs parameter.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The `check` function now includes a jobs parameter that allows users to specify the maximum number of concurrent jobs to run during checking."
+    },
+    {
+      "decision": 11,
+      "text": "Users may want to leverage multiple CPU cores or threads for performance improvements.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The `check` function now includes a strict parameter that allows users to specify whether the command should return a non-zero exit code if any contradictions are found.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4)."
+    },
+    {
+      "decision": 13,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 13,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 13,
+      "text": "The owner noticed the shape of commits where recording a commit writes files, leading to an infinite loop.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction."
+    },
+    {
+      "decision": 14,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 14,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 14,
+      "text": "The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording that one writes more files. The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction."
+    },
+    {
+      "decision": 15,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 15,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 15,
+      "text": "`extract --since` skips commits that only write the corpus.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "`extract --since` skips it"
+    },
+    {
+      "decision": 15,
+      "text": "`extract --queued` drops commits that only write the corpus from the queue.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "`extract --queued` drops it from the queue"
+    },
+    {
+      "decision": 15,
+      "text": "`doctor` does not count commits that only write the corpus as behind.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "and `doctor` does not count it as behind."
+    },
+    {
+      "decision": 16,
+      "text": "The tool reads git itself.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool reads git itself."
+    },
+    {
+      "decision": 16,
+      "text": "Labels, sources and statuses are its own; a model proposes wording only.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Labels, sources and statuses are its own; a model proposes wording only."
+    },
+    {
+      "decision": 17,
+      "text": "The tool reads git itself.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool reads git itself."
+    },
+    {
+      "decision": 17,
+      "text": "Labels, sources and statuses are its own; a model proposes wording only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Labels, sources and statuses are its own; a model proposes wording only."
+    },
+    {
+      "decision": 18,
+      "text": "The tool reads git itself.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Labels, sources and statuses are its own; a model proposes wording only."
+    },
+    {
+      "decision": 18,
+      "text": "Nothing a model proposes changes a status on its own.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Nothing a model proposes changes a status on its own. Proposals queue for a person."
+    },
+    {
+      "decision": 19,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 19,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 19,
+      "text": "`extract --since` skips commits that only write the corpus.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "`extract --since` skips it"
+    },
+    {
+      "decision": 19,
+      "text": "`extract --queued` drops commits that only write the corpus from the queue.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "`extract --queued` drops it from the queue"
+    },
+    {
+      "decision": 19,
+      "text": "`doctor` does not count commits that only write the corpus as behind.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "and `doctor` does not count it as behind."
+    },
+    {
+      "decision": 20,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 20,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 20,
+      "text": "The model's window has a size limitation.",
+      "kind": "tool-setting",
+      "normative": false,
+      "quote": "This decision allows the tool to handle large commits by breaking them into manageable parts, ensuring that no information is lost or misinterpreted due to size limitations."
+    },
+    {
+      "decision": 21,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 21,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 21,
+      "text": "Each commit should be recorded with its own context and reasoning.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records."
+    },
+    {
+      "decision": 22,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 22,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 22,
+      "text": "`extract --since` skips commits that only write the corpus.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "`extract --since` skips it"
+    },
+    {
+      "decision": 22,
+      "text": "`extract --queued` drops commits that only write the corpus from the queue.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "`extract --queued` drops it from the queue"
+    },
+    {
+      "decision": 22,
+      "text": "`doctor` does not count commits that only write the corpus as behind.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "and `doctor` does not count it as behind."
+    },
+    {
+      "decision": 23,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 23,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 23,
+      "text": "`extract --since` skips commits that only write the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`extract --since` skips it"
+    },
+    {
+      "decision": 23,
+      "text": "`extract --queued` drops commits that only write the corpus from the queue.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`extract --queued` drops it from the queue"
+    },
+    {
+      "decision": 23,
+      "text": "`doctor` does not count commits that only write the corpus as behind.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "and `doctor` does not count it as behind."
+    },
+    {
+      "decision": 24,
+      "text": "Recording a commit writes files, and those files are a commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Recording a commit writes files, and those files are a commit."
+    },
+    {
+      "decision": 24,
+      "text": "A commit that touches nothing but `.smysl/` is the tool's own output.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A commit that touches nothing but `.smysl/` is the tool's own output."
+    },
+    {
+      "decision": 24,
+      "text": "`extract --since` skips commits that only write the corpus.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "`extract --since` skips it"
+    },
+    {
+      "decision": 24,
+      "text": "`extract --queued` drops commits that only write the corpus from the queue.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "`extract --queued` drops it from the queue"
+    },
+    {
+      "decision": 24,
+      "text": "`doctor` does not count commits that only write the corpus as behind.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "and `doctor` does not count it as behind."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Consider commits that touch `.smysl/` as real changes and record them like any other.",
+      "reason": "",
+      "quote": "A commit that touches `.smysl/` *and* source is a real change and is recorded like any other."
+    },
+    {
+      "decision": 2,
+      "alternative": "The function could silently return without any message if no records are found.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "The function could print a different message indicating that the commit is not in the corpus.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep the existing functionality of the `facts` command without adding a scope parameter.",
+      "reason": "",
+      "quote": "The cache is keyed by each file's bytes and the extractor version, so a second run reparses nothing and a changed file cannot hit a stale entry."
+    },
+    {
+      "decision": 4,
+      "alternative": "The `evidence` function does not include a shortlist_tests parameter.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Do not include the estimate parameter.",
+      "reason": "",
+      "quote": "The `extract_command` function now includes an estimate parameter that allows users to estimate the cost of extraction without actually running it."
+    },
+    {
+      "decision": 6,
+      "alternative": "The `extract_queued` function does not include an estimate parameter.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Add a separate command for simulation runs.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Modify existing commands to include simulation mode.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Do not include a dry_run parameter in the `check` function.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Include a dry_run parameter but with different functionality.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Maintain the existing order of processing units in the corpus.",
+      "reason": "",
+      "quote": "The preview reorders exactly as a real run would, so a person sees what will be examined."
+    },
+    {
+      "decision": 9,
+      "alternative": "Add more parameters to control different aspects of corpus processing.",
+      "reason": "",
+      "quote": "This change gives users more control over how the corpus is processed during checks, allowing them to prioritize certain units or maintain a specific order based on their needs."
+    },
+    {
+      "decision": 10,
+      "alternative": "Keep the `check` function without a parts parameter.",
+      "reason": "",
+      "quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4)."
+    },
+    {
+      "decision": 11,
+      "alternative": "Keep the `check` function without a jobs parameter, maintaining the previous behavior.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Add a different concurrency control mechanism instead of a jobs parameter.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "The command always returns a non-zero exit code if any contradictions are found.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "The command never returns a non-zero exit code, regardless of findings.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Continue processing commits that only touch `.smysl/`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Modify the tool to handle such commits differently without skipping them.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "A commit that touches `.smysl/` is skipped entirely.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "A commit that touches `.smysl/` and source files is treated as a special case, but not recorded like any other.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Consider corpus commits as work and track them in the backlog.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Do not skip corpus commits from the backlog.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "The tool relies on external data for labels, sources, and statuses.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "A model makes independent judgments based on the actual code and commit history.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "Allow speculative quotes without checking.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 18,
+      "alternative": "Automated proposals can change the status immediately.",
+      "reason": "",
+      "quote": "This decision ensures that all automated proposals are reviewed by humans, preventing automatic acceptance of potentially incorrect or misleading claims."
+    },
+    {
+      "decision": 19,
+      "alternative": "The tool could record commits that only write the corpus.",
+      "reason": "",
+      "quote": "Recording a commit writes files, and those files are a commit. If the tool recorded *that*, you would extract, commit, and find one commit left to extract — for ever."
+    },
+    {
+      "decision": 20,
+      "alternative": "Truncate large commits.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "Ignore large commits.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "Re-extracting a commit into the old record.",
+      "reason": "",
+      "quote": "Improvements arrive as a new recipe, never as a re-extraction merged into the old record."
+    },
+    {
+      "decision": 22,
+      "alternative": "The tool could block changes if `check` finds contradictions.",
+      "reason": "",
+      "quote": "This decision allows developers to use the tool's insights as guidance without imposing strict rules that could hinder productivity or creativity."
+    },
+    {
+      "decision": 23,
+      "alternative": "The tool could continue to record commits that only write the corpus, leading to an infinite loop of extraction.",
+      "reason": "",
+      "quote": "Recording that one writes more files. The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction."
+    },
+    {
+      "decision": 24,
+      "alternative": "The tool could automatically review and accept all model proposals without human intervention.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 24,
+      "alternative": "The tool could reject all model proposals without human intervention.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The backlog can reach zero because commits that only affect `.smysl/` are not counted.",
+      "quote": "The march was not bad luck, it was a fixed point that did not exist. Now it does.",
+      "verified": true,
+      "verification_quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded"
+    },
+    {
+      "decision": 2,
+      "text": "Users will receive clear feedback when they try to view details of a commit that has not been recorded, guiding them to use the `extract` command.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Users can now specify which files or names to consider when selecting facts.",
+      "quote": "The scope is what the names reach — otherwise every file counts as touched and the selection says nothing.",
+      "verified": true,
+      "verification_quote": "if around.files.is_empty() && rev.is_some() {"
+    },
+    {
+      "decision": 3,
+      "text": "The `facts` command becomes more flexible and useful for specific analysis needs.",
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Users can now specify whether to shortlist tests when checking evidence against the code.",
+      "quote": "/// What the caller asked `evidence` for, beside the claim itself.\nstruct EvidenceHow<'a> {\n    /// Names this run, so two runs can be told apart when agreement is counted (D12).\n    run: &'a str,\n    shortlist_tests: bool,\n    link_tests: bool,\n    /// Changes the mutation gate may make per test; 0 leaves it off (S1).\n    mutate: usize,\n    chars_per_token: f32,\n}",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Users can now estimate the time and resource cost of extraction runs before executing them.",
+      "quote": "This change gives users a way to plan and budget for extraction runs by providing an estimated time and resource cost before committing to a full run.",
+      "verified": true,
+      "verification_quote": "nothing was run: --estimate only says what it would cost"
+    },
+    {
+      "decision": 6,
+      "text": "Users can now plan and budget extraction runs more effectively by estimating the cost of extracting queued commits without actually running them.",
+      "quote": "This change provides similar functionality as the previous decision, but for queued commits, allowing users to plan and budget extraction runs more effectively.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Users can now test the extraction process without affecting the corpus.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "This change enables users to test and validate the extraction process without making permanent changes, ensuring that the tool behaves as expected before committing to actual recordings."
+    },
+    {
+      "decision": 7,
+      "text": "The `extract` function's interface is extended with a new parameter.",
+      "quote": "fn extract(args: &SmyslArgs, rev: Option<&str>, force: bool, dry_run: bool, how: ExtractHow<'_>) -> u8 {",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Users can now simulate a check run without performing any checks, allowing them to test and validate their configurations.",
+      "quote": "This change provides similar functionality as the previous decision, but for the `check` command, allowing users to test and validate their configurations before running actual checks.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Users can now specify whether to order the corpus by relevance when checking for contradictions.",
+      "quote": "DECISION 9: The `check` function now includes a no_corpus_order parameter that allows users to specify whether to order the corpus by relevance when checking for contradictions.",
+      "verified": true,
+      "verification_quote": "let settings = Settings { window: c.window, chars_per_token: c.chars_per_token, order_by_corpus: !c.no_corpus_order, max_parts: c.parts.max(1), jobs: c.jobs.max(1), ..Settings::default() };"
+    },
+    {
+      "decision": 10,
+      "text": "Users can now specify the maximum number of parts into which a change should be divided for checking.",
+      "quote": "This change enables more efficient and manageable checks by allowing users to divide large changes into smaller, more digestible parts, improving the overall performance and accuracy of the check process.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "The `check` function now includes a new parameter called `parts`.",
+      "quote": "let mut settings = Settings {\n    window: c.window,\n    chars_per_token: c.chars_per_token,\n    order_by_corpus: !c.no_corpus_order,\n    max_parts: c.parts.max(1),\n    jobs: c.jobs.max(1),\n    ..Settings::default()\n};",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The performance and efficiency of the check process may improve for large changes, as users can specify the maximum number of concurrent jobs to run.",
+      "quote": "This change improves the performance and efficiency of the check process by allowing users to leverage multiple CPU cores or threads, reducing overall execution time for large changes.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Users can now enforce stricter adherence to recorded claims by using the `--strict` flag.",
+      "quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4).",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Users can treat all findings as advisory by default, without using the `--strict` flag.",
+      "quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4).",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "The backlog `doctor` reports will not include commits that only write the corpus.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by the backlog doctor reports."
+    },
+    {
+      "decision": 13,
+      "text": "`extract --since` will skip commits that only write the corpus.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by the backlog doctor reports."
+    },
+    {
+      "decision": 13,
+      "text": "`extract --queued` will skip commits that only write the corpus.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by the backlog doctor reports."
+    },
+    {
+      "decision": 14,
+      "text": "Real changes are captured while avoiding infinite loops with tool-generated commits.",
+      "quote": "To distinguish between tool-generated commits and actual changes, the tool records commits that touch both `.smysl/` and source files. This ensures that real changes are captured while avoiding infinite loops with tool-generated commits.",
+      "verified": true,
+      "verification_quote": "4 commit(s) since HEAD~4, 3 already recorded, 1 that only write the corpus, 0 to do"
+    },
+    {
+      "decision": 15,
+      "text": "The backlog can reach zero when all real changes have been processed.",
+      "quote": "The backlog can reach zero because corpus commits are not considered work.",
+      "verified": true,
+      "verification_quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded"
+    },
+    {
+      "decision": 16,
+      "text": "The tool has full control over its data.",
+      "quote": "This decision ensures that the tool has full control over its data and can make independent judgments based on the actual code and commit history.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "Independent judgments are made by the tool based on the actual code and commit history.",
+      "quote": "This decision ensures that the tool has full control over its data and can make independent judgments based on the actual code and commit history.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "All claims made by the tool are backed by actual code, preventing speculative or unfounded assertions.",
+      "quote": "This decision ensures that all claims made by the tool are backed by actual code, preventing speculative or unfounded assertions.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "All automated proposals must be manually reviewed before any changes to the status are made.",
+      "quote": "Nothing a model proposes changes a status on its own. Proposals queue for a person.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "The backlog can reach zero because commits that only write the corpus are skipped.",
+      "quote": "The march was not bad luck, it was a fixed point that did not exist. Now it\ndoes.",
+      "verified": true,
+      "verification_quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded"
+    },
+    {
+      "decision": 20,
+      "text": "The tool can handle large commits by breaking them into manageable parts.",
+      "quote": "A commit larger than the model's window is read in parts, not truncated, and says so.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "No information is lost or misinterpreted due to size limitations.",
+      "quote": "This decision allows the tool to handle large commits by breaking them into manageable parts, ensuring that no information is lost or misinterpreted due to size limitations.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 21,
+      "text": "Each commit is recorded with its own context and reasoning.",
+      "quote": "This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records.",
+      "verified": true,
+      "verification_quote": "This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records."
+    },
+    {
+      "decision": 21,
+      "text": "Continuous improvement can be achieved without altering previous records.",
+      "quote": "This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records.",
+      "verified": true,
+      "verification_quote": "This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records."
+    },
+    {
+      "decision": 22,
+      "text": "The backlog can reach zero because commits that only write the corpus are skipped.",
+      "quote": "The march was not bad luck, it was a fixed point that did not exist. Now it\ndoes.",
+      "verified": true,
+      "verification_quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded"
+    },
+    {
+      "decision": 23,
+      "text": "The backlog can reach zero because commits that only write the corpus are skipped.",
+      "quote": "The march was not bad luck, it was a fixed point that did not exist. Now it does.",
+      "verified": true,
+      "verification_quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded"
+    },
+    {
+      "decision": 24,
+      "text": "The backlog can reach zero because commits that only write the corpus are skipped by `extract --since`, dropped from the queue by `extract --queued`, and not counted as behind by `doctor`.",
+      "quote": "The corpus commits are not work, so the backlog can reach zero",
+      "verified": true,
+      "verification_quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded"
+    }
+  ]
+}

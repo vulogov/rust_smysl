@@ -1,0 +1,542 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/ge86482fa7f55-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout." }
+~ Take the home directory out of the published results and the docs
+
+The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout.
+
+@decision d/ge86482fa7f55-2 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "rust-version = \"1.86\"" }
+~ Set MSRV to Rust 1.86
+
+To ensure compatibility with dependencies that require newer versions of Rust.
+
+@decision d/ge86482fa7f55-3 { status: speculative, "code:kind": act, "ingest:quote": "homepage     = \"https://github.com/vulogov/rust_smysl\"\nkeywords     = [\"cargo-subcommand\", \"rationale\", \"provenance\", \"smysl\", \"decisions\"]\ncategories   = [\"development-tools::cargo-plugins\", \"development-tools\"]" }
+~ Add homepage, keywords, categories, and README to each crate
+
+To provide necessary metadata for crates.io listing and discovery.
+
+@decision d/ge86482fa7f55-4 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand." }
+~ Publish eight crates in a specific order
+
+To ensure path dependencies are resolved correctly by crates.io.
+
+@decision d/ge86482fa7f55-5 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand." }
+~ Keep `cargo-smysl` keywords separate from the workspace
+
+`cargo-smysl` is the crate people install, and they find it by searching for a cargo subcommand.
+
+@decision d/ge86482fa7f55-6 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "It also records what to be sure of before publishing, since a version can be yanked but never removed, and a crate name is claimed on first publish." }
+~ Document the release process in `docs/releasing.md`
+
+To provide clear instructions for maintaining and publishing the project.
+
+@decision d/ge86482fa7f55-7 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "Eight crates publish; the evaluation tooling does not, and says so." }
+~ Exclude `cargo-smysl-eval` from publication
+
+`cargo-smysl-eval` is evaluation tooling that reads files outside its own package.
+
+@decision d/ge86482fa7f55-8 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "# Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`." }
+~ Use `gix` for reading git objects instead of running `git`
+
+To ensure self-contained operation without relying on external binaries.
+
+@decision d/ge86482fa7f55-9 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON." }
+~ Pin dependencies to specific versions in the workspace
+
+To maintain consistency across all crates in the workspace.
+
+@decision d/ge86482fa7f55-10 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "# Hosted providers need TLS; the default build has no network stack at all (D18)." }
+~ Add `hosted` feature to some crates for optional TLS support
+
+To provide flexibility in network requirements.
+
+@decision d/ge86482fa7f55-11 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON." }
+~ Use `serde_json` and `toml` for configuration files
+
+To support human-editable configuration files.
+
+@decision d/ge86482fa7f55-12 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ Include `README.md` in each crate for crates.io listing
+
+To provide brief descriptions for each crate on crates.io.
+
+@decision d/ge86482fa7f55-13 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site" }
+~ Do not lose a commit's extraction to a blank line in a quote
+
+Refusing the whole commit for a blank line throws away work that has already been paid for.
+
+@decision d/ge86482fa7f55-14 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": decline, "ingest:quote": "Answering \"why is this like this?\" was dropped as a product claim." }
+~ Drop the claim of answering 'why is this like this?' as a product feature
+
+To focus on the tool's actual capabilities rather than unmet claims.
+
+@decision d/ge86482fa7f55-15 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ Assign labels, sources and statuses; the model proposes wording only
+
+To maintain control over the integrity of recorded information.
+
+@decision d/ge86482fa7f55-16 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Detect staleness by item body hash rather than line ranges
+
+To accurately track changes in code identity rather than just line positions.
+
+@decision d/ge86482fa7f55-17 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ Record review as confirmations, withdrawals with reasons, and closures with notes
+
+To keep a comprehensive log of all reviews and decisions made.
+
+@decision d/ge86482fa7f55-18 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from." }
+~ Ship its own instrument for benchmarking the model
+
+To provide users with the ability to measure the performance of their chosen models on their own commits.
+
+@decision d/ge86482fa7f55-19 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Focus on deterministic commands over model-dependent ones
+
+To prioritize commands that are reliable, tested, and cost-effective to run.
+
+@decision d/ge86482fa7f55-20 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": "The figures are published, naming the model each came from, including the experiments that failed." }
+~ Publish figures naming the model each came from, including failed experiments
+
+To provide transparency about which models were tested and their results, including any failures.
+
+@decision d/ge86482fa7f55-21 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": Over-production is the failure mode that matters. }
+~ Highlight over-production as the failure mode that matters
+
+To emphasize the importance of avoiding unnecessary or excessive output in the tool's operations.
+
+@decision d/ge86482fa7f55-22 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": The hook only queues and `--estimate` prices a run before it starts. }
+~ Meaningfully price extraction runs before starting them
+
+To inform users about the cost of extraction runs before they start, allowing them to make informed decisions.
+
+@decision d/ge86482fa7f55-23 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": A cloned corpus is someone else's claim. }
+~ Label cloned corpora as someone else's claims
+
+To clarify the status of units in cloned corpora, indicating that they are not the tool's own claims.
+
+@decision d/ge86482fa7f55-24 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": act, "ingest:quote": Research the truncated-change problem before building for it }
+~ Research the truncated-change problem before building for it
+
+The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.
+
+@constraint p/ge86482fa7f55-1-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout." }
+~ The command is the result; where the machine kept its files is not.
+
+@constraint p/ge86482fa7f55-1-2 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout." }
+~ A public repository should not carry either the username or the layout.
+
+@constraint p/ge86482fa7f55-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "# cargo_metadata 0.23 requires 1.86; smysl 1.3 requires 1.79; syn 3 requires 1.71." }
+~ Dependencies require at least Rust version 1.86.
+
+@constraint p/ge86482fa7f55-2-2 { status: speculative, "code:kind": assumption }
+~ The project aims to maintain compatibility with the latest dependencies.
+
+@constraint p/ge86482fa7f55-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": To provide necessary metadata for crates.io listing and discovery. }
+~ crates.io requires metadata for listing and discovery
+
+@constraint p/ge86482fa7f55-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand." }
+~ crates.io resolves path dependencies by version
+
+@constraint p/ge86482fa7f55-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand." }
+~ `cargo-smysl` is the crate people install, and they find it by searching for a cargo subcommand.
+
+@constraint p/ge86482fa7f55-6-1 { status: speculative, "code:kind": assumption }
+~ The project aims to maintain clear instructions for maintaining and publishing.
+
+@constraint p/ge86482fa7f55-7-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": `cargo-smysl-eval` is evaluation tooling that reads files outside its own package. }
+~ `cargo-smysl-eval` is evaluation tooling that reads files outside its own package.
+
+@constraint p/ge86482fa7f55-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": invariant, "ingest:quote": "Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`." }
+~ The tool must never run the `git` binary.
+
+@constraint p/ge86482fa7f55-9-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": invariant, "ingest:quote": To maintain consistency across all crates in the workspace. }
+~ To maintain consistency across all crates in the workspace.
+
+@constraint p/ge86482fa7f55-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": Hosted providers need TLS; the default build has no network stack at all (D18). }
+~ Some crates require TLS support for hosted providers.
+
+@constraint p/ge86482fa7f55-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": assumption, "ingest:quote": To support human-editable configuration files. }
+~ The project needs to support human-editable configuration files.
+
+@constraint p/ge86482fa7f55-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": To provide necessary metadata for crates.io listing and discovery. }
+~ crates.io requires metadata for listing and discovery
+
+@constraint p/ge86482fa7f55-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, …
+
+A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.
+
+@constraint p/ge86482fa7f55-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph" }
+~ The body of the verification quote contained a markdown heading, a blank line, and a paragraph.
+
+@constraint p/ge86482fa7f55-13-3 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit, and quite right.
+
+@constraint p/ge86482fa7f55-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was." }
+~ The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.
+
+@constraint p/ge86482fa7f55-14-2 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ Each was a decision resting on something true at the time, none of it in the code, and some of …
+
+Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.
+
+@constraint p/ge86482fa7f55-15-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; the model proposes wording only.
+
+@constraint p/ge86482fa7f55-16-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": assumption, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and …
+
+Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.
+
+@constraint p/ge86482fa7f55-17-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ The tool needs to maintain a record of all reviews and decisions for transparency and accountability.
+
+@constraint p/ge86482fa7f55-18-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from." }
+~ The tool needs to measure the performance of different models.
+
+@constraint p/ge86482fa7f55-19-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Two thirds of the commands never call a model.
+
+@constraint p/ge86482fa7f55-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ The tool needs to measure the performance of different models.
+
+@constraint p/ge86482fa7f55-20-2 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "The figures are published, naming the model each came from, including the experiments that failed." }
+~ The figures are published.
+
+@constraint p/ge86482fa7f55-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, …
+
+A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.
+
+@constraint p/ge86482fa7f55-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph" }
+~ The body of the verification quote contained a markdown heading, a blank line, and a paragraph.
+
+@constraint p/ge86482fa7f55-13-3 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit, and quite right.
+
+@constraint p/ge86482fa7f55-22-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": tool-setting, "ingest:quote": The hook only queues and `--estimate` prices a run before it starts. }
+~ The hook only queues and `--estimate` prices a run before it starts.
+
+@constraint p/ge86482fa7f55-23-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": assumption, "ingest:quote": A cloned corpus is someone else's claim. }
+~ A cloned corpus is someone else's claim.
+
+@constraint p/ge86482fa7f55-24-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": existing-behaviour, "ingest:quote": "The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes." }
+~ The truncated-change problem affects 59% of held-out changes.
+
+@claim r/ge86482fa7f55-1-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the home directory in the published results and the docs.
+
+@claim r/ge86482fa7f55-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Set MSRV to a lower version that is compatible with all dependencies.
+
+@claim r/ge86482fa7f55-2-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not set an explicit MSRV and let users manage their Rust versions independently.
+
+@claim r/ge86482fa7f55-3-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": "Rejected: Do not add homepage, keywords, categories, and README to each crate" }
+~ Rejected: Do not add homepage, keywords, categories, and README to each crate
+
+@claim r/ge86482fa7f55-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Rejected: Publish all crates simultaneously
+
+@claim r/ge86482fa7f55-4-2 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Rejected: Publish crates in any order
+
+@claim r/ge86482fa7f55-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand." }
+~ Rejected: Use the same keywords as the workspace.
+
+@claim r/ge86482fa7f55-7-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include `cargo-smysl-eval` in publication
+
+@claim r/ge86482fa7f55-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Running the `git` binary to read commit messages and changed files. }
+~ Rejected: Running the `git` binary to read commit messages and changed files.
+
+@claim r/ge86482fa7f55-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not add a `hosted` feature and require TLS support in all builds. }
+~ Rejected: Do not add a `hosted` feature and require TLS support in all builds.
+
+@claim r/ge86482fa7f55-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Add a different feature name for optional TLS support. }
+~ Rejected: Add a different feature name for optional TLS support.
+
+@claim r/ge86482fa7f55-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/2b514c5b163a.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Use a different serialization format for configuration files. }
+~ Rejected: Use a different serialization format for configuration files.
+
+@claim r/ge86482fa7f55-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site." }
+~ Rejected: Refuse the whole commit for a blank line.
+
+@claim r/ge86482fa7f55-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet." }
+~ Rejected: Describing what the tool does.
+
+@claim r/ge86482fa7f55-15-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": "Rejected: The model assigns labels, sources and statuses." }
+~ Rejected: Most tooling in this area stores what the model said as though it were established.
+
+@claim r/ge86482fa7f55-16-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Tried and rejected: Detect staleness by line ranges. }
+~ Rejected: Detect staleness by line ranges.
+
+@claim r/ge86482fa7f55-17-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not record reviews and decisions. }
+~ Rejected: Do not record reviews and decisions.
+
+@claim r/ge86482fa7f55-17-2 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Record only confirmations without reasons or notes. }
+~ Rejected: Record only confirmations without reasons or notes.
+
+@claim r/ge86482fa7f55-17-3 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Record only withdrawals without reasons or notes. }
+~ Rejected: Record only withdrawals without reasons or notes.
+
+@claim r/ge86482fa7f55-17-4 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Record only closures without notes. }
+~ Rejected: Record only closures without notes.
+
+@claim r/ge86482fa7f55-18-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Use an external benchmarking tool. }
+~ Rejected: Use an external benchmarking tool.
+
+@claim r/ge86482fa7f55-18-2 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not include any benchmarking functionality. }
+~ Rejected: Do not include any benchmarking functionality.
+
+@claim r/ge86482fa7f55-19-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Focus on model-dependent commands
+
+@claim r/ge86482fa7f55-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Not publishing figures naming the model each came from }
+~ Rejected: Not publishing figures naming the model each came from
+
+@claim r/ge86482fa7f55-20-2 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Publishing figures without naming the model. }
+~ Rejected: Publishing figures without naming the model
+
+@claim r/ge86482fa7f55-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site." }
+~ Rejected: Refuse the whole commit for a blank line.
+
+@claim r/ge86482fa7f55-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Whatever becomes a body is now joined into one paragraph }
+~ Rejected: Keeping the body as separate paragraphs.
+
+@claim r/ge86482fa7f55-22-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Start extraction runs without pricing them first. }
+~ Rejected: Start extraction runs without pricing them first.
+
+@claim r/ge86482fa7f55-24-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not researching the truncated-change problem before building for it
+
+@claim q/ge86482fa7f55-1-1 { status: inferred, grounds: [d/ge86482fa7f55-1], "code:kind": anticipated, "ingest:quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout." }
+~ The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth …
+
+The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@claim q/ge86482fa7f55-1-2 { status: inferred, grounds: [d/ge86482fa7f55-1], "code:kind": anticipated, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth …
+
+Paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@claim q/ge86482fa7f55-2-1 { status: inferred, grounds: [d/ge86482fa7f55-2], "code:kind": anticipated }
+~ Developers must use at least Rust version 1.86 to work on the project.
+
+@claim q/ge86482fa7f55-2-2 { status: inferred, grounds: [d/ge86482fa7f55-2], "code:kind": anticipated, "ingest:quote": "# The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag." }
+~ The CI checks will enforce the MSRV requirement.
+
+@claim q/ge86482fa7f55-4-1 { status: inferred, grounds: [d/ge86482fa7f55-4], "code:kind": anticipated, "ingest:quote": To ensure path dependencies are resolved correctly by crates.io. }
+~ Path dependencies are resolved correctly by crates.io
+
+@claim q/ge86482fa7f55-6-1 { status: inferred, grounds: [d/ge86482fa7f55-6], "code:kind": anticipated, "ingest:quote": To provide clear instructions for maintaining and publishing the project. }
+~ Clear instructions for maintaining and publishing the project are provided.
+
+@claim q/ge86482fa7f55-8-1 { status: inferred, grounds: [d/ge86482fa7f55-8], "code:kind": anticipated, "ingest:quote": To ensure self-contained operation without relying on external binaries. }
+~ The tool can operate without relying on external binaries, ensuring self-contained operation.
+
+@claim q/ge86482fa7f55-10-1 { status: inferred, grounds: [d/ge86482fa7f55-10], "code:kind": anticipated, "ingest:quote": Crates that need TLS support can enable it via the `hosted` feature. }
+~ Crates that need TLS support can enable it via the `hosted` feature.
+
+@claim q/ge86482fa7f55-10-2 { status: inferred, grounds: [d/ge86482fa7f55-10], "code:kind": anticipated, "ingest:quote": Crates that do not require TLS support can use the default build without it. }
+~ Crates that do not require TLS support can use the default build without it.
+
+@claim q/ge86482fa7f55-12-1 { status: inferred, grounds: [d/ge86482fa7f55-12], "code:kind": anticipated, "ingest:quote": Each crate now carries its own README.md }
+~ Each crate now carries its own README.md
+
+@claim q/ge86482fa7f55-12-2 { status: inferred, grounds: [d/ge86482fa7f55-12], "code:kind": anticipated, "ingest:quote": To provide brief descriptions for each crate on crates.io. }
+~ Each crate has a short README.md for crates.io listing
+
+@evidence e/ge86482fa7f55-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "ingest:quote": "The commit that hit it is recorded, from cache." }
+~ Check: The commit that hit it is recorded, from cache.
+
+@finding q/ge86482fa7f55-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/bd1f04710855.smy@e86482fa7f55 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site." }
+~ The commit that hit it is recorded from cache
+
+@claim q/ge86482fa7f55-14-1 { status: inferred, grounds: [d/ge86482fa7f55-14], "code:kind": anticipated, "ingest:quote": ~ Drop the claim of answering 'why is this like this?' as a product feature }
+~ To focus on the tool's actual capabilities rather than unmet claims.
+
+@claim q/ge86482fa7f55-17-1 { status: inferred, grounds: [d/ge86482fa7f55-17], "code:kind": anticipated, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ The tool maintains a comprehensive log of all reviews and decisions made, enhancing transparency and …
+
+The tool maintains a comprehensive log of all reviews and decisions made, enhancing transparency and accountability.
+
+@claim q/ge86482fa7f55-18-1 { status: inferred, grounds: [d/ge86482fa7f55-18], "code:kind": anticipated, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from." }
+~ Users can measure the performance of their chosen models on their own commits.
+
+@claim q/ge86482fa7f55-19-1 { status: inferred, grounds: [d/ge86482fa7f55-19], "code:kind": anticipated, "ingest:quote": "To prioritize commands that are reliable, tested, and cost-effective to run." }
+~ Prioritizes commands that are reliable, tested, and cost-effective to run.
+
+@claim q/ge86482fa7f55-20-1 { status: inferred, grounds: [d/ge86482fa7f55-20], "code:kind": anticipated, "ingest:quote": "To provide transparency about which models were tested and their results, including any failures." }
+~ Transparency about which models were tested and their results, including any failures, is provided.
+
+@claim q/ge86482fa7f55-21-1 { status: inferred, grounds: [d/ge86482fa7f55-21], "code:kind": anticipated, "ingest:quote": Refusing the whole commit for a blank line throws away work that has already been paid for. }
+~ Refusing the whole commit for a blank line throws away work that has already been paid for.
+
+@claim q/ge86482fa7f55-22-1 { status: inferred, grounds: [d/ge86482fa7f55-22], "code:kind": anticipated, "ingest:quote": "To inform users about the cost of extraction runs before they start, allowing them to make informed decisions." }
+~ Users are informed about the cost of extraction runs before they start, allowing them to make informed …
+
+Users are informed about the cost of extraction runs before they start, allowing them to make informed decisions.
+
+@rel p/ge86482fa7f55-1-1 --conditions--> d/ge86482fa7f55-1
+
+@rel p/ge86482fa7f55-1-2 --conditions--> d/ge86482fa7f55-1
+
+@rel p/ge86482fa7f55-2-1 --conditions--> d/ge86482fa7f55-2
+
+@rel p/ge86482fa7f55-2-2 --conditions--> d/ge86482fa7f55-2
+
+@rel p/ge86482fa7f55-12-1 --conditions--> d/ge86482fa7f55-3
+
+@rel p/ge86482fa7f55-4-1 --conditions--> d/ge86482fa7f55-4
+
+@rel p/ge86482fa7f55-5-1 --conditions--> d/ge86482fa7f55-5
+
+@rel p/ge86482fa7f55-6-1 --conditions--> d/ge86482fa7f55-6
+
+@rel p/ge86482fa7f55-7-1 --conditions--> d/ge86482fa7f55-7
+
+@rel p/ge86482fa7f55-8-1 --conditions--> d/ge86482fa7f55-8
+
+@rel p/ge86482fa7f55-9-1 --conditions--> d/ge86482fa7f55-9
+
+@rel p/ge86482fa7f55-10-1 --conditions--> d/ge86482fa7f55-10
+
+@rel p/ge86482fa7f55-11-1 --conditions--> d/ge86482fa7f55-11
+
+@rel p/ge86482fa7f55-12-1 --conditions--> d/ge86482fa7f55-12
+
+@rel p/ge86482fa7f55-13-1 --conditions--> d/ge86482fa7f55-13
+
+@rel p/ge86482fa7f55-13-2 --conditions--> d/ge86482fa7f55-13
+
+@rel p/ge86482fa7f55-13-3 --conditions--> d/ge86482fa7f55-13
+
+@rel p/ge86482fa7f55-14-1 --conditions--> d/ge86482fa7f55-14
+
+@rel p/ge86482fa7f55-14-2 --conditions--> d/ge86482fa7f55-14
+
+@rel p/ge86482fa7f55-15-1 --conditions--> d/ge86482fa7f55-15
+
+@rel p/ge86482fa7f55-16-1 --conditions--> d/ge86482fa7f55-16
+
+@rel p/ge86482fa7f55-17-1 --conditions--> d/ge86482fa7f55-17
+
+@rel p/ge86482fa7f55-18-1 --conditions--> d/ge86482fa7f55-18
+
+@rel p/ge86482fa7f55-19-1 --conditions--> d/ge86482fa7f55-19
+
+@rel p/ge86482fa7f55-20-1 --conditions--> d/ge86482fa7f55-20
+
+@rel p/ge86482fa7f55-20-2 --conditions--> d/ge86482fa7f55-20
+
+@rel p/ge86482fa7f55-13-1 --conditions--> d/ge86482fa7f55-21
+
+@rel p/ge86482fa7f55-13-2 --conditions--> d/ge86482fa7f55-21
+
+@rel p/ge86482fa7f55-13-3 --conditions--> d/ge86482fa7f55-21
+
+@rel p/ge86482fa7f55-22-1 --conditions--> d/ge86482fa7f55-22
+
+@rel p/ge86482fa7f55-23-1 --conditions--> d/ge86482fa7f55-23
+
+@rel p/ge86482fa7f55-24-1 --conditions--> d/ge86482fa7f55-24
+
+@rel r/ge86482fa7f55-1-1 --contrasts--> d/ge86482fa7f55-1
+
+@rel r/ge86482fa7f55-2-1 --contrasts--> d/ge86482fa7f55-2
+
+@rel r/ge86482fa7f55-2-2 --contrasts--> d/ge86482fa7f55-2
+
+@rel r/ge86482fa7f55-3-1 --contrasts--> d/ge86482fa7f55-3
+
+@rel r/ge86482fa7f55-4-1 --contrasts--> d/ge86482fa7f55-4
+
+@rel r/ge86482fa7f55-4-2 --contrasts--> d/ge86482fa7f55-4
+
+@rel r/ge86482fa7f55-5-1 --contrasts--> d/ge86482fa7f55-5
+
+@rel r/ge86482fa7f55-7-1 --contrasts--> d/ge86482fa7f55-7
+
+@rel r/ge86482fa7f55-8-1 --contrasts--> d/ge86482fa7f55-8
+
+@rel r/ge86482fa7f55-10-1 --contrasts--> d/ge86482fa7f55-10
+
+@rel r/ge86482fa7f55-10-2 --contrasts--> d/ge86482fa7f55-10
+
+@rel r/ge86482fa7f55-11-1 --contrasts--> d/ge86482fa7f55-11
+
+@rel r/ge86482fa7f55-13-1 --contrasts--> d/ge86482fa7f55-13
+
+@rel r/ge86482fa7f55-14-1 --contrasts--> d/ge86482fa7f55-14
+
+@rel r/ge86482fa7f55-15-1 --contrasts--> d/ge86482fa7f55-15
+
+@rel r/ge86482fa7f55-16-1 --contrasts--> d/ge86482fa7f55-16
+
+@rel r/ge86482fa7f55-17-1 --contrasts--> d/ge86482fa7f55-17
+
+@rel r/ge86482fa7f55-17-2 --contrasts--> d/ge86482fa7f55-17
+
+@rel r/ge86482fa7f55-17-3 --contrasts--> d/ge86482fa7f55-17
+
+@rel r/ge86482fa7f55-17-4 --contrasts--> d/ge86482fa7f55-17
+
+@rel r/ge86482fa7f55-18-1 --contrasts--> d/ge86482fa7f55-18
+
+@rel r/ge86482fa7f55-18-2 --contrasts--> d/ge86482fa7f55-18
+
+@rel r/ge86482fa7f55-19-1 --contrasts--> d/ge86482fa7f55-19
+
+@rel r/ge86482fa7f55-20-1 --contrasts--> d/ge86482fa7f55-20
+
+@rel r/ge86482fa7f55-20-2 --contrasts--> d/ge86482fa7f55-20
+
+@rel r/ge86482fa7f55-13-1 --contrasts--> d/ge86482fa7f55-21
+
+@rel r/ge86482fa7f55-21-2 --contrasts--> d/ge86482fa7f55-21
+
+@rel r/ge86482fa7f55-22-1 --contrasts--> d/ge86482fa7f55-22
+
+@rel r/ge86482fa7f55-24-1 --contrasts--> d/ge86482fa7f55-24
+
+@rel d/ge86482fa7f55-1 --causes--> q/ge86482fa7f55-1-1
+
+@rel d/ge86482fa7f55-1 --causes--> q/ge86482fa7f55-1-2
+
+@rel d/ge86482fa7f55-2 --causes--> q/ge86482fa7f55-2-1
+
+@rel d/ge86482fa7f55-2 --causes--> q/ge86482fa7f55-2-2
+
+@rel d/ge86482fa7f55-4 --causes--> q/ge86482fa7f55-4-1
+
+@rel d/ge86482fa7f55-6 --causes--> q/ge86482fa7f55-6-1
+
+@rel d/ge86482fa7f55-8 --causes--> q/ge86482fa7f55-8-1
+
+@rel d/ge86482fa7f55-10 --causes--> q/ge86482fa7f55-10-1
+
+@rel d/ge86482fa7f55-10 --causes--> q/ge86482fa7f55-10-2
+
+@rel d/ge86482fa7f55-12 --causes--> q/ge86482fa7f55-12-1
+
+@rel d/ge86482fa7f55-12 --causes--> q/ge86482fa7f55-12-2
+
+@rel e/ge86482fa7f55-13-1 --backs--> q/ge86482fa7f55-13-1
+
+@rel d/ge86482fa7f55-13 --causes--> q/ge86482fa7f55-13-1
+
+@rel d/ge86482fa7f55-14 --causes--> q/ge86482fa7f55-14-1
+
+@rel d/ge86482fa7f55-17 --causes--> q/ge86482fa7f55-17-1
+
+@rel d/ge86482fa7f55-18 --causes--> q/ge86482fa7f55-18-1
+
+@rel d/ge86482fa7f55-19 --causes--> q/ge86482fa7f55-19-1
+
+@rel d/ge86482fa7f55-20 --causes--> q/ge86482fa7f55-20-1
+
+@rel d/ge86482fa7f55-21 --causes--> q/ge86482fa7f55-21-1
+
+@rel d/ge86482fa7f55-22 --causes--> q/ge86482fa7f55-22-1
