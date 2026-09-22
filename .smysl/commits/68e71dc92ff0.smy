@@ -1,0 +1,976 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g68e71dc92ff0-1 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "code:kind": act, "ingest:quote": Every field of every answer now reads a null as the absent value it is }
+~ A null in a model's answer costs that field, not the answer
+
+To handle cases where the model writes `null` where a string was asked for and serde refuses the whole reply.
+
+@decision d/g68e71dc92ff0-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction }
+~ The README now leads with the seven deterministic commands rather than with extraction
+
+To focus on the part that needs no model and is worth someone's time today.
+
+@decision d/g68e71dc92ff0-3 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": It also no longer implies `stale` works on a fresh clone }
+~ It also no longer implies `stale` works on a fresh clone
+
+To clarify that `stale` reads a corpus, which is written by extraction.
+
+@decision d/g68e71dc92ff0-4 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "The model-dependent third is listed with what it was measured at, model named, in the same table" }
+~ The model-dependent third is listed with what it was measured at, model named, in the same table
+
+To provide transparency about the performance of model-dependent commands.
+
+@decision d/g68e71dc92ff0-5 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": So `check` **ships advisory**: it prints findings and exits 0 unless `--strict` }
+~ `check` ships advisory: it prints findings and exits 0 unless `--strict`
+
+To acknowledge the limitations of the model's precision and advise caution.
+
+@decision d/g68e71dc92ff0-6 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": `extract` is honest about being weak }
+~ `extract` is honest about being weak
+
+To disclose the limitations of the extraction process based on measured performance.
+
+@decision d/g68e71dc92ff0-7 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default" }
+~ Two-pass agreement is used by default for `check` to remove false flags
+
+To improve the precision of findings by ensuring two independent runs agree.
+
+@decision d/g68e71dc92ff0-8 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes wording only" }
+~ The tool assigns labels, sources and statuses; a model proposes content only
+
+To ensure that the tool maintains control over the integrity of the corpus.
+
+@decision d/g68e71dc92ff0-9 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is" }
+~ Staleness is detected by item body hash rather than line ranges
+
+To prevent false positives for functions that have merely moved.
+
+@decision d/g68e71dc92ff0-10 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution" }
+~ Review is recorded as confirmations, withdrawals with reasons, or closures with notes
+
+To maintain a transparent and immutable record of review actions.
+
+@decision d/g68e71dc92ff0-11 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from" }
+~ `bench` measures the model you chose on your own commits
+
+To allow users to measure and verify the performance of their chosen models.
+
+@decision d/g68e71dc92ff0-12 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says }
+~ The tool does not trust a cloned corpus as an established fact
+
+To encourage users to verify claims in the corpus independently.
+
+@decision d/g68e71dc92ff0-13 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "code:kind": act, "ingest:quote": Every field of every answer now reads a null as the absent value it is }
+~ Every field of every answer now reads a null as the absent value it is
+
+To handle cases where the model writes `null` where a string was asked for, and serde refuses the whole reply.
+
+@decision d/g68e71dc92ff0-14 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": Rewrites now always end with a newline }
+~ Rewrites now always end with a newline
+
+To ensure that the file is correctly handled by both the queue and the hook, which have different methods of appending to the file.
+
+@decision d/g68e71dc92ff0-15 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": `stale --json` now includes the `behind` field in JSON output instead of printing it on stdout }
+~ `stale --json` now includes the `behind` field in JSON output instead of printing it on stdout
+
+To ensure that `--json` outputs only valid JSON, preventing parsing errors when consuming the JSON output.
+
+@decision d/g68e71dc92ff0-16 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": A test is added to ensure that every `--json` command produces valid JSON output }
+~ A test is added to ensure that every `--json` command produces valid JSON output
+
+To catch future regressions where non-JSON content might be printed with `--json`, ensuring the output remains valid.
+
+@decision d/g68e71dc92ff0-17 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "if let Some(mut around) = scope {" }
+~ The `facts` function now includes an optional `scope` parameter to filter facts based on files, names, or hops
+
+To provide more granular control over which facts are displayed.
+
+@decision d/g68e71dc92ff0-18 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "if r.estimate {" }
+~ The `extract_command` function now estimates the time required for extraction based on commit size and prints …
+
+To give users an idea of how long the extraction process will take, especially when processing multiple commits.
+
+@decision d/g68e71dc92ff0-19 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "if dry_run {" }
+~ The `extract` function now includes a dry-run mode that simulates the extraction process without actually …
+
+To allow users to preview what would be extracted without making any changes.
+
+@decision d/g68e71dc92ff0-20 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "if let Some(path) = c.prompt_file {" }
+~ The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system …
+
+To provide more flexibility in how the check process is conducted.
+
+@decision d/g68e71dc92ff0-21 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "let take = if r.max_commits == 0 {" }
+~ The `extract_command` function now includes a `max_commits` parameter to limit the number of commits processed
+
+To prevent processing an excessive number of commits at once, which could be resource-intensive.
+
+@decision d/g68e71dc92ff0-22 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "let kept = if force {" }
+~ The `extract_command` function now includes a `force` parameter to force re-extraction of already recorded …
+
+To allow users to re-extract commits that have already been recorded.
+
+@decision d/g68e71dc92ff0-23 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "if r.dry_run {" }
+~ The `extract_command` function now includes a `dry_run` parameter to simulate the extraction process without …
+
+To allow users to preview what would be extracted without making any changes.
+
+@decision d/g68e71dc92ff0-24 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "if r.no_corpus_order {" }
+~ The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order
+
+To provide more flexibility in how the check process is conducted.
+
+@decision d/g68e71dc92ff0-25 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "`--json` must be JSON, and nothing else." }
+~ `--json` must be JSON, and nothing else
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.
+
+@decision d/g68e71dc92ff0-19 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "if dry_run {" }
+~ The `extract` function now includes a dry-run mode that simulates the extraction process without actually …
+
+To allow users to preview what would be extracted without making any changes.
+
+@decision d/g68e71dc92ff0-20 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "if let Some(path) = c.prompt_file {" }
+~ The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system …
+
+To provide more flexibility in how the check process is conducted.
+
+@decision d/g68e71dc92ff0-22 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "let kept = if force {" }
+~ The `extract_command` function now includes a `force` parameter to force re-extraction of already recorded …
+
+To allow users to re-extract commits that have already been recorded.
+
+@decision d/g68e71dc92ff0-23 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "if r.dry_run {" }
+~ The `extract_command` function now includes a `dry_run` parameter to simulate the extraction process without …
+
+To allow users to preview what would be extracted without making any changes.
+
+@decision d/g68e71dc92ff0-30 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/tests/extract.rs@68e71dc92ff0 }, "code:kind": act, "ingest:quote": "A `null` where a string was asked for costs that field, not the whole answer" }
+~ A `null` where a string was asked for costs that field, not the whole answer
+
+a model wrote `"quote": null` for one item, serde refused the answer, and the decision it belonged to lost every prerequisite, alternative and consequence — about a minute of a model, thrown away over one field
+
+@artifact-ref a/g68e71dc92ff0-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/src/pass.rs@68e71dc92ff0 }, "code:body_hash": c73549f2d867321e }
+~ crates/cargo-smysl-extract/src/pass.rs::nullable
+
+@artifact-ref a/g68e71dc92ff0-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/tests/extract.rs@68e71dc92ff0 }, "code:body_hash": 6abd598d69d572b4 }
+~ crates/cargo-smysl-extract/tests/extract.rs::a_null_field_does_not_cost_the_whole_answer
+
+@constraint p/g68e71dc92ff0-1-1 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "code:kind": existing-behaviour, "ingest:quote": "Two decisions of twenty-eight lost every prerequisite, alternative and consequence they had, because the model wrote `null` where a string was asked for and serde refused the whole reply:" }
+~ The model wrote `null` where a string was asked for
+
+@constraint p/g68e71dc92ff0-1-2 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "code:kind": existing-behaviour, "ingest:quote": "Two decisions of twenty-eight lost every prerequisite, alternative and consequence they had, because the model wrote `null` where a string was asked for and serde refused the whole reply:" }
+~ serde refuses the whole reply when encountering a null in a field that expects a string
+
+@constraint p/g68e71dc92ff0-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": Two thirds of this tool never calls a model. }
+~ Two thirds of the commands never call a model.
+
+@constraint p/g68e71dc92ff0-2-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": assumption, "ingest:quote": It focuses on the part that needs no model and is worth someone's time today. }
+~ The part that needs no model is worth someone's time today.
+
+@constraint p/g68e71dc92ff0-3-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "`stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit." }
+~ `stale` reads a corpus
+
+@constraint p/g68e71dc92ff0-3-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "A corpus is written by extraction, which asks a model once per commit." }
+~ A corpus is written by extraction
+
+@constraint p/g68e71dc92ff0-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "Six commits labelled blind by the repository owner (73 decisions, 68 prerequisites, 29 alternatives), three systems adjudicated item by item. Precision / recall:" }
+~ The project has measured the performance of the 'extract' command.
+
+@constraint p/g68e71dc92ff0-4-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "| Command | What it does | Needs a model |\n|---|---|---|\n| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |" }
+~ The 'extract' command relies on a model to propose content.
+
+@constraint p/g68e71dc92ff0-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": On a free local model about one flag in ten was correct. }
+~ `check` was right about one flag in ten on a free local model and about nine in ten on a …
+
+`check` was right about one flag in ten on a free local model and about nine in ten on a hosted one.
+
+@constraint p/g68e71dc92ff0-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": assumption, "ingest:quote": `check` ships advisory: it prints findings and exits 0 unless `--strict`. }
+~ `check` is meant to be advisory, not a gate.
+
+@constraint p/g68e71dc92ff0-4-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "| Command | What it does | Needs a model |\n|---|---|---|\n| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |" }
+~ The 'extract' command relies on a model to propose content.
+
+@constraint p/g68e71dc92ff0-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "Six commits labelled blind by the repository owner (73 decisions, 68 prerequisites, 29 alternatives), three systems adjudicated item by item. Precision / recall:" }
+~ The project has measured the performance of the 'extract' command.
+
+@constraint p/g68e71dc92ff0-7-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes content only." }
+~ The tool assigns labels, sources and statuses; a model proposes content only.
+
+@constraint p/g68e71dc92ff0-7-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": A single run never raises a status. }
+~ A single run never raises a status.
+
+@constraint p/g68e71dc92ff0-7-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes content only." }
+~ The tool assigns labels, sources and statuses; a model proposes content only.
+
+@constraint p/g68e71dc92ff0-8-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": Ensures that the tool maintains control over the integrity of the corpus. }
+~ Ensures that the tool maintains control over the integrity of the corpus.
+
+@constraint p/g68e71dc92ff0-9-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": Staleness detection is needed for reasoning that becomes unexamined because the code under it changed. }
+~ Staleness detection needs to be accurate to avoid false positives.
+
+@constraint p/g68e71dc92ff0-9-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": a function that merely moved is not flagged }
+~ Functions that have moved should not be flagged as stale.
+
+@constraint p/g68e71dc92ff0-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes content only." }
+~ The tool assigns labels, sources, and statuses; a model proposes content only.
+
+@constraint p/g68e71dc92ff0-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": Ensures that the tool maintains control over the integrity of the corpus. }
+~ Maintains a transparent and immutable record of review actions.
+
+@constraint p/g68e71dc92ff0-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ The README now leads with the seven deterministic commands rather than with extraction.
+
+@constraint p/g68e71dc92ff0-12-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "`stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit." }
+~ `stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit.
+
+@constraint p/g68e71dc92ff0-12-3 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "A corpus is written by extraction, which asks a model once per commit." }
+~ A corpus is written by extraction, which asks a model once per commit.
+
+@constraint p/g68e71dc92ff0-1-1 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "code:kind": existing-behaviour, "ingest:quote": "Two decisions of twenty-eight lost every prerequisite, alternative and consequence they had, because the model wrote `null` where a string was asked for and serde refused the whole reply:" }
+~ The model wrote `null` where a string was asked for
+
+@constraint p/g68e71dc92ff0-1-2 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "code:kind": existing-behaviour, "ingest:quote": "Two decisions of twenty-eight lost every prerequisite, alternative and consequence they had, because the model wrote `null` where a string was asked for and serde refused the whole reply:" }
+~ serde refuses the whole reply when encountering a null in a field that expects a string
+
+@constraint p/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/g68e71dc92ff0-14-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": A line of full-length revisions run together is split back into the shas somebody meant. }
+~ A line of full-length revisions run together is split back into the shas somebody meant.
+
+@constraint p/g68e71dc92ff0-14-3 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": A line that is not a plausible revision is reported and dropped. }
+~ A line that is not a plausible revision is reported and dropped.
+
+@constraint p/g68e71dc92ff0-15-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "`stale --json` printed which decisions each moved item was behind — on stdout, before the JSON" }
+~ `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON
+
+@constraint p/g68e71dc92ff0-15-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/g68e71dc92ff0-15-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "`stale --json` printed which decisions each moved item was behind — on stdout, before the JSON" }
+~ `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON
+
+@constraint p/g68e71dc92ff0-15-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/g68e71dc92ff0-17-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": The existing `check` function already exists and handles checking for contradictions in the corpus. }
+~ The `facts` function already exists and handles checking for contradictions in the corpus.
+
+@constraint p/g68e71dc92ff0-17-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": assumption, "ingest:quote": There is a need to provide more flexibility in how the check process is conducted. }
+~ There is a need to provide more flexibility in how the check process is conducted.
+
+@constraint p/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/g68e71dc92ff0-18-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": prior-change, "ingest:quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:" }
+~ Minutes a commit of this size is likely to take, from what this project measured on a local 14B.
+
+@constraint p/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/g68e71dc92ff0-19-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ A commit's files are the change; the working tree's are not.
+
+@constraint p/g68e71dc92ff0-19-3 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else.
+
+@constraint p/g68e71dc92ff0-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": The existing `check` function already exists and handles checking for contradictions in the corpus. }
+~ The existing `check` function already exists and handles checking for contradictions in the corpus.
+
+@constraint p/g68e71dc92ff0-17-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": assumption, "ingest:quote": There is a need to provide more flexibility in how the check process is conducted. }
+~ There is a need to provide more flexibility in how the check process is conducted.
+
+@constraint p/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/g68e71dc92ff0-19-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ A commit's files are the change; the working tree's are not.
+
+@constraint p/g68e71dc92ff0-18-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": prior-change, "ingest:quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:" }
+~ Minutes a commit of this size is likely to take, from what this project measured on a local 14B.
+
+@constraint p/g68e71dc92ff0-22-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": A commit's files are the change; the working tree's are not. }
+~ A commit's files are the change; the working tree's are not.
+
+@constraint p/g68e71dc92ff0-22-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as …
+
+Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing.
+
+@constraint p/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/g68e71dc92ff0-23-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": "`--json` must be JSON, and nothing else." }
+~ `--json` must be JSON, and nothing else.
+
+@constraint p/g68e71dc92ff0-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": The existing `check` function already exists and handles checking for contradictions in the corpus. }
+~ The existing `check` function already exists and handles checking for contradictions in the corpus.
+
+@constraint p/g68e71dc92ff0-17-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": assumption, "ingest:quote": There is a need to provide more flexibility in how the check process is conducted. }
+~ There is a need to provide more flexibility in how the check process is conducted.
+
+@constraint p/g68e71dc92ff0-25-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON" }
+~ `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON
+
+@constraint p/g68e71dc92ff0-25-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": "`--json` must be JSON, and nothing else." }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/g68e71dc92ff0-19-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ A commit's files are the change; the working tree's are not.
+
+@constraint p/g68e71dc92ff0-26-3 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it." }
+~ The tool must work as an external cargo subcommand.
+
+@constraint p/g68e71dc92ff0-27-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": The `check` function already exists and handles checking for contradictions in the corpus. }
+~ The existing `check` function already exists and handles checking for contradictions in the corpus.
+
+@constraint p/g68e71dc92ff0-17-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": assumption, "ingest:quote": There is a need to provide more flexibility in how the check process is conducted. }
+~ There is a need to provide more flexibility in how the check process is conducted.
+
+@constraint p/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/g68e71dc92ff0-28-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to …
+
+A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip.
+
+@constraint p/g68e71dc92ff0-28-3 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The model proposes content only, and every quote it gives is checked against the commit.
+
+@constraint p/g68e71dc92ff0-28-4 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop." }
+~ A commit is extracted once per recipe.
+
+@constraint p/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/g68e71dc92ff0-19-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ A commit's files are the change; the working tree's are not.
+
+@constraint p/g68e71dc92ff0-26-3 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": invariant, "ingest:quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it." }
+~ The tool must work as an external cargo subcommand.
+
+@constraint p/g68e71dc92ff0-30-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/tests/extract.rs@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": "a model wrote \"quote\": null for one item" }
+~ a model wrote `null` where a string was asked for
+
+@constraint p/g68e71dc92ff0-30-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/tests/extract.rs@68e71dc92ff0 }, "code:kind": existing-behaviour, "ingest:quote": serde refused the answer }
+~ serde refused the whole reply when encountering a null field
+
+@claim r/g68e71dc92ff0-1-1 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "code:kind": rejected-alternative, "ingest:quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands." }
+~ Rejected: The entire answer is discarded when a null is encountered
+
+@claim r/g68e71dc92ff0-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": "Rejected: Leading with extraction, which asks a model once per commit." }
+~ Rejected: Leading with extraction, which asks a model once per commit.
+
+@claim r/g68e71dc92ff0-3-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": "It also no longer implies `stale` works on a fresh clone. It reads a corpus, and a corpus is written by extraction, which asks a model once per commit." }
+~ Rejected: `stale` could imply it works on a fresh clone without a corpus
+
+@claim r/g68e71dc92ff0-4-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not listing the model-dependent commands with their performance metrics.
+
+@claim r/g68e71dc92ff0-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: `check` could exit with an error code if any flags are found. }
+~ Rejected: `check` could exit with an error code if any flags are found.
+
+@claim r/g68e71dc92ff0-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": "Rejected: `check` could be more strict by default, requiring manual confirmation of findings." }
+~ Rejected: `check` could be more strict by default, requiring manual confirmation of findings.
+
+@claim r/g68e71dc92ff0-6-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The project could downplay the limitations of the 'extract' command.
+
+@claim r/g68e71dc92ff0-6-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The project could not disclose the measured performance of the 'extract' command.
+
+@claim r/g68e71dc92ff0-7-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: One-pass agreement for `check`. }
+~ Rejected: One-pass agreement for `check`.
+
+@claim r/g68e71dc92ff0-8-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The model assigns labels, sources and statuses; the tool proposes content only.
+
+@claim r/g68e71dc92ff0-8-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Both the tool and the model assign labels, sources and statuses.
+
+@claim r/g68e71dc92ff0-9-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Detect staleness by line ranges. }
+~ Rejected: Detect staleness by line ranges.
+
+@claim r/g68e71dc92ff0-10-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not recording reviews as confirmations, withdrawals with reasons, or closures with notes.
+
+@claim r/g68e71dc92ff0-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ Rejected: Leading with extraction, which asks a model once per commit.
+
+@claim r/g68e71dc92ff0-12-2 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": It also no longer implies `stale` works on a fresh clone. }
+~ Rejected: `stale` could imply it works on a fresh clone without a corpus
+
+@claim r/g68e71dc92ff0-13-1 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "code:kind": rejected-alternative, "ingest:quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands." }
+~ Rejected: Handle null values differently in serde
+
+@claim r/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Keep the existing behaviour where rewrites do not always end with a newline. }
+~ Rejected: Keep the existing behaviour where rewrites do not always end with a newline.
+
+@claim r/g68e71dc92ff0-14-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Ensure that the hook also handles files without trailing newlines correctly. }
+~ Rejected: Ensure that the hook also handles files without trailing newlines correctly.
+
+@claim r/g68e71dc92ff0-15-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Keep printing the `behind` information on stdout in addition to the JSON output. }
+~ Rejected: Keep printing the `behind` information on stdout in addition to the JSON output.
+
+@claim r/g68e71dc92ff0-16-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not add a test for JSON validity }
+~ Rejected: Do not add a test for JSON validity
+
+@claim r/g68e71dc92ff0-16-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Add a test that only checks for specific content in the JSON output }
+~ Rejected: Add a test that only checks for specific content in the JSON output
+
+@claim r/g68e71dc92ff0-17-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not include the `scope` parameter and always display all facts. }
+~ Rejected: Do not include the `scope` parameter and always display all facts.
+
+@claim r/g68e71dc92ff0-17-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": "Rejected: Include a different filtering mechanism that does not use files, names, or hops." }
+~ Rejected: Include a different filtering mechanism that does not use files, names, or hops.
+
+@claim r/g68e71dc92ff0-18-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not estimate the time required for extraction. }
+~ Rejected: Do not estimate the time required for extraction.
+
+@claim r/g68e71dc92ff0-18-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": "Rejected: Estimate the time based on a different metric (e.g., number of files)." }
+~ Rejected: Estimate the time based on a different metric (e.g., number of files).
+
+@claim r/g68e71dc92ff0-19-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not include a dry-run mode. }
+~ Rejected: Do not include a dry-run mode.
+
+@claim r/g68e71dc92ff0-19-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Include a dry-run mode that only simulates part of the extraction process. }
+~ Rejected: Include a dry-run mode that only simulates part of the extraction process.
+
+@claim r/g68e71dc92ff0-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Keep the existing `check` function without any changes. }
+~ Rejected: Keep the existing `check` function without any changes.
+
+@claim r/g68e71dc92ff0-20-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Add a different type of customization option instead of a prompt file. }
+~ Rejected: Add a different type of customization option instead of a prompt file.
+
+@claim r/g68e71dc92ff0-21-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include the `max_commits` parameter and allow processing any number of commits.
+
+@claim r/g68e71dc92ff0-21-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Set a different default value for the `max_commits` parameter.
+
+@claim r/g68e71dc92ff0-22-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": To allow users to re-extract commits that have already been recorded. }
+~ Rejected: Do not include the `force` parameter.
+
+@claim r/g68e71dc92ff0-22-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": To allow users to re-extract commits that have already been recorded. }
+~ Rejected: Include a different mechanism for re-extraction.
+
+@claim r/g68e71dc92ff0-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Keep the existing behaviour where rewrites do not always end with a newline. }
+~ Rejected: Keep the existing behaviour where rewrites do not always end with a newline.
+
+@claim r/g68e71dc92ff0-14-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Ensure that the hook also handles files without trailing newlines correctly. }
+~ Rejected: Ensure that the hook also handles files without trailing newlines correctly.
+
+@claim r/g68e71dc92ff0-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Keep the existing `check` function without any changes. }
+~ Rejected: Keep the existing `check` function without any changes.
+
+@claim r/g68e71dc92ff0-20-2 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Add a different type of customization option instead of a prompt file. }
+~ Rejected: Add a different type of customization option instead of a prompt file.
+
+@claim r/g68e71dc92ff0-25-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "code:kind": rejected-alternative, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ Rejected: Keep printing the `behind` information on stdout in addition to the JSON output.
+
+@claim r/g68e71dc92ff0-26-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include a dry-run mode.
+
+@claim r/g68e71dc92ff0-26-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include a dry-run mode that only simulates part of the extraction process.
+
+@claim r/g68e71dc92ff0-27-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the existing `check` function without any changes.
+
+@claim r/g68e71dc92ff0-27-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a different type of customization option instead of a prompt file.
+
+@claim r/g68e71dc92ff0-28-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Continue to handle extraction of commits without a force parameter.
+
+@claim r/g68e71dc92ff0-28-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Handle re-extraction of already recorded commits in a separate function.
+
+@claim r/g68e71dc92ff0-26-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include a dry-run mode.
+
+@claim r/g68e71dc92ff0-26-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include a dry-run mode that only simulates part of the extraction process.
+
+@claim r/g68e71dc92ff0-30-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: the whole answer is discarded when a null field is encountered
+
+@claim q/g68e71dc92ff0-1-1 { status: inferred, grounds: [d/g68e71dc92ff0-1], "code:kind": anticipated, "ingest:quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands." }
+~ A model that gives a null in a field loses only that field, not the entire answer
+
+@evidence e/g68e71dc92ff0-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ Check: The README now leads with the seven deterministic commands rather than with extraction.
+
+@finding q/g68e71dc92ff0-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ README.md is updated to lead with the seven deterministic commands.
+
+@claim q/g68e71dc92ff0-3-1 { status: inferred, grounds: [d/g68e71dc92ff0-3], "code:kind": anticipated, "ingest:quote": "It also no longer implies `stale` works on a fresh clone. It reads a corpus, and a corpus is written by extraction, which asks a model once per commit." }
+~ Clarifies that `stale` requires a pre-existing corpus
+
+@claim q/g68e71dc92ff0-4-1 { status: inferred, grounds: [d/g68e71dc92ff0-4], "code:kind": anticipated, "ingest:quote": "The model-dependent third is listed with what it was measured at, model named, in the same table." }
+~ Provides transparency about the performance of model-dependent commands.
+
+@claim q/g68e71dc92ff0-5-1 { status: inferred, grounds: [d/g68e71dc92ff0-5], "code:kind": anticipated, "ingest:quote": `check` ships advisory: it prints findings and exits 0 unless `--strict`. }
+~ Users are advised to manually review the findings printed by `check`.
+
+@claim q/g68e71dc92ff0-5-2 { status: inferred, grounds: [d/g68e71dc92ff0-5], "code:kind": anticipated, "ingest:quote": `check` ships advisory: it prints findings and exits 0 unless `--strict`. }
+~ The tool does not enforce any action based on the findings of `check`.
+
+@claim q/g68e71dc92ff0-6-1 { status: inferred, grounds: [d/g68e71dc92ff0-6], "code:kind": anticipated, "ingest:quote": "Decisions are the reliable kind; the systems differ in recall, not correctness. **Prerequisites are the weak kind** — the system that finds most of them is right 41% of the time, and the one that is right 88% of the time finds a fifth. Alternatives have the worst precision of the three." }
+~ Users are informed about the limitations of the 'extract' command, which helps them understand its reliability …
+
+Users are informed about the limitations of the 'extract' command, which helps them understand its reliability and decide whether to use it.
+
+@evidence e/g68e71dc92ff0-7-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ Check: What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on …
+
+Check: What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default.
+
+@finding q/g68e71dc92ff0-7-1 { status: speculative, "ingest:quote": To improve the precision of findings by ensuring two independent runs agree. }
+~ The precision of findings is improved by ensuring two independent runs agree.
+
+@claim q/g68e71dc92ff0-8-1 { status: inferred, grounds: [d/g68e71dc92ff0-8], "code:kind": anticipated, "ingest:quote": Ensures that the tool maintains control over the integrity of the corpus. }
+~ The integrity of the corpus is maintained by the tool.
+
+@claim q/g68e71dc92ff0-8-2 { status: inferred, grounds: [d/g68e71dc92ff0-8], "code:kind": anticipated, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes content only." }
+~ The model's proposals are limited to content only, without affecting labels, sources, or statuses.
+
+@evidence e/g68e71dc92ff0-9-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "ingest:quote": a function that merely moved is not flagged }
+~ Check: a function that merely moved is not flagged
+
+@finding q/g68e71dc92ff0-9-1 { status: cited, source: { kind: file, ref: .smysl/commits/856a434cf607.smy@68e71dc92ff0 }, "ingest:quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Functions that have merely moved are not flagged as stale.
+
+@claim q/g68e71dc92ff0-10-1 { status: inferred, grounds: [d/g68e71dc92ff0-10], "code:kind": anticipated, "ingest:quote": Maintains a transparent and immutable record of review actions. }
+~ The tool maintains a transparent and immutable record of review actions.
+
+@claim q/g68e71dc92ff0-12-1 { status: inferred, grounds: [d/g68e71dc92ff0-12], "code:kind": anticipated, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says. }
+~ The tool does not trust a cloned corpus as an established fact.
+
+@evidence e/g68e71dc92ff0-13-1 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "ingest:quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands." }
+~ Check: Every field of every answer now reads a null as the absent value it is — which each of …
+
+Check: Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands.
+
+@finding q/g68e71dc92ff0-13-1 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "ingest:quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands." }
+~ A model that gives a bad field loses that field
+
+@claim q/g68e71dc92ff0-14-1 { status: inferred, grounds: [d/g68e71dc92ff0-14], "code:kind": anticipated, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Rewrites now always end with a newline, ensuring consistent file handling by both the queue and the hook.
+
+@claim q/g68e71dc92ff0-14-2 { status: inferred, grounds: [d/g68e71dc92ff0-14], "code:kind": anticipated, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Reading the file will repair lines that do not have trailing newlines, splitting them correctly.
+
+@claim q/g68e71dc92ff0-14-3 { status: inferred, grounds: [d/g68e71dc92ff0-14], "code:kind": anticipated, "ingest:quote": "A line that is not a plausible revision is reported and dropped, because guessing is worse." }
+~ Lines that are not plausible revisions will be reported and dropped.
+
+@evidence e/g68e71dc92ff0-15-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "ingest:quote": `stale --json` now includes the `behind` field in JSON output instead of printing it on stdout }
+~ Check: `stale --json` now includes the `behind` field in JSON output instead of printing it on stdout
+
+@finding q/g68e71dc92ff0-15-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "ingest:quote": `stale --json` now includes the `behind` field in JSON output instead of printing it on stdout }
+~ `stale --json` now includes the `behind` field in JSON output instead of printing it on stdout
+
+@evidence e/g68e71dc92ff0-16-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Check: A test runs every `--json` command in this repository, which records its own commits, and requires the …
+
+Check: A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@finding q/g68e71dc92ff0-16-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "ingest:quote": A test is added to ensure that every `--json` command produces valid JSON output }
+~ A test runs every `--json` command in this repository, which records its own commits, and requires the output …
+
+A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@claim q/g68e71dc92ff0-17-1 { status: inferred, grounds: [d/g68e71dc92ff0-17], "code:kind": anticipated, "ingest:quote": "To provide more granular control over which facts are displayed, the `facts` function was updated to accept a `scope` parameter that allows filtering by specific criteria." }
+~ Users can now filter which facts are displayed based on specific criteria such as files, names, or hops.
+
+@claim q/g68e71dc92ff0-18-1 { status: inferred, grounds: [d/g68e71dc92ff0-18], "code:kind": anticipated, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Users receive an estimate of how long the extraction process will take.
+
+@claim q/g68e71dc92ff0-19-1 { status: inferred, grounds: [d/g68e71dc92ff0-19], "code:kind": anticipated, "ingest:quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function." }
+~ Users can now preview what would be extracted without making any changes.
+
+@claim q/g68e71dc92ff0-20-1 { status: inferred, grounds: [d/g68e71dc92ff0-20], "code:kind": anticipated, "ingest:quote": The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system … }
+~ Users can now specify a custom system prompt file when using the `check` function, providing more flexibility …
+
+Users can now specify a custom system prompt file when using the `check` function, providing more flexibility in how the check process is conducted.
+
+@claim q/g68e71dc92ff0-21-1 { status: inferred, grounds: [d/g68e71dc92ff0-21], "code:kind": anticipated, "ingest:quote": "To prevent processing an excessive number of commits at once, which could be resource-intensive." }
+~ Users can now limit the number of commits processed at once, which helps manage resource usage.
+
+@claim q/g68e71dc92ff0-22-1 { status: inferred, grounds: [d/g68e71dc92ff0-22], "code:kind": anticipated, "ingest:quote": To allow users to re-extract commits that have already been recorded. }
+~ Users can now force the re-extraction of already recorded commits.
+
+@claim q/g68e71dc92ff0-22-2 { status: inferred, grounds: [d/g68e71dc92ff0-22], "code:kind": anticipated, "ingest:quote": To allow users to re-extract commits that have already been recorded. }
+~ The `extract_command` function's behavior is extended to include a `force` parameter.
+
+@claim q/g68e71dc92ff0-23-1 { status: inferred, grounds: [d/g68e71dc92ff0-23], "code:kind": anticipated, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Rewrites now always end with a newline, ensuring consistent file handling by both the queue and the hook.
+
+@claim q/g68e71dc92ff0-23-2 { status: inferred, grounds: [d/g68e71dc92ff0-23], "code:kind": anticipated, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Reading the file will repair lines that do not have trailing newlines, splitting them correctly.
+
+@claim q/g68e71dc92ff0-23-3 { status: inferred, grounds: [d/g68e71dc92ff0-23], "code:kind": anticipated, "ingest:quote": "A line that is not a plausible revision is reported and dropped, because guessing is worse." }
+~ Lines that are not plausible revisions will be reported and dropped.
+
+@claim q/g68e71dc92ff0-24-1 { status: inferred, grounds: [d/g68e71dc92ff0-24], "code:kind": anticipated, "ingest:quote": The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order when checking for contradictions. }
+~ Users can now choose whether to disable corpus order during the check process, providing more flexibility.
+
+@evidence e/g68e71dc92ff0-16-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Check: A test runs every `--json` command in this repository, which records its own commits, and requires the …
+
+Check: A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@finding q/g68e71dc92ff0-25-1 { status: cited, source: { kind: file, ref: .smysl/commits/f4a0deceb63d.smy@68e71dc92ff0 }, "ingest:quote": "`--json` must be JSON, and nothing else." }
+~ `--json` outputs only valid JSON
+
+@claim q/g68e71dc92ff0-19-1 { status: inferred, grounds: [d/g68e71dc92ff0-19], "code:kind": anticipated, "ingest:quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function." }
+~ Users can now preview what would be extracted without making any changes.
+
+@claim q/g68e71dc92ff0-26-2 { status: inferred, grounds: [d/g68e71dc92ff0-19], "code:kind": anticipated, "ingest:quote": "let code = extract(args, Some(sha), r.force, r.dry_run, how);" }
+~ The `dry_run` parameter is used in the `extract` function to determine if recording should occur.
+
+@claim q/g68e71dc92ff0-27-1 { status: inferred, grounds: [d/g68e71dc92ff0-20], "code:kind": anticipated, "ingest:quote": The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system prompt file. }
+~ The `check` function now accepts an optional `prompt_file` parameter that allows specifying a custom system …
+
+The `check` function now accepts an optional `prompt_file` parameter that allows specifying a custom system prompt file.
+
+@claim q/g68e71dc92ff0-28-1 { status: inferred, grounds: [d/g68e71dc92ff0-22], "code:kind": anticipated, "ingest:quote": "To allow users to re-extract commits that have already been recorded, a `force` parameter was added to the `extract_command` function." }
+~ Users can now force re-extraction of already recorded commits.
+
+@claim q/g68e71dc92ff0-29-1 { status: inferred, grounds: [d/g68e71dc92ff0-23], "code:kind": anticipated, "ingest:quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function." }
+~ Users can now preview what would be extracted without making any changes.
+
+@claim q/g68e71dc92ff0-29-2 { status: inferred, grounds: [d/g68e71dc92ff0-23], "code:kind": anticipated, "ingest:quote": "let code = extract(args, Some(sha), r.force, r.dry_run, how);" }
+~ The `dry_run` parameter is used in the `extract` function to determine if recording should occur.
+
+@evidence e/g68e71dc92ff0-30-1 { status: cited, source: { kind: doc, ref: git:68e71dc92ff0bb7750b4992ac4c24f856569c8cd }, "ingest:quote": "lost every prerequisite, alternative and consequence" }
+~ Check: lost every prerequisite, alternative and consequence
+
+@finding q/g68e71dc92ff0-30-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/tests/extract.rs@68e71dc92ff0 }, "ingest:quote": "the decision it belonged to lost every prerequisite, alternative and consequence" }
+~ every prerequisite, alternative and consequence of the decision are lost
+
+@rel d/g68e71dc92ff0-30 --x.code/touches--> a/g68e71dc92ff0-2
+
+@rel p/g68e71dc92ff0-1-1 --conditions--> d/g68e71dc92ff0-1
+
+@rel p/g68e71dc92ff0-1-2 --conditions--> d/g68e71dc92ff0-1
+
+@rel p/g68e71dc92ff0-2-1 --conditions--> d/g68e71dc92ff0-2
+
+@rel p/g68e71dc92ff0-2-2 --conditions--> d/g68e71dc92ff0-2
+
+@rel p/g68e71dc92ff0-3-1 --conditions--> d/g68e71dc92ff0-3
+
+@rel p/g68e71dc92ff0-3-2 --conditions--> d/g68e71dc92ff0-3
+
+@rel p/g68e71dc92ff0-4-1 --conditions--> d/g68e71dc92ff0-4
+
+@rel p/g68e71dc92ff0-4-2 --conditions--> d/g68e71dc92ff0-4
+
+@rel p/g68e71dc92ff0-5-1 --conditions--> d/g68e71dc92ff0-5
+
+@rel p/g68e71dc92ff0-5-2 --conditions--> d/g68e71dc92ff0-5
+
+@rel p/g68e71dc92ff0-4-2 --conditions--> d/g68e71dc92ff0-6
+
+@rel p/g68e71dc92ff0-4-1 --conditions--> d/g68e71dc92ff0-6
+
+@rel p/g68e71dc92ff0-7-1 --conditions--> d/g68e71dc92ff0-7
+
+@rel p/g68e71dc92ff0-7-2 --conditions--> d/g68e71dc92ff0-7
+
+@rel p/g68e71dc92ff0-7-1 --conditions--> d/g68e71dc92ff0-8
+
+@rel p/g68e71dc92ff0-8-2 --conditions--> d/g68e71dc92ff0-8
+
+@rel p/g68e71dc92ff0-9-1 --conditions--> d/g68e71dc92ff0-9
+
+@rel p/g68e71dc92ff0-9-2 --conditions--> d/g68e71dc92ff0-9
+
+@rel p/g68e71dc92ff0-10-1 --conditions--> d/g68e71dc92ff0-10
+
+@rel p/g68e71dc92ff0-10-2 --conditions--> d/g68e71dc92ff0-10
+
+@rel p/g68e71dc92ff0-12-1 --conditions--> d/g68e71dc92ff0-12
+
+@rel p/g68e71dc92ff0-12-2 --conditions--> d/g68e71dc92ff0-12
+
+@rel p/g68e71dc92ff0-12-3 --conditions--> d/g68e71dc92ff0-12
+
+@rel p/g68e71dc92ff0-1-1 --conditions--> d/g68e71dc92ff0-13
+
+@rel p/g68e71dc92ff0-1-2 --conditions--> d/g68e71dc92ff0-13
+
+@rel p/g68e71dc92ff0-14-1 --conditions--> d/g68e71dc92ff0-14
+
+@rel p/g68e71dc92ff0-14-2 --conditions--> d/g68e71dc92ff0-14
+
+@rel p/g68e71dc92ff0-14-3 --conditions--> d/g68e71dc92ff0-14
+
+@rel p/g68e71dc92ff0-15-1 --conditions--> d/g68e71dc92ff0-15
+
+@rel p/g68e71dc92ff0-15-2 --conditions--> d/g68e71dc92ff0-15
+
+@rel p/g68e71dc92ff0-15-1 --conditions--> d/g68e71dc92ff0-16
+
+@rel p/g68e71dc92ff0-15-2 --conditions--> d/g68e71dc92ff0-16
+
+@rel p/g68e71dc92ff0-17-1 --conditions--> d/g68e71dc92ff0-17
+
+@rel p/g68e71dc92ff0-17-2 --conditions--> d/g68e71dc92ff0-17
+
+@rel p/g68e71dc92ff0-14-1 --conditions--> d/g68e71dc92ff0-18
+
+@rel p/g68e71dc92ff0-18-2 --conditions--> d/g68e71dc92ff0-18
+
+@rel p/g68e71dc92ff0-14-1 --conditions--> d/g68e71dc92ff0-19
+
+@rel p/g68e71dc92ff0-19-2 --conditions--> d/g68e71dc92ff0-19
+
+@rel p/g68e71dc92ff0-19-3 --conditions--> d/g68e71dc92ff0-19
+
+@rel p/g68e71dc92ff0-20-1 --conditions--> d/g68e71dc92ff0-20
+
+@rel p/g68e71dc92ff0-17-2 --conditions--> d/g68e71dc92ff0-20
+
+@rel p/g68e71dc92ff0-14-1 --conditions--> d/g68e71dc92ff0-21
+
+@rel p/g68e71dc92ff0-19-2 --conditions--> d/g68e71dc92ff0-21
+
+@rel p/g68e71dc92ff0-18-2 --conditions--> d/g68e71dc92ff0-21
+
+@rel p/g68e71dc92ff0-22-1 --conditions--> d/g68e71dc92ff0-22
+
+@rel p/g68e71dc92ff0-22-2 --conditions--> d/g68e71dc92ff0-22
+
+@rel p/g68e71dc92ff0-14-1 --conditions--> d/g68e71dc92ff0-23
+
+@rel p/g68e71dc92ff0-23-2 --conditions--> d/g68e71dc92ff0-23
+
+@rel p/g68e71dc92ff0-20-1 --conditions--> d/g68e71dc92ff0-24
+
+@rel p/g68e71dc92ff0-17-2 --conditions--> d/g68e71dc92ff0-24
+
+@rel p/g68e71dc92ff0-25-1 --conditions--> d/g68e71dc92ff0-25
+
+@rel p/g68e71dc92ff0-25-2 --conditions--> d/g68e71dc92ff0-25
+
+@rel p/g68e71dc92ff0-14-1 --conditions--> d/g68e71dc92ff0-19
+
+@rel p/g68e71dc92ff0-19-2 --conditions--> d/g68e71dc92ff0-19
+
+@rel p/g68e71dc92ff0-26-3 --conditions--> d/g68e71dc92ff0-19
+
+@rel p/g68e71dc92ff0-27-1 --conditions--> d/g68e71dc92ff0-20
+
+@rel p/g68e71dc92ff0-17-2 --conditions--> d/g68e71dc92ff0-20
+
+@rel p/g68e71dc92ff0-14-1 --conditions--> d/g68e71dc92ff0-22
+
+@rel p/g68e71dc92ff0-28-2 --conditions--> d/g68e71dc92ff0-22
+
+@rel p/g68e71dc92ff0-28-3 --conditions--> d/g68e71dc92ff0-22
+
+@rel p/g68e71dc92ff0-28-4 --conditions--> d/g68e71dc92ff0-22
+
+@rel p/g68e71dc92ff0-14-1 --conditions--> d/g68e71dc92ff0-23
+
+@rel p/g68e71dc92ff0-19-2 --conditions--> d/g68e71dc92ff0-23
+
+@rel p/g68e71dc92ff0-26-3 --conditions--> d/g68e71dc92ff0-23
+
+@rel p/g68e71dc92ff0-30-1 --conditions--> d/g68e71dc92ff0-30
+
+@rel p/g68e71dc92ff0-30-2 --conditions--> d/g68e71dc92ff0-30
+
+@rel r/g68e71dc92ff0-1-1 --contrasts--> d/g68e71dc92ff0-1
+
+@rel r/g68e71dc92ff0-2-1 --contrasts--> d/g68e71dc92ff0-2
+
+@rel r/g68e71dc92ff0-3-1 --contrasts--> d/g68e71dc92ff0-3
+
+@rel r/g68e71dc92ff0-4-1 --contrasts--> d/g68e71dc92ff0-4
+
+@rel r/g68e71dc92ff0-5-1 --contrasts--> d/g68e71dc92ff0-5
+
+@rel r/g68e71dc92ff0-5-2 --contrasts--> d/g68e71dc92ff0-5
+
+@rel r/g68e71dc92ff0-6-1 --contrasts--> d/g68e71dc92ff0-6
+
+@rel r/g68e71dc92ff0-6-2 --contrasts--> d/g68e71dc92ff0-6
+
+@rel r/g68e71dc92ff0-7-1 --contrasts--> d/g68e71dc92ff0-7
+
+@rel r/g68e71dc92ff0-8-1 --contrasts--> d/g68e71dc92ff0-8
+
+@rel r/g68e71dc92ff0-8-2 --contrasts--> d/g68e71dc92ff0-8
+
+@rel r/g68e71dc92ff0-9-1 --contrasts--> d/g68e71dc92ff0-9
+
+@rel r/g68e71dc92ff0-10-1 --contrasts--> d/g68e71dc92ff0-10
+
+@rel r/g68e71dc92ff0-12-1 --contrasts--> d/g68e71dc92ff0-12
+
+@rel r/g68e71dc92ff0-12-2 --contrasts--> d/g68e71dc92ff0-12
+
+@rel r/g68e71dc92ff0-13-1 --contrasts--> d/g68e71dc92ff0-13
+
+@rel r/g68e71dc92ff0-14-1 --contrasts--> d/g68e71dc92ff0-14
+
+@rel r/g68e71dc92ff0-14-2 --contrasts--> d/g68e71dc92ff0-14
+
+@rel r/g68e71dc92ff0-15-1 --contrasts--> d/g68e71dc92ff0-15
+
+@rel r/g68e71dc92ff0-16-1 --contrasts--> d/g68e71dc92ff0-16
+
+@rel r/g68e71dc92ff0-16-2 --contrasts--> d/g68e71dc92ff0-16
+
+@rel r/g68e71dc92ff0-17-1 --contrasts--> d/g68e71dc92ff0-17
+
+@rel r/g68e71dc92ff0-17-2 --contrasts--> d/g68e71dc92ff0-17
+
+@rel r/g68e71dc92ff0-18-1 --contrasts--> d/g68e71dc92ff0-18
+
+@rel r/g68e71dc92ff0-18-2 --contrasts--> d/g68e71dc92ff0-18
+
+@rel r/g68e71dc92ff0-19-1 --contrasts--> d/g68e71dc92ff0-19
+
+@rel r/g68e71dc92ff0-19-2 --contrasts--> d/g68e71dc92ff0-19
+
+@rel r/g68e71dc92ff0-20-1 --contrasts--> d/g68e71dc92ff0-20
+
+@rel r/g68e71dc92ff0-20-2 --contrasts--> d/g68e71dc92ff0-20
+
+@rel r/g68e71dc92ff0-21-1 --contrasts--> d/g68e71dc92ff0-21
+
+@rel r/g68e71dc92ff0-21-2 --contrasts--> d/g68e71dc92ff0-21
+
+@rel r/g68e71dc92ff0-22-1 --contrasts--> d/g68e71dc92ff0-22
+
+@rel r/g68e71dc92ff0-22-2 --contrasts--> d/g68e71dc92ff0-22
+
+@rel r/g68e71dc92ff0-14-1 --contrasts--> d/g68e71dc92ff0-23
+
+@rel r/g68e71dc92ff0-14-2 --contrasts--> d/g68e71dc92ff0-23
+
+@rel r/g68e71dc92ff0-20-1 --contrasts--> d/g68e71dc92ff0-24
+
+@rel r/g68e71dc92ff0-20-2 --contrasts--> d/g68e71dc92ff0-24
+
+@rel r/g68e71dc92ff0-25-1 --contrasts--> d/g68e71dc92ff0-25
+
+@rel r/g68e71dc92ff0-26-1 --contrasts--> d/g68e71dc92ff0-19
+
+@rel r/g68e71dc92ff0-26-2 --contrasts--> d/g68e71dc92ff0-19
+
+@rel r/g68e71dc92ff0-27-1 --contrasts--> d/g68e71dc92ff0-20
+
+@rel r/g68e71dc92ff0-27-2 --contrasts--> d/g68e71dc92ff0-20
+
+@rel r/g68e71dc92ff0-28-1 --contrasts--> d/g68e71dc92ff0-22
+
+@rel r/g68e71dc92ff0-28-2 --contrasts--> d/g68e71dc92ff0-22
+
+@rel r/g68e71dc92ff0-26-1 --contrasts--> d/g68e71dc92ff0-23
+
+@rel r/g68e71dc92ff0-26-2 --contrasts--> d/g68e71dc92ff0-23
+
+@rel r/g68e71dc92ff0-30-1 --contrasts--> d/g68e71dc92ff0-30
+
+@rel d/g68e71dc92ff0-1 --causes--> q/g68e71dc92ff0-1-1
+
+@rel e/g68e71dc92ff0-2-1 --backs--> q/g68e71dc92ff0-2-1
+
+@rel d/g68e71dc92ff0-2 --causes--> q/g68e71dc92ff0-2-1
+
+@rel d/g68e71dc92ff0-3 --causes--> q/g68e71dc92ff0-3-1
+
+@rel d/g68e71dc92ff0-4 --causes--> q/g68e71dc92ff0-4-1
+
+@rel d/g68e71dc92ff0-5 --causes--> q/g68e71dc92ff0-5-1
+
+@rel d/g68e71dc92ff0-5 --causes--> q/g68e71dc92ff0-5-2
+
+@rel d/g68e71dc92ff0-6 --causes--> q/g68e71dc92ff0-6-1
+
+@rel e/g68e71dc92ff0-7-1 --backs--> q/g68e71dc92ff0-7-1
+
+@rel d/g68e71dc92ff0-7 --causes--> q/g68e71dc92ff0-7-1
+
+@rel d/g68e71dc92ff0-8 --causes--> q/g68e71dc92ff0-8-1
+
+@rel d/g68e71dc92ff0-8 --causes--> q/g68e71dc92ff0-8-2
+
+@rel e/g68e71dc92ff0-9-1 --backs--> q/g68e71dc92ff0-9-1
+
+@rel d/g68e71dc92ff0-9 --causes--> q/g68e71dc92ff0-9-1
+
+@rel d/g68e71dc92ff0-10 --causes--> q/g68e71dc92ff0-10-1
+
+@rel d/g68e71dc92ff0-12 --causes--> q/g68e71dc92ff0-12-1
+
+@rel e/g68e71dc92ff0-13-1 --backs--> q/g68e71dc92ff0-13-1
+
+@rel d/g68e71dc92ff0-13 --causes--> q/g68e71dc92ff0-13-1
+
+@rel d/g68e71dc92ff0-14 --causes--> q/g68e71dc92ff0-14-1
+
+@rel d/g68e71dc92ff0-14 --causes--> q/g68e71dc92ff0-14-2
+
+@rel d/g68e71dc92ff0-14 --causes--> q/g68e71dc92ff0-14-3
+
+@rel e/g68e71dc92ff0-15-1 --backs--> q/g68e71dc92ff0-15-1
+
+@rel d/g68e71dc92ff0-15 --causes--> q/g68e71dc92ff0-15-1
+
+@rel e/g68e71dc92ff0-16-1 --backs--> q/g68e71dc92ff0-16-1
+
+@rel d/g68e71dc92ff0-16 --causes--> q/g68e71dc92ff0-16-1
+
+@rel d/g68e71dc92ff0-17 --causes--> q/g68e71dc92ff0-17-1
+
+@rel d/g68e71dc92ff0-18 --causes--> q/g68e71dc92ff0-18-1
+
+@rel d/g68e71dc92ff0-19 --causes--> q/g68e71dc92ff0-19-1
+
+@rel d/g68e71dc92ff0-20 --causes--> q/g68e71dc92ff0-20-1
+
+@rel d/g68e71dc92ff0-21 --causes--> q/g68e71dc92ff0-21-1
+
+@rel d/g68e71dc92ff0-22 --causes--> q/g68e71dc92ff0-22-1
+
+@rel d/g68e71dc92ff0-22 --causes--> q/g68e71dc92ff0-22-2
+
+@rel d/g68e71dc92ff0-23 --causes--> q/g68e71dc92ff0-23-1
+
+@rel d/g68e71dc92ff0-23 --causes--> q/g68e71dc92ff0-23-2
+
+@rel d/g68e71dc92ff0-23 --causes--> q/g68e71dc92ff0-23-3
+
+@rel d/g68e71dc92ff0-24 --causes--> q/g68e71dc92ff0-24-1
+
+@rel e/g68e71dc92ff0-16-1 --backs--> q/g68e71dc92ff0-25-1
+
+@rel d/g68e71dc92ff0-25 --causes--> q/g68e71dc92ff0-25-1
+
+@rel d/g68e71dc92ff0-19 --causes--> q/g68e71dc92ff0-19-1
+
+@rel d/g68e71dc92ff0-19 --causes--> q/g68e71dc92ff0-26-2
+
+@rel d/g68e71dc92ff0-20 --causes--> q/g68e71dc92ff0-27-1
+
+@rel d/g68e71dc92ff0-22 --causes--> q/g68e71dc92ff0-28-1
+
+@rel d/g68e71dc92ff0-23 --causes--> q/g68e71dc92ff0-29-1
+
+@rel d/g68e71dc92ff0-23 --causes--> q/g68e71dc92ff0-29-2
+
+@rel e/g68e71dc92ff0-30-1 --backs--> q/g68e71dc92ff0-30-1
+
+@rel d/g68e71dc92ff0-30 --causes--> q/g68e71dc92ff0-30-1
