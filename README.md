@@ -1,38 +1,77 @@
 # cargo-smysl
 
-A queryable, code-anchored record of the decisions behind a Rust codebase — with staleness detection, and
-an honest account of what the model-dependent part is worth.
+Keeps the reasoning behind your code, next to your code, and tells you when it has gone out of date.
 
-**Most of it needs no model.** Seven of the ten commands are deterministic: they read your code and your
-git history, and cost nothing to run.
+## The problem
 
-```sh
-cargo smysl stale        # which recorded reasoning rests on code that has since changed
-cargo smysl why <label>  # what rests on a claim, across commits
-cargo smysl facts --scope --name retrieve   # what a model should be shown about a change
-cargo smysl bench        # measure a model on your own commits, before trusting it
+Six months on, the code is still there and the reasoning is gone. A dependency pinned to an exact
+version. A lock held across an `await`. A test that builds its own fixture instead of using the shared
+one. Each was a decision that rested on something being true at the time — the registry keeps that
+version, the other caller is single-threaded, two test binaries raced over a temp file — and none of it
+is in the code, because code says *what*, not *what this assumed*.
+
+Some of it is in the commit message. But a message is prose in a log: you cannot ask it "what else rests
+on this being single-threaded?", and it never tells you when the ground under an assumption moved.
+
+## What you get
+
+**Read a commit's reasoning back, with the option that was rejected:**
+
+```
+$ cargo smysl why --commit 4b6a6cf
+
+d/g4b6a6cfe6057-1 [cited]
+  `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue`
+  and nothing else.
+  because: To ensure extraction is done at a moment chosen by a person, without failing a commit
+  needs: extraction is 7 to 30 minutes [cited]
+  needs: post-commit hook should not fail a commit [cited]
+  not: Rejected: The post-commit hook could perform extraction immediately. [cited]
 ```
 
-`facts` and `bench` work on any repository today. `why` and `stale` read a corpus, and a corpus is written
-by `extract`, which does ask a model — once per commit, and you choose when. After that, reading it back
-and watching it go stale costs nothing.
+`[cited]` means the tool found those words in the commit. Anything it could not find is marked
+`speculative`, so you always know which lines the record earned.
 
-`stale` is the reason to bother: it compares by item and body hash, so a function that merely moved is not
-flagged and one whose body changed is.
+**Find out what your refactor left unexamined:**
 
-**The other three — `extract`, `check`, `evidence` — ask a model**, and this README publishes what they
-were measured at, naming the model every time. `check` ships advisory: on a free local model about one
-flag in ten was correct.
+```
+$ cargo smysl stale
 
-**What it promises:** that each command does what its design says, with the measured figures printed where
-a model is involved. Acting on what it reports belongs to whoever reads it — a person, a CI step, a hook.
+8 of 12 recorded commit(s) rest on code that has moved
+  Retrieval::default changed in crates/cargo-smysl-verdict/src/matching.rs
+  not_yet is no longer in crates/cargo-smysl/src/commands.rs
+```
+
+Not "your code is wrong" — nobody has *checked* whether those decisions still hold. Comparison is by
+item and by a hash of its body, so a function that merely moved is not flagged.
+
+## Pick it up if
+
+- you maintain something whose decisions outlive the people who made them, and your commit messages
+  already carry reasons;
+- you have enough history that `git log | grep` has stopped working;
+- you want to know which recorded assumptions a refactor just invalidated;
+- you want to measure an LLM on *your* code before trusting one — `cargo smysl bench` does only that,
+  and needs nothing else.
+
+## Skip it if
+
+- your commit messages are one-liners — there is nothing to extract;
+- you want automated review: `check` was right about **one flag in ten** on a free local model, and it
+  ships advisory for that reason;
+- you will not spend minutes per commit on extraction. It is the one expensive step, it runs when you
+  choose, and everything downstream of it is free.
+
+Seven of the ten commands never call a model. The three that do are listed below with what they were
+measured at, naming the model every time — including the four experiments that failed.
 
 **What it is not:** a transcript store, a static analyzer, or an oracle that marks a claim true because a
-model said so. A model proposes content; the tool assigns every label, source and status, and checks every
-quote against the commit it came from.
+model said so. A model proposes wording; the tool assigns every label, source and status, checks every
+quote against the commit, and leaves anything a model proposed waiting for a person before it counts as
+evidence.
 
-**Is it for you?** [`docs/what-this-is-for.md`](docs/what-this-is-for.md) answers that, including the
-measurement where `git log` beat this tool 10–0 on single-commit questions, and what survives it.
+[`docs/what-this-is-for.md`](docs/what-this-is-for.md) is the longer answer, including the measurement
+where `git log` beat this tool 10–0 on single-commit questions, and what survives it.
 
 **Version 0.2.0.** What changed, and what was measured: [`CHANGELOG.md`](CHANGELOG.md).
 
