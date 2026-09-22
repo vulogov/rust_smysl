@@ -147,6 +147,10 @@ pub enum Command {
         /// A file holding the judgement prompt, replacing the built-in one.
         #[arg(long, env = "SMYSL_CHECK_PROMPT_FILE")]
         prompt_file: Option<PathBuf>,
+        /// Show the change in its own order when it does not fit, rather than showing the files the
+        /// corpus has reasoning about first. For comparing the two.
+        #[arg(long)]
+        no_corpus_order: bool,
         /// Show what would be sent to the model — the units packed and the labels to be judged — and
         /// stop there. No model call, so it costs nothing and is the same every time.
         #[arg(long)]

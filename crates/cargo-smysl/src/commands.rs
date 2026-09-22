@@ -93,6 +93,7 @@ pub fn run(args: SmyslArgs) -> u8 {
             prompt_file,
             passes,
             dry_run,
+            no_corpus_order,
         } => check(
             &args,
             CheckArgs {
@@ -109,6 +110,7 @@ pub fn run(args: SmyslArgs) -> u8 {
                 prompt_file: prompt_file.as_deref(),
                 passes: *passes,
                 dry_run: *dry_run,
+                no_corpus_order: *no_corpus_order,
             },
         ),
         Command::Evidence {
@@ -1376,6 +1378,7 @@ struct CheckArgs<'a> {
     prompt_file: Option<&'a Path>,
     passes: usize,
     dry_run: bool,
+    no_corpus_order: bool,
 }
 
 /// `check`: what this change contradicts in the corpus.
@@ -1411,6 +1414,7 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
     let mut settings = Settings {
         window: c.window,
         chars_per_token: c.chars_per_token,
+        order_by_corpus: !c.no_corpus_order,
         ..Settings::default()
     };
     if let Some(path) = c.prompt_file {
@@ -1435,9 +1439,17 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
     };
     let change = Change::from_diff(&diff, &settings);
     if c.dry_run {
+        // The preview reorders exactly as a real run would, so a person sees what will be examined.
+        let change = if change.truncated && settings.order_by_corpus {
+            let weight = |path: &str| store.units_with_source_prefix(&format!("{path}@")).len();
+            change.ordered_by(&weight, &settings)
+        } else {
+            change
+        };
         let (text, judged) =
             cargo_smysl_verdict::check::preview(&store, &change, &settings).unwrap_or_default();
         let shown = serde_json::json!({
+            "unexamined": change.unexamined(),
             "judged": judged,
             "units_judged": judged.len(),
             "pack_text": text,
@@ -1474,8 +1486,17 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         }
         if outcome.findings.is_empty() {
             println!(
-                "nothing recorded is contradicted ({} unit(s) judged, {})",
-                outcome.units_judged, outcome.judge
+                "nothing recorded is contradicted{} ({} unit(s) judged, {})",
+                if outcome.unexamined.is_empty() {
+                    String::new()
+                } else {
+                    format!(
+                        " in what was examined; {} file(s) were not",
+                        outcome.unexamined.len()
+                    )
+                },
+                outcome.units_judged,
+                outcome.judge
             );
         } else {
             println!(

@@ -59,6 +59,9 @@ pub struct Settings {
     pub answer_tokens: u32,
     /// Replaces the built-in judgement prompt.
     pub system: Option<String>,
+    /// When a change does not fit, show the files the corpus has reasoning about rather than whichever
+    /// sort first. Costs nothing: the same number of lines is shown either way.
+    pub order_by_corpus: bool,
     /// Rotates the judged units before they are grouped. Two passes with different seeds see the same
     /// units in different company, and a finding only one pass makes is an artefact of that company.
     pub order_seed: usize,
@@ -78,6 +81,7 @@ impl Default for Settings {
             window: 32768,
             answer_tokens: 2048,
             system: None,
+            order_by_corpus: true,
             order_seed: 0,
         }
     }
@@ -122,6 +126,57 @@ pub struct Change {
     lines: BTreeSet<String>,
     numbered: BTreeMap<u32, String>,
     pub truncated: bool,
+    /// The change as it arrived, so it can be shown in a different order without being re-read.
+    raw: String,
+    /// Files of which the model saw at least one line. The rest were not examined, and a report that
+    /// does not say so lets "nothing is contradicted" stand for "nothing in what I read".
+    seen: BTreeSet<String>,
+}
+
+impl Change {
+    /// The same change with its files in a different order, so that a cut keeps what matters.
+    ///
+    /// A diff is ordered by path, which has nothing to do with what the corpus knows. When only part of
+    /// a change fits, showing the files the corpus has reasoning about beats showing whichever sort
+    /// first — and it costs nothing, because the same number of lines is shown either way.
+    pub fn ordered_by(&self, weight: &dyn Fn(&str) -> usize, s: &Settings) -> Change {
+        let mut sections: Vec<(String, String)> = Vec::new();
+        for part in self.raw.split("diff --git ") {
+            if part.trim().is_empty() {
+                continue;
+            }
+            let path = part
+                .lines()
+                .next()
+                .and_then(|l| l.split(" b/").nth(1))
+                .unwrap_or_default()
+                .to_string();
+            sections.push((path, format!("diff --git {part}")));
+        }
+        // Heaviest first, and the diff's own order among equals, so the result is stable.
+        sections.sort_by_key(|(path, _)| std::cmp::Reverse(weight(path)));
+        Change::from_diff(
+            &sections
+                .into_iter()
+                .map(|(_, text)| text)
+                .collect::<Vec<_>>()
+                .join(""),
+            s,
+        )
+    }
+
+    /// Files the model was shown nothing of.
+    ///
+    /// Measured on held-out data: 59% of changes were truncated, and 9 of the 16 that contain a
+    /// contradiction. A reader told which files went unexamined can go and look; a reader not told
+    /// cannot.
+    pub fn unexamined(&self) -> Vec<String> {
+        self.files
+            .iter()
+            .filter(|f| !self.seen.contains(*f))
+            .cloned()
+            .collect()
+    }
 }
 
 impl Change {
@@ -135,12 +190,14 @@ impl Change {
         let (mut files, mut changed, mut shown) = (Vec::new(), Vec::new(), Vec::new());
         let (mut lines, mut numbered) = (BTreeSet::new(), BTreeMap::new());
         let (mut in_file, mut tokens, mut started, mut truncated) = (0usize, 0u32, false, false);
+        let (mut seen, mut current) = (BTreeSet::new(), String::new());
         for line in text.lines() {
             if let Some(rest) = line.strip_prefix("diff --git ") {
                 started = true;
                 in_file = 0;
                 if let Some(b) = rest.split(" b/").nth(1) {
                     files.push(b.to_string());
+                    current = b.to_string();
                 }
                 // A file's header counts against the cap like any other line: past it, the change is
                 // truncated, and saying "no more files" by silence would be a lie of omission.
@@ -175,6 +232,9 @@ impl Change {
             tokens += s.tokens(line) + 1;
             let n = shown.len() as u32 + 1;
             shown.push(format!("{n:>4}| {line}"));
+            if !current.is_empty() {
+                seen.insert(current.clone());
+            }
             if let Some(c) = content {
                 let t = c.trim();
                 if !t.is_empty() {
@@ -190,6 +250,8 @@ impl Change {
             lines,
             numbered,
             truncated,
+            seen,
+            raw: text.to_string(),
         }
     }
 
@@ -246,6 +308,8 @@ pub struct Outcome {
     /// What the caller should know about how the answer was produced (D17).
     pub warnings: Vec<String>,
     pub units_judged: usize,
+    /// Files of the change the model was shown nothing of (B, 0.2.0).
+    pub unexamined: Vec<String>,
     pub calls: usize,
     pub predicted_tokens: u64,
     pub charged_tokens: u64,
@@ -400,6 +464,19 @@ fn context(store: &Store, change: &Change, s: &Settings) -> Option<(String, Vec<
     None
 }
 
+/// A list a person can read: the first few names, then how many more.
+fn shortened(files: &[String]) -> String {
+    const SHOWN: usize = 6;
+    if files.len() <= SHOWN {
+        return files.join(", ");
+    }
+    format!(
+        "{}, and {} more",
+        files[..SHOWN].join(", "),
+        files.len() - SHOWN
+    )
+}
+
 /// The seeds two passes use, from the configuration S4 froze.
 pub const AGREEMENT_SEEDS: [usize; 2] = [0, 5];
 
@@ -465,9 +542,30 @@ pub fn check(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) ->
         out.warnings.push("the change is empty".into());
         return out;
     }
+    // A change that did not fit is shown in the order the corpus cares about (A, 0.2.0). Measured: 59%
+    // of held-out changes were truncated, and a diff's own order has nothing to do with what is recorded.
+    let reordered;
+    let change = if change.truncated && s.order_by_corpus {
+        let weight = |path: &str| store.units_with_source_prefix(&format!("{path}@")).len();
+        reordered = change.ordered_by(&weight, s);
+        &reordered
+    } else {
+        change
+    };
     if change.truncated {
-        out.warnings
-            .push("the change is larger than this model's window and was truncated".into());
+        out.unexamined = change.unexamined();
+        let mut warning =
+            "the change is larger than this model's window and was truncated".to_string();
+        if !out.unexamined.is_empty() {
+            // Naming them is the point: "nothing is contradicted" must not stand for "nothing in the
+            // part I read".
+            warning.push_str(&format!(
+                "; {} file(s) were not examined at all: {}",
+                out.unexamined.len(),
+                shortened(&out.unexamined)
+            ));
+        }
+        out.warnings.push(warning);
     }
     let Some((text, judged)) = context(store, change, s) else {
         out.warnings

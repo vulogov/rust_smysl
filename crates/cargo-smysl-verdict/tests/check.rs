@@ -337,3 +337,144 @@ fn a_finding_only_one_pass_reports_is_not_kept() {
     assert_eq!(outcome.findings.len(), 1, "{:?}", outcome.dropped);
     assert_eq!(outcome.findings[0].label, judged[0]);
 }
+
+/// A change too large to show is reported by name: which files the model never saw.
+#[test]
+fn what_was_not_examined_is_named() {
+    // Three files, and a cap that cannot reach the third.
+    let mut diff = String::new();
+    for n in 1..=3 {
+        diff.push_str(&format!(
+            "diff --git a/src/f{n}.rs b/src/f{n}.rs\n--- a/src/f{n}.rs\n+++ b/src/f{n}.rs\n"
+        ));
+        for line in 0..60 {
+            diff.push_str(&format!("+    let v{n}_{line} = {line};\n"));
+        }
+    }
+    let settings = Settings {
+        diff_lines: 70,
+        ..Settings::default()
+    };
+    let change = Change::from_diff(&diff, &settings);
+    assert!(change.truncated, "the cap is reached");
+    assert_eq!(
+        change.unexamined(),
+        vec!["src/f3.rs".to_string()],
+        "the file no line of which was shown is named, and the others are not"
+    );
+
+    let store = corpus();
+    let judge = Scripted::new(vec![]);
+    let outcome = check(&store, &change, &judge, &settings);
+    assert_eq!(outcome.unexamined, vec!["src/f3.rs".to_string()]);
+    assert!(
+        outcome
+            .warnings
+            .iter()
+            .any(|w| w.contains("not examined at all") && w.contains("src/f3.rs")),
+        "and the warning names it: {:?}",
+        outcome.warnings
+    );
+}
+
+/// A change that fits leaves nothing unexamined, and says nothing about it.
+#[test]
+fn a_change_that_fits_reports_no_unexamined_files() {
+    let store = corpus();
+    let settings = Settings::default();
+    let change = Change::from_diff(DIFF, &settings);
+    assert!(!change.truncated);
+    assert!(change.unexamined().is_empty());
+    let outcome = check(&store, &change, &Scripted::new(vec![]), &settings);
+    assert!(outcome.unexamined.is_empty());
+    assert!(
+        !outcome.warnings.iter().any(|w| w.contains("not examined")),
+        "{:?}",
+        outcome.warnings
+    );
+}
+
+/// When only part of a change fits, the files the corpus knows about are the ones shown.
+#[test]
+fn a_cut_change_shows_what_the_corpus_knows_about() {
+    // A corpus whose units are anchored to a file: quotes that are in the file get `path@sha` sources,
+    // which is what "the corpus knows about this file" means.
+    let store = {
+        let ex: Extraction = serde_json::from_value(serde_json::json!({
+            "decisions": [{"decision": "Give each test its own scratch directory", "kind": "act",
+                           "rationale": "", "quote": "vec![\".smysl/store\"]"}],
+            "prerequisites": [], "alternatives": [], "consequences": []
+        }))
+        .unwrap();
+        let batch = build(
+            &ex,
+            &CommitText {
+                touched: Vec::new(),
+                sha: SHA,
+                message: "",
+                files: vec![("tests/dispatch.rs", "let scratch = vec![\".smysl/store\"];")],
+            },
+            0,
+        )
+        .unwrap();
+        let staged = stage(&Store::from_records(Vec::new()), batch, 0);
+        Store::from_records(staged.records())
+    };
+    assert_eq!(
+        store.units_with_source_prefix("tests/dispatch.rs@").len(),
+        1,
+        "the corpus is anchored to that file"
+    );
+    // The corpus for this test was built from a commit touching tests/dispatch.rs. Put that file last
+    // in the diff, behind enough unrelated lines to push it out of view.
+    let mut diff = String::new();
+    for n in 1..=3 {
+        diff.push_str(&format!(
+            "diff --git a/src/unrelated{n}.rs b/src/unrelated{n}.rs\n--- a/src/unrelated{n}.rs\n+++ b/src/unrelated{n}.rs\n"
+        ));
+        for line in 0..40 {
+            diff.push_str(&format!("+    let x{n}_{line} = {line};\n"));
+        }
+    }
+    diff.push_str("diff --git a/tests/dispatch.rs b/tests/dispatch.rs\n--- a/tests/dispatch.rs\n+++ b/tests/dispatch.rs\n");
+    diff.push_str("+    let scratch = vec![\".smysl/store\"];\n");
+
+    let settings = Settings {
+        diff_lines: 50,
+        ..Settings::default()
+    };
+    let change = Change::from_diff(&diff, &settings);
+    assert!(change.truncated);
+    assert!(
+        change
+            .unexamined()
+            .contains(&"tests/dispatch.rs".to_string()),
+        "in diff order the file the corpus knows about is never reached"
+    );
+
+    let weight = |path: &str| store.units_with_source_prefix(&format!("{path}@")).len();
+    let ordered = change.ordered_by(&weight, &settings);
+    assert!(
+        !ordered
+            .unexamined()
+            .contains(&"tests/dispatch.rs".to_string()),
+        "ordered by what the corpus knows, it is shown: unexamined {:?}",
+        ordered.unexamined()
+    );
+    assert_eq!(
+        ordered.files.len(),
+        change.files.len(),
+        "and no file is lost from the report, only from the view"
+    );
+
+    // `check` does this itself when a change did not fit, so no caller has to remember to.
+    let probe = Scripted::new(vec![]);
+    let outcome = check(&store, &change, &probe, &settings);
+    assert!(
+        !outcome
+            .unexamined
+            .contains(&"tests/dispatch.rs".to_string()),
+        "check reorders before judging: {:?}",
+        outcome.unexamined
+    );
+}

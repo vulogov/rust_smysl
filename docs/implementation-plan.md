@@ -687,9 +687,27 @@ which 400 lines are shown, costs no extra call, and can be measured on the held-
 by asking whether the file that carries each known contradiction survives the cut. C multiplies cost and
 should not ship until A and B are measured, because they may make it unnecessary.
 
-**What would settle it:** for each of the 16 contradicting held-out cases, whether the contradiction's
-file is in the truncated view today, and whether ranking by corpus attachment puts it there. No model
-call is needed for that, and it is the same instrument the port comparison used.
+**B and A, done 2026-09-22.** `check` now names the files it was shown nothing of — in the warning, in
+`--json`, and in the line that used to read "nothing recorded is contradicted" and now reads "nothing
+recorded is contradicted in what was examined; N file(s) were not". When a change does not fit, it is
+shown in the order of what the corpus has reasoning about rather than the order paths happen to sort.
+
+**A, measured over the 55 truncated held-out cases** (`--no-corpus-order` against the default, no model
+involved):
+
+| | diff order | corpus order |
+|---|---|---|
+| Files never examined, in total | 318 | **307** |
+| Cases where a corpus-known file came into view | — | **18** |
+| Cases where more files fell out than came in | — | **4** |
+| Units judged | — | **no change** |
+
+So ordering is worth having and is not a fix. It rescues a file in 18 cases of 55 and costs a file in 4;
+it changes nothing about *which* units are judged, because retrieval selects those from the file list
+rather than from the lines shown. What it improves is the evidence the model reads for those units.
+
+**307 files across 55 cases are still never examined**, which is the case for C, now on evidence rather
+than on intuition: no ordering can show more than the cap allows.
 
 ---
 
