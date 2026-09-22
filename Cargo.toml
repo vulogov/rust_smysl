@@ -10,6 +10,11 @@ rust-version = "1.86"
 license      = "Unlicense"
 authors      = ["Vladimir Ulogov"]
 repository   = "https://github.com/vulogov/rust_smysl"
+homepage     = "https://github.com/vulogov/rust_smysl"
+readme       = "README.md"
+keywords     = ["cargo-subcommand", "rationale", "provenance", "smysl", "decisions"]
+# crates.io takes at most five, from its fixed list.
+categories   = ["development-tools::cargo-plugins", "development-tools"]
 
 [workspace.dependencies]
 cargo-smysl-corpus   = { path = "crates/cargo-smysl-corpus",   version = "0.2.0-dev" }

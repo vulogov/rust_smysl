@@ -7,6 +7,10 @@ rust-version.workspace = true
 license.workspace      = true
 authors.workspace      = true
 repository.workspace   = true
+homepage.workspace     = true
+keywords.workspace     = true
+categories.workspace   = true
+readme                 = "README.md"
 
 # Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`.
 [dependencies]

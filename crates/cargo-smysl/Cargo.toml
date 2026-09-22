@@ -7,9 +7,14 @@ rust-version.workspace = true
 license.workspace      = true
 authors.workspace      = true
 repository.workspace   = true
-readme                 = "../../README.md"
-keywords               = ["cargo-subcommand", "rationale", "smysl", "provenance"]
+homepage.workspace     = true
+# Its own, rather than the workspace's: this is the crate people install, and it is found by searching
+# for a cargo subcommand.
+keywords               = ["cargo-subcommand", "rationale", "smysl", "provenance", "decisions"]
 categories             = ["development-tools::cargo-plugins"]
+# A published package cannot reach outside itself, so the crate carries a short README of its own and
+# the full one stays in the repository.
+readme                 = "README.md"
 
 # Cargo finds external subcommands by binary name: `cargo smysl` runs `cargo-smysl smysl …`.
 [[bin]]
