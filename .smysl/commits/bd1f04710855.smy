@@ -1,0 +1,1397 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/gbd1f04710855-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site" }
+~ Do not lose a commit's extraction to a blank line in a quote
+
+Refusing the whole commit for a blank line throws away work that has already been paid for.
+
+@decision d/gbd1f04710855-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": decline, "ingest:quote": "Answering \"why is this like this?\" was dropped as a product claim." }
+~ Drop the claim of answering 'why is this like this?' as a product feature
+
+To focus on the tool's actual capabilities rather than unmet claims.
+
+@decision d/gbd1f04710855-3 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ Assign labels, sources and statuses; the model proposes wording only
+
+To maintain control over the integrity of recorded information.
+
+@decision d/gbd1f04710855-4 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Detect staleness by item body hash rather than line ranges
+
+To accurately track changes in code identity rather than just line positions.
+
+@decision d/gbd1f04710855-5 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ Record review as confirmations, withdrawals with reasons, and closures with notes
+
+To keep a comprehensive log of all reviews and decisions made.
+
+@decision d/gbd1f04710855-6 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from." }
+~ Ship its own instrument for benchmarking the model
+
+To provide users with the ability to measure the performance of their chosen models on their own commits.
+
+@decision d/gbd1f04710855-7 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Focus on deterministic commands over model-dependent ones
+
+To prioritize commands that are reliable, tested, and cost-effective to run.
+
+@decision d/gbd1f04710855-8 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": "The figures are published, naming the model each came from, including the experiments that failed." }
+~ Publish figures naming the model each came from, including failed experiments
+
+To provide transparency about which models were tested and their results, including any failures.
+
+@decision d/gbd1f04710855-9 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": Over-production is the failure mode that matters. }
+~ Highlight over-production as the failure mode that matters
+
+To emphasize the importance of avoiding unnecessary or excessive output in the tool's operations.
+
+@decision d/gbd1f04710855-10 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": The hook only queues and `--estimate` prices a run before it starts. }
+~ Meaningfully price extraction runs before starting them
+
+To inform users about the cost of extraction runs before they start, allowing them to make informed decisions.
+
+@decision d/gbd1f04710855-11 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": A cloned corpus is someone else's claim. }
+~ Label cloned corpora as someone else's claims
+
+To clarify the status of units in cloned corpora, indicating that they are not the tool's own claims.
+
+@decision d/gbd1f04710855-12 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": Research the truncated-change problem before building for it }
+~ Research the truncated-change problem before building for it
+
+The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.
+
+@decision d/gbd1f04710855-13 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture." }
+~ Open with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across …
+
+To make the documentation relatable and understandable for Rust developers.
+
+@decision d/gbd1f04710855-14 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": "Then what the tool does, shown rather than described, with real output from this repository:" }
+~ Show what the tool does rather than describe it.
+
+To provide clear and practical information about the tool's functionality.
+
+@decision d/gbd1f04710855-15 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": act, "ingest:quote": "The model is the operator's choice, never the tool's" }
+~ The model is the operator's choice, never the tool's
+
+To leave the selection of the model to the user.
+
+@decision d/gbd1f04710855-16 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:kind": act, "ingest:quote": "Whatever becomes a body becomes one paragraph, wherever it came from — a model's rationale, or the overflow of a text too long to be a gist." }
+~ Whatever becomes a body is now joined into one paragraph
+
+to keep every word the model wrote and avoid refusing the whole commit for a blank line
+
+@decision d/gbd1f04710855-17 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:kind": act, "ingest:quote": "A model's rationale arrives as prose, sometimes with a blank line in it, and smysl refuses a unit whose body holds more than one assertion (SMY-E040). Refusing the whole commit for a blank line would throw away every call that produced it had already been paid for." }
+~ A body as smysl's `fine` profile will take it: one paragraph
+
+to ensure that the body is one paragraph and avoid refusal due to multiple assertions
+
+@decision d/gbd1f04710855-18 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": decline, "ingest:quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ The error named a `b3:` uid and nothing else
+
+to improve error identification by showing more information
+
+@decision d/gbd1f04710855-19 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": decline, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here. The failure now says so, with the path." }
+~ It did not say that the model's answers were already cached
+
+to provide more accurate information about the caching status
+
+@decision d/gbd1f04710855-20 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ The commit that hit it is recorded, from cache
+
+to ensure that the commit is recorded even if it was already cached
+
+@decision d/gbd1f04710855-21 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ A test holds the case
+
+to verify that the fix works as expected
+
+@decision d/gbd1f04710855-22 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site" }
+~ Join bodies into one paragraph if they contain a blank line
+
+Refusing the whole commit for a blank line throws away work that has already been paid for.
+
+@decision d/gbd1f04710855-23 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body }
+~ Show the unit's gist and the first lines of its body in error messages
+
+It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.
+
+@decision d/gbd1f04710855-24 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": it did not say that the model's answers were already cached. They were }
+~ Indicate that cached answers are used in failure messages
+
+it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls.
+
+@decision d/gbd1f04710855-25 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": act, "ingest:quote": seven commands could have stopped working }
+~ Add a test that runs every command
+
+Seven commands had no test.
+
+@decision d/gbd1f04710855-26 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": act, "ingest:quote": not in the text at all }
+~ Hardcode the command list
+
+@decision d/gbd1f04710855-27 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": decline, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Derive the list from the binary
+
+It shrinks silently.
+
+@decision d/gbd1f04710855-28 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": act, "ingest:quote": seven commands could have stopped working }
+~ Every command dispatches
+
+@decision d/gbd1f04710855-29 { status: speculative, "code:kind": decline }
+~ The list cannot shrink unnoticed
+
+@decision d/gbd1f04710855-30 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": act, "ingest:quote": std::env::temp_dir().join(name) }
+~ Give each test its own scratch directory
+
+@decision d/gbd1f04710855-31 { status: speculative, "code:kind": act }
+~ Document the commands
+
+Readers need it. And it was missing.
+
+@decision d/gbd1f04710855-32 { status: speculative, "code:kind": act }
+~ The commands are documented
+
+@decision d/gbd1f04710855-33 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body }
+~ The error message now shows the unit's gist and the first lines of its body
+
+to help identify bugs more quickly
+
+@decision d/gbd1f04710855-34 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls" }
+~ The failure message now indicates that the model's answers were already cached
+
+to inform users about the caching mechanism and reduce confusion
+
+@decision d/gbd1f04710855-35 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": "The commit that hit it is recorded, from cache" }
+~ The commit that hit the failure is recorded from cache
+
+to ensure that the work done is not lost and to maintain consistency
+
+@decision d/gbd1f04710855-36 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": act, "ingest:quote": a test holds the case }
+~ A test holds the case of the failure
+
+to prevent regressions and ensure the fix works as expected in the future
+
+@artifact-ref a/gbd1f04710855-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:body_hash": b666b3a8d6419ee6 }
+~ crates/cargo-smysl-corpus/src/build.rs::Builder < 'a >::one_paragraph
+
+@artifact-ref a/gbd1f04710855-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:body_hash": aac51bf95b567bb7 }
+~ crates/cargo-smysl-corpus/src/build.rs::Builder < 'a >::unit
+
+@artifact-ref a/gbd1f04710855-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:body_hash": 856323008d342c47 }
+~ crates/cargo-smysl-corpus/tests/build.rs::a_body_with_a_blank_line_in_it_is_joined_rather_than_refused
+
+@artifact-ref a/gbd1f04710855-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@bd1f04710855 }, "code:body_hash": 071163aadef6ab32 }
+~ crates/cargo-smysl/src/commands.rs::extract
+
+@constraint p/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, …
+
+A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.
+
+@constraint p/gbd1f04710855-1-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph" }
+~ The body of the verification quote contained a markdown heading, a blank line, and a paragraph.
+
+@constraint p/gbd1f04710855-1-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit.
+
+@constraint p/gbd1f04710855-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was." }
+~ The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.
+
+@constraint p/gbd1f04710855-14-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ Each was a decision resting on something true at the time, none of it in the code, and some of …
+
+Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.
+
+@constraint p/gbd1f04710855-3-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; the model proposes wording only.
+
+@constraint p/gbd1f04710855-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": assumption, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and …
+
+Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.
+
+@constraint p/gbd1f04710855-3-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; the model proposes wording only.
+
+@constraint p/gbd1f04710855-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.
+
+@constraint p/gbd1f04710855-5-3 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": assumption, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Staleness detection should be based on code identity rather than line ranges.
+
+@constraint p/gbd1f04710855-5-4 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ The tool needs to maintain a record of all reviews and decisions for transparency and accountability.
+
+@constraint p/gbd1f04710855-6-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ The tool needs to measure the performance of different models.
+
+@constraint p/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, …
+
+A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.
+
+@constraint p/gbd1f04710855-1-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph" }
+~ The body of the verification quote contained a markdown heading, a blank line, and a paragraph.
+
+@constraint p/gbd1f04710855-1-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit.
+
+@constraint p/gbd1f04710855-3-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; the model proposes wording only.
+
+@constraint p/gbd1f04710855-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.
+
+@constraint p/gbd1f04710855-5-3 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": assumption, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Staleness detection should be based on code identity rather than line ranges.
+
+@constraint p/gbd1f04710855-5-4 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ The tool needs to maintain a record of all reviews and decisions for transparency and accountability.
+
+@constraint p/gbd1f04710855-6-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ The tool needs to measure the performance of different models.
+
+@constraint p/gbd1f04710855-8-6 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Two thirds of the commands never call a model.
+
+@constraint p/gbd1f04710855-8-7 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "The figures are published, naming the model each came from, including the experiments that failed." }
+~ The figures are published.
+
+@constraint p/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, …
+
+A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.
+
+@constraint p/gbd1f04710855-1-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph" }
+~ The body of the verification quote contained a markdown heading, a blank line, and a paragraph.
+
+@constraint p/gbd1f04710855-1-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit.
+
+@constraint p/gbd1f04710855-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": tool-setting, "ingest:quote": The hook only queues and `--estimate` prices a run before it starts. }
+~ The hook only queues and `--estimate` prices a run before it starts.
+
+@constraint p/gbd1f04710855-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": assumption, "ingest:quote": A cloned corpus is someone else's claim. }
+~ A cloned corpus is someone else's claim.
+
+@constraint p/gbd1f04710855-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": Research the truncated-change problem before building for it }
+~ The commit message states that research was done to understand the truncated-change problem, which is a …
+
+The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.
+
+@constraint p/gbd1f04710855-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture." }
+~ A Rust developer recognizes common patterns in code such as dependencies pinned to exact versions, locks held …
+
+A Rust developer recognizes common patterns in code such as dependencies pinned to exact versions, locks held across awaits, and tests building their own fixtures.
+
+@constraint p/gbd1f04710855-14-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was." }
+~ The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.
+
+@constraint p/gbd1f04710855-14-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ Each was a decision resting on something true at the time, none of it in the code, and some of …
+
+Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.
+
+@constraint p/gbd1f04710855-15-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": assumption, "ingest:quote": "The model is the operator's choice, never the tool's" }
+~ The model selection should be left to the user.
+
+@constraint p/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, …
+
+A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.
+
+@constraint p/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist." }
+~ The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a …
+
+The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.
+
+@constraint p/gbd1f04710855-1-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit.
+
+@constraint p/gbd1f04710855-17-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "A model's rationale arrives as prose, sometimes with a blank line in it" }
+~ A model's rationale arrives as prose, sometimes with a blank line in it
+
+@constraint p/gbd1f04710855-17-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": smysl refuses a unit whose body holds more than one assertion (SMY-E040) }
+~ smysl refuses a unit whose body holds more than one assertion (SMY-E040)
+
+@constraint p/gbd1f04710855-17-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": refusing the whole commit for a blank line would throw away every call that produced it had already been paid for }
+~ refusing the whole commit for a blank line would throw away every call that produced it had already been paid …
+
+refusing the whole commit for a blank line would throw away every call that produced it had already been paid for
+
+@constraint p/gbd1f04710855-18-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": The model's extraction proposes content only. }
+~ The commit's extraction proposes content only.
+
+@constraint p/gbd1f04710855-18-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "Here the tool assigns everything else: labels per commit and run, sources pointing at the commit or a file at the commit, statuses from checking each quote against the commit's own text, and the edges of the data model." }
+~ Here the tool assigns everything else: labels per commit and run, sources pointing at the commit or a file at …
+
+Here the tool assigns everything else: labels per commit and run, sources pointing at the commit or a file at the commit, statuses from checking each quote against the commit's own text, and the edges of the data model.
+
+@constraint p/gbd1f04710855-18-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": the error named a `b3:` uid and nothing else. }
+~ The error named a `b3:` uid and nothing else.
+
+@constraint p/gbd1f04710855-19-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ The commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, …
+
+The commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.
+
+@constraint p/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist." }
+~ The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a …
+
+The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.
+
+@constraint p/gbd1f04710855-1-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit.
+
+@constraint p/gbd1f04710855-20-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ the error named a `b3:` uid and nothing else
+
+@constraint p/gbd1f04710855-20-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here." }
+~ it did not say that the model's answers were already cached
+
+@constraint p/gbd1f04710855-20-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": "The commit's own text, which every quote is checked against." }
+~ the commit's message and diff text
+
+@constraint p/gbd1f04710855-21-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded due to a …
+
+A commit was extracted in 38 calls over half an hour and then refused while being recorded due to a body with more than one paragraph.
+
+@constraint p/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist." }
+~ The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a …
+
+The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.
+
+@constraint p/gbd1f04710855-1-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit.
+
+@constraint p/gbd1f04710855-22-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit
+
+@constraint p/gbd1f04710855-22-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist." }
+~ A verification quote containing a blank line overflows into the unit's body
+
+@constraint p/gbd1f04710855-22-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": assumption, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Refusing the whole commit for a blank line throws away work that has already been paid for
+
+@constraint p/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, …
+
+A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.
+
+@constraint p/gbd1f04710855-23-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist." }
+~ The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a …
+
+The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.
+
+@constraint p/gbd1f04710855-1-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit.
+
+@constraint p/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, …
+
+A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.
+
+@constraint p/gbd1f04710855-23-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist." }
+~ The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a …
+
+The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.
+
+@constraint p/gbd1f04710855-1-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": tool-setting, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit.
+
+@constraint p/gbd1f04710855-25-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": cli() registers all twenty-two subcommands from the COMMANDS table unconditionally. }
+~ cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.
+
+@constraint p/gbd1f04710855-25-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": assumption, "ingest:quote": std::env::temp_dir().join(name) }
+~ Each test gets its own scratch directory.
+
+@constraint p/gbd1f04710855-25-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": cli() registers all twenty-two subcommands from the COMMANDS table unconditionally. }
+~ cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.
+
+@constraint p/gbd1f04710855-25-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": assumption, "ingest:quote": std::env::temp_dir().join(name) }
+~ Each test gets its own scratch directory.
+
+@constraint p/gbd1f04710855-25-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": cli() registers all twenty-two subcommands from the COMMANDS table unconditionally. }
+~ cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.
+
+@constraint p/gbd1f04710855-25-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": assumption, "ingest:quote": std::env::temp_dir().join(name) }
+~ Each test gets its own scratch directory.
+
+@constraint p/gbd1f04710855-25-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": cli() registers all twenty-two subcommands from the COMMANDS table unconditionally. }
+~ cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.
+
+@constraint p/gbd1f04710855-25-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": assumption, "ingest:quote": std::env::temp_dir().join(name) }
+~ Each test gets its own scratch directory.
+
+@constraint p/gbd1f04710855-25-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": cli() registers all twenty-two subcommands from the COMMANDS table unconditionally. }
+~ cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.
+
+@constraint p/gbd1f04710855-25-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": assumption, "ingest:quote": std::env::temp_dir().join(name) }
+~ Each test gets its own scratch directory.
+
+@constraint p/gbd1f04710855-25-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": existing-behaviour, "ingest:quote": cli() registers all twenty-two subcommands from the COMMANDS table unconditionally. }
+~ cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.
+
+@constraint p/gbd1f04710855-25-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": assumption, "ingest:quote": std::env::temp_dir().join(name) }
+~ Each test gets its own scratch directory.
+
+@constraint p/gbd1f04710855-22-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit
+
+@constraint p/gbd1f04710855-31-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist." }
+~ A verification quote containing a blank line overflows into the unit's body
+
+@constraint p/gbd1f04710855-22-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right" }
+~ smysl's `fine` profile admits one assertion per unit
+
+@constraint p/gbd1f04710855-31-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist." }
+~ A verification quote containing a blank line overflows into the unit's body
+
+@constraint p/gbd1f04710855-33-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ The commit was extracted in 38 calls over half an hour and then refused while being recorded
+
+@constraint p/gbd1f04710855-33-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ The error message named a `b3:` uid and nothing else
+
+@constraint p/gbd1f04710855-34-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ The commit was extracted in 38 calls over half an hour
+
+@constraint p/gbd1f04710855-34-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ The error named a `b3:` uid and nothing else
+
+@constraint p/gbd1f04710855-34-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here." }
+~ The model's answers were already cached
+
+@constraint p/gbd1f04710855-34-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ The commit was extracted in 38 calls over half an hour
+
+@constraint p/gbd1f04710855-34-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ The error named a `b3:` uid and nothing else
+
+@constraint p/gbd1f04710855-34-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here." }
+~ The model's answers were already cached
+
+@constraint p/gbd1f04710855-35-4 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": prior-change, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ The commit that hit it is recorded from cache
+
+@constraint p/gbd1f04710855-36-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph." }
+~ A commit was extracted in 38 calls over half an hour and then refused while being recorded
+
+@constraint p/gbd1f04710855-36-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist." }
+~ The body of the verification quote contained a markdown heading, a blank line, and a paragraph
+
+@constraint p/gbd1f04710855-36-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": existing-behaviour, "ingest:quote": "smysl's `fine` profile admits one assertion per unit, and quite right, but refusing the whole commit for a blank line throws away work that has already been paid for." }
+~ smysl's `fine` profile admits one assertion per unit
+
+@claim r/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Rejected: Refuse the whole commit for a blank line.
+
+@claim r/gbd1f04710855-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet." }
+~ Rejected: Describing what the tool does.
+
+@claim r/gbd1f04710855-3-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Most tooling in this area stores what the model said as though it were established. }
+~ Rejected: The model assigns labels, sources and statuses.
+
+@claim r/gbd1f04710855-3-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Rejected: The tool does not check quotes against commits.
+
+@claim r/gbd1f04710855-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Tried and rejected: Detect staleness by line ranges. }
+~ Rejected: Detect staleness by line ranges.
+
+@claim r/gbd1f04710855-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not record reviews and decisions. }
+~ Rejected: Do not record reviews and decisions.
+
+@claim r/gbd1f04710855-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Record only confirmations without reasons or notes. }
+~ Rejected: Record only confirmations without reasons or notes.
+
+@claim r/gbd1f04710855-5-3 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Record only withdrawals without reasons or notes. }
+~ Rejected: Record only withdrawals without reasons or notes.
+
+@claim r/gbd1f04710855-5-4 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Record only closures without notes. }
+~ Rejected: Record only closures without notes.
+
+@claim r/gbd1f04710855-6-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Use an external benchmarking tool. }
+~ Rejected: Use an external benchmarking tool.
+
+@claim r/gbd1f04710855-6-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not include any benchmarking functionality. }
+~ Rejected: Do not include any benchmarking functionality.
+
+@claim r/gbd1f04710855-7-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": refusing the whole commit for a blank line throws away work that has already been paid for. }
+~ Rejected: Refusing the whole commit for a blank line.
+
+@claim r/gbd1f04710855-7-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": Whatever becomes a body is now joined into one paragraph }
+~ Rejected: Keeping the body as separate paragraphs.
+
+@claim r/gbd1f04710855-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Not publishing figures naming the model each came from }
+~ Rejected: Not publishing figures naming the model each came from.
+
+@claim r/gbd1f04710855-8-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Publishing figures without naming the model }
+~ Rejected: Publishing figures without naming the model.
+
+@claim r/gbd1f04710855-7-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": refusing the whole commit for a blank line throws away work that has already been paid for. }
+~ Rejected: Refusing the whole commit for a blank line.
+
+@claim r/gbd1f04710855-9-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are …
+
+Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@claim r/gbd1f04710855-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Start extraction runs without pricing them first. }
+~ Rejected: Start extraction runs without pricing them first.
+
+@claim r/gbd1f04710855-12-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not researching the truncated-change problem before building for it
+
+@claim r/gbd1f04710855-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet." }
+~ Rejected: Describing what the tool does.
+
+@claim r/gbd1f04710855-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet." }
+~ Rejected: Describing what the tool does.
+
+@claim r/gbd1f04710855-14-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture. Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ Rejected: Describing what the tool does.
+
+@claim r/gbd1f04710855-15-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: The tool selects a model based on some criteria. }
+~ Rejected: The tool selects a model based on some criteria.
+
+@claim r/gbd1f04710855-16-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Rejected: Refusing the whole commit for a blank line.
+
+@claim r/gbd1f04710855-17-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Rejected: continue to refuse the whole commit for a blank line
+
+@claim r/gbd1f04710855-18-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the error message as it is.
+
+@claim r/gbd1f04710855-18-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Show less information in the error message.
+
+@claim r/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Rejected: Refuse the whole commit for a blank line.
+
+@claim r/gbd1f04710855-20-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: not recording the commit if it was already cached
+
+@claim r/gbd1f04710855-16-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Rejected: Refusing the whole commit for a blank line.
+
+@claim r/gbd1f04710855-22-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": "A verification quote containing a blank line — a table, a heading and a paragraph — overflows into the unit's body and used to refuse the batch, after every model call that produced it had already been paid for." }
+~ Rejected: Refuse the whole commit for a blank line
+
+@claim r/gbd1f04710855-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Rejected: Derive the list from the binary
+
+@claim r/gbd1f04710855-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Rejected: Derive the list from the binary
+
+@claim r/gbd1f04710855-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Rejected: Derive the list from the binary
+
+@claim r/gbd1f04710855-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Rejected: Derive the list from the binary
+
+@claim r/gbd1f04710855-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Rejected: Derive the list from the binary
+
+@claim r/gbd1f04710855-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Rejected: Derive the list from the binary
+
+@claim r/gbd1f04710855-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Rejected: Derive the list from the binary
+
+@claim r/gbd1f04710855-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Rejected: Derive the list from the binary
+
+@claim r/gbd1f04710855-31-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": refusing the whole commit for a blank line throws away work that has already been paid for }
+~ Rejected: Refuse the batch and discard all model calls
+
+@claim r/gbd1f04710855-31-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Split the verification quote into multiple units
+
+@claim r/gbd1f04710855-32-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": refusing the whole commit for a blank line throws away work that has already been paid for }
+~ Rejected: Refuse the batch and throw away work that has already been paid for
+
+@claim r/gbd1f04710855-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "code:kind": rejected-alternative, "ingest:quote": A list derived from the binary shrinks silently when the binary does }
+~ Rejected: Derive the list from the binary
+
+@claim r/gbd1f04710855-33-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Rejected: Keep the existing error message
+
+@claim r/gbd1f04710855-34-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the error message as is
+
+@claim r/gbd1f04710855-34-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not mention caching in the error message
+
+@claim r/gbd1f04710855-35-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": refusing the whole commit for a blank line throws away work that has already been paid for. }
+~ Rejected: Discard the commit's extraction
+
+@claim r/gbd1f04710855-35-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Rejected: Record only the part of the commit before the blank line
+
+@claim r/gbd1f04710855-36-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": refusing the whole commit for a blank line throws away work that has already been paid for. }
+~ Rejected: Refuse the entire commit
+
+@claim r/gbd1f04710855-36-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "code:kind": rejected-alternative, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Rejected: Keep the body as is, without joining paragraphs
+
+@evidence e/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache" }
+~ Check: The commit that hit it is recorded, from cache
+
+@finding q/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ The commit that hit it is recorded from cache.
+
+@evidence e/gbd1f04710855-1-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case" }
+~ Check: The commit that hit it is recorded, from cache, and a test holds the case
+
+@finding q/gbd1f04710855-1-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ A test holds the case.
+
+@claim q/gbd1f04710855-2-1 { status: inferred, grounds: [d/gbd1f04710855-2], "code:kind": anticipated, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture." }
+~ The documentation now begins with examples that are more relatable and understandable for Rust developers.
+
+@claim q/gbd1f04710855-2-2 { status: inferred, grounds: [d/gbd1f04710855-2], "code:kind": anticipated, "ingest:quote": To focus on the tool's actual capabilities rather than unmet claims. }
+~ The tool's focus shifts from unmet claims to its actual capabilities.
+
+@claim q/gbd1f04710855-3-1 { status: inferred, grounds: [d/gbd1f04710855-3], "code:kind": anticipated, "ingest:quote": To maintain control over the integrity of recorded information. }
+~ Maintains control over the integrity of recorded information.
+
+@claim q/gbd1f04710855-4-1 { status: inferred, grounds: [d/gbd1f04710855-4], "code:kind": anticipated, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ A function that merely moved will not be flagged as stale.
+
+@claim q/gbd1f04710855-5-1 { status: inferred, grounds: [d/gbd1f04710855-5], "code:kind": anticipated, "ingest:quote": To keep a comprehensive log of all reviews and decisions made. }
+~ The tool maintains a comprehensive log of all reviews and decisions made, ensuring transparency and …
+
+The tool maintains a comprehensive log of all reviews and decisions made, ensuring transparency and accountability.
+
+@evidence e/gbd1f04710855-6-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "ingest:quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ Check: `bench` measures the model *you* chose on *your* commits, and every published figure names the model it …
+
+Check: `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.
+
+@finding q/gbd1f04710855-6-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from." }
+~ Users can measure and verify the performance of their chosen models.
+
+@evidence e/gbd1f04710855-16-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": Every word the model wrote is kept. }
+~ Check: Every word the model wrote is kept.
+
+@finding q/gbd1f04710855-7-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": Every word the model wrote is kept. }
+~ Every word the model wrote is kept.
+
+@evidence e/gbd1f04710855-1-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache" }
+~ Check: The commit that hit it is recorded, from cache
+
+@finding q/gbd1f04710855-7-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache" }
+~ The commit that hit it is recorded, from cache.
+
+@evidence e/gbd1f04710855-7-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": A test holds the case. }
+~ Check: A test holds the case.
+
+@finding q/gbd1f04710855-7-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": A test holds the case. }
+~ A test holds the case.
+
+@evidence e/gbd1f04710855-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "ingest:quote": "The figures are published, naming the model each came from, including the experiments that failed." }
+~ Check: The figures are published, naming the model each came from, including the experiments that failed.
+
+@finding q/gbd1f04710855-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "ingest:quote": "To provide transparency about which models were tested and their results, including any failures." }
+~ The tool now provides transparency about which models were tested and their results, including any failures.
+
+@evidence e/gbd1f04710855-16-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": Every word the model wrote is kept. }
+~ Check: Every word the model wrote is kept.
+
+@finding q/gbd1f04710855-9-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined." }
+~ Every word the model wrote is kept.
+
+@claim q/gbd1f04710855-9-2 { status: inferred, grounds: [d/gbd1f04710855-9], "code:kind": anticipated, "ingest:quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ The error message now shows the unit's gist and the first lines of its body.
+
+@claim q/gbd1f04710855-9-3 { status: inferred, grounds: [d/gbd1f04710855-9], "code:kind": anticipated, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here. The failure now says so, with the path." }
+~ The failure message now indicates that the model's answers were already cached.
+
+@claim q/gbd1f04710855-9-4 { status: inferred, grounds: [d/gbd1f04710855-9], "code:kind": anticipated, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ The commit that hit it is recorded from cache.
+
+@claim q/gbd1f04710855-10-1 { status: inferred, grounds: [d/gbd1f04710855-10], "code:kind": anticipated, "ingest:quote": "To inform users about the cost of extraction runs before they start, allowing them to make informed decisions." }
+~ Users are informed about the cost of extraction runs before they start, allowing them to make informed …
+
+Users are informed about the cost of extraction runs before they start, allowing them to make informed decisions.
+
+@claim q/gbd1f04710855-12-1 { status: inferred, grounds: [d/gbd1f04710855-12], "code:kind": anticipated, "ingest:quote": Research the truncated-change problem before building for it }
+~ The project has a better understanding of the truncated-change problem, which affects 59% of held-out changes.
+
+@claim q/gbd1f04710855-15-1 { status: inferred, grounds: [d/gbd1f04710855-15], "code:kind": anticipated, "ingest:quote": "The model is the operator's choice, never the tool's" }
+~ The operator has full control over the model selection process.
+
+@evidence e/gbd1f04710855-15-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "ingest:quote": "## The commands\n\nA full walk-through, on this repository, is in [`docs/smysl-workflow.md`](docs/smysl-workflow.md)." }
+~ Check: ## The commands A full walk-through, on this repository, is in …
+
+Check: ## The commands A full walk-through, on this repository, is in [`docs/smysl-workflow.md`](docs/smysl-workflow.md).
+
+@finding q/gbd1f04710855-15-2 { status: cited, source: { kind: file, ref: .smysl/commits/0d79d4a840b4.smy@bd1f04710855 }, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ README.md is updated to lead with the seven deterministic commands.
+
+@evidence e/gbd1f04710855-16-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": Every word the model wrote is kept. }
+~ Check: Every word the model wrote is kept.
+
+@finding q/gbd1f04710855-16-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Every word the model wrote is kept.
+
+@evidence e/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ Check: The commit that hit it is recorded, from cache, and a test holds the case.
+
+@finding q/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ The commit that hit it is recorded, from cache.
+
+@evidence e/gbd1f04710855-17-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Check: Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather …
+
+Check: Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.
+
+@finding q/gbd1f04710855-17-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "ingest:quote": A body as smysl's `fine` profile will take it: one paragraph }
+~ the paragraphs are joined — the words are the model's and all of them are kept
+
+@evidence e/gbd1f04710855-17-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Check: Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather …
+
+Check: Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.
+
+@finding q/gbd1f04710855-17-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/build.rs@bd1f04710855 }, "ingest:quote": A body as smysl's `fine` profile will take it: one paragraph }
+~ the run says how many bodies were joined into one paragraph
+
+@evidence e/gbd1f04710855-18-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "it now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ Check: it now shows the unit's gist and the first lines of its body, which is what identified this bug …
+
+Check: it now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.
+
+@finding q/gbd1f04710855-18-1 { status: speculative }
+~ The error now shows the unit's gist and the first lines of its body, which is what identified this bug …
+
+The error now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.
+
+@evidence e/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ Check: The commit that hit it is recorded, from cache, and a test holds the case.
+
+@finding q/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ The commit that hit it is recorded, from cache.
+
+@evidence e/gbd1f04710855-19-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": it took about a second here }
+~ Check: it took about a second here
+
+@finding q/gbd1f04710855-19-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here." }
+~ `cargo smysl extract <rev>` after a fix costs no model calls.
+
+@evidence e/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ Check: The commit that hit it is recorded, from cache, and a test holds the case.
+
+@finding q/gbd1f04710855-20-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ the commit that hit it is recorded, from cache
+
+@evidence e/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ Check: The commit that hit it is recorded, from cache, and a test holds the case.
+
+@finding q/gbd1f04710855-21-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ The commit that hit it is recorded, from cache.
+
+@claim q/gbd1f04710855-21-2 { status: inferred, grounds: [d/gbd1f04710855-21], "code:kind": anticipated, "ingest:quote": "DECISION 21: A test holds the case\nRATIONALE: to verify that the fix works as expected" }
+~ A test holds the case to verify that the fix works as expected.
+
+@evidence e/gbd1f04710855-22-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "ingest:quote": "no unit carries two paragraphs: {body:?}" }
+~ Check: no unit carries two paragraphs: {body:?}
+
+@finding q/gbd1f04710855-22-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "ingest:quote": "for unit in &batch.units { if let Some(body) = &unit.body { assert!( !body.trim().contains(\"\\n\\n\"), \"no unit carries two paragraphs: {body:?}\" ); } }" }
+~ No unit carries two paragraphs
+
+@evidence e/gbd1f04710855-22-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "ingest:quote": "and the batch stages: {:?}" }
+~ Check: and the batch stages: {:?}
+
+@finding q/gbd1f04710855-22-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "ingest:quote": "let staged = stage(&Store::from_records(Vec::new()), batch, 0); assert!( !staged.has_errors(), \"and the batch stages: {:?}\", staged.report );" }
+~ The batch stages without errors
+
+@evidence e/gbd1f04710855-22-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": and the run says how many were joined }
+~ Check: and the run says how many were joined
+
+@finding q/gbd1f04710855-22-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "ingest:quote": "assert!(batch.reflowed >= 1, \"and the run says how many were joined\");" }
+~ The run says how many were joined
+
+@claim q/gbd1f04710855-23-1 { status: inferred, grounds: [d/gbd1f04710855-23], "code:kind": anticipated, "ingest:quote": Every word the model wrote is kept. }
+~ Every word the model wrote is kept.
+
+@evidence e/gbd1f04710855-18-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "it now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ Check: it now shows the unit's gist and the first lines of its body, which is what identified this bug …
+
+Check: it now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.
+
+@finding q/gbd1f04710855-23-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined." }
+~ The error message now shows the unit's gist and the first lines of its body, which helps identify the bug …
+
+The error message now shows the unit's gist and the first lines of its body, which helps identify the bug quickly.
+
+@evidence e/gbd1f04710855-23-3 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here. The failure now says so, with the path." }
+~ Check: it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` …
+
+Check: it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here. The failure now says so, with the path.
+
+@finding q/gbd1f04710855-23-3 { status: speculative }
+~ The failure message now indicates that the model's answers are already cached, reducing unnecessary model …
+
+The failure message now indicates that the model's answers are already cached, reducing unnecessary model calls.
+
+@claim q/gbd1f04710855-23-4 { status: inferred, grounds: [d/gbd1f04710855-23], "code:kind": anticipated }
+~ The commit that hit it is recorded from cache, and a test holds the case.
+
+@claim q/gbd1f04710855-24-1 { status: inferred, grounds: [d/gbd1f04710855-24], "code:kind": anticipated, "ingest:quote": Every word the model wrote is kept. }
+~ Every word the model wrote is kept.
+
+@claim q/gbd1f04710855-24-2 { status: inferred, grounds: [d/gbd1f04710855-24], "code:kind": anticipated, "ingest:quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ The error now shows the unit's gist and the first lines of its body, which is what identified this bug …
+
+The error now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.
+
+@claim q/gbd1f04710855-24-3 { status: inferred, grounds: [d/gbd1f04710855-24], "code:kind": anticipated, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here. The failure now says so, with the path." }
+~ The failure now says that the model's answers were already cached.
+
+@claim q/gbd1f04710855-24-4 { status: inferred, grounds: [d/gbd1f04710855-24], "code:kind": anticipated }
+~ The commit that hit it is recorded, from cache.
+
+@claim q/gbd1f04710855-24-5 { status: inferred, grounds: [d/gbd1f04710855-24], "code:kind": anticipated }
+~ A test holds the case.
+
+@claim q/gbd1f04710855-31-1 { status: speculative, grounds: [d/gbd1f04710855-31], "code:kind": anticipated, "ingest:quote": Every word the model wrote is kept. }
+~ Every word the model wrote is kept
+
+@evidence e/gbd1f04710855-31-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "ingest:quote": "assert!(batch.reflowed >= 1, \"and the run says how many were joined\");" }
+~ Check: assert!(batch.reflowed >= 1, "and the run says how many were joined");
+
+@finding q/gbd1f04710855-31-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined." }
+~ The run says how many were joined
+
+@claim q/gbd1f04710855-31-3 { status: speculative, grounds: [d/gbd1f04710855-31], "code:kind": anticipated, "ingest:quote": "for unit in &batch.units { if let Some(body) = &unit.body { assert!( !body.trim().contains(\"\\n\\n\"), \"no unit carries two paragraphs: {body:?}\" ); } }" }
+~ No unit carries two paragraphs
+
+@evidence e/gbd1f04710855-31-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/build.rs@bd1f04710855 }, "ingest:quote": "assert!(!staged.has_errors(), \"and the batch stages: {:?}\", staged.report);" }
+~ Check: assert!(!staged.has_errors(), "and the batch stages: {:?}", staged.report);
+
+@finding q/gbd1f04710855-31-4 { status: speculative }
+~ The batch stages without errors
+
+@claim q/gbd1f04710855-32-1 { status: speculative, grounds: [d/gbd1f04710855-32], "code:kind": anticipated, "ingest:quote": Every word the model wrote is kept. }
+~ Every word the model wrote is kept
+
+@evidence e/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ Check: The commit that hit it is recorded, from cache, and a test holds the case.
+
+@finding q/gbd1f04710855-32-2 { status: speculative }
+~ The commit that hit it is recorded, from cache
+
+@evidence e/gbd1f04710855-33-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ Check: the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines …
+
+Check: the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.
+
+@finding q/gbd1f04710855-33-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ The error message now includes the unit's gist and the first lines of its body
+
+@evidence e/gbd1f04710855-34-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here." }
+~ Check: it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` …
+
+Check: it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here.
+
+@finding q/gbd1f04710855-34-1 { status: speculative }
+~ The failure message now indicates that the model's answers were already cached
+
+@evidence e/gbd1f04710855-33-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing." }
+~ Check: the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines …
+
+Check: the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.
+
+@finding q/gbd1f04710855-34-2 { status: speculative }
+~ The error message now shows the unit's gist and the first lines of its body
+
+@evidence e/gbd1f04710855-17-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ Check: Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather …
+
+Check: Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.
+
+@finding q/gbd1f04710855-35-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ The commit that hit it is recorded from cache
+
+@claim q/gbd1f04710855-35-2 { status: inferred, grounds: [d/gbd1f04710855-35], "code:kind": anticipated, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ A test holds the case
+
+@evidence e/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ Check: The commit that hit it is recorded, from cache, and a test holds the case.
+
+@finding q/gbd1f04710855-36-1 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ The commit that hit it is recorded from cache
+
+@evidence e/gbd1f04710855-16-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "The commit that hit it is recorded, from cache, and a test holds the case." }
+~ Check: The commit that hit it is recorded, from cache, and a test holds the case.
+
+@finding q/gbd1f04710855-36-2 { status: cited, source: { kind: doc, ref: git:bd1f047108556a3400ef7659cd8c33272b4452d0 }, "ingest:quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept." }
+~ A test holds the case of the failure
+
+@rel d/gbd1f04710855-16 --x.code/touches--> a/gbd1f04710855-1
+
+@rel d/gbd1f04710855-17 --x.code/touches--> a/gbd1f04710855-1
+
+@rel d/gbd1f04710855-16 --x.code/touches--> a/gbd1f04710855-2
+
+@rel d/gbd1f04710855-17 --x.code/touches--> a/gbd1f04710855-2
+
+@rel d/gbd1f04710855-25 --x.code/touches--> a/gbd1f04710855-3
+
+@rel d/gbd1f04710855-26 --x.code/touches--> a/gbd1f04710855-3
+
+@rel d/gbd1f04710855-27 --x.code/touches--> a/gbd1f04710855-3
+
+@rel d/gbd1f04710855-28 --x.code/touches--> a/gbd1f04710855-3
+
+@rel d/gbd1f04710855-30 --x.code/touches--> a/gbd1f04710855-3
+
+@rel p/gbd1f04710855-1-1 --conditions--> d/gbd1f04710855-1
+
+@rel p/gbd1f04710855-1-2 --conditions--> d/gbd1f04710855-1
+
+@rel p/gbd1f04710855-1-3 --conditions--> d/gbd1f04710855-1
+
+@rel p/gbd1f04710855-14-1 --conditions--> d/gbd1f04710855-2
+
+@rel p/gbd1f04710855-14-2 --conditions--> d/gbd1f04710855-2
+
+@rel p/gbd1f04710855-3-1 --conditions--> d/gbd1f04710855-3
+
+@rel p/gbd1f04710855-4-1 --conditions--> d/gbd1f04710855-4
+
+@rel p/gbd1f04710855-3-1 --conditions--> d/gbd1f04710855-5
+
+@rel p/gbd1f04710855-5-2 --conditions--> d/gbd1f04710855-5
+
+@rel p/gbd1f04710855-5-3 --conditions--> d/gbd1f04710855-5
+
+@rel p/gbd1f04710855-5-4 --conditions--> d/gbd1f04710855-5
+
+@rel p/gbd1f04710855-6-1 --conditions--> d/gbd1f04710855-6
+
+@rel p/gbd1f04710855-1-1 --conditions--> d/gbd1f04710855-7
+
+@rel p/gbd1f04710855-1-2 --conditions--> d/gbd1f04710855-7
+
+@rel p/gbd1f04710855-1-3 --conditions--> d/gbd1f04710855-7
+
+@rel p/gbd1f04710855-3-1 --conditions--> d/gbd1f04710855-8
+
+@rel p/gbd1f04710855-5-2 --conditions--> d/gbd1f04710855-8
+
+@rel p/gbd1f04710855-5-3 --conditions--> d/gbd1f04710855-8
+
+@rel p/gbd1f04710855-5-4 --conditions--> d/gbd1f04710855-8
+
+@rel p/gbd1f04710855-6-1 --conditions--> d/gbd1f04710855-8
+
+@rel p/gbd1f04710855-8-6 --conditions--> d/gbd1f04710855-8
+
+@rel p/gbd1f04710855-8-7 --conditions--> d/gbd1f04710855-8
+
+@rel p/gbd1f04710855-1-1 --conditions--> d/gbd1f04710855-9
+
+@rel p/gbd1f04710855-1-2 --conditions--> d/gbd1f04710855-9
+
+@rel p/gbd1f04710855-1-3 --conditions--> d/gbd1f04710855-9
+
+@rel p/gbd1f04710855-10-1 --conditions--> d/gbd1f04710855-10
+
+@rel p/gbd1f04710855-11-1 --conditions--> d/gbd1f04710855-11
+
+@rel p/gbd1f04710855-12-1 --conditions--> d/gbd1f04710855-12
+
+@rel p/gbd1f04710855-13-1 --conditions--> d/gbd1f04710855-13
+
+@rel p/gbd1f04710855-14-1 --conditions--> d/gbd1f04710855-14
+
+@rel p/gbd1f04710855-14-2 --conditions--> d/gbd1f04710855-14
+
+@rel p/gbd1f04710855-15-1 --conditions--> d/gbd1f04710855-15
+
+@rel p/gbd1f04710855-1-1 --conditions--> d/gbd1f04710855-16
+
+@rel p/gbd1f04710855-16-2 --conditions--> d/gbd1f04710855-16
+
+@rel p/gbd1f04710855-1-3 --conditions--> d/gbd1f04710855-16
+
+@rel p/gbd1f04710855-17-1 --conditions--> d/gbd1f04710855-17
+
+@rel p/gbd1f04710855-17-2 --conditions--> d/gbd1f04710855-17
+
+@rel p/gbd1f04710855-17-3 --conditions--> d/gbd1f04710855-17
+
+@rel p/gbd1f04710855-18-1 --conditions--> d/gbd1f04710855-18
+
+@rel p/gbd1f04710855-18-2 --conditions--> d/gbd1f04710855-18
+
+@rel p/gbd1f04710855-18-3 --conditions--> d/gbd1f04710855-18
+
+@rel p/gbd1f04710855-19-1 --conditions--> d/gbd1f04710855-19
+
+@rel p/gbd1f04710855-16-2 --conditions--> d/gbd1f04710855-19
+
+@rel p/gbd1f04710855-1-3 --conditions--> d/gbd1f04710855-19
+
+@rel p/gbd1f04710855-20-1 --conditions--> d/gbd1f04710855-20
+
+@rel p/gbd1f04710855-20-2 --conditions--> d/gbd1f04710855-20
+
+@rel p/gbd1f04710855-20-3 --conditions--> d/gbd1f04710855-20
+
+@rel p/gbd1f04710855-21-1 --conditions--> d/gbd1f04710855-21
+
+@rel p/gbd1f04710855-16-2 --conditions--> d/gbd1f04710855-21
+
+@rel p/gbd1f04710855-1-3 --conditions--> d/gbd1f04710855-21
+
+@rel p/gbd1f04710855-22-1 --conditions--> d/gbd1f04710855-22
+
+@rel p/gbd1f04710855-22-2 --conditions--> d/gbd1f04710855-22
+
+@rel p/gbd1f04710855-22-3 --conditions--> d/gbd1f04710855-22
+
+@rel p/gbd1f04710855-1-1 --conditions--> d/gbd1f04710855-23
+
+@rel p/gbd1f04710855-23-2 --conditions--> d/gbd1f04710855-23
+
+@rel p/gbd1f04710855-1-3 --conditions--> d/gbd1f04710855-23
+
+@rel p/gbd1f04710855-1-1 --conditions--> d/gbd1f04710855-24
+
+@rel p/gbd1f04710855-23-2 --conditions--> d/gbd1f04710855-24
+
+@rel p/gbd1f04710855-1-3 --conditions--> d/gbd1f04710855-24
+
+@rel p/gbd1f04710855-25-1 --conditions--> d/gbd1f04710855-25
+
+@rel p/gbd1f04710855-25-2 --conditions--> d/gbd1f04710855-25
+
+@rel p/gbd1f04710855-25-1 --conditions--> d/gbd1f04710855-26
+
+@rel p/gbd1f04710855-25-2 --conditions--> d/gbd1f04710855-26
+
+@rel p/gbd1f04710855-25-1 --conditions--> d/gbd1f04710855-27
+
+@rel p/gbd1f04710855-25-2 --conditions--> d/gbd1f04710855-27
+
+@rel p/gbd1f04710855-25-1 --conditions--> d/gbd1f04710855-28
+
+@rel p/gbd1f04710855-25-2 --conditions--> d/gbd1f04710855-28
+
+@rel p/gbd1f04710855-25-1 --conditions--> d/gbd1f04710855-29
+
+@rel p/gbd1f04710855-25-2 --conditions--> d/gbd1f04710855-29
+
+@rel p/gbd1f04710855-25-1 --conditions--> d/gbd1f04710855-30
+
+@rel p/gbd1f04710855-25-2 --conditions--> d/gbd1f04710855-30
+
+@rel p/gbd1f04710855-22-1 --conditions--> d/gbd1f04710855-31
+
+@rel p/gbd1f04710855-31-2 --conditions--> d/gbd1f04710855-31
+
+@rel p/gbd1f04710855-22-1 --conditions--> d/gbd1f04710855-32
+
+@rel p/gbd1f04710855-31-2 --conditions--> d/gbd1f04710855-32
+
+@rel p/gbd1f04710855-33-1 --conditions--> d/gbd1f04710855-33
+
+@rel p/gbd1f04710855-33-2 --conditions--> d/gbd1f04710855-33
+
+@rel p/gbd1f04710855-34-1 --conditions--> d/gbd1f04710855-34
+
+@rel p/gbd1f04710855-34-2 --conditions--> d/gbd1f04710855-34
+
+@rel p/gbd1f04710855-34-3 --conditions--> d/gbd1f04710855-34
+
+@rel p/gbd1f04710855-34-1 --conditions--> d/gbd1f04710855-35
+
+@rel p/gbd1f04710855-34-2 --conditions--> d/gbd1f04710855-35
+
+@rel p/gbd1f04710855-34-3 --conditions--> d/gbd1f04710855-35
+
+@rel p/gbd1f04710855-35-4 --conditions--> d/gbd1f04710855-35
+
+@rel p/gbd1f04710855-36-1 --conditions--> d/gbd1f04710855-36
+
+@rel p/gbd1f04710855-36-2 --conditions--> d/gbd1f04710855-36
+
+@rel p/gbd1f04710855-36-3 --conditions--> d/gbd1f04710855-36
+
+@rel r/gbd1f04710855-1-1 --contrasts--> d/gbd1f04710855-1
+
+@rel r/gbd1f04710855-13-1 --contrasts--> d/gbd1f04710855-2
+
+@rel r/gbd1f04710855-3-1 --contrasts--> d/gbd1f04710855-3
+
+@rel r/gbd1f04710855-3-2 --contrasts--> d/gbd1f04710855-3
+
+@rel r/gbd1f04710855-4-1 --contrasts--> d/gbd1f04710855-4
+
+@rel r/gbd1f04710855-5-1 --contrasts--> d/gbd1f04710855-5
+
+@rel r/gbd1f04710855-5-2 --contrasts--> d/gbd1f04710855-5
+
+@rel r/gbd1f04710855-5-3 --contrasts--> d/gbd1f04710855-5
+
+@rel r/gbd1f04710855-5-4 --contrasts--> d/gbd1f04710855-5
+
+@rel r/gbd1f04710855-6-1 --contrasts--> d/gbd1f04710855-6
+
+@rel r/gbd1f04710855-6-2 --contrasts--> d/gbd1f04710855-6
+
+@rel r/gbd1f04710855-7-1 --contrasts--> d/gbd1f04710855-7
+
+@rel r/gbd1f04710855-7-2 --contrasts--> d/gbd1f04710855-7
+
+@rel r/gbd1f04710855-8-1 --contrasts--> d/gbd1f04710855-8
+
+@rel r/gbd1f04710855-8-2 --contrasts--> d/gbd1f04710855-8
+
+@rel r/gbd1f04710855-7-1 --contrasts--> d/gbd1f04710855-9
+
+@rel r/gbd1f04710855-9-2 --contrasts--> d/gbd1f04710855-9
+
+@rel r/gbd1f04710855-10-1 --contrasts--> d/gbd1f04710855-10
+
+@rel r/gbd1f04710855-12-1 --contrasts--> d/gbd1f04710855-12
+
+@rel r/gbd1f04710855-13-1 --contrasts--> d/gbd1f04710855-13
+
+@rel r/gbd1f04710855-13-1 --contrasts--> d/gbd1f04710855-14
+
+@rel r/gbd1f04710855-14-2 --contrasts--> d/gbd1f04710855-14
+
+@rel r/gbd1f04710855-15-1 --contrasts--> d/gbd1f04710855-15
+
+@rel r/gbd1f04710855-16-1 --contrasts--> d/gbd1f04710855-16
+
+@rel r/gbd1f04710855-17-1 --contrasts--> d/gbd1f04710855-17
+
+@rel r/gbd1f04710855-18-1 --contrasts--> d/gbd1f04710855-18
+
+@rel r/gbd1f04710855-18-2 --contrasts--> d/gbd1f04710855-18
+
+@rel r/gbd1f04710855-1-1 --contrasts--> d/gbd1f04710855-19
+
+@rel r/gbd1f04710855-20-1 --contrasts--> d/gbd1f04710855-20
+
+@rel r/gbd1f04710855-16-1 --contrasts--> d/gbd1f04710855-21
+
+@rel r/gbd1f04710855-22-1 --contrasts--> d/gbd1f04710855-22
+
+@rel r/gbd1f04710855-23-1 --contrasts--> d/gbd1f04710855-23
+
+@rel r/gbd1f04710855-23-1 --contrasts--> d/gbd1f04710855-24
+
+@rel r/gbd1f04710855-23-1 --contrasts--> d/gbd1f04710855-25
+
+@rel r/gbd1f04710855-23-1 --contrasts--> d/gbd1f04710855-26
+
+@rel r/gbd1f04710855-23-1 --contrasts--> d/gbd1f04710855-27
+
+@rel r/gbd1f04710855-23-1 --contrasts--> d/gbd1f04710855-28
+
+@rel r/gbd1f04710855-23-1 --contrasts--> d/gbd1f04710855-29
+
+@rel r/gbd1f04710855-23-1 --contrasts--> d/gbd1f04710855-30
+
+@rel r/gbd1f04710855-31-1 --contrasts--> d/gbd1f04710855-31
+
+@rel r/gbd1f04710855-31-2 --contrasts--> d/gbd1f04710855-31
+
+@rel r/gbd1f04710855-32-1 --contrasts--> d/gbd1f04710855-32
+
+@rel r/gbd1f04710855-23-1 --contrasts--> d/gbd1f04710855-32
+
+@rel r/gbd1f04710855-33-1 --contrasts--> d/gbd1f04710855-33
+
+@rel r/gbd1f04710855-34-1 --contrasts--> d/gbd1f04710855-34
+
+@rel r/gbd1f04710855-34-2 --contrasts--> d/gbd1f04710855-34
+
+@rel r/gbd1f04710855-35-1 --contrasts--> d/gbd1f04710855-35
+
+@rel r/gbd1f04710855-35-2 --contrasts--> d/gbd1f04710855-35
+
+@rel r/gbd1f04710855-36-1 --contrasts--> d/gbd1f04710855-36
+
+@rel r/gbd1f04710855-36-2 --contrasts--> d/gbd1f04710855-36
+
+@rel e/gbd1f04710855-1-1 --backs--> q/gbd1f04710855-1-1
+
+@rel d/gbd1f04710855-1 --causes--> q/gbd1f04710855-1-1
+
+@rel e/gbd1f04710855-1-2 --backs--> q/gbd1f04710855-1-2
+
+@rel d/gbd1f04710855-1 --causes--> q/gbd1f04710855-1-2
+
+@rel d/gbd1f04710855-2 --causes--> q/gbd1f04710855-2-1
+
+@rel d/gbd1f04710855-2 --causes--> q/gbd1f04710855-2-2
+
+@rel d/gbd1f04710855-3 --causes--> q/gbd1f04710855-3-1
+
+@rel d/gbd1f04710855-4 --causes--> q/gbd1f04710855-4-1
+
+@rel d/gbd1f04710855-5 --causes--> q/gbd1f04710855-5-1
+
+@rel e/gbd1f04710855-6-1 --backs--> q/gbd1f04710855-6-1
+
+@rel d/gbd1f04710855-6 --causes--> q/gbd1f04710855-6-1
+
+@rel e/gbd1f04710855-16-1 --backs--> q/gbd1f04710855-7-1
+
+@rel d/gbd1f04710855-7 --causes--> q/gbd1f04710855-7-1
+
+@rel e/gbd1f04710855-1-1 --backs--> q/gbd1f04710855-7-2
+
+@rel d/gbd1f04710855-7 --causes--> q/gbd1f04710855-7-2
+
+@rel e/gbd1f04710855-7-3 --backs--> q/gbd1f04710855-7-3
+
+@rel d/gbd1f04710855-7 --causes--> q/gbd1f04710855-7-3
+
+@rel e/gbd1f04710855-8-1 --backs--> q/gbd1f04710855-8-1
+
+@rel d/gbd1f04710855-8 --causes--> q/gbd1f04710855-8-1
+
+@rel e/gbd1f04710855-16-1 --backs--> q/gbd1f04710855-9-1
+
+@rel d/gbd1f04710855-9 --causes--> q/gbd1f04710855-9-1
+
+@rel d/gbd1f04710855-9 --causes--> q/gbd1f04710855-9-2
+
+@rel d/gbd1f04710855-9 --causes--> q/gbd1f04710855-9-3
+
+@rel d/gbd1f04710855-9 --causes--> q/gbd1f04710855-9-4
+
+@rel d/gbd1f04710855-10 --causes--> q/gbd1f04710855-10-1
+
+@rel d/gbd1f04710855-12 --causes--> q/gbd1f04710855-12-1
+
+@rel d/gbd1f04710855-15 --causes--> q/gbd1f04710855-15-1
+
+@rel e/gbd1f04710855-15-2 --backs--> q/gbd1f04710855-15-2
+
+@rel d/gbd1f04710855-15 --causes--> q/gbd1f04710855-15-2
+
+@rel e/gbd1f04710855-16-1 --backs--> q/gbd1f04710855-16-1
+
+@rel d/gbd1f04710855-16 --causes--> q/gbd1f04710855-16-1
+
+@rel e/gbd1f04710855-16-2 --backs--> q/gbd1f04710855-16-2
+
+@rel d/gbd1f04710855-16 --causes--> q/gbd1f04710855-16-2
+
+@rel e/gbd1f04710855-17-1 --backs--> q/gbd1f04710855-17-1
+
+@rel d/gbd1f04710855-17 --causes--> q/gbd1f04710855-17-1
+
+@rel e/gbd1f04710855-17-1 --backs--> q/gbd1f04710855-17-2
+
+@rel d/gbd1f04710855-17 --causes--> q/gbd1f04710855-17-2
+
+@rel e/gbd1f04710855-18-1 --backs--> q/gbd1f04710855-18-1
+
+@rel d/gbd1f04710855-18 --causes--> q/gbd1f04710855-18-1
+
+@rel e/gbd1f04710855-16-2 --backs--> q/gbd1f04710855-16-2
+
+@rel d/gbd1f04710855-19 --causes--> q/gbd1f04710855-16-2
+
+@rel e/gbd1f04710855-19-2 --backs--> q/gbd1f04710855-19-2
+
+@rel d/gbd1f04710855-19 --causes--> q/gbd1f04710855-19-2
+
+@rel e/gbd1f04710855-16-2 --backs--> q/gbd1f04710855-20-1
+
+@rel d/gbd1f04710855-20 --causes--> q/gbd1f04710855-20-1
+
+@rel e/gbd1f04710855-16-2 --backs--> q/gbd1f04710855-21-1
+
+@rel d/gbd1f04710855-21 --causes--> q/gbd1f04710855-21-1
+
+@rel d/gbd1f04710855-21 --causes--> q/gbd1f04710855-21-2
+
+@rel e/gbd1f04710855-22-1 --backs--> q/gbd1f04710855-22-1
+
+@rel d/gbd1f04710855-22 --causes--> q/gbd1f04710855-22-1
+
+@rel e/gbd1f04710855-22-2 --backs--> q/gbd1f04710855-22-2
+
+@rel d/gbd1f04710855-22 --causes--> q/gbd1f04710855-22-2
+
+@rel e/gbd1f04710855-22-3 --backs--> q/gbd1f04710855-22-3
+
+@rel d/gbd1f04710855-22 --causes--> q/gbd1f04710855-22-3
+
+@rel d/gbd1f04710855-23 --causes--> q/gbd1f04710855-23-1
+
+@rel e/gbd1f04710855-18-1 --backs--> q/gbd1f04710855-23-2
+
+@rel d/gbd1f04710855-23 --causes--> q/gbd1f04710855-23-2
+
+@rel e/gbd1f04710855-23-3 --backs--> q/gbd1f04710855-23-3
+
+@rel d/gbd1f04710855-23 --causes--> q/gbd1f04710855-23-3
+
+@rel d/gbd1f04710855-23 --causes--> q/gbd1f04710855-23-4
+
+@rel d/gbd1f04710855-24 --causes--> q/gbd1f04710855-24-1
+
+@rel d/gbd1f04710855-24 --causes--> q/gbd1f04710855-24-2
+
+@rel d/gbd1f04710855-24 --causes--> q/gbd1f04710855-24-3
+
+@rel d/gbd1f04710855-24 --causes--> q/gbd1f04710855-24-4
+
+@rel d/gbd1f04710855-24 --causes--> q/gbd1f04710855-24-5
+
+@rel d/gbd1f04710855-31 --causes--> q/gbd1f04710855-31-1
+
+@rel e/gbd1f04710855-31-2 --backs--> q/gbd1f04710855-31-2
+
+@rel d/gbd1f04710855-31 --causes--> q/gbd1f04710855-31-2
+
+@rel d/gbd1f04710855-31 --causes--> q/gbd1f04710855-31-3
+
+@rel e/gbd1f04710855-31-4 --backs--> q/gbd1f04710855-31-4
+
+@rel d/gbd1f04710855-31 --causes--> q/gbd1f04710855-31-4
+
+@rel d/gbd1f04710855-32 --causes--> q/gbd1f04710855-32-1
+
+@rel e/gbd1f04710855-16-2 --backs--> q/gbd1f04710855-32-2
+
+@rel d/gbd1f04710855-32 --causes--> q/gbd1f04710855-32-2
+
+@rel e/gbd1f04710855-33-1 --backs--> q/gbd1f04710855-33-1
+
+@rel d/gbd1f04710855-33 --causes--> q/gbd1f04710855-33-1
+
+@rel e/gbd1f04710855-34-1 --backs--> q/gbd1f04710855-34-1
+
+@rel d/gbd1f04710855-34 --causes--> q/gbd1f04710855-34-1
+
+@rel e/gbd1f04710855-33-1 --backs--> q/gbd1f04710855-34-2
+
+@rel d/gbd1f04710855-34 --causes--> q/gbd1f04710855-34-2
+
+@rel e/gbd1f04710855-17-1 --backs--> q/gbd1f04710855-35-1
+
+@rel d/gbd1f04710855-35 --causes--> q/gbd1f04710855-35-1
+
+@rel d/gbd1f04710855-35 --causes--> q/gbd1f04710855-35-2
+
+@rel e/gbd1f04710855-16-2 --backs--> q/gbd1f04710855-36-1
+
+@rel d/gbd1f04710855-36 --causes--> q/gbd1f04710855-36-1
+
+@rel e/gbd1f04710855-16-2 --backs--> q/gbd1f04710855-36-2
+
+@rel d/gbd1f04710855-36 --causes--> q/gbd1f04710855-36-2
