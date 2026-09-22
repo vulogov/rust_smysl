@@ -1,0 +1,526 @@
+{
+  "decisions": [
+    {
+      "decision": "Research the truncated-change problem before building for it",
+      "kind": "act",
+      "rationale": "The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.",
+      "quote": "Research the truncated-change problem before building for it"
+    },
+    {
+      "decision": "Reporting what was left out costs nothing and is honest",
+      "kind": "act",
+      "rationale": "The commit message suggests that reporting what was left out is a cost-free and honest approach to dealing with the truncated-change problem.",
+      "quote": "Reporting what was left out costs nothing and is honest."
+    },
+    {
+      "decision": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set",
+      "kind": "act",
+      "rationale": "The commit message proposes a method for choosing which 400 lines to show, which is cost-effective and can be measured deterministically.",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    },
+    {
+      "decision": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary",
+      "kind": "act",
+      "rationale": "The commit message suggests that splitting the change across multiple calls is expensive and should be avoided unless cheaper methods prove ineffective.",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": "The tool's promise is that it operates as designed",
+      "kind": "act",
+      "rationale": "The commit message states that the tool promises to operate as designed, without making any claims about how an agent or person acts on its reports.",
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": "Feasibility: met",
+      "kind": "act",
+      "rationale": "The commit message confirms that the feasibility of the project has been met, indicating that smysl works as a self-contained library under an installable cargo subcommand.",
+      "quote": "Feasibility: met."
+    },
+    {
+      "decision": "S3, done: rationale packed into an agent's prompt did not change what the agent did",
+      "kind": "act",
+      "rationale": "The commit message states that packing rationale into an agent's prompt did not influence the agent's actions.",
+      "quote": "S3, done: rationale packed into an agent's prompt did not change what the agent did"
+    },
+    {
+      "decision": "S4, done (2026-09-19): `check` ships advisory",
+      "kind": "act",
+      "rationale": "The commit message indicates that the `check` command has been implemented and is now shipping as an advisory tool.",
+      "quote": "S4, done (2026-09-19): `check` ships advisory."
+    },
+    {
+      "decision": "S0, done (2026-09-20): the extraction figures exist, and they are figures about models",
+      "kind": "act",
+      "rationale": "The commit message confirms that the extraction figures have been established and are related to model performance.",
+      "quote": "S0, done (2026-09-20): the extraction figures exist, and they are figures about models."
+    },
+    {
+      "decision": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool",
+      "kind": "act",
+      "rationale": "The commit message states that the project has reassessed its approach to measurement, focusing on the tool rather than the models.",
+      "quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool."
+    },
+    {
+      "decision": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this",
+      "kind": "act",
+      "rationale": "The commit message outlines the next steps for the project, focusing on tool-side acceptance and providing an operator's benchmark for model selection.",
+      "quote": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this."
+    },
+    {
+      "decision": "The model is the operator's choice, never the tool's",
+      "kind": "act",
+      "rationale": "The commit message states that the model selection is left to the operator, with the tool not making any decisions about which model to use.",
+      "quote": "The model is the operator's choice, never the tool's."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 1,
+      "text": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction."
+    },
+    {
+      "decision": 1,
+      "text": "extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did."
+    },
+    {
+      "decision": 2,
+      "text": "The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports."
+    },
+    {
+      "decision": 2,
+      "text": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history."
+    },
+    {
+      "decision": 2,
+      "text": "The tool assigns sources, labels and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool assigns sources, labels and statuses; a model proposes content only."
+    },
+    {
+      "decision": 3,
+      "text": "extract reads a large commit in parts",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "extract reads a large commit in parts"
+    },
+    {
+      "decision": 3,
+      "text": "check still cuts at the first 400 lines and says only that it did",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "check still cuts at the first 400 lines and says only that it did"
+    },
+    {
+      "decision": 4,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 4,
+      "text": "Feasibility: met.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Feasibility: met."
+    },
+    {
+      "decision": 5,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports."
+    },
+    {
+      "decision": 6,
+      "text": "smysl works as a self-contained library under an installable cargo subcommand",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history (§4, Feasibility)."
+    },
+    {
+      "decision": 7,
+      "text": "The tool promises to operate as designed, so a gate is functional acceptance: does a command do what its design says, measured where a model is involved.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A gate is functional acceptance: does a command do what its design says, measured where a model is involved."
+    },
+    {
+      "decision": 7,
+      "text": "The research extractor is ported and typed — per-function events (calls, methods, field reads, bindings, macros, string literals) each carrying the control context it sits in.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "the research extractor is ported and typed — per-function events (calls, methods, field reads, bindings, macros, string literals) each carrying the control context it sits in."
+    },
+    {
+      "decision": 7,
+      "text": "The facts crate builds and stages units with tool-assigned sources and labels.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "the facts crate builds and stages units with tool-assigned sources and labels."
+    },
+    {
+      "decision": 8,
+      "text": "`check` operates as designed, given a diff and the corpus of the diff's ancestors, report the decisions, prerequisites and rejected alternatives the change contradicts, and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Design under test: given a diff and the corpus of the diff's ancestors, report the decisions, prerequisites and rejected alternatives the change contradicts, and nothing else."
+    },
+    {
+      "decision": 8,
+      "text": "The tool promises to operate as designed.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A gate is functional acceptance: does a command do what its design says, measured where a model is involved. A negative result is an outcome: it sets how a feature ships (gate or advisory), what its documentation states, or which step is reworked."
+    },
+    {
+      "decision": 8,
+      "text": "`check` reads the diff after it is made and reports what it contradicts.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Findings come from the change, not the prompt. `check` reads the diff after it is made and reports what it contradicts, as a signal with an exit code (S4)."
+    },
+    {
+      "decision": 9,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 9,
+      "text": "Feasibility: met.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Feasibility: met."
+    },
+    {
+      "decision": 10,
+      "text": "The project's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports."
+    },
+    {
+      "decision": 10,
+      "text": "Feasibility: met.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history."
+    },
+    {
+      "decision": 10,
+      "text": "S3, done: rationale packed into an agent's prompt did not change what the agent did.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "S3, done: rationale packed into an agent's prompt did not change what the agent did (10 violations without, 12 with, over 14 pairs), and git history answered 'why' questions as well as the corpus in essay-style repositories."
+    },
+    {
+      "decision": 10,
+      "text": "S4, done (2026-09-19): `check` ships advisory.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "S4, done (2026-09-19): `check` ships advisory. On a free local model it finds 0.38 of the contradictions on held-out data, flags 13% of ordinary commits, and 10 of its 96 held-out flags were correct (precision 0.10, against a bound of 0.80)."
+    },
+    {
+      "decision": 10,
+      "text": "S0, done (2026-09-20): the extraction figures exist, and they are figures about models.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "S0, done (2026-09-20): the extraction figures exist, and they are figures about models. Six commits labelled blind (73 decisions, 68 prerequisites, 29 alternatives) and three research systems adjudicated: decisions 82–100% precision, prerequisites 41–88% with recall moving inversely, alternatives 31–79%."
+    },
+    {
+      "decision": 10,
+      "text": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool.",
+      "kind": "prior-change",
+      "normative": true,
+      "quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice."
+    },
+    {
+      "decision": 11,
+      "text": "The research repositories share one author and an essay style of commit message.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The research repositories share one author and an essay style of commit message; results on ordinary repositories are unmeasured until S0/S2."
+    },
+    {
+      "decision": 11,
+      "text": "Agents do not act on context they are given.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Agents do not act on context they are given (S3: 1 of 14 corpus-arm summaries mentioned it) and rewrite tests that stand in their way (S3 run1)."
+    },
+    {
+      "decision": 11,
+      "text": "A model-judged check has a false-flag rate, and it is large on a free model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Measured on held-out data with a local 14B: 13% of ordinary commits flagged, and 10 of 96 flags correct."
+    },
+    {
+      "decision": 11,
+      "text": "Measuring a model is not measuring the tool.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every quality figure this project has produced moves with the model: the same code scored 0.10 and ~0.89 precision in `check`, and 41% to 88% on prerequisites in extraction."
+    },
+    {
+      "decision": 12,
+      "text": "The tool promises to operate as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 12,
+      "text": "The model client is our own, and the default build has no network stack.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "The model client is our own, and the default build has no network stack."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "reason": "",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    },
+    {
+      "decision": 1,
+      "alternative": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "reason": "",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": 2,
+      "alternative": "Choosing which 400 lines to show, by how much corpus attaches to each file.",
+      "reason": "",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    },
+    {
+      "decision": 2,
+      "alternative": "Splitting the change across calls triples the cost.",
+      "reason": "",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": 3,
+      "alternative": "Reporting what was left out costs nothing and is honest",
+      "reason": "",
+      "quote": "Reporting what was left out costs nothing and is honest"
+    },
+    {
+      "decision": 3,
+      "alternative": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary",
+      "reason": "",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary"
+    },
+    {
+      "decision": 4,
+      "alternative": "Reporting what was left out costs nothing and is honest.",
+      "reason": "",
+      "quote": "Reporting what was left out costs nothing and is honest."
+    },
+    {
+      "decision": 4,
+      "alternative": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "reason": "",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    },
+    {
+      "decision": 4,
+      "alternative": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "reason": "",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": 7,
+      "alternative": "The rationale in the prompt could have influenced the agent's actions.",
+      "reason": "",
+      "quote": "The commit message states that packing rationale into an agent's prompt did not influence the agent's actions."
+    },
+    {
+      "decision": 8,
+      "alternative": "`check` ships as a gate.",
+      "reason": "",
+      "quote": "all bounds met: `check` ships as a gate; any bound missed: it ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set."
+    },
+    {
+      "decision": 9,
+      "alternative": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "reason": "",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    },
+    {
+      "decision": 9,
+      "alternative": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "reason": "",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": 10,
+      "alternative": "Continue measuring models.",
+      "reason": "",
+      "quote": "The project stops measuring models and measures the tool."
+    },
+    {
+      "decision": 10,
+      "alternative": "Measure both the tool and the models together.",
+      "reason": "",
+      "quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice."
+    },
+    {
+      "decision": 11,
+      "alternative": "Continue focusing on research repositories.",
+      "reason": "",
+      "quote": "results on ordinary repositories are unmeasured until S0/S2."
+    },
+    {
+      "decision": 11,
+      "alternative": "Implement a model that can handle long unattended runs.",
+      "reason": "",
+      "quote": "A long unattended run reports liveness, not results."
+    },
+    {
+      "decision": 12,
+      "alternative": "The tool selects a model based on some criteria.",
+      "reason": "",
+      "quote": "The model is the operator's choice, never the tool's."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Reporting what was left out costs nothing and is honest.",
+      "quote": "Reporting what was left out costs nothing and is honest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "The decision to research the truncated-change problem before building for it helps in understanding and addressing the issue affecting 59% of held-out changes.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Reporting what was left out costs nothing and is honest.",
+      "quote": "Reporting what was left out costs nothing and is honest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set",
+      "verified": true,
+      "verification_quote": "Four ways out, ordered by cost. Reporting what was left out costs nothing and is honest. Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set. Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": 4,
+      "text": "The decision to split the change across calls is deferred until cheaper methods are measured.",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Gates are functional acceptance, and a negative result is an outcome that sets scope or documentation, not a verdict on the project.",
+      "quote": "Gates are functional acceptance, and a negative result is an outcome that sets scope or documentation, not a verdict on the project (§4).",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The project records this as information about one usage pattern: rationale in the prompt does not change what an agent does.",
+      "quote": "The project records this as information about one usage pattern: rationale in the prompt does not change what an agent does.",
+      "verified": true,
+      "verification_quote": "The commit message states that packing rationale into an agent's prompt did not influence the agent's actions."
+    },
+    {
+      "decision": 8,
+      "text": "`check` ships advisory.",
+      "quote": "`check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help. All three bounds are missed on the free local configuration; the adjudication (closed 2026-09-19, blind) settles how the output must be described rather than the mode.",
+      "verified": true,
+      "verification_quote": "`check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help. All three bounds are missed on the free local configuration; the adjudication (closed 2026-09-19, blind) settles how the output must be described rather than the mode."
+    },
+    {
+      "decision": 9,
+      "text": "Reporting what was left out costs nothing and is honest.",
+      "quote": "Reporting what was left out costs nothing and is honest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "The project focuses on measuring the tool rather than the models.",
+      "quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool.",
+      "verified": true,
+      "verification_quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice."
+    },
+    {
+      "decision": 10,
+      "text": "The project separates the measurement of the tool from the measurement of the models.",
+      "quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool.",
+      "verified": true,
+      "verification_quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice."
+    },
+    {
+      "decision": 11,
+      "text": "The project will focus on tool-side acceptance and provide an operator's benchmark for model selection.",
+      "quote": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The tool will not make any decisions about which model to use.",
+      "quote": "The model is the operator's choice, never the tool's.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The operator has full control over the model selection process.",
+      "quote": "The model is the operator's choice, never the tool's.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

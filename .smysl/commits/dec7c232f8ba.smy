@@ -1,0 +1,457 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/gdec7c232f8ba-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": act, "ingest:quote": Research the truncated-change problem before building for it }
+~ Research the truncated-change problem before building for it
+
+The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.
+
+@decision d/gdec7c232f8ba-2 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": act, "ingest:quote": Reporting what was left out costs nothing and is honest. }
+~ Reporting what was left out costs nothing and is honest
+
+The commit message suggests that reporting what was left out is a cost-free and honest approach to dealing with the truncated-change problem.
+
+@decision d/gdec7c232f8ba-3 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": act, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can …
+
+The commit message proposes a method for choosing which 400 lines to show, which is cost-effective and can be measured deterministically.
+
+@decision d/gdec7c232f8ba-4 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": act, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, …
+
+The commit message suggests that splitting the change across multiple calls is expensive and should be avoided unless cheaper methods prove ineffective.
+
+@decision d/gdec7c232f8ba-5 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": act, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed
+
+The commit message states that the tool promises to operate as designed, without making any claims about how an agent or person acts on its reports.
+
+@decision d/gdec7c232f8ba-6 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": act, "ingest:quote": Feasibility: met. }
+~ Feasibility: met
+
+The commit message confirms that the feasibility of the project has been met, indicating that smysl works as a self-contained library under an installable cargo subcommand.
+
+@decision d/gdec7c232f8ba-7 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": act, "ingest:quote": "S3, done: rationale packed into an agent's prompt did not change what the agent did" }
+~ S3, done: rationale packed into an agent's prompt did not change what the agent did
+
+The commit message states that packing rationale into an agent's prompt did not influence the agent's actions.
+
+@decision d/gdec7c232f8ba-8 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": act, "ingest:quote": "S4, done (2026-09-19): `check` ships advisory." }
+~ S4, done (2026-09-19): `check` ships advisory
+
+The commit message indicates that the `check` command has been implemented and is now shipping as an advisory tool.
+
+@decision d/gdec7c232f8ba-9 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": act, "ingest:quote": "S0, done (2026-09-20): the extraction figures exist, and they are figures about models." }
+~ S0, done (2026-09-20): the extraction figures exist, and they are figures about models
+
+The commit message confirms that the extraction figures have been established and are related to model performance.
+
+@decision d/gdec7c232f8ba-10 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": act, "ingest:quote": Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. }
+~ Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool
+
+The commit message states that the project has reassessed its approach to measurement, focusing on the tool rather than the models.
+
+@decision d/gdec7c232f8ba-11 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": act, "ingest:quote": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this." }
+~ Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark …
+
+The commit message outlines the next steps for the project, focusing on tool-side acceptance and providing an operator's benchmark for model selection.
+
+@decision d/gdec7c232f8ba-12 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": act, "ingest:quote": "The model is the operator's choice, never the tool's." }
+~ The model is the operator's choice, never the tool's
+
+The commit message states that the model selection is left to the operator, with the tool not making any decisions about which model to use.
+
+@constraint p/gdec7c232f8ba-1-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/gdec7c232f8ba-1-2 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": existing-behaviour, "ingest:quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction." }
+~ 59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.
+
+@constraint p/gdec7c232f8ba-1-3 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": existing-behaviour, "ingest:quote": extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did. }
+~ extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it …
+
+extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did.
+
+@constraint p/gdec7c232f8ba-2-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports. }
+~ The tool's promise is that it operates as designed. It makes no promise about how an agent or a person …
+
+The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports.
+
+@constraint p/gdec7c232f8ba-2-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history." }
+~ Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust …
+
+Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history.
+
+@constraint p/gdec7c232f8ba-2-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns sources, labels and statuses; a model proposes content only." }
+~ The tool assigns sources, labels and statuses; a model proposes content only.
+
+@constraint p/gdec7c232f8ba-3-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": existing-behaviour, "ingest:quote": extract reads a large commit in parts }
+~ extract reads a large commit in parts
+
+@constraint p/gdec7c232f8ba-3-2 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": existing-behaviour, "ingest:quote": check still cuts at the first 400 lines and says only that it did }
+~ check still cuts at the first 400 lines and says only that it did
+
+@constraint p/gdec7c232f8ba-1-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/gdec7c232f8ba-4-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": Feasibility: met. }
+~ Feasibility: met.
+
+@constraint p/gdec7c232f8ba-5-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/gdec7c232f8ba-6-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history (§4, Feasibility)." }
+~ smysl works as a self-contained library under an installable cargo subcommand
+
+@constraint p/gdec7c232f8ba-7-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "A gate is functional acceptance: does a command do what its design says, measured where a model is involved." }
+~ The tool promises to operate as designed, so a gate is functional acceptance: does a command do what its …
+
+The tool promises to operate as designed, so a gate is functional acceptance: does a command do what its design says, measured where a model is involved.
+
+@constraint p/gdec7c232f8ba-7-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": prior-change, "ingest:quote": "the research extractor is ported and typed — per-function events (calls, methods, field reads, bindings, macros, string literals) each carrying the control context it sits in." }
+~ The research extractor is ported and typed — per-function events (calls, methods, field reads, bindings, …
+
+The research extractor is ported and typed — per-function events (calls, methods, field reads, bindings, macros, string literals) each carrying the control context it sits in.
+
+@constraint p/gdec7c232f8ba-7-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": prior-change, "ingest:quote": the facts crate builds and stages units with tool-assigned sources and labels. }
+~ The facts crate builds and stages units with tool-assigned sources and labels.
+
+@constraint p/gdec7c232f8ba-8-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "Design under test: given a diff and the corpus of the diff's ancestors, report the decisions, prerequisites and rejected alternatives the change contradicts, and nothing else." }
+~ `check` operates as designed, given a diff and the corpus of the diff's ancestors, report the decisions, …
+
+`check` operates as designed, given a diff and the corpus of the diff's ancestors, report the decisions, prerequisites and rejected alternatives the change contradicts, and nothing else.
+
+@constraint p/gdec7c232f8ba-8-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": invariant, "ingest:quote": "A gate is functional acceptance: does a command do what its design says, measured where a model is involved. A negative result is an outcome: it sets how a feature ships (gate or advisory), what its documentation states, or which step is reworked." }
+~ The tool promises to operate as designed.
+
+@constraint p/gdec7c232f8ba-8-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "Findings come from the change, not the prompt. `check` reads the diff after it is made and reports what it contradicts, as a signal with an exit code (S4)." }
+~ `check` reads the diff after it is made and reports what it contradicts.
+
+@constraint p/gdec7c232f8ba-1-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/gdec7c232f8ba-4-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": Feasibility: met. }
+~ Feasibility: met.
+
+@constraint p/gdec7c232f8ba-10-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports. }
+~ The project's promise is that it operates as designed.
+
+@constraint p/gdec7c232f8ba-10-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history." }
+~ Feasibility: met.
+
+@constraint p/gdec7c232f8ba-10-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "S3, done: rationale packed into an agent's prompt did not change what the agent did (10 violations without, 12 with, over 14 pairs), and git history answered 'why' questions as well as the corpus in essay-style repositories." }
+~ S3, done: rationale packed into an agent's prompt did not change what the agent did.
+
+@constraint p/gdec7c232f8ba-10-4 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "S4, done (2026-09-19): `check` ships advisory. On a free local model it finds 0.38 of the contradictions on held-out data, flags 13% of ordinary commits, and 10 of its 96 held-out flags were correct (precision 0.10, against a bound of 0.80)." }
+~ S4, done (2026-09-19): `check` ships advisory.
+
+@constraint p/gdec7c232f8ba-10-5 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "S0, done (2026-09-20): the extraction figures exist, and they are figures about models. Six commits labelled blind (73 decisions, 68 prerequisites, 29 alternatives) and three research systems adjudicated: decisions 82–100% precision, prerequisites 41–88% with recall moving inversely, alternatives 31–79%." }
+~ S0, done (2026-09-20): the extraction figures exist, and they are figures about models.
+
+@constraint p/gdec7c232f8ba-10-6 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": prior-change, "ingest:quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice." }
+~ Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool.
+
+@constraint p/gdec7c232f8ba-11-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": The research repositories share one author and an essay style of commit message; results on ordinary repositories are unmeasured until S0/S2. }
+~ The research repositories share one author and an essay style of commit message.
+
+@constraint p/gdec7c232f8ba-11-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": Agents do not act on context they are given (S3: 1 of 14 corpus-arm summaries mentioned it) and rewrite tests that stand in their way (S3 run1). }
+~ Agents do not act on context they are given.
+
+@constraint p/gdec7c232f8ba-11-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "Measured on held-out data with a local 14B: 13% of ordinary commits flagged, and 10 of 96 flags correct." }
+~ A model-judged check has a false-flag rate, and it is large on a free model.
+
+@constraint p/gdec7c232f8ba-11-4 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": "Every quality figure this project has produced moves with the model: the same code scored 0.10 and ~0.89 precision in `check`, and 41% to 88% on prerequisites in extraction." }
+~ Measuring a model is not measuring the tool.
+
+@constraint p/gdec7c232f8ba-12-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool promises to operate as designed.
+
+@constraint p/gdec7c232f8ba-12-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": tool-setting, "ingest:quote": "The model client is our own, and the default build has no network stack." }
+~ The model client is our own, and the default build has no network stack.
+
+@claim r/gdec7c232f8ba-1-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and …
+
+Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.
+
+@claim r/gdec7c232f8ba-1-2 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are …
+
+Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@claim r/gdec7c232f8ba-2-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file.
+
+@claim r/gdec7c232f8ba-2-2 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Rejected: Splitting the change across calls triples the cost.
+
+@claim r/gdec7c232f8ba-3-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": Reporting what was left out costs nothing and is honest }
+~ Rejected: Reporting what was left out costs nothing and is honest
+
+@claim r/gdec7c232f8ba-3-2 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary" }
+~ Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are …
+
+Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary
+
+@claim r/gdec7c232f8ba-4-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": Reporting what was left out costs nothing and is honest. }
+~ Rejected: Reporting what was left out costs nothing and is honest.
+
+@claim r/gdec7c232f8ba-1-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and …
+
+Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.
+
+@claim r/gdec7c232f8ba-1-2 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are …
+
+Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@claim r/gdec7c232f8ba-7-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": The commit message states that packing rationale into an agent's prompt did not influence the agent's actions. }
+~ Rejected: The rationale in the prompt could have influenced the agent's actions.
+
+@claim r/gdec7c232f8ba-8-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": rejected-alternative, "ingest:quote": "all bounds met: `check` ships as a gate; any bound missed: it ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set." }
+~ Rejected: `check` ships as a gate.
+
+@claim r/gdec7c232f8ba-1-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and …
+
+Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.
+
+@claim r/gdec7c232f8ba-1-2 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "code:kind": rejected-alternative, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are …
+
+Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@claim r/gdec7c232f8ba-10-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": rejected-alternative, "ingest:quote": The project stops measuring models and measures the tool. }
+~ Rejected: Continue measuring models.
+
+@claim r/gdec7c232f8ba-10-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": rejected-alternative, "ingest:quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice." }
+~ Rejected: Measure both the tool and the models together.
+
+@claim r/gdec7c232f8ba-11-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": rejected-alternative, "ingest:quote": results on ordinary repositories are unmeasured until S0/S2. }
+~ Rejected: Continue focusing on research repositories.
+
+@claim r/gdec7c232f8ba-11-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": rejected-alternative, "ingest:quote": "A long unattended run reports liveness, not results." }
+~ Rejected: Implement a model that can handle long unattended runs.
+
+@claim r/gdec7c232f8ba-12-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "code:kind": rejected-alternative, "ingest:quote": "The model is the operator's choice, never the tool's." }
+~ Rejected: The tool selects a model based on some criteria.
+
+@claim q/gdec7c232f8ba-1-1 { status: inferred, grounds: [d/gdec7c232f8ba-1], "code:kind": anticipated, "ingest:quote": Reporting what was left out costs nothing and is honest. }
+~ Reporting what was left out costs nothing and is honest.
+
+@claim q/gdec7c232f8ba-1-2 { status: inferred, grounds: [d/gdec7c232f8ba-1], "code:kind": anticipated }
+~ The decision to research the truncated-change problem before building for it helps in understanding and …
+
+The decision to research the truncated-change problem before building for it helps in understanding and addressing the issue affecting 59% of held-out changes.
+
+@claim q/gdec7c232f8ba-2-1 { status: inferred, grounds: [d/gdec7c232f8ba-2], "code:kind": anticipated, "ingest:quote": Reporting what was left out costs nothing and is honest. }
+~ Reporting what was left out costs nothing and is honest.
+
+@evidence e/gdec7c232f8ba-3-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "ingest:quote": "Four ways out, ordered by cost. Reporting what was left out costs nothing and is honest. Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set. Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Check: Four ways out, ordered by cost. Reporting what was left out costs nothing and is honest. Choosing which …
+
+Check: Four ways out, ordered by cost. Reporting what was left out costs nothing and is honest. Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set. Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@finding q/gdec7c232f8ba-3-1 { status: cited, source: { kind: doc, ref: git:dec7c232f8ba12e6d1096633ddceb1642bc2ca45 }, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set" }
+~ Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can …
+
+Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set
+
+@claim q/gdec7c232f8ba-4-1 { status: inferred, grounds: [d/gdec7c232f8ba-4], "code:kind": anticipated, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ The decision to split the change across calls is deferred until cheaper methods are measured.
+
+@claim q/gdec7c232f8ba-5-1 { status: inferred, grounds: [d/gdec7c232f8ba-5], "code:kind": anticipated, "ingest:quote": "Gates are functional acceptance, and a negative result is an outcome that sets scope or documentation, not a verdict on the project (§4)." }
+~ Gates are functional acceptance, and a negative result is an outcome that sets scope or documentation, not a …
+
+Gates are functional acceptance, and a negative result is an outcome that sets scope or documentation, not a verdict on the project.
+
+@claim q/gdec7c232f8ba-7-1 { status: inferred, grounds: [d/gdec7c232f8ba-7], "code:kind": anticipated, "ingest:quote": The project records this as information about one usage pattern: rationale in the prompt does not change what an agent does. }
+~ The project records this as information about one usage pattern: rationale in the prompt does not change what …
+
+The project records this as information about one usage pattern: rationale in the prompt does not change what an agent does.
+
+@evidence e/gdec7c232f8ba-8-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "ingest:quote": "`check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help. All three bounds are missed on the free local configuration; the adjudication (closed 2026-09-19, blind) settles how the output must be described rather than the mode." }
+~ Check: `check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help. All …
+
+Check: `check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help. All three bounds are missed on the free local configuration; the adjudication (closed 2026-09-19, blind) settles how the output must be described rather than the mode.
+
+@finding q/gdec7c232f8ba-8-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "ingest:quote": "`check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help. All three bounds are missed on the free local configuration; the adjudication (closed 2026-09-19, blind) settles how the output must be described rather than the mode." }
+~ `check` ships advisory.
+
+@claim q/gdec7c232f8ba-9-1 { status: inferred, grounds: [d/gdec7c232f8ba-9], "code:kind": anticipated, "ingest:quote": Reporting what was left out costs nothing and is honest. }
+~ Reporting what was left out costs nothing and is honest.
+
+@claim q/gdec7c232f8ba-9-2 { status: inferred, grounds: [d/gdec7c232f8ba-9], "code:kind": anticipated, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can …
+
+Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.
+
+@claim q/gdec7c232f8ba-9-3 { status: inferred, grounds: [d/gdec7c232f8ba-9], "code:kind": anticipated, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, …
+
+Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@evidence e/gdec7c232f8ba-10-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "ingest:quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice." }
+~ Check: Every figure this project has produced separates into two parts: what the code does, which is ours and …
+
+Check: Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice.
+
+@finding q/gdec7c232f8ba-10-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "ingest:quote": Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. }
+~ The project focuses on measuring the tool rather than the models.
+
+@evidence e/gdec7c232f8ba-10-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "ingest:quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice." }
+~ Check: Every figure this project has produced separates into two parts: what the code does, which is ours and …
+
+Check: Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice.
+
+@finding q/gdec7c232f8ba-10-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@dec7c232f8ba }, "ingest:quote": Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. }
+~ The project separates the measurement of the tool from the measurement of the models.
+
+@claim q/gdec7c232f8ba-11-1 { status: inferred, grounds: [d/gdec7c232f8ba-11], "code:kind": anticipated, "ingest:quote": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this" }
+~ The project will focus on tool-side acceptance and provide an operator's benchmark for model selection.
+
+@claim q/gdec7c232f8ba-12-1 { status: inferred, grounds: [d/gdec7c232f8ba-12], "code:kind": anticipated, "ingest:quote": "The model is the operator's choice, never the tool's." }
+~ The tool will not make any decisions about which model to use.
+
+@claim q/gdec7c232f8ba-12-2 { status: inferred, grounds: [d/gdec7c232f8ba-12], "code:kind": anticipated, "ingest:quote": "The model is the operator's choice, never the tool's." }
+~ The operator has full control over the model selection process.
+
+@rel p/gdec7c232f8ba-1-1 --conditions--> d/gdec7c232f8ba-1
+
+@rel p/gdec7c232f8ba-1-2 --conditions--> d/gdec7c232f8ba-1
+
+@rel p/gdec7c232f8ba-1-3 --conditions--> d/gdec7c232f8ba-1
+
+@rel p/gdec7c232f8ba-2-1 --conditions--> d/gdec7c232f8ba-2
+
+@rel p/gdec7c232f8ba-2-2 --conditions--> d/gdec7c232f8ba-2
+
+@rel p/gdec7c232f8ba-2-3 --conditions--> d/gdec7c232f8ba-2
+
+@rel p/gdec7c232f8ba-3-1 --conditions--> d/gdec7c232f8ba-3
+
+@rel p/gdec7c232f8ba-3-2 --conditions--> d/gdec7c232f8ba-3
+
+@rel p/gdec7c232f8ba-1-1 --conditions--> d/gdec7c232f8ba-4
+
+@rel p/gdec7c232f8ba-4-2 --conditions--> d/gdec7c232f8ba-4
+
+@rel p/gdec7c232f8ba-5-1 --conditions--> d/gdec7c232f8ba-5
+
+@rel p/gdec7c232f8ba-6-1 --conditions--> d/gdec7c232f8ba-6
+
+@rel p/gdec7c232f8ba-7-1 --conditions--> d/gdec7c232f8ba-7
+
+@rel p/gdec7c232f8ba-7-2 --conditions--> d/gdec7c232f8ba-7
+
+@rel p/gdec7c232f8ba-7-3 --conditions--> d/gdec7c232f8ba-7
+
+@rel p/gdec7c232f8ba-8-1 --conditions--> d/gdec7c232f8ba-8
+
+@rel p/gdec7c232f8ba-8-2 --conditions--> d/gdec7c232f8ba-8
+
+@rel p/gdec7c232f8ba-8-3 --conditions--> d/gdec7c232f8ba-8
+
+@rel p/gdec7c232f8ba-1-1 --conditions--> d/gdec7c232f8ba-9
+
+@rel p/gdec7c232f8ba-4-2 --conditions--> d/gdec7c232f8ba-9
+
+@rel p/gdec7c232f8ba-10-1 --conditions--> d/gdec7c232f8ba-10
+
+@rel p/gdec7c232f8ba-10-2 --conditions--> d/gdec7c232f8ba-10
+
+@rel p/gdec7c232f8ba-10-3 --conditions--> d/gdec7c232f8ba-10
+
+@rel p/gdec7c232f8ba-10-4 --conditions--> d/gdec7c232f8ba-10
+
+@rel p/gdec7c232f8ba-10-5 --conditions--> d/gdec7c232f8ba-10
+
+@rel p/gdec7c232f8ba-10-6 --conditions--> d/gdec7c232f8ba-10
+
+@rel p/gdec7c232f8ba-11-1 --conditions--> d/gdec7c232f8ba-11
+
+@rel p/gdec7c232f8ba-11-2 --conditions--> d/gdec7c232f8ba-11
+
+@rel p/gdec7c232f8ba-11-3 --conditions--> d/gdec7c232f8ba-11
+
+@rel p/gdec7c232f8ba-11-4 --conditions--> d/gdec7c232f8ba-11
+
+@rel p/gdec7c232f8ba-12-1 --conditions--> d/gdec7c232f8ba-12
+
+@rel p/gdec7c232f8ba-12-2 --conditions--> d/gdec7c232f8ba-12
+
+@rel r/gdec7c232f8ba-1-1 --contrasts--> d/gdec7c232f8ba-1
+
+@rel r/gdec7c232f8ba-1-2 --contrasts--> d/gdec7c232f8ba-1
+
+@rel r/gdec7c232f8ba-2-1 --contrasts--> d/gdec7c232f8ba-2
+
+@rel r/gdec7c232f8ba-2-2 --contrasts--> d/gdec7c232f8ba-2
+
+@rel r/gdec7c232f8ba-3-1 --contrasts--> d/gdec7c232f8ba-3
+
+@rel r/gdec7c232f8ba-3-2 --contrasts--> d/gdec7c232f8ba-3
+
+@rel r/gdec7c232f8ba-4-1 --contrasts--> d/gdec7c232f8ba-4
+
+@rel r/gdec7c232f8ba-1-1 --contrasts--> d/gdec7c232f8ba-4
+
+@rel r/gdec7c232f8ba-1-2 --contrasts--> d/gdec7c232f8ba-4
+
+@rel r/gdec7c232f8ba-7-1 --contrasts--> d/gdec7c232f8ba-7
+
+@rel r/gdec7c232f8ba-8-1 --contrasts--> d/gdec7c232f8ba-8
+
+@rel r/gdec7c232f8ba-1-1 --contrasts--> d/gdec7c232f8ba-9
+
+@rel r/gdec7c232f8ba-1-2 --contrasts--> d/gdec7c232f8ba-9
+
+@rel r/gdec7c232f8ba-10-1 --contrasts--> d/gdec7c232f8ba-10
+
+@rel r/gdec7c232f8ba-10-2 --contrasts--> d/gdec7c232f8ba-10
+
+@rel r/gdec7c232f8ba-11-1 --contrasts--> d/gdec7c232f8ba-11
+
+@rel r/gdec7c232f8ba-11-2 --contrasts--> d/gdec7c232f8ba-11
+
+@rel r/gdec7c232f8ba-12-1 --contrasts--> d/gdec7c232f8ba-12
+
+@rel d/gdec7c232f8ba-1 --causes--> q/gdec7c232f8ba-1-1
+
+@rel d/gdec7c232f8ba-1 --causes--> q/gdec7c232f8ba-1-2
+
+@rel d/gdec7c232f8ba-2 --causes--> q/gdec7c232f8ba-2-1
+
+@rel e/gdec7c232f8ba-3-1 --backs--> q/gdec7c232f8ba-3-1
+
+@rel d/gdec7c232f8ba-3 --causes--> q/gdec7c232f8ba-3-1
+
+@rel d/gdec7c232f8ba-4 --causes--> q/gdec7c232f8ba-4-1
+
+@rel d/gdec7c232f8ba-5 --causes--> q/gdec7c232f8ba-5-1
+
+@rel d/gdec7c232f8ba-7 --causes--> q/gdec7c232f8ba-7-1
+
+@rel e/gdec7c232f8ba-8-1 --backs--> q/gdec7c232f8ba-8-1
+
+@rel d/gdec7c232f8ba-8 --causes--> q/gdec7c232f8ba-8-1
+
+@rel d/gdec7c232f8ba-9 --causes--> q/gdec7c232f8ba-9-1
+
+@rel d/gdec7c232f8ba-9 --causes--> q/gdec7c232f8ba-9-2
+
+@rel d/gdec7c232f8ba-9 --causes--> q/gdec7c232f8ba-9-3
+
+@rel e/gdec7c232f8ba-10-1 --backs--> q/gdec7c232f8ba-10-1
+
+@rel d/gdec7c232f8ba-10 --causes--> q/gdec7c232f8ba-10-1
+
+@rel e/gdec7c232f8ba-10-1 --backs--> q/gdec7c232f8ba-10-2
+
+@rel d/gdec7c232f8ba-10 --causes--> q/gdec7c232f8ba-10-2
+
+@rel d/gdec7c232f8ba-11 --causes--> q/gdec7c232f8ba-11-1
+
+@rel d/gdec7c232f8ba-12 --causes--> q/gdec7c232f8ba-12-1
+
+@rel d/gdec7c232f8ba-12 --causes--> q/gdec7c232f8ba-12-2
