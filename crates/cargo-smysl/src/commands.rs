@@ -1118,13 +1118,13 @@ fn extract_queued(args: &SmyslArgs, r: &Recording<'_>, how: ExtractHow<'_>) -> u
         }
     };
     let path = queue_path(&root);
-    let queued: Vec<String> = std::fs::read_to_string(&path)
-        .unwrap_or_default()
-        .lines()
-        .map(str::trim)
-        .filter(|l| !l.is_empty())
-        .map(str::to_string)
-        .collect();
+    let (queued, refused) = read_queue(&path);
+    for line in &refused {
+        eprintln!(
+            "cargo smysl extract: {} is not a revision; dropped from the queue",
+            line.chars().take(50).collect::<String>()
+        );
+    }
     // The same commit twice in the queue is one commit to record.
     let mut seen = BTreeSet::new();
     let queued: Vec<String> = queued
@@ -1146,7 +1146,7 @@ fn extract_queued(args: &SmyslArgs, r: &Recording<'_>, how: ExtractHow<'_>) -> u
             "{} queued commit(s) only write the corpus and were dropped from the queue",
             corpus_only.len()
         );
-        let _ = std::fs::write(&path, queued.join("\n"));
+        write_queue(&path, &queued);
     }
     if queued.is_empty() {
         println!("nothing left to record");
@@ -1169,7 +1169,7 @@ fn extract_queued(args: &SmyslArgs, r: &Recording<'_>, how: ExtractHow<'_>) -> u
         if extract(args, Some(sha), r.force, r.dry_run, how) == exit::OK {
             left.retain(|s| s != sha);
             // Written after each one, so an interrupted run does not redo what it finished.
-            let _ = std::fs::write(&path, left.join("\n"));
+            write_queue(&path, &left);
         } else {
             eprintln!("cargo smysl extract: {} stays queued", short(sha));
         }
@@ -2480,6 +2480,42 @@ fn queue_path(root: &Path) -> std::path::PathBuf {
     root.join(cargo_smysl_corpus::CORPUS_DIR).join("queue")
 }
 
+/// Write the queue back, always ending with a newline.
+///
+/// The hook appends with `>>`. A file that does not end in a newline therefore has the next sha welded
+/// onto its last line, and the result is a revision no repository has ever heard of. That happened.
+fn write_queue(path: &Path, shas: &[String]) {
+    let mut text = shas.join("\n");
+    if !text.is_empty() {
+        text.push('\n');
+    }
+    let _ = std::fs::write(path, text);
+}
+
+/// The shas in the queue, repairing lines that were welded together.
+///
+/// A line of several shas run end to end is exactly what a missing newline produces, and the shas in it
+/// are still the shas someone wanted recorded — so they are split out rather than thrown away. Anything
+/// that is not a plausible revision is reported and dropped, because guessing is worse.
+fn read_queue(path: &Path) -> (Vec<String>, Vec<String>) {
+    let text = std::fs::read_to_string(path).unwrap_or_default();
+    let (mut shas, mut refused) = (Vec::new(), Vec::new());
+    for line in text.lines().map(str::trim).filter(|l| !l.is_empty()) {
+        let hex = line.chars().all(|c| c.is_ascii_hexdigit());
+        match (hex, line.len()) {
+            (true, n) if (7..=40).contains(&n) => shas.push(line.to_string()),
+            // Several full-length revisions with the newline missing between them.
+            (true, n) if n % 40 == 0 => {
+                for chunk in line.as_bytes().chunks(40) {
+                    shas.push(String::from_utf8_lossy(chunk).into_owned());
+                }
+            }
+            _ => refused.push(line.to_string()),
+        }
+    }
+    (shas, refused)
+}
+
 fn hooks(args: &SmyslArgs, what: &cli::HooksStep) -> u8 {
     let root = match workspace_root(args) {
         Ok(root) => root,
@@ -2655,6 +2691,42 @@ mod tests {
                 .collect(),
             parent_missing: false,
         }
+    }
+
+    /// The queue is appended to by a shell hook and rewritten by this tool. Both must agree about the
+    /// newline, and they did not: a rewrite that left the file without one had the next sha welded onto
+    /// its last line, and `cargo smysl extract --queued` then asked git for a 120-character revision.
+    #[test]
+    fn a_queue_written_without_a_newline_does_not_weld_the_next_sha_on() {
+        use super::{read_queue, write_queue};
+        let path = std::env::temp_dir().join(format!("smysl-queue-{}.txt", std::process::id()));
+        let a = "856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d";
+        let b = "0d79d4a840b4a08d9bd4e60085346a05d82a5daf";
+
+        write_queue(&path, &[a.to_string()]);
+        // What the hook does: append a line.
+        let mut text = std::fs::read_to_string(&path).unwrap();
+        text.push_str(&format!("{b}\n"));
+        std::fs::write(&path, &text).unwrap();
+        assert_eq!(read_queue(&path).0, vec![a.to_string(), b.to_string()]);
+
+        // And the damage already done is repaired rather than thrown away.
+        std::fs::write(&path, format!("{a}{b}\n")).unwrap();
+        let (shas, refused) = read_queue(&path);
+        assert_eq!(
+            shas,
+            vec![a.to_string(), b.to_string()],
+            "welded shas are split"
+        );
+        assert!(refused.is_empty());
+
+        // Something that is not a revision is reported, not guessed at.
+        std::fs::write(&path, "not-a-sha\n").unwrap();
+        let (shas, refused) = read_queue(&path);
+        assert!(shas.is_empty());
+        assert_eq!(refused, vec!["not-a-sha".to_string()]);
+
+        std::fs::remove_file(&path).ok();
     }
 
     /// Recording a commit produces a commit. If that one is recorded too, the backlog never empties —

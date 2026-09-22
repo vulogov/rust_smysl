@@ -1,0 +1,997 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/gb380a5ca16c9-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": act, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs." }
+~ `stale --json` now includes the `behind` field in JSON output instead of printing it on stdout.
+
+To ensure that `--json` outputs only valid JSON, the `behind` information was moved from stdout to the JSON object. This prevents parsing errors when consuming the JSON output.
+
+@decision d/gb380a5ca16c9-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": act, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ A test is added to ensure that every `--json` command produces valid JSON output.
+
+To catch future regressions where non-JSON content might be printed with `--json`, a test was added that checks the validity of the JSON output.
+
+@decision d/gb380a5ca16c9-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "if let Some(mut around) = scope {" }
+~ The `facts` function now includes an optional `scope` parameter to filter facts based on files, names, or …
+
+To provide more granular control over which facts are displayed, the `facts` function was updated to accept a `scope` parameter that allows filtering by specific criteria.
+
+@decision d/gb380a5ca16c9-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "if r.estimate {" }
+~ The `extract_command` function now estimates the time required for extraction based on commit size and prints …
+
+To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.
+
+@decision d/gb380a5ca16c9-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "if dry_run {" }
+~ The `extract` function now includes a dry-run mode that simulates the extraction process without actually …
+
+To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function.
+
+@decision d/gb380a5ca16c9-6 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "if let Some(path) = c.prompt_file {" }
+~ The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system …
+
+To provide more flexibility in how the check process is conducted, the `check` function was updated to accept a `prompt_file` parameter for customizing the system prompt.
+
+@decision d/gb380a5ca16c9-7 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "let take = if r.max_commits == 0 {" }
+~ The `extract_command` function now includes a `max_commits` parameter to limit the number of commits processed …
+
+To prevent processing an excessive number of commits at once, which could be resource-intensive, a `max_commits` parameter was added to limit the number of commits processed.
+
+@decision d/gb380a5ca16c9-8 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "let kept = if force {" }
+~ The `extract_command` function now includes a `force` parameter to force re-extraction of already recorded …
+
+To allow users to re-extract commits that have already been recorded, a `force` parameter was added to the `extract_command` function.
+
+@decision d/gb380a5ca16c9-9 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "if r.dry_run {" }
+~ The `extract_command` function now includes a `dry_run` parameter to simulate the extraction process without …
+
+To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract_command` function.
+
+@decision d/gb380a5ca16c9-10 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "let mut settings = Settings {" }
+~ The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order …
+
+To provide more flexibility in how the check process is conducted, the `check` function was updated to accept a `no_corpus_order` parameter for disabling corpus order.
+
+@decision d/gb380a5ca16c9-11 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "if r.queued {" }
+~ The `extract_command` function now includes a `queued` parameter to handle extraction of commits from a queue.
+
+To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function.
+
+@decision d/gb380a5ca16c9-12 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "let mut settings = Settings {" }
+~ The `check` function now includes an optional `parts` parameter to specify the maximum number of parts for …
+
+To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function.
+
+@decision d/gb380a5ca16c9-13 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": `--json` puts JSON on stdout and nothing else. }
+~ `--json` must be JSON, and nothing else
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.
+
+@decision d/gb380a5ca16c9-14 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error." }
+~ It now goes in the JSON as a `behind` field
+
+That line came in with the anchors and was never run with `--json` on a corpus that had any. It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.
+
+@decision d/gb380a5ca16c9-15 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error." }
+~ On stdout only in the human-readable mode
+
+That line came in with the anchors and was never run with `--json` on a corpus that had any. It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.
+
+@decision d/gb380a5ca16c9-16 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": act, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ A test runs every `--json` command in this repository
+
+A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse. It would have caught this one, and it is the only thing that would: the human output was correct throughout.
+
+@decision d/gb380a5ca16c9-17 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": `cargo_finds_and_runs_the_subcommand` }
+~ `cargo_finds_and_runs_the_subcommand`
+
+The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.
+
+@decision d/gb380a5ca16c9-18 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": `cargo_help_reaches_the_subcommand` }
+~ `cargo_help_reaches_the_subcommand`
+
+The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.
+
+@decision d/gb380a5ca16c9-19 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": `the_binary_also_runs_directly` }
+~ `the_binary_also_runs_directly`
+
+The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.
+
+@decision d/gb380a5ca16c9-20 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": `every_command_the_help_lists_is_implemented` }
+~ `every_command_the_help_lists_is_implemented`
+
+The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.
+
+@decision d/gb380a5ca16c9-21 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": `why_reports_what_rests_on_a_prerequisite` }
+~ `why_reports_what_rests_on_a_prerequisite`
+
+The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.
+
+@decision d/gb380a5ca16c9-22 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": `two_corpus_documents_merge_without_a_conflict` }
+~ `two_corpus_documents_merge_without_a_conflict`
+
+The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.
+
+@decision d/gb380a5ca16c9-23 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": `a_document_that_does_not_parse_is_left_alone` }
+~ `a_document_that_does_not_parse_is_left_alone`
+
+The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.
+
+@decision d/gb380a5ca16c9-24 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": act, "ingest:quote": `a_panic_is_reported_as_something_to_send_back` }
+~ `a_panic_is_reported_as_something_to_send_back`
+
+The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.
+
+@artifact-ref a/gb380a5ca16c9-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:body_hash": f93c8d1ddd23f086 }
+~ crates/cargo-smysl/src/commands.rs::stale
+
+@artifact-ref a/gb380a5ca16c9-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:body_hash": 93e70131665cc7e5 }
+~ crates/cargo-smysl/tests/cargo_subcommand.rs::json_output_is_json_and_only_json
+
+@constraint p/gb380a5ca16c9-1-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale\n--json` printed which decisions each moved item was behind — on stdout, before\nthe JSON — and anything reading the output got `Expecting value: line 1 column\n3`." }
+~ `stale --json` printed which decisions each moved item was behind on stdout before the JSON.
+
+@constraint p/gb380a5ca16c9-1-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": invariant, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else.
+
+@constraint p/gb380a5ca16c9-14-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gb380a5ca16c9-2-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`" }
+~ CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions …
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`
+
+@constraint p/gb380a5ca16c9-2-3 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse" }
+~ A test runs every `--json` command in this repository, which records its own commits, and requires the output …
+
+A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse
+
+@constraint p/gb380a5ca16c9-3-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ The `facts` function needs to be able to filter facts based on files, names, or hops.
+
+@constraint p/gb380a5ca16c9-3-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "if around.files.is_empty() && rev.is_some() {" }
+~ The `facts` function should handle cases where no files or names are provided.
+
+@constraint p/gb380a5ca16c9-11-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gb380a5ca16c9-11-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ A range is recorded newest first and is resumable.
+
+@constraint p/gb380a5ca16c9-11-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The model proposes content only, and every quote it gives is checked against the commit.
+
+@constraint p/gb380a5ca16c9-11-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop." }
+~ A commit is extracted once per recipe.
+
+@constraint p/gb380a5ca16c9-4-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": prior-change, "ingest:quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:" }
+~ The tool estimates the time required for extraction based on commit size.
+
+@constraint p/gb380a5ca16c9-5-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function." }
+~ The `extract` function must simulate the extraction process without actually recording anything in dry-run …
+
+The `extract` function must simulate the extraction process without actually recording anything in dry-run mode.
+
+@constraint p/gb380a5ca16c9-6-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "To provide more flexibility in how the check process is conducted, the `check` function was updated to accept a `prompt_file` parameter for customizing the system prompt." }
+~ The `check` function needs to be flexible enough to accommodate different system prompts.
+
+@constraint p/gb380a5ca16c9-7-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The function reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gb380a5ca16c9-11-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ A range is recorded newest first and is resumable.
+
+@constraint p/gb380a5ca16c9-7-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "Before anything is spent, the run says what it expects to cost — extraction is the slowest thing this tool does, and a person deserves to know that before it starts rather than after." }
+~ The tool expects to cost before starting extraction.
+
+@constraint p/gb380a5ca16c9-8-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop." }
+~ The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and …
+
+The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8). A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop.
+
+@constraint p/gb380a5ca16c9-9-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract_command` function." }
+~ The `extract_command` function needs to simulate extraction without recording
+
+@constraint p/gb380a5ca16c9-9-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "let mut done = 0;\nfor (n, sha) in todo.iter().enumerate() {\n    println!(\n        \"\\n[{}/{}] {}\",\n        n + 1,\n        todo.len(),\n        short(sha)\n    );\n    let code = extract(args, Some(sha), r.force, r.dry_run, how);\n    if code != exit::OK {\n        // One commit failing is not the run failing: the rest are still worth recording.\n        eprintln!(\"cargo smysl extract: {} failed; carrying on\", short(sha));\n        continue;\n    }\n    done += 1;\n}" }
+~ The `Recording` struct has a `dry_run` field to indicate if it's a dry run
+
+@constraint p/gb380a5ca16c9-10-1 { status: speculative, "code:kind": existing-behaviour }
+~ The `check` function already exists and handles checking for contradictions in the corpus.
+
+@constraint p/gb380a5ca16c9-10-2 { status: speculative, "code:kind": assumption }
+~ There is a need to provide more flexibility in how the check process is conducted.
+
+@constraint p/gb380a5ca16c9-11-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gb380a5ca16c9-11-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ A range is recorded newest first and is resumable.
+
+@constraint p/gb380a5ca16c9-11-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The model proposes content only, and every quote it gives is checked against the commit.
+
+@constraint p/gb380a5ca16c9-11-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop." }
+~ A commit is extracted once per recipe.
+
+@constraint p/gb380a5ca16c9-11-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": The tool's own commits are not work. Dropping them here is what makes the queue reach empty. }
+~ The tool's own commits are not work.
+
+@constraint p/gb380a5ca16c9-12-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function." }
+~ The `check` function needs an optional parameter to specify the maximum number of parts for splitting the …
+
+The `check` function needs an optional parameter to specify the maximum number of parts for splitting the change.
+
+@constraint p/gb380a5ca16c9-13-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": `--json` puts JSON on stdout and nothing else. }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gb380a5ca16c9-13-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`." }
+~ CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions …
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON
+
+@constraint p/gb380a5ca16c9-13-3 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`." }
+~ anything reading the output got `Expecting value: line 1 column 3`
+
+@constraint p/gb380a5ca16c9-13-4 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ That line came in with the anchors and was never run with `--json` on a corpus that had any
+
+@constraint p/gb380a5ca16c9-14-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gb380a5ca16c9-14-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON" }
+~ CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions …
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON
+
+@constraint p/gb380a5ca16c9-14-3 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any }
+~ That line came in with the anchors and was never run with `--json` on a corpus that had any
+
+@constraint p/gb380a5ca16c9-14-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gb380a5ca16c9-14-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON" }
+~ CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions …
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON
+
+@constraint p/gb380a5ca16c9-14-3 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any }
+~ That line came in with the anchors and was never run with `--json` on a corpus that had any
+
+@constraint p/gb380a5ca16c9-14-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gb380a5ca16c9-16-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`." }
+~ CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions …
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.
+
+@constraint p/gb380a5ca16c9-16-3 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": prior-change, "ingest:quote": A test runs every `--json` command in this repository }
+~ A test runs every `--json` command in this repository
+
+@constraint p/gb380a5ca16c9-18-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": invariant, "ingest:quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it." }
+~ The tool must work as an external cargo subcommand
+
+@constraint p/gb380a5ca16c9-18-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": invariant, "ingest:quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it." }
+~ The tool must work as an external cargo subcommand
+
+@constraint p/gb380a5ca16c9-14-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gb380a5ca16c9-16-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`." }
+~ CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions …
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.
+
+@constraint p/gb380a5ca16c9-20-3 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ That line came in with the anchors and was never run with `--json` on a corpus that had any.
+
+@constraint p/gb380a5ca16c9-20-4 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": prior-change, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs." }
+~ It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it …
+
+It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.
+
+@constraint p/gb380a5ca16c9-20-5 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": prior-change, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ A test runs every `--json` command in this repository, which records its own commits, and requires the output …
+
+A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@constraint p/gb380a5ca16c9-20-6 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": prior-change, "ingest:quote": "It would have caught this one, and it is the only thing that would: the human output was correct throughout." }
+~ It would have caught this one, and it is the only thing that would: the human output was correct throughout.
+
+@constraint p/gb380a5ca16c9-14-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gb380a5ca16c9-16-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`." }
+~ CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions …
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.
+
+@constraint p/gb380a5ca16c9-20-3 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ That line came in with the anchors and was never run with `--json` on a corpus that had any.
+
+@constraint p/gb380a5ca16c9-21-4 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ A test runs every `--json` command in this repository, which records its own commits, and requires the output …
+
+A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@constraint p/gb380a5ca16c9-22-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": invariant, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gb380a5ca16c9-16-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`." }
+~ CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions …
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.
+
+@constraint p/gb380a5ca16c9-20-3 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ That line came in with the anchors and was never run with `--json` on a corpus that had any.
+
+@constraint p/gb380a5ca16c9-22-4 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": tool-setting, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ A test runs every `--json` command in this repository, which records its own commits, and requires the output …
+
+A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@constraint p/gb380a5ca16c9-14-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gb380a5ca16c9-16-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`." }
+~ CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions …
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.
+
+@constraint p/gb380a5ca16c9-20-3 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": existing-behaviour, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ That line came in with the anchors and was never run with `--json` on a corpus that had any.
+
+@constraint p/gb380a5ca16c9-20-4 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": prior-change, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs." }
+~ It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it …
+
+It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.
+
+@constraint p/gb380a5ca16c9-20-5 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": prior-change, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ A test runs every `--json` command in this repository, which records its own commits, and requires the output …
+
+A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@constraint p/gb380a5ca16c9-20-6 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": prior-change, "ingest:quote": "It would have caught this one, and it is the only thing that would: the human output was correct throughout." }
+~ It would have caught this one, and it is the only thing that would: the human output was correct throughout.
+
+@constraint p/gb380a5ca16c9-24-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": existing-behaviour, "ingest:quote": "`human_panic` stands aside when `RUST_BACKTRACE` is set or the build has debug assertions, which is what a developer wants; this checks the other case, which is what an installed binary does." }
+~ `human_panic` stands aside when `RUST_BACKTRACE` is set or the build has debug assertions
+
+@constraint p/gb380a5ca16c9-18-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": invariant, "ingest:quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it." }
+~ The tool must work as an external cargo subcommand
+
+@claim r/gb380a5ca16c9-1-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": rejected-alternative, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ Rejected: Keep printing the `behind` information on stdout in addition to the JSON output.
+
+@claim r/gb380a5ca16c9-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not add a test for JSON validity
+
+@claim r/gb380a5ca16c9-2-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a test that only checks for specific content in the JSON output
+
+@claim r/gb380a5ca16c9-3-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include the `scope` parameter and always display all facts.
+
+@claim r/gb380a5ca16c9-3-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include a different filtering mechanism that does not use files, names, or hops.
+
+@claim r/gb380a5ca16c9-4-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not estimate the time required for extraction.
+
+@claim r/gb380a5ca16c9-4-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Estimate the time based on a different metric (e.g., number of files).
+
+@claim r/gb380a5ca16c9-5-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include a dry-run mode.
+
+@claim r/gb380a5ca16c9-5-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include a dry-run mode that only simulates part of the extraction process.
+
+@claim r/gb380a5ca16c9-10-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the existing `check` function without any changes.
+
+@claim r/gb380a5ca16c9-6-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a different type of customization option instead of a prompt file.
+
+@claim r/gb380a5ca16c9-7-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": "To prevent processing an excessive number of commits at once, which could be resource-intensive, a `max_commits` parameter was added to limit the number of commits processed." }
+~ Rejected: No limit on the number of commits processed.
+
+@claim r/gb380a5ca16c9-8-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not allow re-extraction of already recorded commits.
+
+@claim r/gb380a5ca16c9-8-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Allow re-extraction but without a specific flag.
+
+@claim r/gb380a5ca16c9-9-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: No dry-run mode, users have to manually check the output
+
+@claim r/gb380a5ca16c9-9-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: A different approach to preview extraction, such as logging only
+
+@claim r/gb380a5ca16c9-10-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the existing `check` function without any changes.
+
+@claim r/gb380a5ca16c9-10-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a parameter to control corpus order but with different naming or functionality.
+
+@claim r/gb380a5ca16c9-11-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Continue to handle extraction of commits without a queued parameter.
+
+@claim r/gb380a5ca16c9-11-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Handle extraction of commits from a queue in a separate function.
+
+@claim r/gb380a5ca16c9-12-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the existing implementation without adding a `parts` parameter.
+
+@claim r/gb380a5ca16c9-12-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a different parameter or configuration option for controlling the splitting of changes.
+
+@claim r/gb380a5ca16c9-13-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": rejected-alternative, "ingest:quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error." }
+~ Rejected: keep printing which decisions each moved item was behind on stdout before the JSON
+
+@claim r/gb380a5ca16c9-14-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep printing which decisions each moved item was behind on stdout before the JSON
+
+@claim r/gb380a5ca16c9-14-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Print which decisions each moved item was behind only in the human-readable mode
+
+@claim r/gb380a5ca16c9-14-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep printing which decisions each moved item was behind on stdout before the JSON
+
+@claim r/gb380a5ca16c9-15-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Print which decisions each moved item was behind in the JSON output
+
+@claim r/gb380a5ca16c9-16-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not run a test for every `--json` command
+
+@claim r/gb380a5ca16c9-16-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Allow non-JSON output with `--json`
+
+@claim r/gb380a5ca16c9-20-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": rejected-alternative, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ Rejected: Keep printing which decisions each moved item was behind on stdout before the JSON.
+
+@claim r/gb380a5ca16c9-20-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": rejected-alternative, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Rejected: Do not require the output to parse in the test.
+
+@claim r/gb380a5ca16c9-20-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": rejected-alternative, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ Rejected: Keep printing which decisions each moved item was behind on stdout before the JSON.
+
+@claim r/gb380a5ca16c9-20-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": rejected-alternative, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Rejected: Do not require the output to parse in the test.
+
+@claim r/gb380a5ca16c9-20-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": rejected-alternative, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ Rejected: Keep printing which decisions each moved item was behind on stdout before the JSON.
+
+@claim r/gb380a5ca16c9-20-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": rejected-alternative, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Rejected: Do not require the output to parse in the test.
+
+@claim r/gb380a5ca16c9-20-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": rejected-alternative, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ Rejected: Keep printing which decisions each moved item was behind on stdout before the JSON.
+
+@claim r/gb380a5ca16c9-23-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "code:kind": rejected-alternative, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Rejected: Do not require the output to parse in the test for `--json` commands.
+
+@claim r/gb380a5ca16c9-24-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": rejected-alternative, "ingest:quote": "In a test build, debug assertions are on, so the raw panic is what a developer sees and should." }
+~ Rejected: Show a raw panic backtrace
+
+@claim r/gb380a5ca16c9-24-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "code:kind": rejected-alternative, "ingest:quote": "A panic is reported as a bug in this tool, with somewhere to send it — not as a backtrace." }
+~ Rejected: Do not handle panics specially
+
+@evidence e/gb380a5ca16c9-1-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where …
+
+Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.
+
+@finding q/gb380a5ca16c9-1-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ The JSON output of `stale --json` now includes a `behind` field.
+
+@evidence e/gb380a5ca16c9-1-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where …
+
+Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.
+
+@finding q/gb380a5ca16c9-1-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ The human-readable output of `stale --json` no longer includes the `behind` information.
+
+@claim q/gb380a5ca16c9-2-1 { status: inferred, grounds: [d/gb380a5ca16c9-2], "code:kind": anticipated, "ingest:quote": "To catch future regressions where non-JSON content might be printed with `--json`, a test was added that checks the validity of the JSON output." }
+~ A new test is added to ensure every `--json` command produces valid JSON output
+
+@claim q/gb380a5ca16c9-3-1 { status: inferred, grounds: [d/gb380a5ca16c9-3], "code:kind": anticipated, "ingest:quote": "if let Some(mut around) = scope {" }
+~ The `facts` function can now filter facts based on the provided scope criteria.
+
+@claim q/gb380a5ca16c9-3-2 { status: inferred, grounds: [d/gb380a5ca16c9-3], "code:kind": anticipated, "ingest:quote": "if around.files.is_empty() && around.names.is_empty() {" }
+~ If no files or names are provided, the function will display an error message and return a failure status.
+
+@claim q/gb380a5ca16c9-4-1 { status: inferred, grounds: [d/gb380a5ca16c9-4], "code:kind": anticipated, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Users receive an estimate of how long the extraction process will take.
+
+@claim q/gb380a5ca16c9-4-2 { status: inferred, grounds: [d/gb380a5ca16c9-4], "code:kind": anticipated, "ingest:quote": nothing was run: --estimate only says what it would cost }
+~ The tool prints an estimate if `--estimate` is specified.
+
+@claim q/gb380a5ca16c9-5-1 { status: inferred, grounds: [d/gb380a5ca16c9-5], "code:kind": anticipated, "ingest:quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function." }
+~ Users can now preview what would be extracted without making any changes.
+
+@claim q/gb380a5ca16c9-6-1 { status: inferred, grounds: [d/gb380a5ca16c9-6], "code:kind": anticipated, "ingest:quote": The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system prompt file. }
+~ The `check` function now accepts an optional `prompt_file` parameter that allows specifying a custom system …
+
+The `check` function now accepts an optional `prompt_file` parameter that allows specifying a custom system prompt file.
+
+@claim q/gb380a5ca16c9-7-1 { status: inferred, grounds: [d/gb380a5ca16c9-7], "code:kind": anticipated, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ The function now includes a `max_commits` parameter to limit the number of commits processed in a range …
+
+The function now includes a `max_commits` parameter to limit the number of commits processed in a range extraction.
+
+@claim q/gb380a5ca16c9-8-1 { status: inferred, grounds: [d/gb380a5ca16c9-8], "code:kind": anticipated, "ingest:quote": "To allow users to re-extract commits that have already been recorded, a `force` parameter was added to the `extract_command` function." }
+~ Users can now force the re-extraction of already recorded commits using the `force` parameter.
+
+@claim q/gb380a5ca16c9-9-1 { status: inferred, grounds: [d/gb380a5ca16c9-9], "code:kind": anticipated, "ingest:quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract_command` function." }
+~ Users can now preview extraction without making any changes
+
+@claim q/gb380a5ca16c9-9-2 { status: inferred, grounds: [d/gb380a5ca16c9-9], "code:kind": anticipated, "ingest:quote": "let code = extract(args, Some(sha), r.force, r.dry_run, how);" }
+~ The `dry_run` parameter is used in the `extract` function to determine if recording should occur
+
+@claim q/gb380a5ca16c9-10-1 { status: inferred, grounds: [d/gb380a5ca16c9-10], "code:kind": anticipated }
+~ The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order …
+
+The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order when checking for contradictions.
+
+@claim q/gb380a5ca16c9-10-2 { status: inferred, grounds: [d/gb380a5ca16c9-10], "code:kind": anticipated }
+~ Users can now choose whether to disable corpus order during the check process, providing more flexibility.
+
+@claim q/gb380a5ca16c9-11-1 { status: inferred, grounds: [d/gb380a5ca16c9-11], "code:kind": anticipated, "ingest:quote": "To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function." }
+~ The `extract_command` function now includes a `queued` parameter to handle extraction of commits from a queue.
+
+@claim q/gb380a5ca16c9-12-1 { status: inferred, grounds: [d/gb380a5ca16c9-12], "code:kind": anticipated, "ingest:quote": "To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function." }
+~ Users can now specify how many parts to split the change into during the checking process.
+
+@claim q/gb380a5ca16c9-13-1 { status: inferred, grounds: [d/gb380a5ca16c9-13], "code:kind": anticipated, "ingest:quote": "`--json` must be JSON, and nothing else." }
+~ the JSON is now correctly formatted and does not include extraneous information
+
+@claim q/gb380a5ca16c9-13-2 { status: inferred, grounds: [d/gb380a5ca16c9-13], "code:kind": anticipated }
+~ CI will no longer fail due to the incorrect JSON output
+
+@evidence e/gb380a5ca16c9-14-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": It now goes in the JSON as a `behind` field }
+~ Check: It now goes in the JSON as a `behind` field
+
+@finding q/gb380a5ca16c9-14-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": It now goes in the JSON as a `behind` field }
+~ `--json` now includes a `behind` field in the JSON output
+
+@claim q/gb380a5ca16c9-14-2 { status: inferred, grounds: [d/gb380a5ca16c9-14], "code:kind": anticipated, "ingest:quote": and on stdout only in the human-readable mode where it belongs. }
+~ Which decisions each moved item was behind is printed only in the human-readable mode
+
+@claim q/gb380a5ca16c9-15-1 { status: inferred, grounds: [d/gb380a5ca16c9-15], "code:kind": anticipated, "ingest:quote": It now goes in the JSON as a `behind` field }
+~ The `behind` field is added to the JSON output
+
+@claim q/gb380a5ca16c9-15-2 { status: inferred, grounds: [d/gb380a5ca16c9-15], "code:kind": anticipated, "ingest:quote": and on stdout only in the human-readable mode where it belongs }
+~ Which decisions each moved item was behind is printed only in the human-readable mode
+
+@claim q/gb380a5ca16c9-16-1 { status: inferred, grounds: [d/gb380a5ca16c9-16], "code:kind": anticipated, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse. It would have caught this one, and it is the only thing that would: the human output was correct throughout." }
+~ The test ensures that the JSON output is valid and only contains JSON.
+
+@evidence e/gb380a5ca16c9-18-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "ingest:quote": "assert!(out.status.success(), \"{all}\");\nfor command in [\n    \"doctor\", \"facts\", \"extract\", \"why\", \"check\", \"evidence\", \"stale\", \"review\",\n] {\n    assert!(\n        all.contains(command),\n        \"help does not list `{command}`:\n{all}\"\n    );\n}" }
+~ Check: assert!(out.status.success(), "{all}"); for command in [ "doctor", "facts", "extract", "why", "check", …
+
+Check: assert!(out.status.success(), "{all}"); for command in [     "doctor", "facts", "extract", "why", "check", "evidence", "stale", "review", ] {     assert!(         all.contains(command),         "help does not list `{command}`: {all}"     ); }
+
+@finding q/gb380a5ca16c9-18-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "ingest:quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it." }
+~ The test ensures that the subcommand is reachable and lists all expected commands
+
+@evidence e/gb380a5ca16c9-19-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "ingest:quote": "assert!(direct.status.success() && as_cargo.status.success());\nassert_eq!(direct.stdout, as_cargo.stdout);" }
+~ Check: assert!(direct.status.success() && as_cargo.status.success()); assert_eq!(direct.stdout, …
+
+Check: assert!(direct.status.success() && as_cargo.status.success()); assert_eq!(direct.stdout, as_cargo.stdout);
+
+@finding q/gb380a5ca16c9-19-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "ingest:quote": "let direct = Command::new(BIN).arg(\"--version\").output().unwrap();\nlet as_cargo = Command::new(BIN)\n    .args([\"smysl\", \"--version\"])\n    .output()\n    .unwrap();\nassert!(direct.status.success() && as_cargo.status.success());\nassert_eq!(direct.stdout, as_cargo.stdout);" }
+~ The binary can be run directly and also as a cargo subcommand
+
+@evidence e/gb380a5ca16c9-20-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs." }
+~ Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where …
+
+Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.
+
+@finding q/gb380a5ca16c9-20-1 { status: speculative, "ingest:quote": `stale --json` now prints which decisions each moved item was behind as a `behind` field in the JSON. }
+~ `stale --json` now prints which decisions each moved item was behind as a `behind` field in the JSON.
+
+@evidence e/gb380a5ca16c9-20-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Check: A test runs every `--json` command in this repository, which records its own commits, and requires the …
+
+Check: A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@finding q/gb380a5ca16c9-20-2 { status: speculative, "ingest:quote": The test that runs every `--json` command in this repository will catch any similar issues in the future. }
+~ The test that runs every `--json` command in this repository will catch any similar issues in the future.
+
+@evidence e/gb380a5ca16c9-21-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "ingest:quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error. CI caught it; nothing else would have." }
+~ Check: It did not: a later change printed which decisions each moved item was behind, on stdout, before the …
+
+Check: It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error. CI caught it; nothing else would have.
+
+@finding q/gb380a5ca16c9-21-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ The JSON output is now correctly formatted and contains a `behind` field.
+
+@evidence e/gb380a5ca16c9-20-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Check: A test runs every `--json` command in this repository, which records its own commits, and requires the …
+
+Check: A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@finding q/gb380a5ca16c9-21-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ The test now correctly verifies that the JSON output is valid JSON.
+
+@evidence e/gb380a5ca16c9-21-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@b380a5ca16c9 }, "ingest:quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error. CI caught it; nothing else would have." }
+~ Check: It did not: a later change printed which decisions each moved item was behind, on stdout, before the …
+
+Check: It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error. CI caught it; nothing else would have.
+
+@finding q/gb380a5ca16c9-21-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": That line came in with the anchors and was never run with `--json` on a corpus that had any. }
+~ The JSON output is now correctly formatted and contains a `behind` field.
+
+@evidence e/gb380a5ca16c9-20-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Check: A test runs every `--json` command in this repository, which records its own commits, and requires the …
+
+Check: A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@finding q/gb380a5ca16c9-21-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ The test now correctly verifies that the JSON output is valid JSON.
+
+@evidence e/gb380a5ca16c9-20-1 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs." }
+~ Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where …
+
+Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.
+
+@finding q/gb380a5ca16c9-20-1 { status: speculative, "ingest:quote": `stale --json` now prints which decisions each moved item was behind as a `behind` field in the JSON. }
+~ `stale --json` now prints which decisions each moved item was behind as a `behind` field in the JSON.
+
+@evidence e/gb380a5ca16c9-20-2 { status: cited, source: { kind: doc, ref: git:b380a5ca16c986d6b527c7bf74bad3eb605b899e }, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Check: A test runs every `--json` command in this repository, which records its own commits, and requires the …
+
+Check: A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@finding q/gb380a5ca16c9-23-2 { status: speculative, "ingest:quote": The test for `--json` commands will catch any future issues with non-JSON output on stdout. }
+~ The test for `--json` commands will catch any future issues with non-JSON output on stdout.
+
+@claim q/gb380a5ca16c9-24-1 { status: inferred, grounds: [d/gb380a5ca16c9-24], "code:kind": anticipated, "ingest:quote": "A panic is reported as a bug in this tool, with somewhere to send it — not as a backtrace." }
+~ A panic is reported as a crash report with instructions on where to send it
+
+@rel d/gb380a5ca16c9-3 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-4 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-5 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-6 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-7 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-8 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-9 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-10 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-11 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-12 --x.code/touches--> a/gb380a5ca16c9-1
+
+@rel d/gb380a5ca16c9-13 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-14 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-15 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-17 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-18 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-19 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-20 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-21 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-22 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-23 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel d/gb380a5ca16c9-24 --x.code/touches--> a/gb380a5ca16c9-2
+
+@rel p/gb380a5ca16c9-1-1 --conditions--> d/gb380a5ca16c9-1
+
+@rel p/gb380a5ca16c9-1-2 --conditions--> d/gb380a5ca16c9-1
+
+@rel p/gb380a5ca16c9-14-1 --conditions--> d/gb380a5ca16c9-2
+
+@rel p/gb380a5ca16c9-2-2 --conditions--> d/gb380a5ca16c9-2
+
+@rel p/gb380a5ca16c9-2-3 --conditions--> d/gb380a5ca16c9-2
+
+@rel p/gb380a5ca16c9-3-1 --conditions--> d/gb380a5ca16c9-3
+
+@rel p/gb380a5ca16c9-3-2 --conditions--> d/gb380a5ca16c9-3
+
+@rel p/gb380a5ca16c9-11-1 --conditions--> d/gb380a5ca16c9-4
+
+@rel p/gb380a5ca16c9-11-2 --conditions--> d/gb380a5ca16c9-4
+
+@rel p/gb380a5ca16c9-11-3 --conditions--> d/gb380a5ca16c9-4
+
+@rel p/gb380a5ca16c9-11-4 --conditions--> d/gb380a5ca16c9-4
+
+@rel p/gb380a5ca16c9-4-5 --conditions--> d/gb380a5ca16c9-4
+
+@rel p/gb380a5ca16c9-5-1 --conditions--> d/gb380a5ca16c9-5
+
+@rel p/gb380a5ca16c9-6-1 --conditions--> d/gb380a5ca16c9-6
+
+@rel p/gb380a5ca16c9-7-1 --conditions--> d/gb380a5ca16c9-7
+
+@rel p/gb380a5ca16c9-11-2 --conditions--> d/gb380a5ca16c9-7
+
+@rel p/gb380a5ca16c9-7-3 --conditions--> d/gb380a5ca16c9-7
+
+@rel p/gb380a5ca16c9-8-1 --conditions--> d/gb380a5ca16c9-8
+
+@rel p/gb380a5ca16c9-9-1 --conditions--> d/gb380a5ca16c9-9
+
+@rel p/gb380a5ca16c9-9-2 --conditions--> d/gb380a5ca16c9-9
+
+@rel p/gb380a5ca16c9-10-1 --conditions--> d/gb380a5ca16c9-10
+
+@rel p/gb380a5ca16c9-10-2 --conditions--> d/gb380a5ca16c9-10
+
+@rel p/gb380a5ca16c9-11-1 --conditions--> d/gb380a5ca16c9-11
+
+@rel p/gb380a5ca16c9-11-2 --conditions--> d/gb380a5ca16c9-11
+
+@rel p/gb380a5ca16c9-11-3 --conditions--> d/gb380a5ca16c9-11
+
+@rel p/gb380a5ca16c9-11-4 --conditions--> d/gb380a5ca16c9-11
+
+@rel p/gb380a5ca16c9-11-5 --conditions--> d/gb380a5ca16c9-11
+
+@rel p/gb380a5ca16c9-12-1 --conditions--> d/gb380a5ca16c9-12
+
+@rel p/gb380a5ca16c9-13-1 --conditions--> d/gb380a5ca16c9-13
+
+@rel p/gb380a5ca16c9-13-2 --conditions--> d/gb380a5ca16c9-13
+
+@rel p/gb380a5ca16c9-13-3 --conditions--> d/gb380a5ca16c9-13
+
+@rel p/gb380a5ca16c9-13-4 --conditions--> d/gb380a5ca16c9-13
+
+@rel p/gb380a5ca16c9-14-1 --conditions--> d/gb380a5ca16c9-14
+
+@rel p/gb380a5ca16c9-14-2 --conditions--> d/gb380a5ca16c9-14
+
+@rel p/gb380a5ca16c9-14-3 --conditions--> d/gb380a5ca16c9-14
+
+@rel p/gb380a5ca16c9-14-1 --conditions--> d/gb380a5ca16c9-15
+
+@rel p/gb380a5ca16c9-14-2 --conditions--> d/gb380a5ca16c9-15
+
+@rel p/gb380a5ca16c9-14-3 --conditions--> d/gb380a5ca16c9-15
+
+@rel p/gb380a5ca16c9-14-1 --conditions--> d/gb380a5ca16c9-16
+
+@rel p/gb380a5ca16c9-16-2 --conditions--> d/gb380a5ca16c9-16
+
+@rel p/gb380a5ca16c9-16-3 --conditions--> d/gb380a5ca16c9-16
+
+@rel p/gb380a5ca16c9-18-1 --conditions--> d/gb380a5ca16c9-18
+
+@rel p/gb380a5ca16c9-18-1 --conditions--> d/gb380a5ca16c9-19
+
+@rel p/gb380a5ca16c9-14-1 --conditions--> d/gb380a5ca16c9-20
+
+@rel p/gb380a5ca16c9-16-2 --conditions--> d/gb380a5ca16c9-20
+
+@rel p/gb380a5ca16c9-20-3 --conditions--> d/gb380a5ca16c9-20
+
+@rel p/gb380a5ca16c9-20-4 --conditions--> d/gb380a5ca16c9-20
+
+@rel p/gb380a5ca16c9-20-5 --conditions--> d/gb380a5ca16c9-20
+
+@rel p/gb380a5ca16c9-20-6 --conditions--> d/gb380a5ca16c9-20
+
+@rel p/gb380a5ca16c9-14-1 --conditions--> d/gb380a5ca16c9-21
+
+@rel p/gb380a5ca16c9-16-2 --conditions--> d/gb380a5ca16c9-21
+
+@rel p/gb380a5ca16c9-20-3 --conditions--> d/gb380a5ca16c9-21
+
+@rel p/gb380a5ca16c9-21-4 --conditions--> d/gb380a5ca16c9-21
+
+@rel p/gb380a5ca16c9-22-1 --conditions--> d/gb380a5ca16c9-22
+
+@rel p/gb380a5ca16c9-16-2 --conditions--> d/gb380a5ca16c9-22
+
+@rel p/gb380a5ca16c9-20-3 --conditions--> d/gb380a5ca16c9-22
+
+@rel p/gb380a5ca16c9-22-4 --conditions--> d/gb380a5ca16c9-22
+
+@rel p/gb380a5ca16c9-14-1 --conditions--> d/gb380a5ca16c9-23
+
+@rel p/gb380a5ca16c9-16-2 --conditions--> d/gb380a5ca16c9-23
+
+@rel p/gb380a5ca16c9-20-3 --conditions--> d/gb380a5ca16c9-23
+
+@rel p/gb380a5ca16c9-20-4 --conditions--> d/gb380a5ca16c9-23
+
+@rel p/gb380a5ca16c9-20-5 --conditions--> d/gb380a5ca16c9-23
+
+@rel p/gb380a5ca16c9-20-6 --conditions--> d/gb380a5ca16c9-23
+
+@rel p/gb380a5ca16c9-24-1 --conditions--> d/gb380a5ca16c9-24
+
+@rel p/gb380a5ca16c9-18-1 --conditions--> d/gb380a5ca16c9-24
+
+@rel r/gb380a5ca16c9-1-1 --contrasts--> d/gb380a5ca16c9-1
+
+@rel r/gb380a5ca16c9-2-1 --contrasts--> d/gb380a5ca16c9-2
+
+@rel r/gb380a5ca16c9-2-2 --contrasts--> d/gb380a5ca16c9-2
+
+@rel r/gb380a5ca16c9-3-1 --contrasts--> d/gb380a5ca16c9-3
+
+@rel r/gb380a5ca16c9-3-2 --contrasts--> d/gb380a5ca16c9-3
+
+@rel r/gb380a5ca16c9-4-1 --contrasts--> d/gb380a5ca16c9-4
+
+@rel r/gb380a5ca16c9-4-2 --contrasts--> d/gb380a5ca16c9-4
+
+@rel r/gb380a5ca16c9-5-1 --contrasts--> d/gb380a5ca16c9-5
+
+@rel r/gb380a5ca16c9-5-2 --contrasts--> d/gb380a5ca16c9-5
+
+@rel r/gb380a5ca16c9-10-1 --contrasts--> d/gb380a5ca16c9-6
+
+@rel r/gb380a5ca16c9-6-2 --contrasts--> d/gb380a5ca16c9-6
+
+@rel r/gb380a5ca16c9-7-1 --contrasts--> d/gb380a5ca16c9-7
+
+@rel r/gb380a5ca16c9-8-1 --contrasts--> d/gb380a5ca16c9-8
+
+@rel r/gb380a5ca16c9-8-2 --contrasts--> d/gb380a5ca16c9-8
+
+@rel r/gb380a5ca16c9-9-1 --contrasts--> d/gb380a5ca16c9-9
+
+@rel r/gb380a5ca16c9-9-2 --contrasts--> d/gb380a5ca16c9-9
+
+@rel r/gb380a5ca16c9-10-1 --contrasts--> d/gb380a5ca16c9-10
+
+@rel r/gb380a5ca16c9-10-2 --contrasts--> d/gb380a5ca16c9-10
+
+@rel r/gb380a5ca16c9-11-1 --contrasts--> d/gb380a5ca16c9-11
+
+@rel r/gb380a5ca16c9-11-2 --contrasts--> d/gb380a5ca16c9-11
+
+@rel r/gb380a5ca16c9-12-1 --contrasts--> d/gb380a5ca16c9-12
+
+@rel r/gb380a5ca16c9-12-2 --contrasts--> d/gb380a5ca16c9-12
+
+@rel r/gb380a5ca16c9-13-1 --contrasts--> d/gb380a5ca16c9-13
+
+@rel r/gb380a5ca16c9-14-1 --contrasts--> d/gb380a5ca16c9-14
+
+@rel r/gb380a5ca16c9-14-2 --contrasts--> d/gb380a5ca16c9-14
+
+@rel r/gb380a5ca16c9-14-1 --contrasts--> d/gb380a5ca16c9-15
+
+@rel r/gb380a5ca16c9-15-2 --contrasts--> d/gb380a5ca16c9-15
+
+@rel r/gb380a5ca16c9-16-1 --contrasts--> d/gb380a5ca16c9-16
+
+@rel r/gb380a5ca16c9-16-2 --contrasts--> d/gb380a5ca16c9-16
+
+@rel r/gb380a5ca16c9-20-1 --contrasts--> d/gb380a5ca16c9-20
+
+@rel r/gb380a5ca16c9-20-2 --contrasts--> d/gb380a5ca16c9-20
+
+@rel r/gb380a5ca16c9-20-1 --contrasts--> d/gb380a5ca16c9-21
+
+@rel r/gb380a5ca16c9-20-2 --contrasts--> d/gb380a5ca16c9-21
+
+@rel r/gb380a5ca16c9-20-1 --contrasts--> d/gb380a5ca16c9-22
+
+@rel r/gb380a5ca16c9-20-2 --contrasts--> d/gb380a5ca16c9-22
+
+@rel r/gb380a5ca16c9-20-1 --contrasts--> d/gb380a5ca16c9-23
+
+@rel r/gb380a5ca16c9-23-2 --contrasts--> d/gb380a5ca16c9-23
+
+@rel r/gb380a5ca16c9-24-1 --contrasts--> d/gb380a5ca16c9-24
+
+@rel r/gb380a5ca16c9-24-2 --contrasts--> d/gb380a5ca16c9-24
+
+@rel e/gb380a5ca16c9-1-1 --backs--> q/gb380a5ca16c9-1-1
+
+@rel d/gb380a5ca16c9-1 --causes--> q/gb380a5ca16c9-1-1
+
+@rel e/gb380a5ca16c9-1-1 --backs--> q/gb380a5ca16c9-1-2
+
+@rel d/gb380a5ca16c9-1 --causes--> q/gb380a5ca16c9-1-2
+
+@rel d/gb380a5ca16c9-2 --causes--> q/gb380a5ca16c9-2-1
+
+@rel d/gb380a5ca16c9-3 --causes--> q/gb380a5ca16c9-3-1
+
+@rel d/gb380a5ca16c9-3 --causes--> q/gb380a5ca16c9-3-2
+
+@rel d/gb380a5ca16c9-4 --causes--> q/gb380a5ca16c9-4-1
+
+@rel d/gb380a5ca16c9-4 --causes--> q/gb380a5ca16c9-4-2
+
+@rel d/gb380a5ca16c9-5 --causes--> q/gb380a5ca16c9-5-1
+
+@rel d/gb380a5ca16c9-6 --causes--> q/gb380a5ca16c9-6-1
+
+@rel d/gb380a5ca16c9-7 --causes--> q/gb380a5ca16c9-7-1
+
+@rel d/gb380a5ca16c9-8 --causes--> q/gb380a5ca16c9-8-1
+
+@rel d/gb380a5ca16c9-9 --causes--> q/gb380a5ca16c9-9-1
+
+@rel d/gb380a5ca16c9-9 --causes--> q/gb380a5ca16c9-9-2
+
+@rel d/gb380a5ca16c9-10 --causes--> q/gb380a5ca16c9-10-1
+
+@rel d/gb380a5ca16c9-10 --causes--> q/gb380a5ca16c9-10-2
+
+@rel d/gb380a5ca16c9-11 --causes--> q/gb380a5ca16c9-11-1
+
+@rel d/gb380a5ca16c9-12 --causes--> q/gb380a5ca16c9-12-1
+
+@rel d/gb380a5ca16c9-13 --causes--> q/gb380a5ca16c9-13-1
+
+@rel d/gb380a5ca16c9-13 --causes--> q/gb380a5ca16c9-13-2
+
+@rel e/gb380a5ca16c9-14-1 --backs--> q/gb380a5ca16c9-14-1
+
+@rel d/gb380a5ca16c9-14 --causes--> q/gb380a5ca16c9-14-1
+
+@rel d/gb380a5ca16c9-14 --causes--> q/gb380a5ca16c9-14-2
+
+@rel d/gb380a5ca16c9-15 --causes--> q/gb380a5ca16c9-15-1
+
+@rel d/gb380a5ca16c9-15 --causes--> q/gb380a5ca16c9-15-2
+
+@rel d/gb380a5ca16c9-16 --causes--> q/gb380a5ca16c9-16-1
+
+@rel e/gb380a5ca16c9-18-1 --backs--> q/gb380a5ca16c9-18-1
+
+@rel d/gb380a5ca16c9-18 --causes--> q/gb380a5ca16c9-18-1
+
+@rel e/gb380a5ca16c9-19-1 --backs--> q/gb380a5ca16c9-19-1
+
+@rel d/gb380a5ca16c9-19 --causes--> q/gb380a5ca16c9-19-1
+
+@rel e/gb380a5ca16c9-20-1 --backs--> q/gb380a5ca16c9-20-1
+
+@rel d/gb380a5ca16c9-20 --causes--> q/gb380a5ca16c9-20-1
+
+@rel e/gb380a5ca16c9-20-2 --backs--> q/gb380a5ca16c9-20-2
+
+@rel d/gb380a5ca16c9-20 --causes--> q/gb380a5ca16c9-20-2
+
+@rel e/gb380a5ca16c9-21-1 --backs--> q/gb380a5ca16c9-21-1
+
+@rel d/gb380a5ca16c9-21 --causes--> q/gb380a5ca16c9-21-1
+
+@rel e/gb380a5ca16c9-20-2 --backs--> q/gb380a5ca16c9-21-2
+
+@rel d/gb380a5ca16c9-21 --causes--> q/gb380a5ca16c9-21-2
+
+@rel e/gb380a5ca16c9-21-1 --backs--> q/gb380a5ca16c9-21-1
+
+@rel d/gb380a5ca16c9-22 --causes--> q/gb380a5ca16c9-21-1
+
+@rel e/gb380a5ca16c9-20-2 --backs--> q/gb380a5ca16c9-21-2
+
+@rel d/gb380a5ca16c9-22 --causes--> q/gb380a5ca16c9-21-2
+
+@rel e/gb380a5ca16c9-20-1 --backs--> q/gb380a5ca16c9-20-1
+
+@rel d/gb380a5ca16c9-23 --causes--> q/gb380a5ca16c9-20-1
+
+@rel e/gb380a5ca16c9-20-2 --backs--> q/gb380a5ca16c9-23-2
+
+@rel d/gb380a5ca16c9-23 --causes--> q/gb380a5ca16c9-23-2
+
+@rel d/gb380a5ca16c9-24 --causes--> q/gb380a5ca16c9-24-1
