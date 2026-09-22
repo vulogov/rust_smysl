@@ -1222,6 +1222,7 @@ fn extract(
                     ..Provider::local(how.model)
                 },
             };
+            say_what_is_sent(&judge.provider, "extract", args.quiet);
             match cargo_smysl_extract::extract(&source, &judge, &recipe) {
                 Ok((extraction, report)) => {
                     for w in &report.warnings {
@@ -1433,6 +1434,28 @@ impl cargo_smysl_extract::Judge for Narrating<'_> {
     }
 }
 
+/// Say what is about to leave the machine, when it is leaving it.
+///
+/// Extraction and checking send the commit — its message and the text of its files — to whichever model
+/// the operator named. On this machine that is a local matter; to a hosted provider it is the code
+/// leaving, and a person is entitled to know before it does rather than from a bill afterwards.
+fn say_what_is_sent(provider: &Provider, kind: &str, quiet: bool) {
+    if quiet {
+        return;
+    }
+    let local = provider.endpoint.contains("://localhost")
+        || provider.endpoint.contains("://127.")
+        || provider.endpoint.contains("://[::1]");
+    if local {
+        return;
+    }
+    eprintln!(
+        "cargo smysl {kind}: sending this repository's code to {} ({}). \
+         A local provider keeps it on this machine.",
+        provider.endpoint, provider.model
+    );
+}
+
 struct CheckArgs<'a> {
     rev: Option<&'a str>,
     patch: Option<&'a str>,
@@ -1564,6 +1587,7 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         .cycle()
         .take(c.passes.max(1))
         .collect();
+    say_what_is_sent(&judge.provider, "check", c.json || args.quiet);
     // Say what is happening while it happens: these calls take about a minute each.
     let narrating = Narrating::around(&judge, c.json || args.quiet);
     if !(c.json || args.quiet) {

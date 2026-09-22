@@ -235,6 +235,37 @@ impl Drop for Guard {
     }
 }
 
+/// The path under `root` this name asks for, or nothing when it asks for somewhere else.
+///
+/// Refused by inspection rather than by canonicalising, because the target may not exist yet and a
+/// symbolic link inside the workspace can still point out of it: only plain, relative, climbing-free
+/// paths are restored.
+fn within(root: &Path, relative: &str) -> Option<PathBuf> {
+    if relative.is_empty() {
+        return None;
+    }
+    let candidate = Path::new(relative);
+    if candidate.is_absolute() {
+        return None;
+    }
+    for part in candidate.components() {
+        match part {
+            std::path::Component::Normal(_) => {}
+            // `..`, a prefix such as `C:`, or a root: none of these belong in a backup's name.
+            _ => return None,
+        }
+    }
+    let target = root.join(candidate);
+    // And the file it would overwrite must not be a link out of the workspace.
+    if std::fs::symlink_metadata(&target)
+        .map(|m| m.file_type().is_symlink())
+        .unwrap_or(false)
+    {
+        return None;
+    }
+    Some(target)
+}
+
 /// Put back anything an interrupted run left mutated. Called before the gate starts.
 ///
 /// A backup still here means a previous run did not finish, and the file it names holds a mutant.
@@ -252,7 +283,17 @@ pub fn recover(root: &Path) -> Vec<String> {
             continue;
         };
         let relative = name.trim_end_matches(".orig").replace('%', "/");
-        let target = root.join(&relative);
+        // A backup's name decides where its bytes are written, and `.smysl/` travels with a repository:
+        // a file called `..%..%.zshrc.orig`, committed by someone else, would otherwise be restored
+        // outside this workspace. A path that is absolute, or that climbs, is refused by name.
+        let Some(target) = within(root, &relative) else {
+            out.push(format!(
+                "{} names a path outside this workspace and was not restored; delete it if it is not \
+                 yours",
+                backup.display()
+            ));
+            continue;
+        };
         match std::fs::read(&backup).and_then(|bytes| std::fs::write(&target, bytes)) {
             Ok(()) => {
                 let _ = std::fs::remove_file(&backup);

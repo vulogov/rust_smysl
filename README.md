@@ -157,6 +157,13 @@ every one.
 - **Nothing is hidden.** A prompt that had to be cut, an answer that had to be salvaged, a set of units
   split across calls, a provider that truncated — each is reported where it happened.
 
+## What it trusts
+
+A commit, a model's answer and a cloned `.smysl/` are all treated as things someone else wrote. What that
+means in practice, and what a security scan of this code found and changed, is in
+[`docs/security.md`](docs/security.md). Two properties worth stating here: the default build cannot make
+an HTTPS request at all, and it will not send a commit over plain HTTP to anywhere but this machine.
+
 ## Where things are kept
 
 ```

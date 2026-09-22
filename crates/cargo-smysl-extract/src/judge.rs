@@ -122,6 +122,20 @@ pub trait Judge {
     }
 }
 
+/// Whether an authority names this machine: the only place plain HTTP may send a commit.
+///
+/// By name and by address, with the port removed. A name that merely *looks* local (`localhost.evil.com`)
+/// is not local, which is why the comparison is exact.
+fn is_loopback(authority: &str) -> bool {
+    let host = match authority.rsplit_once(':') {
+        // An IPv6 authority is bracketed; the last colon inside brackets is not a port.
+        Some((head, _)) if !head.ends_with(']') && !head.contains('[') => head,
+        _ => authority,
+    };
+    let host = host.trim_start_matches('[').trim_end_matches(']');
+    matches!(host, "localhost" | "127.0.0.1" | "::1" | "0.0.0.0") || host.starts_with("127.")
+}
+
 /// What the instructions and the answer's shape take, beside the text a caller wants judged. Measured
 /// from the prompts here: the longest is under three thousand characters.
 const FRAMING_CHARS: usize = 4_000;
@@ -238,6 +252,16 @@ impl ProviderJudge {
             Some(i) => (&rest[..i], &rest[i..]),
             None => (rest, "/"),
         };
+        // This request carries the commit — its message and its files. Without TLS it carries them in
+        // the clear, which is acceptable to a model on this machine and to nothing else. A remote host
+        // over plain HTTP is refused rather than warned about: by the time a warning is read, the code
+        // has been sent.
+        if !is_loopback(authority) {
+            return Err(JudgeError::Transport(format!(
+                "{authority} is not this machine, and http:// would send this commit unencrypted. \
+                 Use https:// with the `hosted` feature, or a provider on localhost"
+            )));
+        }
         let host = authority.to_string();
         let payload = serde_json::to_vec(body).map_err(|e| JudgeError::Transport(e.to_string()))?;
         let mut stream = TcpStream::connect(&host)

@@ -607,3 +607,51 @@ fn a_part_that_fails_does_not_lose_the_parts_that_did_not() {
         report.warnings
     );
 }
+
+// -------------------------------------------------------------------------------------------------
+// What leaves the machine
+// -------------------------------------------------------------------------------------------------
+
+/// A commit is not sent unencrypted to anywhere but this machine.
+///
+/// The request carries the commit's message and its files. Over plain HTTP that is in the clear, which
+/// is fine for a model on localhost and for nothing else — and it is refused rather than warned about,
+/// because by the time a warning is read the code has gone.
+#[test]
+fn plain_http_will_not_carry_a_commit_off_this_machine() {
+    use cargo_smysl_extract::{Judge, Provider, ProviderJudge};
+
+    let to = |endpoint: &str| ProviderJudge {
+        provider: Provider {
+            endpoint: endpoint.into(),
+            ..Provider::local("any-model")
+        },
+    };
+
+    let refused = to("http://models.example.com/api/chat").ask_text("system", "user");
+    let message = refused.unwrap_err().to_string();
+    assert!(
+        message.contains("not this machine") && message.contains("unencrypted"),
+        "it says why: {message}"
+    );
+    assert!(
+        message.contains("https://") && message.contains("hosted"),
+        "and what to do instead: {message}"
+    );
+
+    // A host that merely looks local is not local.
+    let disguised = to("http://localhost.evil.example/api/chat").ask_text("system", "user");
+    assert!(disguised
+        .unwrap_err()
+        .to_string()
+        .contains("not this machine"));
+
+    // The loopback host is allowed through to the transport, which fails here because nothing listens —
+    // a connection error, not a refusal.
+    let local = to("http://127.0.0.1:1/api/chat").ask_text("system", "user");
+    let message = local.unwrap_err().to_string();
+    assert!(
+        message.contains("connecting to"),
+        "localhost is reached, not refused: {message}"
+    );
+}
