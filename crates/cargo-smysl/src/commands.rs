@@ -2304,6 +2304,7 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
     let mut now_cache: std::collections::BTreeMap<String, Vec<cargo_smysl_facts::Fact>> =
         std::collections::BTreeMap::new();
     let mut reports = Vec::new();
+    let mut behind: Vec<Vec<(String, Vec<String>)>> = Vec::new();
     for sha in &shas {
         let commit = match cargo_smysl_git::read_commit(&root, sha) {
             Ok(c) => c,
@@ -2343,6 +2344,8 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
         // Which decisions rest on each moved item, when the corpus knows: a decision quoted from a file
         // carries an `x.code/touches` edge to that file's items (D4). A decision quoted from the message
         // has the commit as its scope and is named at the commit level, as before.
+        // Collected, not printed: `--json` must put nothing on stdout but JSON, and this used to
+        // print here, which made the output unparseable for anything downstream.
         let anchored = anchored_decisions(&store, &corpus.labels(&store), &changes);
         reports.push(cargo_smysl_verdict::stale::Report {
             commit: sha.clone(),
@@ -2350,15 +2353,14 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
             changes,
             unreadable,
         });
-        for (item, labels) in anchored {
-            println!("  {item} is behind: {}", labels.join(", "));
-        }
+        behind.push(anchored);
     }
 
     if json {
         let value: Vec<serde_json::Value> = reports
             .iter()
-            .map(|r| {
+            .zip(&behind)
+            .map(|(r, anchored)| {
                 serde_json::json!({
                     "commit": r.commit,
                     "units": r.units,
@@ -2366,6 +2368,10 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
                     "gone": r.counts().1,
                     "items": r.changes.iter().map(|c| serde_json::json!({
                         "item": c.label, "file": c.file, "because": c.because(),
+                    })).collect::<Vec<_>>(),
+                    // Which recorded decisions each moved item is behind, when the corpus knows.
+                    "behind": anchored.iter().map(|(item, labels)| serde_json::json!({
+                        "item": item, "decisions": labels,
                     })).collect::<Vec<_>>(),
                     "unreadable": r.unreadable,
                 })
@@ -2378,6 +2384,11 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
         return exit::OK;
     }
 
+    for anchored in &behind {
+        for (item, labels) in anchored {
+            println!("  {item} is behind: {}", labels.join(", "));
+        }
+    }
     let stale: Vec<_> = reports.iter().filter(|r| r.is_stale()).collect();
     for r in &stale {
         let (changed, gone) = r.counts();

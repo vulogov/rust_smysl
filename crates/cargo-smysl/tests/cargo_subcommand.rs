@@ -317,3 +317,35 @@ fn a_panic_is_reported_as_something_to_send_back() {
         "an installed binary points the person at where to send it: {said}"
     );
 }
+
+/// `--json` puts JSON on stdout and nothing else.
+///
+/// It did not: a later change printed which decisions each moved item was behind, on stdout, before the
+/// JSON — so anything reading the output got a parse error. CI caught it; nothing else would have.
+#[test]
+fn json_output_is_json_and_only_json() {
+    // This repository records its own commits, so the corpus is here and the command does real work.
+    for args in [
+        vec!["smysl", "stale", "--json"],
+        vec![
+            "smysl",
+            "check",
+            "--patch",
+            "/dev/null",
+            "--json",
+            "--dry-run",
+        ],
+    ] {
+        let out = cargo(&args);
+        let stdout = String::from_utf8_lossy(&out.stdout);
+        if stdout.trim().is_empty() {
+            continue; // the command declined to run here; that is not this test's business
+        }
+        let parsed: Result<serde_json::Value, _> = serde_json::from_str(&stdout);
+        assert!(
+            parsed.is_ok(),
+            "{args:?} put something other than JSON on stdout:\n{}",
+            stdout.chars().take(200).collect::<String>()
+        );
+    }
+}
