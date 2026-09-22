@@ -1,8 +1,67 @@
 # What this is for, and who for
 
-Written for someone deciding whether to spend an afternoon on this. It is a review of the tool as it was
-built rather than as it was designed, and it states what was measured, including the parts that did not
-work.
+## The problem
+
+Six months after a change, the code is still there and the reasoning is not.
+
+You find a dependency pinned to an exact version, a lock held across an await point, a test that builds
+its own fixture instead of using the shared one. Each was a decision. Each rested on something being true
+at the time — the registry keeps that version, the other caller is single-threaded, two test binaries
+raced over a shared file. None of that is in the code, because code says *what*, not *what this assumed*.
+
+Some of it is in the commit message, if whoever wrote it was thorough. But a message is prose in a log:
+you cannot ask "what else rests on the assumption that this is single-threaded?", and nothing tells you
+when the code underneath an assumption has changed since.
+
+## What this tool does about it
+
+It reads your commits and records, beside the code, what each one decided: the decision, what had to be
+true for it, what was turned down, what follows. Then it lets you ask questions of that record, and tells
+you when the code a decision rests on has moved.
+
+Reading one commit back, on this repository:
+
+```
+$ cargo smysl why --commit 4b6a6cf
+
+d/g4b6a6cfe6057-1 [cited]
+  `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue`
+  and nothing else.
+  because: To ensure extraction is done at a moment chosen by a person, without failing a commit
+  needs: extraction is 7 to 30 minutes [cited]
+  needs: post-commit hook should not fail a commit [cited]
+  not: Rejected: The post-commit hook could perform extraction immediately. [cited]
+```
+
+That is the argument, with the option that was turned down kept beside it, and `[cited]` meaning the tool
+found those words in the commit rather than taking a model's word for them.
+
+And the question a log cannot answer:
+
+```
+$ cargo smysl stale
+
+b2dbe4820872: 26 unit(s) rest on code that has moved — 8 item(s) changed, 1 gone
+  Retrieval::default changed in crates/cargo-smysl-verdict/src/matching.rs
+  not_yet is no longer in crates/cargo-smysl/src/commands.rs
+
+Nothing is withdrawn: whether the reasoning still holds is a person's call.
+```
+
+The reasoning is not wrong — it is **unexamined**. Nobody has said whether it still holds now that the
+code changed under it. The comparison is by item and by a hash of its body, so a function that merely
+moved down a file is not flagged.
+
+## The honest part
+
+A model reads the commits, and models are unreliable at this. So the tool is built so that the model
+proposes wording and nothing else: the tool assigns every label, source and status itself, checks every
+quote against the commit, and marks a unit `speculative` when the quote is not there. Everything the
+model proposes waits for a person before it counts as evidence.
+
+And the figures are published, naming the model each came from, including the experiments that failed.
+The rest of this document is that account — written for someone deciding whether to spend an afternoon on
+this, and reviewing the tool as it was built rather than as it was designed.
 
 ## The short version
 
