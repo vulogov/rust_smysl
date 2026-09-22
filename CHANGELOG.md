@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.0 — unreleased
+
+Development is on `development/0.2.0`. What is known to be worth doing, from what 0.1.0 measured:
+
+- **Anchors for every decision, not only the file-quoted ones.** A decision quoted from the commit
+  message anchors to nothing today, and most decisions quote the message — so `stale` reports at commit
+  level for most of a corpus.
+- **Over-production is the dominant extraction error** on a local model: on one commit labelled with 4
+  decisions it reported 54. Prompt wording was measured twice and is not the lever. The untried levers are
+  deterministic ones and a second opinion between two cheap models.
+- **The recipe caps shape the answer.** Four of six commits stopped at exactly `max_decisions_total`, and
+  every part of the largest returned its per-part cap, so those counts are the recipe rather than the
+  commit.
+- **`bench` has never been run by anyone but its author.** The first real use will say more about it than
+  any test here.
+
 ## 0.1.0 — 2026-09-21
 
 First release. A cargo subcommand that records why Rust code changed and keeps the record honest.
