@@ -1,0 +1,808 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/gb17287cebb93-1 { status: cited, source: { kind: file, ref: .gitignore@b17287cebb93 }, "code:kind": act, "ingest:quote": .smysl/extractions/ }
+~ Track `.smysl/extractions/` directory
+
+To ensure that the raw model answers behind each record are tracked, making D7's 'extract once per commit and recipe' true across clones.
+
+@decision d/gb17287cebb93-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": act, "ingest:quote": "cargo-smysl-facts = { workspace = true }" }
+~ Add `cargo-smysl-facts` as a dependency
+
+To support the retrieval and matching of facts, which is part of the verdict stage.
+
+@decision d/gb17287cebb93-3 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": act, "ingest:quote": pub mod matching; }
+~ Add `matching` module to `lib.rs`
+
+To handle the checking of one claim against the facts, as part of the matching process.
+
+@decision d/gb17287cebb93-4 { status: speculative, "code:kind": act, "ingest:quote": "[dependencies]\ncargo-smysl-facts = { workspace = true }\n\n[features]\ndefault = []\n# Hosted providers need TLS; the default build has no network stack at all, which is what the self-contained objective and the CI rule mean (D18).\nhosted = [\"cargo-smysl-extract/hosted\"]" }
+~ Update `Cargo.toml` with new dependencies and features
+
+To include necessary crates for the new functionality and to define features like `hosted` that require TLS.
+
+@decision d/gb17287cebb93-5 { status: speculative, "code:kind": act, "ingest:quote": "/// Check a recorded claim against the code, and say what may be concluded (D11, D12).\nEvidence { .. } => not_yet(\"evidence\", \"Phase 3 — verdicts and test evidence\")," }
+~ Add `Evidence` command to `cli.rs`
+
+To allow checking a recorded claim against the code and saying what may be concluded, as part of Phase 3.
+
+@decision d/gb17287cebb93-6 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": act, "ingest:quote": "pub fn retrieve<'a>(claim: &str, facts: &'a [Fact], r: &Retrieval) -> Shown<'a> {" }
+~ Add `retrieve` function to `matching.rs`
+
+To retrieve the facts worth showing for one claim based on the overlap with the claim's terms.
+
+@decision d/gb17287cebb93-7 { status: speculative, "code:kind": act, "ingest:quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {" }
+~ Add `match_claim` function to `matching.rs`
+
+To ask about one claim and validate the citations provided by the model.
+
+@decision d/gb17287cebb93-8 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": act, "ingest:quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n...\"" }
+~ Add `SYSTEM` constant to `matching.rs`
+
+To define the system prompt for the model when checking one claim against facts.
+
+@decision d/gb17287cebb93-9 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": act, "ingest:quote": "[derive(Debug, Default, Deserialize)]\nstruct Answer {" }
+~ Add `Answer` struct to `matching.rs`
+
+To represent the JSON answer provided by the model after checking a claim.
+
+@decision d/gb17287cebb93-10 { status: speculative, "code:kind": act, "ingest:quote": "[derive(Debug, Clone)]\npub struct Matched {" }
+~ Add `Matched` struct to `matching.rs`
+
+To represent the result of matching a claim against the shown facts, including any invented citations.
+
+@decision d/gb17287cebb93-11 { status: speculative, "code:kind": act, "ingest:quote": "/// Checking one claim against facts (D11): what is retrieved, what is asked, and what a citation must be.\n\nuse std::cell::RefCell;\n\nuse cargo_smysl_extract::{Charged, Judge, JudgeError};\nuse cargo_smysl_facts::facts;\nuse cargo_smysl_verdict::matching::{match_claim, retrieve, Retrieval};\nuse cargo_smysl_verdict::policy::{decide, Verdict};" }
+~ Add tests for `matching.rs`
+
+To ensure that the retrieval and matching of claims against facts works as expected.
+
+@decision d/gb17287cebb93-12 { status: cited, source: { kind: doc, ref: git:b17287cebb93435d50f195ca0c15ef0c72eeff5c }, "code:kind": act, "ingest:quote": Track the extraction cache: a clone without it pays 7 to 30 minutes a commit }
+~ Track the extraction cache: a clone without it pays 7 to 30 minutes a commit
+
+The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them — and they are what makes D7's 'extract once per commit and recipe' true across clones rather than only on the machine that did it.
+
+@decision d/gb17287cebb93-13 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": "The tool assigns sources, labels and statuses; a model proposes content only." }
+~ The tool assigns sources, labels and statuses; a model proposes content only
+
+The tool promises that each command does what its design says, with measured figures where a model is involved (recall, precision, cost). Acting on its reports belongs to whoever reads them: a person, a CI step, a hook, an agent.
+
+@decision d/gb17287cebb93-14 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": "Extraction is multi-pass with the diff: decisions first, then prerequisites / alternatives / consequences in parallel. A pro-class model for prerequisites at minimum" }
+~ Extraction is multi-pass with the diff: decisions first, then prerequisites / alternatives / consequences in …
+
+Flash-lite ~30% genuine prerequisites vs pro ~75%
+
+@decision d/gb17287cebb93-15 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": "Extract once per commit; improvements arrive as 'supersedes', never as re-extraction merged into the store" }
+~ Extract once per commit; improvements arrive as 'supersedes', never as re-extraction merged into the store
+
+Stability experiment
+
+@decision d/gb17287cebb93-16 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": Quotes are checked against the message and diff with quote_support_in; an absent quote caps the unit at 'speculative' }
+~ Quotes are checked against the message and diff with quote_support_in; an absent quote caps the unit at …
+
+0 of 138 absent quotes with pro; fabricated alternatives caught with flash-lite
+
+@decision d/gb17287cebb93-17 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": "Facts are deterministic and live in a regenerable cache, not the corpus. Scope: items the diff touches, code identifiers named in the message or prerequisite, one call hop outward, reverse 'called by' edges, manifest / CI-matrix / git facts" }
+~ Facts are deterministic and live in a regenerable cache, not the corpus
+
+~7 MB of facts per commit; rounds 1–6
+
+@decision d/gb17287cebb93-18 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": Author text is prose and never verifies: }
+~ Author text is prose and never verifies
+
+rounds 3–6: every one of these laundered support until tagged
+
+@decision d/gb17287cebb93-19 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": "Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time" }
+~ Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose …
+
+round 5: 16 correct, 0 false contradictions
+
+@decision d/gb17287cebb93-20 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": "Verdict policy: a single run never raises a status. SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs agreeing (or a person). PARTIAL / PROSE_ONLY / IMPLEMENTED_BY attach evidence only; CONTRADICTED goes to review" }
+~ Verdict policy: a single run never raises a status. SUPPORTED requires model coverage 'full' and every part …
+
+round 6: part-based coverage alone overclaimed 4 times; two-run agreement had 1 wrong of 7
+
+@decision d/gb17287cebb93-21 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": "Test evidence: link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with --locked, the features its cfg requires, and --exact; import results with from_csv as measured data units; backs / rebuts for verifies, x.code/exercises for exercises. Prerequisite statuses never change from test results alone" }
+~ Test evidence: link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with …
+
+test-evidence run: 53 tests, 50 passed, attested stores; S1: 3 of 17 'verifies' links wrong, 1 vacuous test
+
+@decision d/gb17287cebb93-22 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": "The model is the operator's choice, never the tool's." }
+~ The model is the operator's choice, never the tool's
+
+Provider (ollama, any OpenAI-compatible endpoint), model, endpoint, key variable, context window and the system prompt come from flags, the environment or configuration, with sensible defaults and the prompt tunable per provider; a run records which it used. The default is local (Ollama), so the tool costs nothing to try
+
+@decision d/gb17287cebb93-23 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": act, "ingest:quote": "The model client is our own, and the default build has no network stack." }
+~ The model client is our own, and the default build has no network stack
+
+`check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`), written out rather than pulled in; a hosted provider over TLS is the `hosted` feature, off by default. This settles item 7: smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway. `check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5
+
+@constraint p/gb17287cebb93-1-1 { status: cited, source: { kind: doc, ref: git:b17287cebb93435d50f195ca0c15ef0c72eeff5c }, "code:kind": existing-behaviour, "ingest:quote": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them." }
+~ The raw model answers behind each record are not derived — a model is not deterministic, so re-running does …
+
+The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them.
+
+@constraint p/gb17287cebb93-1-2 { status: cited, source: { kind: doc, ref: git:b17287cebb93435d50f195ca0c15ef0c72eeff5c }, "code:kind": existing-behaviour, "ingest:quote": and they are what makes D7's 'extract once per commit and recipe' true across clones rather than only on the machine that did it. }
+~ They are what makes D7's 'extract once per commit and recipe' true across clones rather than only on the …
+
+They are what makes D7's 'extract once per commit and recipe' true across clones rather than only on the machine that did it.
+
+@constraint p/gb17287cebb93-1-3 { status: cited, source: { kind: doc, ref: git:b17287cebb93435d50f195ca0c15ef0c72eeff5c }, "code:kind": existing-behaviour, "ingest:quote": The cheaper thing to carry is the file. }
+~ The cheaper thing to carry is the file.
+
+@constraint p/gb17287cebb93-11-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "To support the retrieval and matching of facts, which is part of the verdict stage." }
+~ The project needs to retrieve and match facts as part of the verdict stage.
+
+@constraint p/gb17287cebb93-3-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)." }
+~ The project needs a way to check one claim against the facts.
+
+@constraint p/gb17287cebb93-11-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this checking process.
+
+@constraint p/gb17287cebb93-4-1 { status: speculative, "code:kind": existing-behaviour }
+~ The project needs new crates for additional functionality.
+
+@constraint p/gb17287cebb93-4-2 { status: speculative, "code:kind": existing-behaviour }
+~ TLS is required for certain features, specifically the `hosted` feature.
+
+@constraint p/gb17287cebb93-5-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "Phase 3: per-prerequisite retrieval and matching (D11) with validated citations, and cargo smysl evidence" }
+~ The project is in Phase 3, focusing on verdicts and test evidence.
+
+@constraint p/gb17287cebb93-5-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "description = \"cargo-smysl: verdict stage\"" }
+~ The `cargo-smysl-verdict` crate is responsible for the verdict stage.
+
+@constraint p/gb17287cebb93-3-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)." }
+~ The project needs a way to check one claim against the facts.
+
+@constraint p/gb17287cebb93-11-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this checking process.
+
+@constraint p/gb17287cebb93-3-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)." }
+~ The project needs a way to check one claim against the facts.
+
+@constraint p/gb17287cebb93-11-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this checking process.
+
+@constraint p/gb17287cebb93-8-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n\\\nThe facts are `F1`, `F2`, … (what the code does) and `P1`, `P2`, … (what the code says about itself: doc comments, string literals, string constants).\\n\\\nBreak the claim into its parts — each thing it asserts — and for each part say whether the facts show it. Cite the facts you used by name.\\n\\\nRules you must follow:\\n- Cite only facts you were shown. Do not recall anything about this project from memory.\\n- A part no fact shows is uncovered. Saying so is the useful answer; guessing is not.\\n- If a fact shows the claim is false, set `contradicted` and cite it.\\n- `P` facts are what someone wrote, not what the code does: they may point at the right place, and they never establish a part on their own.\\n\\\nReturn one JSON object: {\"covered\": [{\"part\": string, \"facts\": [string]}], \"uncovered\": [string], \"contradicted\": boolean, \"contradicted_by\": [string]}\";" }
+~ The project needs a clear instruction on how to check one claim against facts, including the distinction …
+
+The project needs a clear instruction on how to check one claim against facts, including the distinction between structural facts and prose.
+
+@constraint p/gb17287cebb93-9-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "pub struct Answer {\n    #[serde(default)]\n    covered: Vec<Covered>,\n    #[serde(default)]\n    uncovered: Vec<String>,\n    #[serde(default)]\n    contradicted: bool,\n    #[serde(default)]\n    contradicted_by: Vec<String>,\n}" }
+~ The project needs to deserialize the JSON response from the model.
+
+@constraint p/gb17287cebb93-9-2 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {" }
+~ The `match_claim` function uses the deserialized JSON response to process the model's output.
+
+@constraint p/gb17287cebb93-10-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "To represent the result of matching a claim against the shown facts, including any invented citations." }
+~ The project needs a way to represent the result of matching a claim against the shown facts, including any …
+
+The project needs a way to represent the result of matching a claim against the shown facts, including any invented citations.
+
+@constraint p/gb17287cebb93-10-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this representation process.
+
+@constraint p/gb17287cebb93-11-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "To support the retrieval and matching of facts, which is part of the verdict stage." }
+~ The project needs to retrieve and match facts as part of the verdict stage.
+
+@constraint p/gb17287cebb93-11-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this checking process.
+
+@constraint p/gb17287cebb93-1-1 { status: cited, source: { kind: doc, ref: git:b17287cebb93435d50f195ca0c15ef0c72eeff5c }, "code:kind": existing-behaviour, "ingest:quote": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them." }
+~ The raw model answers behind each record are not derived — a model is not deterministic, so re-running does …
+
+The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them.
+
+@constraint p/gb17287cebb93-12-2 { status: cited, source: { kind: doc, ref: git:b17287cebb93435d50f195ca0c15ef0c72eeff5c }, "code:kind": invariant, "ingest:quote": Track the extraction cache: a clone without it pays 7 to 30 minutes a commit }
+~ D7's 'extract once per commit and recipe' should be true across clones rather than only on the machine that …
+
+D7's 'extract once per commit and recipe' should be true across clones rather than only on the machine that did it.
+
+@constraint p/gb17287cebb93-13-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": normative, "ingest:quote": "The tool promises that each command does what its design says, with measured figures where a model is involved (recall, precision, cost). Acting on its reports belongs to whoever reads them: a person, a CI step, a hook, an agent." }
+~ The tool promises that each command does what its design says, with measured figures where a model is involved …
+
+The tool promises that each command does what its design says, with measured figures where a model is involved (recall, precision, cost).
+
+@constraint p/gb17287cebb93-14-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": Flash-lite ~30% genuine prerequisites vs pro ~75% }
+~ Flash-lite ~30% genuine prerequisites vs pro ~75%
+
+@constraint p/gb17287cebb93-1-1 { status: cited, source: { kind: doc, ref: git:b17287cebb93435d50f195ca0c15ef0c72eeff5c }, "code:kind": existing-behaviour, "ingest:quote": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them." }
+~ The raw model answers behind each record are not derived — a model is not deterministic, so re-running does …
+
+The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them.
+
+@constraint p/gb17287cebb93-15-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": prior-change, "ingest:quote": RATIONALE: Stability experiment }
+~ Stability experiment
+
+@constraint p/gb17287cebb93-16-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/gb17287cebb93-16-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": Quotes are checked against the message and diff with quote_support_in; an absent quote caps the unit at 'speculative' }
+~ Quotes are checked against the message and diff with quote_support_in; an absent quote caps the unit at …
+
+Quotes are checked against the message and diff with quote_support_in; an absent quote caps the unit at 'speculative'
+
+@constraint p/gb17287cebb93-1-1 { status: cited, source: { kind: doc, ref: git:b17287cebb93435d50f195ca0c15ef0c72eeff5c }, "code:kind": existing-behaviour, "ingest:quote": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them." }
+~ The raw model answers behind each record are not derived — a model is not deterministic, so re-running does …
+
+The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them.
+
+@constraint p/gb17287cebb93-17-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "Extraction costs 7–30 minutes of a local model per commit, so it cannot run at commit time." }
+~ Extraction costs 7–30 minutes of a local model per commit.
+
+@constraint p/gb17287cebb93-18-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "D5 | smysl is used as a **library**, never through its CLI" }
+~ The tool assigns sources, labels and statuses; a model proposes content only.
+
+@constraint p/gb17287cebb93-18-2 { status: speculative, "code:kind": assumption }
+~ Commit messages are in essay-style, which already holds reasons.
+
+@constraint p/gb17287cebb93-19-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "D5 | **The tool assigns sources, labels and statuses;** a model proposes content only." }
+~ The tool assigns sources, labels and statuses; a model proposes content only.
+
+@constraint p/gb17287cebb93-19-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "D6 | **Extraction is multi-pass with the diff:** decisions first, then prerequisites / alternatives / consequences in parallel. A pro-class model for prerequisites at minimum" }
+~ Extraction is multi-pass with the diff: decisions first, then prerequisites / alternatives / consequences in …
+
+Extraction is multi-pass with the diff: decisions first, then prerequisites / alternatives / consequences in parallel.
+
+@constraint p/gb17287cebb93-19-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": assumption, "ingest:quote": "Known weak spots, all in extraction rather than smysl: - prerequisite recall depends on the model (DeepSeek missed two that the pro model found);" }
+~ A prerequisite recall depends on the model.
+
+@constraint p/gb17287cebb93-20-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": a single run never raises a status. }
+~ A single run never raises a status.
+
+@constraint p/gb17287cebb93-20-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs agreeing (or a person)." }
+~ SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs …
+
+SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs agreeing (or a person).
+
+@constraint p/gb17287cebb93-20-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": PARTIAL / PROSE_ONLY / IMPLEMENTED_BY attach evidence only. }
+~ PARTIAL / PROSE_ONLY / IMPLEMENTED_BY attach evidence only.
+
+@constraint p/gb17287cebb93-20-4 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": CONTRADICTED goes to review. }
+~ CONTRADICTED goes to review.
+
+@constraint p/gb17287cebb93-18-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "D5 | smysl is used as a **library**, never through its CLI" }
+~ The tool assigns sources, labels and statuses; a model proposes content only.
+
+@constraint p/gb17287cebb93-21-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": D8 | **Quotes are checked against the message and diff** with `quote_support_in`; an absent quote caps the unit at `speculative` }
+~ A quote absent from the commit caps its unit at `speculative`.
+
+@constraint p/gb17287cebb93-21-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "D16 | **The model is the operator's choice, never the tool's.** Provider (`ollama`, any OpenAI-compatible endpoint), model, endpoint, key variable, context window and the system prompt come from flags, the environment or configuration, with sensible defaults and the prompt tunable per provider; a run records which it used." }
+~ The model is the operator's choice, never the tool's.
+
+@constraint p/gb17287cebb93-22-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": prior-change, "ingest:quote": "The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, `EdgeSet::premises`, `from_csv`, label bindings in staged records) first exists in 1.3." }
+~ The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, …
+
+The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, `EdgeSet::premises`, `from_csv`, label bindings in staged records) first exists in 1.3.
+
+@constraint p/gb17287cebb93-22-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": prior-change, "ingest:quote": "1.4 added record-level merge idempotence (R10), imported readings that check clean (R12) and the edge lifecycle (D15);" }
+~ 1.4 added record-level merge idempotence (R10), imported readings that check clean (R12) and the edge …
+
+1.4 added record-level merge idempotence (R10), imported readings that check clean (R12) and the edge lifecycle (D15);
+
+@constraint p/gb17287cebb93-22-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": prior-change, "ingest:quote": "1.5 adds R16–R20 and C8 packing, all of which `check` uses." }
+~ 1.5 adds R16–R20 and C8 packing, all of which `check` uses.
+
+@constraint p/gb17287cebb93-23-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "`check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`), written out rather than pulled in;" }
+~ `check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`).
+
+@constraint p/gb17287cebb93-23-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "a hosted provider over TLS is the `hosted` feature, off by default." }
+~ a hosted provider over TLS is the `hosted` feature, off by default.
+
+@constraint p/gb17287cebb93-23-3 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway." }
+~ smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install.
+
+@constraint p/gb17287cebb93-23-4 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway." }
+~ the multi-pass schemas do not fit `PromptOverride` anyway.
+
+@constraint p/gb17287cebb93-23-5 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": existing-behaviour, "ingest:quote": "`check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5." }
+~ `check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5.
+
+@claim r/gb17287cebb93-1-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not track `.smysl/extractions/` directory
+
+@claim r/gb17287cebb93-1-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Track a different directory for raw model answers
+
+@claim r/gb17287cebb93-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Implement fact retrieval and matching within an existing crate.
+
+@claim r/gb17287cebb93-2-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use a different library for fact retrieval and matching.
+
+@claim r/gb17287cebb93-3-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the existing structure without adding a new module.
+
+@claim r/gb17287cebb93-3-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add the functionality directly into an existing module.
+
+@claim r/gb17287cebb93-4-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not update dependencies and features.
+
+@claim r/gb17287cebb93-4-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Update only the dependencies without defining new features.
+
+@claim r/gb17287cebb93-4-3 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Define new features but do not update dependencies.
+
+@claim r/gb17287cebb93-5-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not adding the `Evidence` command, continuing without this functionality.
+
+@claim r/gb17287cebb93-6-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Retrieve all facts without considering overlap with claim terms.
+
+@claim r/gb17287cebb93-7-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not add the `match_claim` function, continuing without this functionality.
+
+@claim r/gb17287cebb93-7-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Implement claim checking within an existing function or module.
+
+@claim r/gb17287cebb93-8-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not define a system prompt for the model.
+
+@claim r/gb17287cebb93-8-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Define a different system prompt that does not specify how to handle structural facts and prose …
+
+Rejected: Define a different system prompt that does not specify how to handle structural facts and prose separately.
+
+@claim r/gb17287cebb93-9-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Parse the JSON response manually without defining a struct.
+
+@claim r/gb17287cebb93-9-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use a different data structure to represent the JSON answer.
+
+@claim r/gb17287cebb93-10-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not add `Matched` struct to `matching.rs`.
+
+@claim r/gb17287cebb93-10-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use a different data structure to represent the result of matching a claim against the shown facts, …
+
+Rejected: Use a different data structure to represent the result of matching a claim against the shown facts, including any invented citations.
+
+@claim r/gb17287cebb93-11-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not adding tests for `matching.rs`
+
+@claim r/gb17287cebb93-12-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not track the extraction cache and allow clones to re-extract data.
+
+@claim r/gb17287cebb93-13-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool proposes sources, labels and statuses; a model assigns content only.
+
+@claim r/gb17287cebb93-13-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Both the tool and the model assign sources, labels and statuses.
+
+@claim r/gb17287cebb93-14-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Single-pass extraction with all elements (decisions, prerequisites, alternatives, consequences) …
+
+Rejected: Single-pass extraction with all elements (decisions, prerequisites, alternatives, consequences) together
+
+@claim r/gb17287cebb93-14-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Sequential extraction with decisions first, then prerequisites, then alternatives, and finally …
+
+Rejected: Sequential extraction with decisions first, then prerequisites, then alternatives, and finally consequences
+
+@claim r/gb17287cebb93-15-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": "improvements arrive as 'supersedes', never as re-extraction merged into the store" }
+~ Rejected: Re-extraction merged into the store
+
+@claim r/gb17287cebb93-16-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not check quotes against the message and diff.
+
+@claim r/gb17287cebb93-16-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Cap units with absent quotes at a different status than 'speculative'.
+
+@claim r/gb17287cebb93-17-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": Tracking it would make D7's 'extract once' true across clones at the cost of a few hundred KB per commit. The owner's call. }
+~ Rejected: Tracking the raw model answers in the corpus.
+
+@claim r/gb17287cebb93-18-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Author text verifies and is used to verify prerequisites.
+
+@claim r/gb17287cebb93-19-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": "D6 | **Extraction is multi-pass with the diff:** decisions first, then prerequisites / alternatives / consequences in parallel. A pro-class model for prerequisites at minimum" }
+~ Rejected: Retrieving all claims at once
+
+@claim r/gb17287cebb93-19-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": "Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time" }
+~ Rejected: Judging multiple claims simultaneously
+
+@claim r/gb17287cebb93-20-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": round 6: part-based coverage alone overclaimed 4 times; two-run agreement had 1 wrong of 7 }
+~ Rejected: A single run could raise a status.
+
+@claim r/gb17287cebb93-20-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": round 6: part-based coverage alone overclaimed 4 times; two-run agreement had 1 wrong of 7 }
+~ Rejected: SUPPORTED could require less than full model coverage or agreement from one run.
+
+@claim r/gb17287cebb93-21-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": "D13 | **Test evidence:** link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with --locked, the features its cfg requires, and --exact; import results with from_csv as measured data units; backs / rebuts for verifies, x.code/exercises for exercises. Prerequisite statuses never change from test results alone." }
+~ Rejected: Do not link tests to prerequisites.
+
+@claim r/gb17287cebb93-22-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": "The model is the operator's choice, never the tool's." }
+~ Rejected: The tool could have a built-in model choice.
+
+@claim r/gb17287cebb93-22-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": "The default is local (Ollama), so the tool costs nothing to try" }
+~ Rejected: The tool could have different default settings for the model configuration.
+
+@claim r/gb17287cebb93-23-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "code:kind": rejected-alternative, "ingest:quote": "smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway." }
+~ Rejected: smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install.
+
+@claim q/gb17287cebb93-1-1 { status: inferred, grounds: [d/gb17287cebb93-1], "code:kind": anticipated, "ingest:quote": They are what makes D7's 'extract once per commit and recipe' true across clones rather than only on the machine that did it. }
+~ The raw model answers behind each record are tracked, making D7's 'extract once per commit and recipe' true …
+
+The raw model answers behind each record are tracked, making D7's 'extract once per commit and recipe' true across clones.
+
+@claim q/gb17287cebb93-1-2 { status: inferred, grounds: [d/gb17287cebb93-1], "code:kind": anticipated, "ingest:quote": .smysl/extractions/ }
+~ The `.smysl/extractions/` directory is added to version control.
+
+@claim q/gb17287cebb93-5-1 { status: speculative, grounds: [d/gb17287cebb93-5], "code:kind": anticipated, "ingest:quote": "/// Check a recorded claim against the code, and say what may be concluded (D11, D12)." }
+~ The `Evidence` command is added to the CLI, allowing users to check a recorded claim against the code and …
+
+The `Evidence` command is added to the CLI, allowing users to check a recorded claim against the code and determine what may be concluded.
+
+@claim q/gb17287cebb93-7-1 { status: speculative, grounds: [d/gb17287cebb93-7], "code:kind": anticipated, "ingest:quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {" }
+~ The project now has a dedicated function for asking about one claim and validating the citations provided by …
+
+The project now has a dedicated function for asking about one claim and validating the citations provided by the model.
+
+@evidence e/gb17287cebb93-7-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "ingest:quote": let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))? }
+~ Check: let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?
+
+@finding q/gb17287cebb93-7-2 { status: speculative }
+~ The `match_claim` function uses the `Answer` struct to process the model's response.
+
+@claim q/gb17287cebb93-8-1 { status: inferred, grounds: [d/gb17287cebb93-8], "code:kind": anticipated, "ingest:quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n\\\nThe facts are `F1`, `F2`, … (what the code does) and `P1`, `P2`, … (what the code says about itself: doc comments, string literals, string constants).\\n\\\nBreak the claim into its parts — each thing it asserts — and for each part say whether the facts show it. Cite the facts you used by name.\\n\\\nRules you must follow:\\n- Cite only facts you were shown. Do not recall anything about this project from memory.\\n- A part no fact shows is uncovered. Saying so is the useful answer; guessing is not.\\n- If a fact shows the claim is false, set `contradicted` and cite it.\\n- `P` facts are what someone wrote, not what the code does: they may point at the right place, and they never establish a part on their own.\\n\\\nReturn one JSON object: {\"covered\": [{\"part\": string, \"facts\": [string]}], \"uncovered\": [string], \"contradicted\": boolean, \"contradicted_by\": [string]}\";" }
+~ The model will receive a clear instruction on how to check one claim against facts, including the distinction …
+
+The model will receive a clear instruction on how to check one claim against facts, including the distinction between structural facts and prose.
+
+@evidence e/gb17287cebb93-7-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "ingest:quote": let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))? }
+~ Check: let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?
+
+@finding q/gb17287cebb93-9-1 { status: speculative, "ingest:quote": "pub struct Answer {\n    #[serde(default)]\n    covered: Vec<Covered>,\n    #[serde(default)]\n    uncovered: Vec<String>,\n    #[serde(default)]\n    contradicted: bool,\n    #[serde(default)]\n    contradicted_by: Vec<String>,\n}" }
+~ The `Answer` struct is used to deserialize the JSON response from the model.
+
+@evidence e/gb17287cebb93-7-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/b2dbe4820872.json@b17287cebb93 }, "ingest:quote": let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))? }
+~ Check: let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?
+
+@finding q/gb17287cebb93-9-2 { status: speculative, "ingest:quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {" }
+~ The `match_claim` function uses the `Answer` struct to process the model's response.
+
+@claim q/gb17287cebb93-10-1 { status: speculative, grounds: [d/gb17287cebb93-10], "code:kind": anticipated, "ingest:quote": "/// What the model made of one claim, with its citations validated.\n#[derive(Debug, Clone)]\npub struct Matched {\n    pub judgement: Judgement,\n    /// Citations dropped because the model named a fact it was not shown.\n    pub invented: Vec<String>,\n}" }
+~ The `Matched` struct is used to represent the result of matching a claim against the shown facts, including …
+
+The `Matched` struct is used to represent the result of matching a claim against the shown facts, including any invented citations.
+
+@claim q/gb17287cebb93-12-1 { status: inferred, grounds: [d/gb17287cebb93-12], "code:kind": anticipated, "ingest:quote": Track the extraction cache: a clone without it pays 7 to 30 minutes a commit }
+~ Clones without the extraction cache will pay 7 to 30 minutes per commit for extraction.
+
+@claim q/gb17287cebb93-13-1 { status: inferred, grounds: [d/gb17287cebb93-13], "code:kind": anticipated }
+~ The tool's behavior is predictable and consistent with its design.
+
+@claim q/gb17287cebb93-13-2 { status: inferred, grounds: [d/gb17287cebb93-13], "code:kind": anticipated }
+~ Users can rely on the tool's output for decision-making without needing to verify it further.
+
+@claim q/gb17287cebb93-14-1 { status: inferred, grounds: [d/gb17287cebb93-14], "code:kind": anticipated }
+~ Extraction process becomes more efficient by focusing on one element at a time
+
+@evidence e/gb17287cebb93-14-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "ingest:quote": Flash-lite ~30% genuine prerequisites vs pro ~75% }
+~ Check: Flash-lite ~30% genuine prerequisites vs pro ~75%
+
+@finding q/gb17287cebb93-14-2 { status: speculative }
+~ Improves the accuracy of prerequisite extraction, as indicated by the comparison between Flash-lite and pro …
+
+Improves the accuracy of prerequisite extraction, as indicated by the comparison between Flash-lite and pro models
+
+@evidence e/gb17287cebb93-15-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "ingest:quote": "Extracting the same six commits with the shipped code on a local 14B was begun and stopped: it would have said that a 14B is weaker than a hosted model, which S4 had already measured twice, at the cost of the owner adjudicating a fourth system." }
+~ Check: Extracting the same six commits with the shipped code on a local 14B was begun and stopped: it would …
+
+Check: Extracting the same six commits with the shipped code on a local 14B was begun and stopped: it would have said that a 14B is weaker than a hosted model, which S4 had already measured twice, at the cost of the owner adjudicating a fourth system.
+
+@finding q/gb17287cebb93-15-1 { status: cited, source: { kind: doc, ref: git:b17287cebb93435d50f195ca0c15ef0c72eeff5c }, "ingest:quote": Track the extraction cache: a clone without it pays 7 to 30 minutes a commit }
+~ Tracking the extraction cache: a clone without it pays 7 to 30 minutes a commit.
+
+@evidence e/gb17287cebb93-16-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "ingest:quote": 0 of 138 absent quotes with pro; fabricated alternatives caught with flash-lite }
+~ Check: 0 of 138 absent quotes with pro; fabricated alternatives caught with flash-lite
+
+@finding q/gb17287cebb93-16-1 { status: speculative }
+~ 0 of 138 absent quotes with pro; fabricated alternatives caught with flash-lite.
+
+@evidence e/gb17287cebb93-17-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "ingest:quote": "Extraction costs 7–30 minutes of a local model per commit, so it cannot run at commit time." }
+~ Check: Extraction costs 7–30 minutes of a local model per commit, so it cannot run at commit time.
+
+@finding q/gb17287cebb93-17-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "ingest:quote": "A fresh clone without it re-extracts, which is 7 to 30 minutes of a model per commit." }
+~ A fresh clone without the extraction cache re-extracts, which is 7 to 30 minutes of a model per commit.
+
+@claim q/gb17287cebb93-17-2 { status: inferred, grounds: [d/gb17287cebb93-17], "code:kind": anticipated }
+~ The extraction cache reduces the time needed for cloning by avoiding repeated extraction.
+
+@claim q/gb17287cebb93-18-1 { status: inferred, grounds: [d/gb17287cebb93-18], "code:kind": anticipated, "ingest:quote": "D10 | **Author text is prose and never verifies:** doc comments (current and parent), string literals, string-valued consts, commit subjects" }
+~ `why` answers remain as store queries, not replacements for `git log`.
+
+@claim q/gb17287cebb93-19-1 { status: inferred, grounds: [d/gb17287cebb93-19], "code:kind": anticipated, "ingest:quote": "Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time" }
+~ The tool can handle extraction more efficiently by focusing on one prerequisite at a time.
+
+@claim q/gb17287cebb93-19-2 { status: inferred, grounds: [d/gb17287cebb93-19], "code:kind": anticipated, "ingest:quote": "Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time" }
+~ The tool can improve the accuracy of its judgments by focusing on one claim at a time.
+
+@claim q/gb17287cebb93-20-1 { status: inferred, grounds: [d/gb17287cebb93-20], "code:kind": anticipated, "ingest:quote": a single run never raises a status. }
+~ The tool will not automatically raise a status based on a single run.
+
+@claim q/gb17287cebb93-20-2 { status: inferred, grounds: [d/gb17287cebb93-20], "code:kind": anticipated, "ingest:quote": "SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs agreeing (or a person)." }
+~ SUPPORTED status will require full model coverage and agreement from two independent runs or a person.
+
+@claim q/gb17287cebb93-20-3 { status: inferred, grounds: [d/gb17287cebb93-20], "code:kind": anticipated, "ingest:quote": PARTIAL / PROSE_ONLY / IMPLEMENTED_BY attach evidence only. }
+~ PARTIAL / PROSE_ONLY / IMPLEMENTED_BY statuses will only attach evidence.
+
+@claim q/gb17287cebb93-20-4 { status: inferred, grounds: [d/gb17287cebb93-20], "code:kind": anticipated, "ingest:quote": CONTRADICTED goes to review. }
+~ CONTRADICTED status will go to review.
+
+@evidence e/gb17287cebb93-21-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "ingest:quote": "test-evidence run: 53 tests, 50 passed, attested stores" }
+~ Check: test-evidence run: 53 tests, 50 passed, attested stores
+
+@finding q/gb17287cebb93-21-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@b17287cebb93 }, "ingest:quote": "D13 | **Test evidence:** link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with --locked, the features its cfg requires, and --exact; import results with from_csv as measured data units; backs / rebuts for verifies, x.code/exercises for exercises. Prerequisite statuses never change from test results alone." }
+~ Test evidence is linked to prerequisites.
+
+@claim q/gb17287cebb93-22-1 { status: inferred, grounds: [d/gb17287cebb93-22], "code:kind": anticipated, "ingest:quote": "Provider (ollama, any OpenAI-compatible endpoint), model, endpoint, key variable, context window and the system prompt come from flags, the environment or configuration, with sensible defaults and the prompt tunable per provider; a run records which it used." }
+~ The tool becomes more flexible as it allows users to choose their preferred model provider, endpoint, and …
+
+The tool becomes more flexible as it allows users to choose their preferred model provider, endpoint, and other configurations.
+
+@claim q/gb17287cebb93-22-2 { status: inferred, grounds: [d/gb17287cebb93-22], "code:kind": anticipated, "ingest:quote": "The default is local (Ollama), so the tool costs nothing to try" }
+~ The tool's cost to try becomes zero as the default is set to a local model.
+
+@claim q/gb17287cebb93-23-1 { status: inferred, grounds: [d/gb17287cebb93-23], "code:kind": anticipated, "ingest:quote": "`check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`), written out rather than pulled in;" }
+~ `check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`).
+
+@claim q/gb17287cebb93-23-2 { status: inferred, grounds: [d/gb17287cebb93-23], "code:kind": anticipated, "ingest:quote": "a hosted provider over TLS is the `hosted` feature, off by default." }
+~ a hosted provider over TLS is the `hosted` feature, off by default.
+
+@claim q/gb17287cebb93-23-3 { status: inferred, grounds: [d/gb17287cebb93-23], "code:kind": anticipated, "ingest:quote": "`check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5." }
+~ `check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5.
+
+@rel p/gb17287cebb93-1-1 --conditions--> d/gb17287cebb93-1
+
+@rel p/gb17287cebb93-1-2 --conditions--> d/gb17287cebb93-1
+
+@rel p/gb17287cebb93-1-3 --conditions--> d/gb17287cebb93-1
+
+@rel p/gb17287cebb93-11-1 --conditions--> d/gb17287cebb93-2
+
+@rel p/gb17287cebb93-3-1 --conditions--> d/gb17287cebb93-3
+
+@rel p/gb17287cebb93-11-2 --conditions--> d/gb17287cebb93-3
+
+@rel p/gb17287cebb93-4-1 --conditions--> d/gb17287cebb93-4
+
+@rel p/gb17287cebb93-4-2 --conditions--> d/gb17287cebb93-4
+
+@rel p/gb17287cebb93-5-1 --conditions--> d/gb17287cebb93-5
+
+@rel p/gb17287cebb93-5-2 --conditions--> d/gb17287cebb93-5
+
+@rel p/gb17287cebb93-3-1 --conditions--> d/gb17287cebb93-6
+
+@rel p/gb17287cebb93-11-2 --conditions--> d/gb17287cebb93-6
+
+@rel p/gb17287cebb93-3-1 --conditions--> d/gb17287cebb93-7
+
+@rel p/gb17287cebb93-11-2 --conditions--> d/gb17287cebb93-7
+
+@rel p/gb17287cebb93-8-1 --conditions--> d/gb17287cebb93-8
+
+@rel p/gb17287cebb93-9-1 --conditions--> d/gb17287cebb93-9
+
+@rel p/gb17287cebb93-9-2 --conditions--> d/gb17287cebb93-9
+
+@rel p/gb17287cebb93-10-1 --conditions--> d/gb17287cebb93-10
+
+@rel p/gb17287cebb93-10-2 --conditions--> d/gb17287cebb93-10
+
+@rel p/gb17287cebb93-11-1 --conditions--> d/gb17287cebb93-11
+
+@rel p/gb17287cebb93-11-2 --conditions--> d/gb17287cebb93-11
+
+@rel p/gb17287cebb93-1-1 --conditions--> d/gb17287cebb93-12
+
+@rel p/gb17287cebb93-12-2 --conditions--> d/gb17287cebb93-12
+
+@rel p/gb17287cebb93-13-1 --conditions--> d/gb17287cebb93-13
+
+@rel p/gb17287cebb93-14-1 --conditions--> d/gb17287cebb93-14
+
+@rel p/gb17287cebb93-1-1 --conditions--> d/gb17287cebb93-15
+
+@rel p/gb17287cebb93-15-2 --conditions--> d/gb17287cebb93-15
+
+@rel p/gb17287cebb93-16-1 --conditions--> d/gb17287cebb93-16
+
+@rel p/gb17287cebb93-16-2 --conditions--> d/gb17287cebb93-16
+
+@rel p/gb17287cebb93-1-1 --conditions--> d/gb17287cebb93-17
+
+@rel p/gb17287cebb93-17-2 --conditions--> d/gb17287cebb93-17
+
+@rel p/gb17287cebb93-18-1 --conditions--> d/gb17287cebb93-18
+
+@rel p/gb17287cebb93-18-2 --conditions--> d/gb17287cebb93-18
+
+@rel p/gb17287cebb93-19-1 --conditions--> d/gb17287cebb93-19
+
+@rel p/gb17287cebb93-19-2 --conditions--> d/gb17287cebb93-19
+
+@rel p/gb17287cebb93-19-3 --conditions--> d/gb17287cebb93-19
+
+@rel p/gb17287cebb93-20-1 --conditions--> d/gb17287cebb93-20
+
+@rel p/gb17287cebb93-20-2 --conditions--> d/gb17287cebb93-20
+
+@rel p/gb17287cebb93-20-3 --conditions--> d/gb17287cebb93-20
+
+@rel p/gb17287cebb93-20-4 --conditions--> d/gb17287cebb93-20
+
+@rel p/gb17287cebb93-18-1 --conditions--> d/gb17287cebb93-21
+
+@rel p/gb17287cebb93-21-2 --conditions--> d/gb17287cebb93-21
+
+@rel p/gb17287cebb93-21-3 --conditions--> d/gb17287cebb93-21
+
+@rel p/gb17287cebb93-22-1 --conditions--> d/gb17287cebb93-22
+
+@rel p/gb17287cebb93-22-2 --conditions--> d/gb17287cebb93-22
+
+@rel p/gb17287cebb93-22-3 --conditions--> d/gb17287cebb93-22
+
+@rel p/gb17287cebb93-23-1 --conditions--> d/gb17287cebb93-23
+
+@rel p/gb17287cebb93-23-2 --conditions--> d/gb17287cebb93-23
+
+@rel p/gb17287cebb93-23-3 --conditions--> d/gb17287cebb93-23
+
+@rel p/gb17287cebb93-23-4 --conditions--> d/gb17287cebb93-23
+
+@rel p/gb17287cebb93-23-5 --conditions--> d/gb17287cebb93-23
+
+@rel r/gb17287cebb93-1-1 --contrasts--> d/gb17287cebb93-1
+
+@rel r/gb17287cebb93-1-2 --contrasts--> d/gb17287cebb93-1
+
+@rel r/gb17287cebb93-2-1 --contrasts--> d/gb17287cebb93-2
+
+@rel r/gb17287cebb93-2-2 --contrasts--> d/gb17287cebb93-2
+
+@rel r/gb17287cebb93-3-1 --contrasts--> d/gb17287cebb93-3
+
+@rel r/gb17287cebb93-3-2 --contrasts--> d/gb17287cebb93-3
+
+@rel r/gb17287cebb93-4-1 --contrasts--> d/gb17287cebb93-4
+
+@rel r/gb17287cebb93-4-2 --contrasts--> d/gb17287cebb93-4
+
+@rel r/gb17287cebb93-4-3 --contrasts--> d/gb17287cebb93-4
+
+@rel r/gb17287cebb93-5-1 --contrasts--> d/gb17287cebb93-5
+
+@rel r/gb17287cebb93-6-1 --contrasts--> d/gb17287cebb93-6
+
+@rel r/gb17287cebb93-7-1 --contrasts--> d/gb17287cebb93-7
+
+@rel r/gb17287cebb93-7-2 --contrasts--> d/gb17287cebb93-7
+
+@rel r/gb17287cebb93-8-1 --contrasts--> d/gb17287cebb93-8
+
+@rel r/gb17287cebb93-8-2 --contrasts--> d/gb17287cebb93-8
+
+@rel r/gb17287cebb93-9-1 --contrasts--> d/gb17287cebb93-9
+
+@rel r/gb17287cebb93-9-2 --contrasts--> d/gb17287cebb93-9
+
+@rel r/gb17287cebb93-10-1 --contrasts--> d/gb17287cebb93-10
+
+@rel r/gb17287cebb93-10-2 --contrasts--> d/gb17287cebb93-10
+
+@rel r/gb17287cebb93-11-1 --contrasts--> d/gb17287cebb93-11
+
+@rel r/gb17287cebb93-12-1 --contrasts--> d/gb17287cebb93-12
+
+@rel r/gb17287cebb93-13-1 --contrasts--> d/gb17287cebb93-13
+
+@rel r/gb17287cebb93-13-2 --contrasts--> d/gb17287cebb93-13
+
+@rel r/gb17287cebb93-14-1 --contrasts--> d/gb17287cebb93-14
+
+@rel r/gb17287cebb93-14-2 --contrasts--> d/gb17287cebb93-14
+
+@rel r/gb17287cebb93-15-1 --contrasts--> d/gb17287cebb93-15
+
+@rel r/gb17287cebb93-16-1 --contrasts--> d/gb17287cebb93-16
+
+@rel r/gb17287cebb93-16-2 --contrasts--> d/gb17287cebb93-16
+
+@rel r/gb17287cebb93-17-1 --contrasts--> d/gb17287cebb93-17
+
+@rel r/gb17287cebb93-18-1 --contrasts--> d/gb17287cebb93-18
+
+@rel r/gb17287cebb93-19-1 --contrasts--> d/gb17287cebb93-19
+
+@rel r/gb17287cebb93-19-2 --contrasts--> d/gb17287cebb93-19
+
+@rel r/gb17287cebb93-20-1 --contrasts--> d/gb17287cebb93-20
+
+@rel r/gb17287cebb93-20-2 --contrasts--> d/gb17287cebb93-20
+
+@rel r/gb17287cebb93-21-1 --contrasts--> d/gb17287cebb93-21
+
+@rel r/gb17287cebb93-22-1 --contrasts--> d/gb17287cebb93-22
+
+@rel r/gb17287cebb93-22-2 --contrasts--> d/gb17287cebb93-22
+
+@rel r/gb17287cebb93-23-1 --contrasts--> d/gb17287cebb93-23
+
+@rel d/gb17287cebb93-1 --causes--> q/gb17287cebb93-1-1
+
+@rel d/gb17287cebb93-1 --causes--> q/gb17287cebb93-1-2
+
+@rel d/gb17287cebb93-5 --causes--> q/gb17287cebb93-5-1
+
+@rel d/gb17287cebb93-7 --causes--> q/gb17287cebb93-7-1
+
+@rel e/gb17287cebb93-7-2 --backs--> q/gb17287cebb93-7-2
+
+@rel d/gb17287cebb93-7 --causes--> q/gb17287cebb93-7-2
+
+@rel d/gb17287cebb93-8 --causes--> q/gb17287cebb93-8-1
+
+@rel e/gb17287cebb93-7-2 --backs--> q/gb17287cebb93-9-1
+
+@rel d/gb17287cebb93-9 --causes--> q/gb17287cebb93-9-1
+
+@rel e/gb17287cebb93-7-2 --backs--> q/gb17287cebb93-9-2
+
+@rel d/gb17287cebb93-9 --causes--> q/gb17287cebb93-9-2
+
+@rel d/gb17287cebb93-10 --causes--> q/gb17287cebb93-10-1
+
+@rel d/gb17287cebb93-12 --causes--> q/gb17287cebb93-12-1
+
+@rel d/gb17287cebb93-13 --causes--> q/gb17287cebb93-13-1
+
+@rel d/gb17287cebb93-13 --causes--> q/gb17287cebb93-13-2
+
+@rel d/gb17287cebb93-14 --causes--> q/gb17287cebb93-14-1
+
+@rel e/gb17287cebb93-14-2 --backs--> q/gb17287cebb93-14-2
+
+@rel d/gb17287cebb93-14 --causes--> q/gb17287cebb93-14-2
+
+@rel e/gb17287cebb93-15-1 --backs--> q/gb17287cebb93-15-1
+
+@rel d/gb17287cebb93-15 --causes--> q/gb17287cebb93-15-1
+
+@rel e/gb17287cebb93-16-1 --backs--> q/gb17287cebb93-16-1
+
+@rel d/gb17287cebb93-16 --causes--> q/gb17287cebb93-16-1
+
+@rel e/gb17287cebb93-17-1 --backs--> q/gb17287cebb93-17-1
+
+@rel d/gb17287cebb93-17 --causes--> q/gb17287cebb93-17-1
+
+@rel d/gb17287cebb93-17 --causes--> q/gb17287cebb93-17-2
+
+@rel d/gb17287cebb93-18 --causes--> q/gb17287cebb93-18-1
+
+@rel d/gb17287cebb93-19 --causes--> q/gb17287cebb93-19-1
+
+@rel d/gb17287cebb93-19 --causes--> q/gb17287cebb93-19-2
+
+@rel d/gb17287cebb93-20 --causes--> q/gb17287cebb93-20-1
+
+@rel d/gb17287cebb93-20 --causes--> q/gb17287cebb93-20-2
+
+@rel d/gb17287cebb93-20 --causes--> q/gb17287cebb93-20-3
+
+@rel d/gb17287cebb93-20 --causes--> q/gb17287cebb93-20-4
+
+@rel e/gb17287cebb93-21-1 --backs--> q/gb17287cebb93-21-1
+
+@rel d/gb17287cebb93-21 --causes--> q/gb17287cebb93-21-1
+
+@rel d/gb17287cebb93-22 --causes--> q/gb17287cebb93-22-1
+
+@rel d/gb17287cebb93-22 --causes--> q/gb17287cebb93-22-2
+
+@rel d/gb17287cebb93-23 --causes--> q/gb17287cebb93-23-1
+
+@rel d/gb17287cebb93-23 --causes--> q/gb17287cebb93-23-2
+
+@rel d/gb17287cebb93-23 --causes--> q/gb17287cebb93-23-3

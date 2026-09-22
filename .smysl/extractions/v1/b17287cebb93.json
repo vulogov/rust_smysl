@@ -1,0 +1,950 @@
+{
+  "decisions": [
+    {
+      "decision": "Track `.smysl/extractions/` directory",
+      "kind": "act",
+      "rationale": "To ensure that the raw model answers behind each record are tracked, making D7's 'extract once per commit and recipe' true across clones.",
+      "quote": ".smysl/extractions/"
+    },
+    {
+      "decision": "Add `cargo-smysl-facts` as a dependency",
+      "kind": "act",
+      "rationale": "To support the retrieval and matching of facts, which is part of the verdict stage.",
+      "quote": "cargo-smysl-facts = { workspace = true }"
+    },
+    {
+      "decision": "Add `matching` module to `lib.rs`",
+      "kind": "act",
+      "rationale": "To handle the checking of one claim against the facts, as part of the matching process.",
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": "Update `Cargo.toml` with new dependencies and features",
+      "kind": "act",
+      "rationale": "To include necessary crates for the new functionality and to define features like `hosted` that require TLS.",
+      "quote": "[dependencies]\ncargo-smysl-facts = { workspace = true }\n\n[features]\ndefault = []\n# Hosted providers need TLS; the default build has no network stack at all, which is what the self-contained objective and the CI rule mean (D18).\nhosted = [\"cargo-smysl-extract/hosted\"]"
+    },
+    {
+      "decision": "Add `Evidence` command to `cli.rs`",
+      "kind": "act",
+      "rationale": "To allow checking a recorded claim against the code and saying what may be concluded, as part of Phase 3.",
+      "quote": "/// Check a recorded claim against the code, and say what may be concluded (D11, D12).\nEvidence { .. } => not_yet(\"evidence\", \"Phase 3 — verdicts and test evidence\"),"
+    },
+    {
+      "decision": "Add `retrieve` function to `matching.rs`",
+      "kind": "act",
+      "rationale": "To retrieve the facts worth showing for one claim based on the overlap with the claim's terms.",
+      "quote": "pub fn retrieve<'a>(claim: &str, facts: &'a [Fact], r: &Retrieval) -> Shown<'a> {"
+    },
+    {
+      "decision": "Add `match_claim` function to `matching.rs`",
+      "kind": "act",
+      "rationale": "To ask about one claim and validate the citations provided by the model.",
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {"
+    },
+    {
+      "decision": "Add `SYSTEM` constant to `matching.rs`",
+      "kind": "act",
+      "rationale": "To define the system prompt for the model when checking one claim against facts.",
+      "quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n...\""
+    },
+    {
+      "decision": "Add `Answer` struct to `matching.rs`",
+      "kind": "act",
+      "rationale": "To represent the JSON answer provided by the model after checking a claim.",
+      "quote": "[derive(Debug, Default, Deserialize)]\nstruct Answer {"
+    },
+    {
+      "decision": "Add `Matched` struct to `matching.rs`",
+      "kind": "act",
+      "rationale": "To represent the result of matching a claim against the shown facts, including any invented citations.",
+      "quote": "[derive(Debug, Clone)]\npub struct Matched {"
+    },
+    {
+      "decision": "Add tests for `matching.rs`",
+      "kind": "act",
+      "rationale": "To ensure that the retrieval and matching of claims against facts works as expected.",
+      "quote": "/// Checking one claim against facts (D11): what is retrieved, what is asked, and what a citation must be.\n\nuse std::cell::RefCell;\n\nuse cargo_smysl_extract::{Charged, Judge, JudgeError};\nuse cargo_smysl_facts::facts;\nuse cargo_smysl_verdict::matching::{match_claim, retrieve, Retrieval};\nuse cargo_smysl_verdict::policy::{decide, Verdict};"
+    },
+    {
+      "decision": "Track the extraction cache: a clone without it pays 7 to 30 minutes a commit",
+      "kind": "act",
+      "rationale": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them — and they are what makes D7's 'extract once per commit and recipe' true across clones rather than only on the machine that did it.",
+      "quote": "Track the extraction cache: a clone without it pays 7 to 30 minutes a commit"
+    },
+    {
+      "decision": "The tool assigns sources, labels and statuses; a model proposes content only",
+      "kind": "act",
+      "rationale": "The tool promises that each command does what its design says, with measured figures where a model is involved (recall, precision, cost). Acting on its reports belongs to whoever reads them: a person, a CI step, a hook, an agent.",
+      "quote": "The tool assigns sources, labels and statuses; a model proposes content only."
+    },
+    {
+      "decision": "Extraction is multi-pass with the diff: decisions first, then prerequisites / alternatives / consequences in parallel",
+      "kind": "act",
+      "rationale": "Flash-lite ~30% genuine prerequisites vs pro ~75%",
+      "quote": "Extraction is multi-pass with the diff: decisions first, then prerequisites / alternatives / consequences in parallel. A pro-class model for prerequisites at minimum"
+    },
+    {
+      "decision": "Extract once per commit; improvements arrive as 'supersedes', never as re-extraction merged into the store",
+      "kind": "act",
+      "rationale": "Stability experiment",
+      "quote": "Extract once per commit; improvements arrive as 'supersedes', never as re-extraction merged into the store"
+    },
+    {
+      "decision": "Quotes are checked against the message and diff with quote_support_in; an absent quote caps the unit at 'speculative'",
+      "kind": "act",
+      "rationale": "0 of 138 absent quotes with pro; fabricated alternatives caught with flash-lite",
+      "quote": "Quotes are checked against the message and diff with quote_support_in; an absent quote caps the unit at 'speculative'"
+    },
+    {
+      "decision": "Facts are deterministic and live in a regenerable cache, not the corpus",
+      "kind": "act",
+      "rationale": "~7 MB of facts per commit; rounds 1–6",
+      "quote": "Facts are deterministic and live in a regenerable cache, not the corpus. Scope: items the diff touches, code identifiers named in the message or prerequisite, one call hop outward, reverse 'called by' edges, manifest / CI-matrix / git facts"
+    },
+    {
+      "decision": "Author text is prose and never verifies",
+      "kind": "act",
+      "rationale": "rounds 3–6: every one of these laundered support until tagged",
+      "quote": "Author text is prose and never verifies:"
+    },
+    {
+      "decision": "Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time",
+      "kind": "act",
+      "rationale": "round 5: 16 correct, 0 false contradictions",
+      "quote": "Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time"
+    },
+    {
+      "decision": "Verdict policy: a single run never raises a status. SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs agreeing (or a person). PARTIAL / PROSE_ONLY / IMPLEMENTED_BY attach evidence only; CONTRADICTED goes to review",
+      "kind": "act",
+      "rationale": "round 6: part-based coverage alone overclaimed 4 times; two-run agreement had 1 wrong of 7",
+      "quote": "Verdict policy: a single run never raises a status. SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs agreeing (or a person). PARTIAL / PROSE_ONLY / IMPLEMENTED_BY attach evidence only; CONTRADICTED goes to review"
+    },
+    {
+      "decision": "Test evidence: link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with --locked, the features its cfg requires, and --exact; import results with from_csv as measured data units; backs / rebuts for verifies, x.code/exercises for exercises. Prerequisite statuses never change from test results alone",
+      "kind": "act",
+      "rationale": "test-evidence run: 53 tests, 50 passed, attested stores; S1: 3 of 17 'verifies' links wrong, 1 vacuous test",
+      "quote": "Test evidence: link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with --locked, the features its cfg requires, and --exact; import results with from_csv as measured data units; backs / rebuts for verifies, x.code/exercises for exercises. Prerequisite statuses never change from test results alone"
+    },
+    {
+      "decision": "The model is the operator's choice, never the tool's",
+      "kind": "act",
+      "rationale": "Provider (ollama, any OpenAI-compatible endpoint), model, endpoint, key variable, context window and the system prompt come from flags, the environment or configuration, with sensible defaults and the prompt tunable per provider; a run records which it used. The default is local (Ollama), so the tool costs nothing to try",
+      "quote": "The model is the operator's choice, never the tool's."
+    },
+    {
+      "decision": "The model client is our own, and the default build has no network stack",
+      "kind": "act",
+      "rationale": "`check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`), written out rather than pulled in; a hosted provider over TLS is the `hosted` feature, off by default. This settles item 7: smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway. `check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5",
+      "quote": "The model client is our own, and the default build has no network stack."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them."
+    },
+    {
+      "decision": 1,
+      "text": "They are what makes D7's 'extract once per commit and recipe' true across clones rather than only on the machine that did it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "and they are what makes D7's 'extract once per commit and recipe' true across clones rather than only on the machine that did it."
+    },
+    {
+      "decision": 1,
+      "text": "The cheaper thing to carry is the file.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The cheaper thing to carry is the file."
+    },
+    {
+      "decision": 2,
+      "text": "The project needs to retrieve and match facts as part of the verdict stage.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To support the retrieval and matching of facts, which is part of the verdict stage."
+    },
+    {
+      "decision": 3,
+      "text": "The project needs a way to check one claim against the facts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)."
+    },
+    {
+      "decision": 3,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 4,
+      "text": "The project needs new crates for additional functionality.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "TLS is required for certain features, specifically the `hosted` feature.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The project is in Phase 3, focusing on verdicts and test evidence.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Phase 3: per-prerequisite retrieval and matching (D11) with validated citations, and cargo smysl evidence"
+    },
+    {
+      "decision": 5,
+      "text": "The `cargo-smysl-verdict` crate is responsible for the verdict stage.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "description = \"cargo-smysl: verdict stage\""
+    },
+    {
+      "decision": 6,
+      "text": "The project needs a way to check one claim against the facts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)."
+    },
+    {
+      "decision": 6,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 7,
+      "text": "The project needs a way to check one claim against the facts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)."
+    },
+    {
+      "decision": 7,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 8,
+      "text": "The project needs a clear instruction on how to check one claim against facts, including the distinction between structural facts and prose.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n\\\nThe facts are `F1`, `F2`, … (what the code does) and `P1`, `P2`, … (what the code says about itself: doc comments, string literals, string constants).\\n\\\nBreak the claim into its parts — each thing it asserts — and for each part say whether the facts show it. Cite the facts you used by name.\\n\\\nRules you must follow:\\n- Cite only facts you were shown. Do not recall anything about this project from memory.\\n- A part no fact shows is uncovered. Saying so is the useful answer; guessing is not.\\n- If a fact shows the claim is false, set `contradicted` and cite it.\\n- `P` facts are what someone wrote, not what the code does: they may point at the right place, and they never establish a part on their own.\\n\\\nReturn one JSON object: {\"covered\": [{\"part\": string, \"facts\": [string]}], \"uncovered\": [string], \"contradicted\": boolean, \"contradicted_by\": [string]}\";"
+    },
+    {
+      "decision": 9,
+      "text": "The project needs to deserialize the JSON response from the model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "pub struct Answer {\n    #[serde(default)]\n    covered: Vec<Covered>,\n    #[serde(default)]\n    uncovered: Vec<String>,\n    #[serde(default)]\n    contradicted: bool,\n    #[serde(default)]\n    contradicted_by: Vec<String>,\n}"
+    },
+    {
+      "decision": 9,
+      "text": "The `match_claim` function uses the deserialized JSON response to process the model's output.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {"
+    },
+    {
+      "decision": 10,
+      "text": "The project needs a way to represent the result of matching a claim against the shown facts, including any invented citations.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To represent the result of matching a claim against the shown facts, including any invented citations."
+    },
+    {
+      "decision": 10,
+      "text": "The `matching` module will handle this representation process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 11,
+      "text": "The project needs to retrieve and match facts as part of the verdict stage.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To support the retrieval and matching of facts, which is part of the verdict stage."
+    },
+    {
+      "decision": 11,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 12,
+      "text": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them."
+    },
+    {
+      "decision": 12,
+      "text": "D7's 'extract once per commit and recipe' should be true across clones rather than only on the machine that did it.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Track the extraction cache: a clone without it pays 7 to 30 minutes a commit"
+    },
+    {
+      "decision": 13,
+      "text": "The tool promises that each command does what its design says, with measured figures where a model is involved (recall, precision, cost).",
+      "kind": "normative",
+      "normative": true,
+      "quote": "The tool promises that each command does what its design says, with measured figures where a model is involved (recall, precision, cost). Acting on its reports belongs to whoever reads them: a person, a CI step, a hook, an agent."
+    },
+    {
+      "decision": 14,
+      "text": "Flash-lite ~30% genuine prerequisites vs pro ~75%",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Flash-lite ~30% genuine prerequisites vs pro ~75%"
+    },
+    {
+      "decision": 15,
+      "text": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them."
+    },
+    {
+      "decision": 15,
+      "text": "Stability experiment",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "RATIONALE: Stability experiment"
+    },
+    {
+      "decision": 16,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 16,
+      "text": "Quotes are checked against the message and diff with quote_support_in; an absent quote caps the unit at 'speculative'",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Quotes are checked against the message and diff with quote_support_in; an absent quote caps the unit at 'speculative'"
+    },
+    {
+      "decision": 17,
+      "text": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The raw model answers behind each record are not derived — a model is not deterministic, so re-running does not reproduce them."
+    },
+    {
+      "decision": 17,
+      "text": "Extraction costs 7–30 minutes of a local model per commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Extraction costs 7–30 minutes of a local model per commit, so it cannot run at commit time."
+    },
+    {
+      "decision": 18,
+      "text": "The tool assigns sources, labels and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "D5 | smysl is used as a **library**, never through its CLI"
+    },
+    {
+      "decision": 18,
+      "text": "Commit messages are in essay-style, which already holds reasons.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "The tool assigns sources, labels and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "D5 | **The tool assigns sources, labels and statuses;** a model proposes content only."
+    },
+    {
+      "decision": 19,
+      "text": "Extraction is multi-pass with the diff: decisions first, then prerequisites / alternatives / consequences in parallel.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "D6 | **Extraction is multi-pass with the diff:** decisions first, then prerequisites / alternatives / consequences in parallel. A pro-class model for prerequisites at minimum"
+    },
+    {
+      "decision": 19,
+      "text": "A prerequisite recall depends on the model.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "Known weak spots, all in extraction rather than smysl: - prerequisite recall depends on the model (DeepSeek missed two that the pro model found);"
+    },
+    {
+      "decision": 20,
+      "text": "A single run never raises a status.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "a single run never raises a status."
+    },
+    {
+      "decision": 20,
+      "text": "SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs agreeing (or a person).",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs agreeing (or a person)."
+    },
+    {
+      "decision": 20,
+      "text": "PARTIAL / PROSE_ONLY / IMPLEMENTED_BY attach evidence only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "PARTIAL / PROSE_ONLY / IMPLEMENTED_BY attach evidence only."
+    },
+    {
+      "decision": 20,
+      "text": "CONTRADICTED goes to review.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "CONTRADICTED goes to review."
+    },
+    {
+      "decision": 21,
+      "text": "The tool assigns sources, labels and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "D5 | smysl is used as a **library**, never through its CLI"
+    },
+    {
+      "decision": 21,
+      "text": "A quote absent from the commit caps its unit at `speculative`.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "D8 | **Quotes are checked against the message and diff** with `quote_support_in`; an absent quote caps the unit at `speculative`"
+    },
+    {
+      "decision": 21,
+      "text": "The model is the operator's choice, never the tool's.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "D16 | **The model is the operator's choice, never the tool's.** Provider (`ollama`, any OpenAI-compatible endpoint), model, endpoint, key variable, context window and the system prompt come from flags, the environment or configuration, with sensible defaults and the prompt tunable per provider; a run records which it used."
+    },
+    {
+      "decision": 22,
+      "text": "The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, `EdgeSet::premises`, `from_csv`, label bindings in staged records) first exists in 1.3.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The model-free route (`stage::prepare_declared`, `quote_support_in`, `resolve_label`, `dependents_via`, `EdgeSet::premises`, `from_csv`, label bindings in staged records) first exists in 1.3."
+    },
+    {
+      "decision": 22,
+      "text": "1.4 added record-level merge idempotence (R10), imported readings that check clean (R12) and the edge lifecycle (D15);",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "1.4 added record-level merge idempotence (R10), imported readings that check clean (R12) and the edge lifecycle (D15);"
+    },
+    {
+      "decision": 22,
+      "text": "1.5 adds R16–R20 and C8 packing, all of which `check` uses.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "1.5 adds R16–R20 and C8 packing, all of which `check` uses."
+    },
+    {
+      "decision": 23,
+      "text": "`check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`).",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`), written out rather than pulled in;"
+    },
+    {
+      "decision": 23,
+      "text": "a hosted provider over TLS is the `hosted` feature, off by default.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "a hosted provider over TLS is the `hosted` feature, off by default."
+    },
+    {
+      "decision": 23,
+      "text": "smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway."
+    },
+    {
+      "decision": 23,
+      "text": "the multi-pass schemas do not fit `PromptOverride` anyway.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway."
+    },
+    {
+      "decision": 23,
+      "text": "`check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Do not track `.smysl/extractions/` directory",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 1,
+      "alternative": "Track a different directory for raw model answers",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Implement fact retrieval and matching within an existing crate.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Use a different library for fact retrieval and matching.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep the existing structure without adding a new module.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Add the functionality directly into an existing module.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Do not update dependencies and features.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Update only the dependencies without defining new features.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Define new features but do not update dependencies.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Not adding the `Evidence` command, continuing without this functionality.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Retrieve all facts without considering overlap with claim terms.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Do not add the `match_claim` function, continuing without this functionality.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Implement claim checking within an existing function or module.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Do not define a system prompt for the model.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Define a different system prompt that does not specify how to handle structural facts and prose separately.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Parse the JSON response manually without defining a struct.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Use a different data structure to represent the JSON answer.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Do not add `Matched` struct to `matching.rs`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Use a different data structure to represent the result of matching a claim against the shown facts, including any invented citations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Not adding tests for `matching.rs`",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Do not track the extraction cache and allow clones to re-extract data.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "The tool proposes sources, labels and statuses; a model assigns content only.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Both the tool and the model assign sources, labels and statuses.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Single-pass extraction with all elements (decisions, prerequisites, alternatives, consequences) together",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Sequential extraction with decisions first, then prerequisites, then alternatives, and finally consequences",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Re-extraction merged into the store",
+      "reason": "",
+      "quote": "improvements arrive as 'supersedes', never as re-extraction merged into the store"
+    },
+    {
+      "decision": 16,
+      "alternative": "Do not check quotes against the message and diff.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "Cap units with absent quotes at a different status than 'speculative'.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "Tracking the raw model answers in the corpus.",
+      "reason": "",
+      "quote": "Tracking it would make D7's 'extract once' true across clones at the cost of a few hundred KB per commit. The owner's call."
+    },
+    {
+      "decision": 18,
+      "alternative": "Author text verifies and is used to verify prerequisites.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "alternative": "Retrieving all claims at once",
+      "reason": "",
+      "quote": "D6 | **Extraction is multi-pass with the diff:** decisions first, then prerequisites / alternatives / consequences in parallel. A pro-class model for prerequisites at minimum"
+    },
+    {
+      "decision": 19,
+      "alternative": "Judging multiple claims simultaneously",
+      "reason": "",
+      "quote": "Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time"
+    },
+    {
+      "decision": 20,
+      "alternative": "A single run could raise a status.",
+      "reason": "",
+      "quote": "round 6: part-based coverage alone overclaimed 4 times; two-run agreement had 1 wrong of 7"
+    },
+    {
+      "decision": 20,
+      "alternative": "SUPPORTED could require less than full model coverage or agreement from one run.",
+      "reason": "",
+      "quote": "round 6: part-based coverage alone overclaimed 4 times; two-run agreement had 1 wrong of 7"
+    },
+    {
+      "decision": 21,
+      "alternative": "Do not link tests to prerequisites.",
+      "reason": "",
+      "quote": "D13 | **Test evidence:** link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with --locked, the features its cfg requires, and --exact; import results with from_csv as measured data units; backs / rebuts for verifies, x.code/exercises for exercises. Prerequisite statuses never change from test results alone."
+    },
+    {
+      "decision": 22,
+      "alternative": "The tool could have a built-in model choice.",
+      "reason": "",
+      "quote": "The model is the operator's choice, never the tool's."
+    },
+    {
+      "decision": 22,
+      "alternative": "The tool could have different default settings for the model configuration.",
+      "reason": "",
+      "quote": "The default is local (Ollama), so the tool costs nothing to try"
+    },
+    {
+      "decision": 23,
+      "alternative": "smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install.",
+      "reason": "",
+      "quote": "smysl's `model` feature would bring `smysl-provider` and a TLS stack into every install, and the multi-pass schemas do not fit `PromptOverride` anyway."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The raw model answers behind each record are tracked, making D7's 'extract once per commit and recipe' true across clones.",
+      "quote": "They are what makes D7's 'extract once per commit and recipe' true across clones rather than only on the machine that did it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "The `.smysl/extractions/` directory is added to version control.",
+      "quote": ".smysl/extractions/",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The `Evidence` command is added to the CLI, allowing users to check a recorded claim against the code and determine what may be concluded.",
+      "quote": "/// Check a recorded claim against the code, and say what may be concluded (D11, D12).",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The project now has a dedicated function for asking about one claim and validating the citations provided by the model.",
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The `match_claim` function uses the `Answer` struct to process the model's response.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?"
+    },
+    {
+      "decision": 8,
+      "text": "The model will receive a clear instruction on how to check one claim against facts, including the distinction between structural facts and prose.",
+      "quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n\\\nThe facts are `F1`, `F2`, … (what the code does) and `P1`, `P2`, … (what the code says about itself: doc comments, string literals, string constants).\\n\\\nBreak the claim into its parts — each thing it asserts — and for each part say whether the facts show it. Cite the facts you used by name.\\n\\\nRules you must follow:\\n- Cite only facts you were shown. Do not recall anything about this project from memory.\\n- A part no fact shows is uncovered. Saying so is the useful answer; guessing is not.\\n- If a fact shows the claim is false, set `contradicted` and cite it.\\n- `P` facts are what someone wrote, not what the code does: they may point at the right place, and they never establish a part on their own.\\n\\\nReturn one JSON object: {\"covered\": [{\"part\": string, \"facts\": [string]}], \"uncovered\": [string], \"contradicted\": boolean, \"contradicted_by\": [string]}\";",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The `Answer` struct is used to deserialize the JSON response from the model.",
+      "quote": "pub struct Answer {\n    #[serde(default)]\n    covered: Vec<Covered>,\n    #[serde(default)]\n    uncovered: Vec<String>,\n    #[serde(default)]\n    contradicted: bool,\n    #[serde(default)]\n    contradicted_by: Vec<String>,\n}",
+      "verified": true,
+      "verification_quote": "let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?"
+    },
+    {
+      "decision": 9,
+      "text": "The `match_claim` function uses the `Answer` struct to process the model's response.",
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {",
+      "verified": true,
+      "verification_quote": "let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?"
+    },
+    {
+      "decision": 10,
+      "text": "The `Matched` struct is used to represent the result of matching a claim against the shown facts, including any invented citations.",
+      "quote": "/// What the model made of one claim, with its citations validated.\n#[derive(Debug, Clone)]\npub struct Matched {\n    pub judgement: Judgement,\n    /// Citations dropped because the model named a fact it was not shown.\n    pub invented: Vec<String>,\n}",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Clones without the extraction cache will pay 7 to 30 minutes per commit for extraction.",
+      "quote": "Track the extraction cache: a clone without it pays 7 to 30 minutes a commit",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "The tool's behavior is predictable and consistent with its design.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "Users can rely on the tool's output for decision-making without needing to verify it further.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "Extraction process becomes more efficient by focusing on one element at a time",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "Improves the accuracy of prerequisite extraction, as indicated by the comparison between Flash-lite and pro models",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Flash-lite ~30% genuine prerequisites vs pro ~75%"
+    },
+    {
+      "decision": 15,
+      "text": "Tracking the extraction cache: a clone without it pays 7 to 30 minutes a commit.",
+      "quote": "Track the extraction cache: a clone without it pays 7 to 30 minutes a commit",
+      "verified": true,
+      "verification_quote": "Extracting the same six commits with the shipped code on a local 14B was begun and stopped: it would have said that a 14B is weaker than a hosted model, which S4 had already measured twice, at the cost of the owner adjudicating a fourth system."
+    },
+    {
+      "decision": 16,
+      "text": "0 of 138 absent quotes with pro; fabricated alternatives caught with flash-lite.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "0 of 138 absent quotes with pro; fabricated alternatives caught with flash-lite"
+    },
+    {
+      "decision": 17,
+      "text": "A fresh clone without the extraction cache re-extracts, which is 7 to 30 minutes of a model per commit.",
+      "quote": "A fresh clone without it re-extracts, which is 7 to 30 minutes of a model per commit.",
+      "verified": true,
+      "verification_quote": "Extraction costs 7–30 minutes of a local model per commit, so it cannot run at commit time."
+    },
+    {
+      "decision": 17,
+      "text": "The extraction cache reduces the time needed for cloning by avoiding repeated extraction.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "`why` answers remain as store queries, not replacements for `git log`.",
+      "quote": "D10 | **Author text is prose and never verifies:** doc comments (current and parent), string literals, string-valued consts, commit subjects",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "The tool can handle extraction more efficiently by focusing on one prerequisite at a time.",
+      "quote": "Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "The tool can improve the accuracy of its judgments by focusing on one claim at a time.",
+      "quote": "Fact matching retrieves per prerequisite (BM25 plus neighbours plus named items, 30 structural + 10 prose facts), and the model judges one claim at a time",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "The tool will not automatically raise a status based on a single run.",
+      "quote": "a single run never raises a status.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "SUPPORTED status will require full model coverage and agreement from two independent runs or a person.",
+      "quote": "SUPPORTED requires model coverage 'full' and every part covered by a structural fact, and two independent runs agreeing (or a person).",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "PARTIAL / PROSE_ONLY / IMPLEMENTED_BY statuses will only attach evidence.",
+      "quote": "PARTIAL / PROSE_ONLY / IMPLEMENTED_BY attach evidence only.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "CONTRADICTED status will go to review.",
+      "quote": "CONTRADICTED goes to review.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 21,
+      "text": "Test evidence is linked to prerequisites.",
+      "quote": "D13 | **Test evidence:** link tests to prerequisites (verifies / exercises / unrelated), run each at the commit with --locked, the features its cfg requires, and --exact; import results with from_csv as measured data units; backs / rebuts for verifies, x.code/exercises for exercises. Prerequisite statuses never change from test results alone.",
+      "verified": true,
+      "verification_quote": "test-evidence run: 53 tests, 50 passed, attested stores"
+    },
+    {
+      "decision": 22,
+      "text": "The tool becomes more flexible as it allows users to choose their preferred model provider, endpoint, and other configurations.",
+      "quote": "Provider (ollama, any OpenAI-compatible endpoint), model, endpoint, key variable, context window and the system prompt come from flags, the environment or configuration, with sensible defaults and the prompt tunable per provider; a run records which it used.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "The tool's cost to try becomes zero as the default is set to a local model.",
+      "quote": "The default is local (Ollama), so the tool costs nothing to try",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "`check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`).",
+      "quote": "`check` speaks plain HTTP/1.1 to a local provider (Ollama, or any OpenAI-compatible endpoint on `http://`), written out rather than pulled in;",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "a hosted provider over TLS is the `hosted` feature, off by default.",
+      "quote": "a hosted provider over TLS is the `hosted` feature, off by default.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "`check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5.",
+      "quote": "`check` ships advisory — findings print, the exit code stays 0 unless `--strict`, which exits 5.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

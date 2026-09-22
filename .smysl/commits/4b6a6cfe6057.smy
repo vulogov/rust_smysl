@@ -1,0 +1,1213 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g4b6a6cfe6057-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.
+
+To ensure extraction is done at a moment chosen by a person, without failing a commit or taking time during the commit process.
+
+@decision d/g4b6a6cfe6057-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone." }
+~ The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git …
+
+To enable smysl's own merge driver for handling corpus document merges without user intervention.
+
+@decision d/g4b6a6cfe6057-3 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed." }
+~ A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. …
+
+To prevent a silent overwrite of someone's file by a merge driver that does not understand the content.
+
+@decision d/g4b6a6cfe6057-4 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels." }
+~ .smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels.
+
+To ensure that the record and a person's labels are preserved across clones and not lost during extraction or other operations.
+
+@decision d/g4b6a6cfe6057-5 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": Add `cargo-smysl-facts` as a dependency }
+~ Add `cargo-smysl-facts` as a dependency.
+
+To support the retrieval and matching of facts, which is part of the verdict stage.
+
+@decision d/g4b6a6cfe6057-6 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": Add `matching` module to `lib.rs` }
+~ Add `matching` module to `lib.rs`.
+
+To handle the checking of one claim against the facts, as part of the matching process.
+
+@decision d/g4b6a6cfe6057-7 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": Update `Cargo.toml` with new dependencies and features }
+~ Update `Cargo.toml` with new dependencies and features.
+
+To include necessary crates for the new functionality and to define features like `hosted` that require TLS.
+
+@decision d/g4b6a6cfe6057-8 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": Add `Evidence` command to `cli.rs` }
+~ Add `Evidence` command to `cli.rs`.
+
+To allow checking a recorded claim against the code and saying what may be concluded, as part of Phase 3.
+
+@decision d/g4b6a6cfe6057-9 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": Add `retrieve` function to `matching.rs` }
+~ Add `retrieve` function to `matching.rs`.
+
+To retrieve the facts worth showing for one claim based on the overlap with the claim's terms.
+
+@decision d/g4b6a6cfe6057-10 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": Add `match_claim` function to `matching.rs` }
+~ Add `match_claim` function to `matching.rs`.
+
+To ask about one claim and validate the citations provided by the model.
+
+@decision d/g4b6a6cfe6057-11 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": Add `SYSTEM` constant to `matching.rs` }
+~ Add `SYSTEM` constant to `matching.rs`.
+
+To define the system prompt for the model when checking one claim against facts.
+
+@decision d/g4b6a6cfe6057-12 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": Add `Answer` struct to `matching.rs` }
+~ Add `Answer` struct to `matching.rs`.
+
+To represent the JSON answer provided by the model after checking a claim.
+
+@decision d/g4b6a6cfe6057-13 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded." }
+~ `cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded.
+
+This allows for resumable extraction runs and ensures that failed commits stay queued for further processing.
+
+@decision d/g4b6a6cfe6057-14 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. }
+~ A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.
+
+This change ensures that the merge driver does not silently replace someone's file, which would be worse than no merge driver at all.
+
+@decision d/g4b6a6cfe6057-15 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "Text that yields no records is now refused, and git is told the merge failed." }
+~ Text that yields no records is now refused, and git is told the merge failed.
+
+This prevents silent data loss during merges by ensuring that any text not yielding records results in a merge failure.
+
+@decision d/g4b6a6cfe6057-16 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "The store, the facts, the queue and a mutation backup are derived and ignored." }
+~ The store, the facts, the queue and a mutation backup are derived and ignored.
+
+These files are considered temporary or derivative and do not need to be tracked in version control.
+
+@decision d/g4b6a6cfe6057-17 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": .smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts. }
+~ .smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts.
+
+This allows for efficient cloning by avoiding the need to track large extraction files, which can be regenerated as needed.
+
+@decision d/g4b6a6cfe6057-18 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge:" }
+~ The merge driver is hidden because git calls it and people do not.
+
+This simplifies the user experience by hiding internal details of the merge process from users.
+
+@decision d/g4b6a6cfe6057-19 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded." }
+~ The `queued` flag is added to the `Extract` command to record everything the post-commit hook queued.
+
+This allows for processing all queued commits in one go, making it easier to manage extraction runs.
+
+@decision d/g4b6a6cfe6057-20 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ The `Hooks` subcommand is added with `Install`, `Uninstall`, and `Status` steps.
+
+This provides a way to manage the installation and configuration of git hooks and merge drivers, making it easier for users to set up their environment.
+
+@decision d/g4b6a6cfe6057-21 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued." }
+~ `cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an …
+
+This ensures that the extraction process is robust to interruptions and failures, allowing for resumption of processing without data loss.
+
+@decision d/g4b6a6cfe6057-22 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone." }
+~ The merge driver merges two versions of a corpus document with smysl's own merge: records are append-only and …
+
+This ensures that the merge process for corpus documents is efficient and conflict-free, as it only appends new records without considering their order.
+
+@decision d/g4b6a6cfe6057-23 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed." }
+~ The merge driver `cargo smysl merge-driver` refuses to merge documents that do not parse, causing git to treat …
+
+This prevents silent data loss by ensuring that only valid documents are merged.
+
+@decision d/g4b6a6cfe6057-24 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels." }
+~ .smysl/commits/` and `.smysl/bench/` are tracked in version control.
+
+Tracking these directories ensures that the record and labels are preserved across clones and changes.
+
+@decision d/g4b6a6cfe6057-25 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued." }
+~ `cargo smysl extract --queued` drains the queue oldest first, ensuring that interrupted runs can resume.
+
+This allows for robust handling of extraction processes that may be interrupted or fail.
+
+@decision d/g4b6a6cfe6057-26 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing." }
+~ The merge driver `cargo smysl merge-driver` merges two versions of a corpus document by appending records from …
+
+This allows for order-independent merging of documents, ensuring that all recorded information is preserved.
+
+@decision d/g4b6a6cfe6057-27 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone." }
+~ `cargo smysl hooks install` registers `*.smy merge=smysl` in `.gitattributes`, enabling custom merge handling …
+
+This ensures that git uses the custom merge driver for `.smy` files, allowing for proper merging of corpus documents.
+
+@decision d/g4b6a6cfe6057-28 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone." }
+~ `cargo smysl hooks install` prints a `git config` line required for each clone to use the custom merge driver.
+
+This ensures that the custom merge driver is properly configured in each clone, allowing for seamless merging of `.smy` files.
+
+@decision d/g4b6a6cfe6057-29 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": decline, "ingest:quote": extraction is 7 to 30 minutes and belongs to a moment a person chose. }
+~ `cargo smysl extract --queued` is designed to be called manually after commits are made, rather than …
+
+This allows for more control over when extraction occurs, ensuring that it happens at a time chosen by the user.
+
+@decision d/g4b6a6cfe6057-30 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued." }
+~ `cargo smysl extract --queued` does not remove commits from the queue until they are successfully recorded.
+
+This ensures that no data is lost in case of extraction failures, allowing for retries and resumption.
+
+@decision d/g4b6a6cfe6057-31 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": decline, "ingest:quote": "`cargo smysl merge-driver`, hidden because git calls it and people do not." }
+~ `cargo smysl merge-driver` is hidden from users because git calls it directly during merges.
+
+This simplifies the user experience by hiding internal implementation details, focusing on ease of use.
+
+@decision d/g4b6a6cfe6057-32 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": decline, "ingest:quote": .smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts. }
+~ .smysl/extractions/` is ignored in version control, with the intention of re-extracting on clone.
+
+This allows for more flexibility in how extractions are handled across different clones and environments.
+
+@decision d/g4b6a6cfe6057-33 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": act, "ingest:quote": "It calls no model, cannot fail a commit, and takes no time." }
+~ `cargo smysl hooks install` does not fail if called multiple times, ensuring idempotency.
+
+This prevents errors and ensures that the hook installation process is reliable and repeatable.
+
+@decision d/g4b6a6cfe6057-34 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": ".smysl/store.cbor` and `.smysl/facts/` ignored, both being derived and rebuildable." }
+~ .smysl/store.cbor` and `.smysl/facts/` ignored, both being derived and rebuildable.
+
+These files are derived from other data and can be rebuilt if necessary, so they do not need to be tracked in the repository.
+
+@decision d/g4b6a6cfe6057-35 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": "`check` ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set." }
+~ `cargo smysl check` ships advisory (`--strict` to block), with the measured figures documented and at most one …
+
+The commit message states that `check` is advisory because it does not meet all the required bounds, but it can be used as a gate if `--strict` is given.
+
+@decision d/g4b6a6cfe6057-36 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "code:kind": act, "ingest:quote": "The model client is our own, and the default build has no network stack." }
+~ The model client is our own, and the default build has no network stack.
+
+This ensures that the tool can be used without an internet connection if desired, and it avoids pulling in unnecessary dependencies.
+
+@artifact-ref a/g4b6a6cfe6057-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@4b6a6cfe6057 }, "code:body_hash": 806e15fa0e0d03c8 }
+~ crates/cargo-smysl/src/commands.rs::extract_command
+
+@artifact-ref a/g4b6a6cfe6057-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@4b6a6cfe6057 }, "code:body_hash": 9f24ae5457061e1a }
+~ crates/cargo-smysl/src/commands.rs::extract_queued
+
+@artifact-ref a/g4b6a6cfe6057-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@4b6a6cfe6057 }, "code:body_hash": e69ef40f613801a0 }
+~ crates/cargo-smysl/src/commands.rs::hooks
+
+@artifact-ref a/g4b6a6cfe6057-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@4b6a6cfe6057 }, "code:body_hash": 6ba1b16dbb0bae93 }
+~ crates/cargo-smysl/src/commands.rs::merge_driver
+
+@artifact-ref a/g4b6a6cfe6057-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@4b6a6cfe6057 }, "code:body_hash": 9c8801ec5596a06d }
+~ crates/cargo-smysl/src/commands.rs::queue_path
+
+@artifact-ref a/g4b6a6cfe6057-6 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@4b6a6cfe6057 }, "code:body_hash": 42d11f296140785c }
+~ crates/cargo-smysl/src/commands.rs::run
+
+@artifact-ref a/g4b6a6cfe6057-7 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "code:body_hash": 55f566169b0d4079 }
+~ crates/cargo-smysl/tests/cargo_subcommand.rs::a_document_that_does_not_parse_is_left_alone
+
+@artifact-ref a/g4b6a6cfe6057-8 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "code:body_hash": 9d49018dace03ac2 }
+~ crates/cargo-smysl/tests/cargo_subcommand.rs::two_corpus_documents_merge_without_a_conflict
+
+@constraint p/g4b6a6cfe6057-1-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": because extraction is 7 to 30 minutes and belongs to a moment a person chose. }
+~ extraction is 7 to 30 minutes
+
+@constraint p/g4b6a6cfe6057-1-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": invariant, "ingest:quote": "It calls no model, cannot fail a commit, and takes no time" }
+~ post-commit hook should not fail a commit
+
+@constraint p/g4b6a6cfe6057-1-3 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": invariant, "ingest:quote": "It calls no model, cannot fail a commit, and takes no time" }
+~ post-commit hook should be fast
+
+@constraint p/g4b6a6cfe6057-2-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": To enable smysl's own merge driver for handling corpus document merges without user intervention. }
+~ The project needs to handle corpus document merges without user intervention.
+
+@constraint p/g4b6a6cfe6057-2-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": tool-setting, "ingest:quote": and prints the one `git config` line git requires per clone }
+~ Git requires a specific configuration line per clone to register custom merge drivers.
+
+@constraint p/g4b6a6cfe6057-14-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. }
+~ A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.
+
+@constraint p/g4b6a6cfe6057-3-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": invariant, "ingest:quote": A merge driver that silently replaces someone's file is worse than no merge driver. }
+~ The merge driver should not silently replace someone's file if it does not understand the content.
+
+@constraint p/g4b6a6cfe6057-4-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels." }
+~ .smysl/commits/` and `.smysl/bench/` should be tracked to preserve the record and a person's labels.
+
+@constraint p/g4b6a6cfe6057-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": "To support the retrieval and matching of facts, which is part of the verdict stage." }
+~ The project needs to retrieve and match facts as part of the verdict stage.
+
+@constraint p/g4b6a6cfe6057-5-2 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)." }
+~ Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12, //! Phase 3).
+
+@constraint p/g4b6a6cfe6057-10-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)." }
+~ The project needs a way to check one claim against the facts.
+
+@constraint p/g4b6a6cfe6057-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this checking process.
+
+@constraint p/g4b6a6cfe6057-7-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": To include necessary crates for the new functionality and to define features like `hosted` that require TLS. }
+~ The project needs new crates for additional functionality.
+
+@constraint p/g4b6a6cfe6057-7-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": To include necessary crates for the new functionality and to define features like `hosted` that require TLS. }
+~ TLS is required for certain features, specifically the `hosted` feature.
+
+@constraint p/g4b6a6cfe6057-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": "To support the retrieval and matching of facts, which is part of the verdict stage." }
+~ The project needs to check one claim against facts as part of the verdict stage.
+
+@constraint p/g4b6a6cfe6057-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this checking process.
+
+@constraint p/g4b6a6cfe6057-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": "To support the retrieval and matching of facts, which is part of the verdict stage." }
+~ The project needs to retrieve and match facts as part of the verdict stage.
+
+@constraint p/g4b6a6cfe6057-5-2 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)." }
+~ Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12, //! Phase 3).
+
+@constraint p/g4b6a6cfe6057-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this checking process.
+
+@constraint p/g4b6a6cfe6057-10-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)." }
+~ The project needs a way to check one claim against the facts.
+
+@constraint p/g4b6a6cfe6057-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this checking process.
+
+@constraint p/g4b6a6cfe6057-10-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)." }
+~ The project needs a way to check one claim against the facts.
+
+@constraint p/g4b6a6cfe6057-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": prior-change, "ingest:quote": pub mod matching; }
+~ The `matching` module will handle this checking process.
+
+@constraint p/g4b6a6cfe6057-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": "To support the retrieval and matching of facts, which is part of the verdict stage." }
+~ The project needs to retrieve and match facts as part of the verdict stage.
+
+@constraint p/g4b6a6cfe6057-12-2 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {" }
+~ The model checks one claim against facts and provides a JSON answer.
+
+@constraint p/g4b6a6cfe6057-13-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.
+
+@constraint p/g4b6a6cfe6057-13-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": assumption, "ingest:quote": because extraction is 7 to 30 minutes and belongs to a moment a person chose. }
+~ Extraction is 7 to 30 minutes and belongs to a moment a person chose.
+
+@constraint p/g4b6a6cfe6057-14-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. }
+~ A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.
+
+@constraint p/g4b6a6cfe6057-14-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. }
+~ A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.
+
+@constraint p/g4b6a6cfe6057-15-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": assumption, "ingest:quote": A merge driver that silently replaces someone's file is worse than no merge driver. }
+~ The merge driver silently replaces someone's file is worse than no merge driver.
+
+@constraint p/g4b6a6cfe6057-16-1 { status: speculative, "code:kind": invariant, "ingest:quote": These files are considered temporary or derivative and do not need to be tracked in version control. }
+~ The store, the facts, the queue, and a mutation backup are considered temporary or derivative.
+
+@constraint p/g4b6a6cfe6057-17-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": .smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts. }
+~ .smysl/extractions/` stays ignored
+
+@constraint p/g4b6a6cfe6057-18-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver." }
+~ git calls the merge driver
+
+@constraint p/g4b6a6cfe6057-18-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver." }
+~ people do not call the merge driver
+
+@constraint p/g4b6a6cfe6057-19-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/cli.rs@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": "The hook only *queues* a commit — it never calls a model, so committing stays instant." }
+~ The post-commit hook queues a commit but never calls a model.
+
+@constraint p/g4b6a6cfe6057-19-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/cli.rs@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": Drain the queue when you choose to: `cargo smysl extract --queued`. }
+~ Draining the queue is done with `cargo smysl extract --queued`.
+
+@constraint p/g4b6a6cfe6057-20-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "This provides a way to manage the installation and configuration of git hooks and merge drivers, making it easier for users to set up their environment." }
+~ The project needs a way to manage the installation and configuration of git hooks and merge drivers.
+
+@constraint p/g4b6a6cfe6057-13-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.
+
+@constraint p/g4b6a6cfe6057-21-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone." }
+~ The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git …
+
+The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.
+
+@constraint p/g4b6a6cfe6057-21-3 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued." }
+~ `cargo smysl extract --queued` drains it oldest first.
+
+@constraint p/g4b6a6cfe6057-22-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": invariant, "ingest:quote": records are append-only }
+~ Records in the corpus document are append-only.
+
+@constraint p/g4b6a6cfe6057-22-2 { status: speculative, "code:kind": assumption, "ingest:quote": This ensures that the merge process for corpus documents is efficient and conflict-free }
+~ The merge process for corpus documents should be efficient and conflict-free.
+
+@constraint p/g4b6a6cfe6057-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": "/// The merge driver git calls for `*.smy`: two branches that recorded different commits merge without\n/// anyone choosing, because records are append-only and smysl's merge is order-independent." }
+~ The merge driver `cargo smysl merge-driver` is responsible for merging two versions of a corpus document.
+
+@constraint p/g4b6a6cfe6057-23-2 { status: speculative, "code:kind": invariant, "ingest:quote": "A document that does not parse is left to a person rather than half-merged.\nRATIONALE: This prevents silent data loss by ensuring that only valid documents are merged." }
+~ A document that does not parse should be left untouched to prevent silent data loss.
+
+@constraint p/g4b6a6cfe6057-24-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": invariant, "ingest:quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels." }
+~ .smysl/commits/` and `.smysl/bench/` should be tracked to preserve records and labels.
+
+@constraint p/g4b6a6cfe6057-13-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.
+
+@constraint p/g4b6a6cfe6057-21-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone." }
+~ The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git …
+
+The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.
+
+@constraint p/g4b6a6cfe6057-25-3 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded." }
+~ `cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded.
+
+@constraint p/g4b6a6cfe6057-26-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "code:kind": invariant, "ingest:quote": records are append-only and smysl's merge is order-independent. }
+~ Records are append-only and the merge is order-independent.
+
+@constraint p/g4b6a6cfe6057-14-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. }
+~ A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.
+
+@constraint p/g4b6a6cfe6057-13-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.
+
+@constraint p/g4b6a6cfe6057-21-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone." }
+~ The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git …
+
+The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.
+
+@constraint p/g4b6a6cfe6057-27-3 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing." }
+~ `cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus …
+
+`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing.
+
+@constraint p/g4b6a6cfe6057-14-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. }
+~ A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.
+
+@constraint p/g4b6a6cfe6057-27-5 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver." }
+~ Text that yields no records is now refused, and git is told the merge failed — a merge driver that …
+
+Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver.
+
+@constraint p/g4b6a6cfe6057-13-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.
+
+@constraint p/g4b6a6cfe6057-21-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone." }
+~ The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git …
+
+The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.
+
+@constraint p/g4b6a6cfe6057-27-3 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing." }
+~ `cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus …
+
+`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing.
+
+@constraint p/g4b6a6cfe6057-13-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.
+
+@constraint p/g4b6a6cfe6057-29-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": assumption, "ingest:quote": extraction is 7 to 30 minutes and belongs to a moment a person chose. }
+~ extraction is 7 to 30 minutes and belongs to a moment a person chose.
+
+@constraint p/g4b6a6cfe6057-13-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.
+
+@constraint p/g4b6a6cfe6057-13-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": assumption, "ingest:quote": because extraction is 7 to 30 minutes and belongs to a moment a person chose. }
+~ Extraction is 7 to 30 minutes and belongs to a moment a person chose.
+
+@constraint p/g4b6a6cfe6057-25-3 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded." }
+~ `cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded.
+
+@constraint p/g4b6a6cfe6057-31-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone. `cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge:" }
+~ `cargo smysl merge-driver` is called directly by git during merges.
+
+@constraint p/g4b6a6cfe6057-32-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": .smysl/extractions/ stays ignored with the question written down in the plan: a clone without it re-extracts. }
+~ .smysl/extractions/ stays ignored
+
+@constraint p/g4b6a6cfe6057-13-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else. }
+~ `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.
+
+@constraint p/g4b6a6cfe6057-21-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone." }
+~ The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git …
+
+The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.
+
+@constraint p/g4b6a6cfe6057-33-3 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": existing-behaviour, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued." }
+~ `cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an …
+
+`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued.
+
+@constraint p/g4b6a6cfe6057-34-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "These files are derived from other data and can be rebuilt if necessary, so they do not need to be tracked in the repository." }
+~ .smysl/store.cbor and .smysl/facts/ are derived files.
+
+@constraint p/g4b6a6cfe6057-35-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": S4 — does `cargo smysl check` operate as designed? }
+~ `cargo smysl check` operates as designed.
+
+@constraint p/g4b6a6cfe6057-35-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": What a gate measures. }
+~ The tool promises to operate as designed, so a gate is functional acceptance: does a command do what its …
+
+The tool promises to operate as designed, so a gate is functional acceptance: does a command do what its design says.
+
+@constraint p/g4b6a6cfe6057-36-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "code:kind": existing-behaviour, "ingest:quote": "The tool promises that each command does what its design says, with measured figures where a model is involved (recall, precision, cost)." }
+~ The project aims to operate as designed, with measured figures where a model is involved.
+
+@constraint p/g4b6a6cfe6057-36-2 { status: speculative, "code:kind": assumption, "ingest:quote": "This ensures that the tool can be used without an internet connection if desired, and it avoids pulling in unnecessary dependencies." }
+~ The default build should not include unnecessary dependencies.
+
+@claim r/g4b6a6cfe6057-1-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": rejected-alternative, "ingest:quote": because extraction is 7 to 30 minutes and belongs to a moment a person chose. }
+~ Rejected: The post-commit hook could perform extraction immediately.
+
+@claim r/g4b6a6cfe6057-1-2 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": rejected-alternative, "ingest:quote": "It calls no model, cannot fail a commit, and takes no time" }
+~ Rejected: The post-commit hook could fail the commit if extraction fails.
+
+@claim r/g4b6a6cfe6057-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not registering a custom merge driver and handling merges manually.
+
+@claim r/g4b6a6cfe6057-2-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Registering the merge driver in a different way that does not require a specific configuration line …
+
+Rejected: Registering the merge driver in a different way that does not require a specific configuration line per clone.
+
+@claim r/g4b6a6cfe6057-3-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Allow the merge driver to overwrite files it does not understand with an empty document.
+
+@claim r/g4b6a6cfe6057-3-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Modify the merge driver to handle unknown content differently, but still silently replace the file.
+
+@claim r/g4b6a6cfe6057-4-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not track .smysl/commits/` and `.smysl/bench/`, allowing them to be lost during extraction or …
+
+Rejected: Do not track .smysl/commits/` and `.smysl/bench/`, allowing them to be lost during extraction or other operations.
+
+@claim r/g4b6a6cfe6057-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": ~ Rejected: Implement fact retrieval and matching within an existing crate. }
+~ Rejected: Implement fact retrieval and matching within an existing crate.
+
+@claim r/g4b6a6cfe6057-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": ~ Rejected: Use a different library for fact retrieval and matching. }
+~ Rejected: Use a different library for fact retrieval and matching.
+
+@claim r/g4b6a6cfe6057-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": ~ Rejected: Implement fact retrieval and matching within an existing crate. }
+~ Rejected: Implement fact retrieval and matching within an existing crate.
+
+@claim r/g4b6a6cfe6057-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": ~ Rejected: Use a different library for fact retrieval and matching. }
+~ Rejected: Use a different library for fact retrieval and matching.
+
+@claim r/g4b6a6cfe6057-7-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not update dependencies and features. }
+~ Rejected: Do not update dependencies and features.
+
+@claim r/g4b6a6cfe6057-7-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Update only the dependencies without defining new features. }
+~ Rejected: Update only the dependencies without defining new features.
+
+@claim r/g4b6a6cfe6057-7-3 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Define new features but do not update dependencies. }
+~ Rejected: Define new features but do not update dependencies.
+
+@claim r/g4b6a6cfe6057-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": "~ Rejected: Not adding the `Evidence` command, continuing without this functionality." }
+~ Rejected: Not adding the `Evidence` command, continuing without this functionality.
+
+@claim r/g4b6a6cfe6057-9-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": ~ Rejected: Retrieve all facts without considering overlap with claim terms. }
+~ Rejected: Retrieve all facts without considering overlap with claim terms.
+
+@claim r/g4b6a6cfe6057-9-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": ~ Rejected: Combine structural and prose facts together when showing to the model. }
+~ Rejected: Combine structural and prose facts together when showing to the model.
+
+@claim r/g4b6a6cfe6057-10-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not validate citations.
+
+@claim r/g4b6a6cfe6057-10-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Ask about multiple claims at once.
+
+@claim r/g4b6a6cfe6057-10-3 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Define a different system prompt that does not specify how to handle structural facts and prose …
+
+Rejected: Define a different system prompt that does not specify how to handle structural facts and prose separately.
+
+@claim r/g4b6a6cfe6057-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not define a system prompt for the model. }
+~ Rejected: Do not define a system prompt for the model.
+
+@claim r/g4b6a6cfe6057-11-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Define a different system prompt that does not specify how to handle structural facts and prose … }
+~ Rejected: Define a different system prompt that does not specify how to handle structural facts and prose …
+
+Rejected: Define a different system prompt that does not specify how to handle structural facts and prose separately.
+
+@claim r/g4b6a6cfe6057-12-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use a different data structure to represent the JSON answer.
+
+@claim r/g4b6a6cfe6057-12-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Parse the JSON answer manually without defining a struct.
+
+@claim r/g4b6a6cfe6057-13-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Drain the queue in any order, not necessarily oldest first.
+
+@claim r/g4b6a6cfe6057-13-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Forget a commit as soon as it is queued.
+
+@claim r/g4b6a6cfe6057-14-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": rejected-alternative, "ingest:quote": A merge driver that silently replaces someone's file is worse than no merge driver. }
+~ Rejected: The merge driver continues to silently replace someone's file.
+
+@claim r/g4b6a6cfe6057-15-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Allow the merge to proceed with an empty document if no records are yielded.
+
+@claim r/g4b6a6cfe6057-15-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Log a warning instead of failing the merge.
+
+@claim r/g4b6a6cfe6057-16-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Track the store, facts, queue, and mutation backup.
+
+@claim r/g4b6a6cfe6057-17-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Track .smysl/extractions/
+
+@claim r/g4b6a6cfe6057-18-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone. `cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without any conflict." }
+~ Rejected: expose the merge driver to users
+
+@claim r/g4b6a6cfe6057-19-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": "This allows for processing all queued commits in one go, making it easier to manage extraction runs." }
+~ Rejected: Keep the existing behavior where each commit is processed individually.
+
+@claim r/g4b6a6cfe6057-20-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Manual setup of git hooks and merge drivers.
+
+@claim r/g4b6a6cfe6057-21-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: drain the queue in random order
+
+@claim r/g4b6a6cfe6057-21-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: drain the queue newest first
+
+@claim r/g4b6a6cfe6057-22-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The merge driver could attempt to reconcile differences between records, considering their order.
+
+@claim r/g4b6a6cfe6057-22-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The merge driver could overwrite one version of the document with the other.
+
+@claim r/g4b6a6cfe6057-23-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The merge driver could attempt to merge the documents even if they do not parse.
+
+@claim r/g4b6a6cfe6057-23-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The merge driver could overwrite one of the documents with an empty document if it does not parse.
+
+@claim r/g4b6a6cfe6057-24-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": rejected-alternative, "ingest:quote": .smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts. }
+~ Rejected: Do not track .smysl/commits/` and `.smysl/bench/`, allowing them to be ignored.
+
+@claim r/g4b6a6cfe6057-25-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: drain the queue in any order
+
+@claim r/g4b6a6cfe6057-25-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: forget a commit as soon as it is queued
+
+@claim r/g4b6a6cfe6057-26-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": rejected-alternative, "ingest:quote": a merge driver that silently replaces someone's file is worse than no merge driver. }
+~ Rejected: The merge driver silently replaces someone's file.
+
+@claim r/g4b6a6cfe6057-26-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": A document that does not parse is left to a person rather than half-merged. }
+~ Rejected: The merge driver does not handle non-parsable documents gracefully.
+
+@claim r/g4b6a6cfe6057-27-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not register `*.smy merge=smysl` in `.gitattributes`.
+
+@claim r/g4b6a6cfe6057-27-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Register a different merge driver for `.smy` files.
+
+@claim r/g4b6a6cfe6057-28-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not print the `git config` line required for each clone.
+
+@claim r/g4b6a6cfe6057-29-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: `cargo smysl extract --queued` is called automatically after commits are made.
+
+@claim r/g4b6a6cfe6057-30-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "code:kind": rejected-alternative, "ingest:quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver." }
+~ Rejected: Remove commits from the queue immediately after they are processed.
+
+@claim r/g4b6a6cfe6057-31-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: `cargo smysl merge-driver` is exposed to users.
+
+@claim r/g4b6a6cfe6057-32-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Track .smysl/extractions/ in version control
+
+@claim r/g4b6a6cfe6057-32-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Automatically handle extractions differently based on environment
+
+@claim r/g4b6a6cfe6057-33-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Fail if the hook or git configuration already exists.
+
+@claim r/g4b6a6cfe6057-33-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Overwrite existing hooks or configurations without checking.
+
+@claim r/g4b6a6cfe6057-34-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Track .smysl/store.cbor and .smysl/facts/ in the repository.
+
+@claim r/g4b6a6cfe6057-35-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": all bounds met: `check` ships as a gate; }
+~ Rejected: `cargo smysl check` ships as a gate without the `--strict` option.
+
+@claim r/g4b6a6cfe6057-35-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": "any bound missed: it ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set." }
+~ Rejected: `cargo smysl check` does not ship with any advisory mode.
+
+@claim r/g4b6a6cfe6057-36-1 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "code:kind": rejected-alternative, "ingest:quote": "Item 7, settled (D18): our own client. The default build carries no network stack; `hosted` adds TLS for a paid provider." }
+~ Rejected: Using a third-party model client with a network stack.
+
+@claim q/g4b6a6cfe6057-1-1 { status: inferred, grounds: [d/g4b6a6cfe6057-1], "code:kind": anticipated, "ingest:quote": because extraction is 7 to 30 minutes and belongs to a moment a person chose. }
+~ Extraction is deferred to a moment chosen by a person.
+
+@claim q/g4b6a6cfe6057-1-2 { status: inferred, grounds: [d/g4b6a6cfe6057-1], "code:kind": anticipated, "ingest:quote": "It calls no model, cannot fail a commit, and takes no time" }
+~ The commit process remains unaffected by the extraction task.
+
+@claim q/g4b6a6cfe6057-2-1 { status: inferred, grounds: [d/g4b6a6cfe6057-2], "code:kind": anticipated, "ingest:quote": To enable smysl's own merge driver for handling corpus document merges without user intervention. }
+~ The project will have a custom merge driver for handling corpus document merges without user intervention.
+
+@claim q/g4b6a6cfe6057-2-2 { status: inferred, grounds: [d/g4b6a6cfe6057-2], "code:kind": anticipated, "ingest:quote": and prints the one `git config` line git requires per clone }
+~ Users of the project will need to run a specific `git config` command per clone to set up the custom …
+
+Users of the project will need to run a specific `git config` command per clone to set up the custom merge driver.
+
+@evidence e/g4b6a6cfe6057-3-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "ingest:quote": "Text that yields no records is now refused, and git is told the merge failed." }
+~ Check: Text that yields no records is now refused, and git is told the merge failed.
+
+@finding q/g4b6a6cfe6057-3-1 { status: speculative }
+~ Text that yields no records is now refused by the merge driver.
+
+@evidence e/g4b6a6cfe6057-3-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "ingest:quote": "Text that yields no records is now refused, and git is told the merge failed." }
+~ Check: Text that yields no records is now refused, and git is told the merge failed.
+
+@finding q/g4b6a6cfe6057-3-2 { status: speculative }
+~ Git is informed when the merge fails due to unknown content.
+
+@claim q/g4b6a6cfe6057-4-1 { status: inferred, grounds: [d/g4b6a6cfe6057-4], "code:kind": anticipated, "ingest:quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels." }
+~ The record and a person's labels are preserved across clones and not lost during extraction or other …
+
+The record and a person's labels are preserved across clones and not lost during extraction or other operations.
+
+@claim q/g4b6a6cfe6057-5-1 { status: inferred, grounds: [d/g4b6a6cfe6057-5], "code:kind": anticipated, "ingest:quote": ~ The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching … }
+~ The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching …
+
+The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching facts.
+
+@claim q/g4b6a6cfe6057-6-1 { status: inferred, grounds: [d/g4b6a6cfe6057-6], "code:kind": anticipated }
+~ The project now has a dedicated module for checking one claim against the facts.
+
+@claim q/g4b6a6cfe6057-7-1 { status: inferred, grounds: [d/g4b6a6cfe6057-7], "code:kind": anticipated, "ingest:quote": To include necessary crates for the new functionality and to define features like `hosted` that require TLS. }
+~ The project will include necessary crates for new functionality.
+
+@claim q/g4b6a6cfe6057-7-2 { status: inferred, grounds: [d/g4b6a6cfe6057-7], "code:kind": anticipated, "ingest:quote": To include necessary crates for the new functionality and to define features like `hosted` that require TLS. }
+~ The `hosted` feature will require TLS, as defined in the features section of `Cargo.toml`.
+
+@claim q/g4b6a6cfe6057-8-1 { status: inferred, grounds: [d/g4b6a6cfe6057-8], "code:kind": anticipated, "ingest:quote": ~ The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching … }
+~ The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching …
+
+The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching facts.
+
+@claim q/g4b6a6cfe6057-8-2 { status: inferred, grounds: [d/g4b6a6cfe6057-8], "code:kind": anticipated, "ingest:quote": ~ The project now has a dedicated module for checking one claim against the facts. }
+~ The project now has a dedicated module for checking one claim against the facts.
+
+@claim q/g4b6a6cfe6057-9-1 { status: inferred, grounds: [d/g4b6a6cfe6057-9], "code:kind": anticipated, "ingest:quote": To retrieve the facts worth showing for one claim based on the overlap with the claim's terms. }
+~ The `retrieve` function is added to `matching.rs` to retrieve the facts worth showing for one claim based on …
+
+The `retrieve` function is added to `matching.rs` to retrieve the facts worth showing for one claim based on the overlap with the claim's terms.
+
+@claim q/g4b6a6cfe6057-10-1 { status: inferred, grounds: [d/g4b6a6cfe6057-10], "code:kind": anticipated, "ingest:quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {" }
+~ The `match_claim` function uses the `Answer` struct to process the model's response.
+
+@claim q/g4b6a6cfe6057-10-2 { status: inferred, grounds: [d/g4b6a6cfe6057-10], "code:kind": anticipated, "ingest:quote": RATIONALE: To ensure that the retrieval and matching of claims against facts works as expected. }
+~ Ensures that the retrieval and matching of claims against facts works as expected.
+
+@claim q/g4b6a6cfe6057-11-1 { status: inferred, grounds: [d/g4b6a6cfe6057-11], "code:kind": anticipated, "ingest:quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n\\\nThe facts are `F1`, `F2`, … (what the code does) and `P1`, `P2`, … (what the code says about itself: doc comments, string literals, string constants).\\n\\\nBreak the claim into its parts — each thing it asserts — and for each part say whether the facts show it. Cite the facts you used by name.\\n\\\nRules you must follow:\\n- Cite only facts you were shown. Do not recall anything about this project from memory.\\n- A part no fact shows is uncovered. Saying so is the useful answer; guessing is not.\\n- If a fact shows the claim is false, set `contradicted` and cite it.\\n- `P` facts are what someone wrote, not what the code does: they may point at the right place, and they never establish a part on their own.\\n\\\nReturn one JSON object: {\"covered\": [{\"part\": string, \"facts\": [string]}], \"uncovered\": [string], \"contradicted\": boolean, \"contradicted_by\": [string]}\";" }
+~ The model will receive a clear instruction on how to check one claim against facts, including the distinction …
+
+The model will receive a clear instruction on how to check one claim against facts, including the distinction between structural facts and prose.
+
+@claim q/g4b6a6cfe6057-12-1 { status: inferred, grounds: [d/g4b6a6cfe6057-12], "code:kind": anticipated }
+~ The `Answer` struct is used to deserialize the JSON response from the model.
+
+@evidence e/g4b6a6cfe6057-12-2 { status: cited, source: { kind: file, ref: .smysl/commits/b2dbe4820872.smy@4b6a6cfe6057 }, "ingest:quote": let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))? }
+~ Check: let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?
+
+@finding q/g4b6a6cfe6057-12-2 { status: speculative }
+~ The `match_claim` function uses the `Answer` struct to process the model's response.
+
+@claim q/g4b6a6cfe6057-13-1 { status: inferred, grounds: [d/g4b6a6cfe6057-13], "code:kind": anticipated, "ingest:quote": This allows for resumable extraction runs }
+~ Resumable extraction runs are possible.
+
+@claim q/g4b6a6cfe6057-13-2 { status: inferred, grounds: [d/g4b6a6cfe6057-13], "code:kind": anticipated, "ingest:quote": ensures that failed commits stay queued for further processing. }
+~ Failed commits stay queued for further processing.
+
+@claim q/g4b6a6cfe6057-14-1 { status: inferred, grounds: [d/g4b6a6cfe6057-14], "code:kind": anticipated, "ingest:quote": "Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver." }
+~ Text that yields no records is now refused, and git is told the merge failed.
+
+@claim q/g4b6a6cfe6057-15-1 { status: inferred, grounds: [d/g4b6a6cfe6057-15], "code:kind": anticipated, "ingest:quote": "Text that yields no records is now refused, and git is told the merge failed." }
+~ The merge driver now refuses text that yields no records and tells git the merge failed.
+
+@claim q/g4b6a6cfe6057-16-1 { status: inferred, grounds: [d/g4b6a6cfe6057-16], "code:kind": anticipated, "ingest:quote": ".smysl/commits/ and .smysl/bench/ are tracked: the record, and a person's labels." }
+~ .smysl/commits/ and .smysl/bench/ are tracked in version control.
+
+@claim q/g4b6a6cfe6057-17-1 { status: inferred, grounds: [d/g4b6a6cfe6057-17], "code:kind": anticipated, "ingest:quote": "This allows for efficient cloning by avoiding the need to track large extraction files, which can be regenerated as needed." }
+~ Efficient cloning is achieved by avoiding the need to track large extraction files
+
+@claim q/g4b6a6cfe6057-18-1 { status: inferred, grounds: [d/g4b6a6cfe6057-18], "code:kind": anticipated, "ingest:quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone. `cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without any conflict." }
+~ simplifies the user experience by hiding internal details of the merge process from users
+
+@claim q/g4b6a6cfe6057-19-1 { status: inferred, grounds: [d/g4b6a6cfe6057-19], "code:kind": anticipated, "ingest:quote": "This allows for processing all queued commits in one go, making it easier to manage extraction runs." }
+~ Users can now process all queued commits in a single command.
+
+@claim q/g4b6a6cfe6057-20-1 { status: inferred, grounds: [d/g4b6a6cfe6057-20], "code:kind": anticipated, "ingest:quote": "This provides a way to manage the installation and configuration of git hooks and merge drivers, making it easier for users to set up their environment." }
+~ Users can now easily install, uninstall, and check the status of git hooks and merge drivers using the `Hooks` …
+
+Users can now easily install, uninstall, and check the status of git hooks and merge drivers using the `Hooks` subcommand.
+
+@evidence e/g4b6a6cfe6057-21-1 { status: cited, source: { kind: doc, ref: git:4b6a6cfe60577fd1ae7058178de7e06b5142bb7a }, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued." }
+~ Check: `cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so …
+
+Check: `cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued.
+
+@finding q/g4b6a6cfe6057-21-1 { status: speculative }
+~ an interrupted run resumes and a failed commit stays queued.
+
+@claim q/g4b6a6cfe6057-22-1 { status: inferred, grounds: [d/g4b6a6cfe6057-22], "code:kind": anticipated, "ingest:quote": This ensures that the merge process for corpus documents is efficient and conflict-free }
+~ The merge process for corpus documents will be efficient and conflict-free.
+
+@claim q/g4b6a6cfe6057-22-2 { status: inferred, grounds: [d/g4b6a6cfe6057-22], "code:kind": anticipated, "ingest:quote": two branches that recorded different commits merge without anyone choosing }
+~ Two branches that recorded different commits can be merged without any user intervention.
+
+@evidence e/g4b6a6cfe6057-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "ingest:quote": "assert_ne!(out.status.code(), Some(0), \"git is told the merge failed\");" }
+~ Check: assert_ne!(out.status.code(), Some(0), "git is told the merge failed");
+
+@finding q/g4b6a6cfe6057-23-1 { status: speculative }
+~ Git will treat the merge as a conflict when a document does not parse.
+
+@claim q/g4b6a6cfe6057-23-2 { status: inferred, grounds: [d/g4b6a6cfe6057-23], "code:kind": anticipated }
+~ The original content of the file will be preserved if it does not parse.
+
+@claim q/g4b6a6cfe6057-24-1 { status: inferred, grounds: [d/g4b6a6cfe6057-24], "code:kind": anticipated, "ingest:quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels." }
+~ The record and labels are preserved across clones and changes.
+
+@claim q/g4b6a6cfe6057-25-1 { status: inferred, grounds: [d/g4b6a6cfe6057-25], "code:kind": anticipated, "ingest:quote": "`cargo smysl extract --queued` drains it oldest first, ensuring that interrupted runs can resume." }
+~ interrupted runs can resume
+
+@claim q/g4b6a6cfe6057-25-2 { status: inferred, grounds: [d/g4b6a6cfe6057-25], "code:kind": anticipated }
+~ failed commits stay queued
+
+@evidence e/g4b6a6cfe6057-26-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "ingest:quote": Both branches' reasoning is in the file git will keep. }
+~ Check: Both branches' reasoning is in the file git will keep.
+
+@finding q/g4b6a6cfe6057-26-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "ingest:quote": "let out = cargo(&[\n        \"smysl\",\n        \"merge-driver\",\n        base.to_str().unwrap(),\n        ours.to_str().unwrap(),\n        theirs.to_str().unwrap(),\n    ]);\n    assert_eq!(out.status.code(), Some(0), \"{}\", text(&out));" }
+~ Both branches' reasoning is preserved in the merged file.
+
+@evidence e/g4b6a6cfe6057-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "ingest:quote": "assert_ne!(out.status.code(), Some(0), \"git is told the merge failed\");" }
+~ Check: assert_ne!(out.status.code(), Some(0), "git is told the merge failed");
+
+@finding q/g4b6a6cfe6057-26-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@4b6a6cfe6057 }, "ingest:quote": "let out = cargo(&[\n        \"smysl\",\n        \"merge-driver\",\n        base.to_str().unwrap(),\n        ours.to_str().unwrap(),\n        theirs.to_str().unwrap(),\n    ]);\n    assert_ne!(out.status.code(), Some(0), \"git is told the merge failed\");" }
+~ If a document does not parse, the merge fails and the original file is untouched.
+
+@claim q/g4b6a6cfe6057-27-1 { status: inferred, grounds: [d/g4b6a6cfe6057-27], "code:kind": anticipated, "ingest:quote": "`cargo smysl hooks install` now registers `*.smy merge=smysl` in `.gitattributes`, enabling custom merge handling for `.smy` files." }
+~ `cargo smysl hooks install` now registers `*.smy merge=smysl` in `.gitattributes`, enabling custom merge …
+
+`cargo smysl hooks install` now registers `*.smy merge=smysl` in `.gitattributes`, enabling custom merge handling for `.smy` files.
+
+@claim q/g4b6a6cfe6057-27-2 { status: inferred, grounds: [d/g4b6a6cfe6057-27], "code:kind": anticipated, "ingest:quote": "This ensures that git uses the custom merge driver for `.smy` files, allowing for proper merging of corpus documents." }
+~ Git uses the custom merge driver for `.smy` files, allowing for proper merging of corpus documents.
+
+@claim q/g4b6a6cfe6057-28-1 { status: inferred, grounds: [d/g4b6a6cfe6057-28], "code:kind": anticipated, "ingest:quote": "This ensures that the custom merge driver is properly configured in each clone, allowing for seamless merging of `.smy` files." }
+~ The custom merge driver is properly configured in each clone, allowing for seamless merging of `.smy` files.
+
+@claim q/g4b6a6cfe6057-29-1 { status: inferred, grounds: [d/g4b6a6cfe6057-29], "code:kind": anticipated, "ingest:quote": "This allows for more control over when extraction occurs, ensuring that it happens at a time chosen by the user." }
+~ allows for more control over when extraction occurs, ensuring that it happens at a time chosen by the user.
+
+@claim q/g4b6a6cfe6057-30-1 { status: inferred, grounds: [d/g4b6a6cfe6057-30], "code:kind": anticipated, "ingest:quote": "This ensures that no data is lost in case of extraction failures, allowing for retries and resumption." }
+~ No data is lost in case of extraction failures.
+
+@claim q/g4b6a6cfe6057-30-2 { status: inferred, grounds: [d/g4b6a6cfe6057-30], "code:kind": anticipated, "ingest:quote": "This ensures that no data is lost in case of extraction failures, allowing for retries and resumption." }
+~ Extractions can be retried and resumed.
+
+@claim q/g4b6a6cfe6057-31-1 { status: inferred, grounds: [d/g4b6a6cfe6057-31], "code:kind": anticipated, "ingest:quote": "RATIONALE: This simplifies the user experience by hiding internal implementation details, focusing on ease of use." }
+~ The user experience is simplified by hiding internal implementation details.
+
+@claim q/g4b6a6cfe6057-32-1 { status: inferred, grounds: [d/g4b6a6cfe6057-32], "code:kind": anticipated, "ingest:quote": .smysl/extractions/ stays ignored with the question written down in the plan: a clone without it re-extracts. }
+~ Users may need to re-extract data after cloning the repository
+
+@claim q/g4b6a6cfe6057-33-1 { status: inferred, grounds: [d/g4b6a6cfe6057-33], "code:kind": anticipated, "ingest:quote": This prevents errors and ensures that the hook installation process is reliable and repeatable. }
+~ `cargo smysl hooks install` can be called multiple times without causing errors.
+
+@claim q/g4b6a6cfe6057-34-1 { status: inferred, grounds: [d/g4b6a6cfe6057-34], "code:kind": anticipated, "ingest:quote": "These files are derived from other data and can be rebuilt if necessary, so they do not need to be tracked in the repository." }
+~ Reduces the size of the tracked files in the repository.
+
+@claim q/g4b6a6cfe6057-34-2 { status: inferred, grounds: [d/g4b6a6cfe6057-34], "code:kind": anticipated, "ingest:quote": "These files are derived from other data and can be rebuilt if necessary, so they do not need to be tracked in the repository." }
+~ Simplifies the process of rebuilding the repository state.
+
+@claim q/g4b6a6cfe6057-35-1 { status: inferred, grounds: [d/g4b6a6cfe6057-35], "code:kind": anticipated, "ingest:quote": "RATIONALE: The commit message states that `check` is advisory because it does not meet all the required bounds, but it can be used as a gate if `--strict` is given." }
+~ `cargo smysl check` is shipped as an advisory tool, with `--strict` option to block.
+
+@claim q/g4b6a6cfe6057-36-1 { status: inferred, grounds: [d/g4b6a6cfe6057-36], "code:kind": anticipated, "ingest:quote": "This ensures that the tool can be used without an internet connection if desired, and it avoids pulling in unnecessary dependencies." }
+~ The tool can be used without an internet connection if desired.
+
+@evidence e/g4b6a6cfe6057-36-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "ingest:quote": "Item 7, settled (D18): our own client. The default build carries no network stack; `hosted` adds TLS for a paid provider." }
+~ Check: Item 7, settled (D18): our own client. The default build carries no network stack; `hosted` adds TLS …
+
+Check: Item 7, settled (D18): our own client. The default build carries no network stack; `hosted` adds TLS for a paid provider.
+
+@finding q/g4b6a6cfe6057-36-2 { status: cited, source: { kind: file, ref: docs/implementation-plan.md@4b6a6cfe6057 }, "ingest:quote": "Item 7, settled (D18): our own client. The default build carries no network stack; `hosted` adds TLS for a paid provider." }
+~ The default build has no network stack.
+
+@rel p/g4b6a6cfe6057-1-1 --conditions--> d/g4b6a6cfe6057-1
+
+@rel p/g4b6a6cfe6057-1-2 --conditions--> d/g4b6a6cfe6057-1
+
+@rel p/g4b6a6cfe6057-1-3 --conditions--> d/g4b6a6cfe6057-1
+
+@rel p/g4b6a6cfe6057-2-1 --conditions--> d/g4b6a6cfe6057-2
+
+@rel p/g4b6a6cfe6057-2-2 --conditions--> d/g4b6a6cfe6057-2
+
+@rel p/g4b6a6cfe6057-14-1 --conditions--> d/g4b6a6cfe6057-3
+
+@rel p/g4b6a6cfe6057-3-2 --conditions--> d/g4b6a6cfe6057-3
+
+@rel p/g4b6a6cfe6057-4-1 --conditions--> d/g4b6a6cfe6057-4
+
+@rel p/g4b6a6cfe6057-12-1 --conditions--> d/g4b6a6cfe6057-5
+
+@rel p/g4b6a6cfe6057-5-2 --conditions--> d/g4b6a6cfe6057-5
+
+@rel p/g4b6a6cfe6057-10-1 --conditions--> d/g4b6a6cfe6057-6
+
+@rel p/g4b6a6cfe6057-10-2 --conditions--> d/g4b6a6cfe6057-6
+
+@rel p/g4b6a6cfe6057-7-1 --conditions--> d/g4b6a6cfe6057-7
+
+@rel p/g4b6a6cfe6057-7-2 --conditions--> d/g4b6a6cfe6057-7
+
+@rel p/g4b6a6cfe6057-8-1 --conditions--> d/g4b6a6cfe6057-8
+
+@rel p/g4b6a6cfe6057-10-2 --conditions--> d/g4b6a6cfe6057-8
+
+@rel p/g4b6a6cfe6057-12-1 --conditions--> d/g4b6a6cfe6057-9
+
+@rel p/g4b6a6cfe6057-5-2 --conditions--> d/g4b6a6cfe6057-9
+
+@rel p/g4b6a6cfe6057-10-2 --conditions--> d/g4b6a6cfe6057-9
+
+@rel p/g4b6a6cfe6057-10-1 --conditions--> d/g4b6a6cfe6057-10
+
+@rel p/g4b6a6cfe6057-10-2 --conditions--> d/g4b6a6cfe6057-10
+
+@rel p/g4b6a6cfe6057-10-1 --conditions--> d/g4b6a6cfe6057-11
+
+@rel p/g4b6a6cfe6057-10-2 --conditions--> d/g4b6a6cfe6057-11
+
+@rel p/g4b6a6cfe6057-12-1 --conditions--> d/g4b6a6cfe6057-12
+
+@rel p/g4b6a6cfe6057-12-2 --conditions--> d/g4b6a6cfe6057-12
+
+@rel p/g4b6a6cfe6057-13-1 --conditions--> d/g4b6a6cfe6057-13
+
+@rel p/g4b6a6cfe6057-13-2 --conditions--> d/g4b6a6cfe6057-13
+
+@rel p/g4b6a6cfe6057-14-1 --conditions--> d/g4b6a6cfe6057-14
+
+@rel p/g4b6a6cfe6057-14-1 --conditions--> d/g4b6a6cfe6057-15
+
+@rel p/g4b6a6cfe6057-15-2 --conditions--> d/g4b6a6cfe6057-15
+
+@rel p/g4b6a6cfe6057-16-1 --conditions--> d/g4b6a6cfe6057-16
+
+@rel p/g4b6a6cfe6057-17-1 --conditions--> d/g4b6a6cfe6057-17
+
+@rel p/g4b6a6cfe6057-18-1 --conditions--> d/g4b6a6cfe6057-18
+
+@rel p/g4b6a6cfe6057-18-2 --conditions--> d/g4b6a6cfe6057-18
+
+@rel p/g4b6a6cfe6057-19-1 --conditions--> d/g4b6a6cfe6057-19
+
+@rel p/g4b6a6cfe6057-19-2 --conditions--> d/g4b6a6cfe6057-19
+
+@rel p/g4b6a6cfe6057-20-1 --conditions--> d/g4b6a6cfe6057-20
+
+@rel p/g4b6a6cfe6057-13-1 --conditions--> d/g4b6a6cfe6057-21
+
+@rel p/g4b6a6cfe6057-21-2 --conditions--> d/g4b6a6cfe6057-21
+
+@rel p/g4b6a6cfe6057-21-3 --conditions--> d/g4b6a6cfe6057-21
+
+@rel p/g4b6a6cfe6057-22-1 --conditions--> d/g4b6a6cfe6057-22
+
+@rel p/g4b6a6cfe6057-22-2 --conditions--> d/g4b6a6cfe6057-22
+
+@rel p/g4b6a6cfe6057-23-1 --conditions--> d/g4b6a6cfe6057-23
+
+@rel p/g4b6a6cfe6057-23-2 --conditions--> d/g4b6a6cfe6057-23
+
+@rel p/g4b6a6cfe6057-24-1 --conditions--> d/g4b6a6cfe6057-24
+
+@rel p/g4b6a6cfe6057-13-1 --conditions--> d/g4b6a6cfe6057-25
+
+@rel p/g4b6a6cfe6057-21-2 --conditions--> d/g4b6a6cfe6057-25
+
+@rel p/g4b6a6cfe6057-25-3 --conditions--> d/g4b6a6cfe6057-25
+
+@rel p/g4b6a6cfe6057-26-1 --conditions--> d/g4b6a6cfe6057-26
+
+@rel p/g4b6a6cfe6057-14-1 --conditions--> d/g4b6a6cfe6057-26
+
+@rel p/g4b6a6cfe6057-13-1 --conditions--> d/g4b6a6cfe6057-27
+
+@rel p/g4b6a6cfe6057-21-2 --conditions--> d/g4b6a6cfe6057-27
+
+@rel p/g4b6a6cfe6057-27-3 --conditions--> d/g4b6a6cfe6057-27
+
+@rel p/g4b6a6cfe6057-14-1 --conditions--> d/g4b6a6cfe6057-27
+
+@rel p/g4b6a6cfe6057-27-5 --conditions--> d/g4b6a6cfe6057-27
+
+@rel p/g4b6a6cfe6057-13-1 --conditions--> d/g4b6a6cfe6057-28
+
+@rel p/g4b6a6cfe6057-21-2 --conditions--> d/g4b6a6cfe6057-28
+
+@rel p/g4b6a6cfe6057-27-3 --conditions--> d/g4b6a6cfe6057-28
+
+@rel p/g4b6a6cfe6057-13-1 --conditions--> d/g4b6a6cfe6057-29
+
+@rel p/g4b6a6cfe6057-29-2 --conditions--> d/g4b6a6cfe6057-29
+
+@rel p/g4b6a6cfe6057-13-1 --conditions--> d/g4b6a6cfe6057-30
+
+@rel p/g4b6a6cfe6057-13-2 --conditions--> d/g4b6a6cfe6057-30
+
+@rel p/g4b6a6cfe6057-25-3 --conditions--> d/g4b6a6cfe6057-30
+
+@rel p/g4b6a6cfe6057-31-1 --conditions--> d/g4b6a6cfe6057-31
+
+@rel p/g4b6a6cfe6057-32-1 --conditions--> d/g4b6a6cfe6057-32
+
+@rel p/g4b6a6cfe6057-13-1 --conditions--> d/g4b6a6cfe6057-33
+
+@rel p/g4b6a6cfe6057-21-2 --conditions--> d/g4b6a6cfe6057-33
+
+@rel p/g4b6a6cfe6057-33-3 --conditions--> d/g4b6a6cfe6057-33
+
+@rel p/g4b6a6cfe6057-34-1 --conditions--> d/g4b6a6cfe6057-34
+
+@rel p/g4b6a6cfe6057-35-1 --conditions--> d/g4b6a6cfe6057-35
+
+@rel p/g4b6a6cfe6057-35-2 --conditions--> d/g4b6a6cfe6057-35
+
+@rel p/g4b6a6cfe6057-36-1 --conditions--> d/g4b6a6cfe6057-36
+
+@rel p/g4b6a6cfe6057-36-2 --conditions--> d/g4b6a6cfe6057-36
+
+@rel r/g4b6a6cfe6057-1-1 --contrasts--> d/g4b6a6cfe6057-1
+
+@rel r/g4b6a6cfe6057-1-2 --contrasts--> d/g4b6a6cfe6057-1
+
+@rel r/g4b6a6cfe6057-2-1 --contrasts--> d/g4b6a6cfe6057-2
+
+@rel r/g4b6a6cfe6057-2-2 --contrasts--> d/g4b6a6cfe6057-2
+
+@rel r/g4b6a6cfe6057-3-1 --contrasts--> d/g4b6a6cfe6057-3
+
+@rel r/g4b6a6cfe6057-3-2 --contrasts--> d/g4b6a6cfe6057-3
+
+@rel r/g4b6a6cfe6057-4-1 --contrasts--> d/g4b6a6cfe6057-4
+
+@rel r/g4b6a6cfe6057-5-1 --contrasts--> d/g4b6a6cfe6057-5
+
+@rel r/g4b6a6cfe6057-5-2 --contrasts--> d/g4b6a6cfe6057-5
+
+@rel r/g4b6a6cfe6057-5-1 --contrasts--> d/g4b6a6cfe6057-6
+
+@rel r/g4b6a6cfe6057-5-2 --contrasts--> d/g4b6a6cfe6057-6
+
+@rel r/g4b6a6cfe6057-7-1 --contrasts--> d/g4b6a6cfe6057-7
+
+@rel r/g4b6a6cfe6057-7-2 --contrasts--> d/g4b6a6cfe6057-7
+
+@rel r/g4b6a6cfe6057-7-3 --contrasts--> d/g4b6a6cfe6057-7
+
+@rel r/g4b6a6cfe6057-8-1 --contrasts--> d/g4b6a6cfe6057-8
+
+@rel r/g4b6a6cfe6057-9-1 --contrasts--> d/g4b6a6cfe6057-9
+
+@rel r/g4b6a6cfe6057-9-2 --contrasts--> d/g4b6a6cfe6057-9
+
+@rel r/g4b6a6cfe6057-10-1 --contrasts--> d/g4b6a6cfe6057-10
+
+@rel r/g4b6a6cfe6057-10-2 --contrasts--> d/g4b6a6cfe6057-10
+
+@rel r/g4b6a6cfe6057-10-3 --contrasts--> d/g4b6a6cfe6057-10
+
+@rel r/g4b6a6cfe6057-11-1 --contrasts--> d/g4b6a6cfe6057-11
+
+@rel r/g4b6a6cfe6057-11-2 --contrasts--> d/g4b6a6cfe6057-11
+
+@rel r/g4b6a6cfe6057-12-1 --contrasts--> d/g4b6a6cfe6057-12
+
+@rel r/g4b6a6cfe6057-12-2 --contrasts--> d/g4b6a6cfe6057-12
+
+@rel r/g4b6a6cfe6057-13-1 --contrasts--> d/g4b6a6cfe6057-13
+
+@rel r/g4b6a6cfe6057-13-2 --contrasts--> d/g4b6a6cfe6057-13
+
+@rel r/g4b6a6cfe6057-14-1 --contrasts--> d/g4b6a6cfe6057-14
+
+@rel r/g4b6a6cfe6057-15-1 --contrasts--> d/g4b6a6cfe6057-15
+
+@rel r/g4b6a6cfe6057-15-2 --contrasts--> d/g4b6a6cfe6057-15
+
+@rel r/g4b6a6cfe6057-16-1 --contrasts--> d/g4b6a6cfe6057-16
+
+@rel r/g4b6a6cfe6057-17-1 --contrasts--> d/g4b6a6cfe6057-17
+
+@rel r/g4b6a6cfe6057-18-1 --contrasts--> d/g4b6a6cfe6057-18
+
+@rel r/g4b6a6cfe6057-19-1 --contrasts--> d/g4b6a6cfe6057-19
+
+@rel r/g4b6a6cfe6057-20-1 --contrasts--> d/g4b6a6cfe6057-20
+
+@rel r/g4b6a6cfe6057-21-1 --contrasts--> d/g4b6a6cfe6057-21
+
+@rel r/g4b6a6cfe6057-21-2 --contrasts--> d/g4b6a6cfe6057-21
+
+@rel r/g4b6a6cfe6057-22-1 --contrasts--> d/g4b6a6cfe6057-22
+
+@rel r/g4b6a6cfe6057-22-2 --contrasts--> d/g4b6a6cfe6057-22
+
+@rel r/g4b6a6cfe6057-23-1 --contrasts--> d/g4b6a6cfe6057-23
+
+@rel r/g4b6a6cfe6057-23-2 --contrasts--> d/g4b6a6cfe6057-23
+
+@rel r/g4b6a6cfe6057-24-1 --contrasts--> d/g4b6a6cfe6057-24
+
+@rel r/g4b6a6cfe6057-25-1 --contrasts--> d/g4b6a6cfe6057-25
+
+@rel r/g4b6a6cfe6057-25-2 --contrasts--> d/g4b6a6cfe6057-25
+
+@rel r/g4b6a6cfe6057-26-1 --contrasts--> d/g4b6a6cfe6057-26
+
+@rel r/g4b6a6cfe6057-26-2 --contrasts--> d/g4b6a6cfe6057-26
+
+@rel r/g4b6a6cfe6057-27-1 --contrasts--> d/g4b6a6cfe6057-27
+
+@rel r/g4b6a6cfe6057-27-2 --contrasts--> d/g4b6a6cfe6057-27
+
+@rel r/g4b6a6cfe6057-28-1 --contrasts--> d/g4b6a6cfe6057-28
+
+@rel r/g4b6a6cfe6057-29-1 --contrasts--> d/g4b6a6cfe6057-29
+
+@rel r/g4b6a6cfe6057-30-1 --contrasts--> d/g4b6a6cfe6057-30
+
+@rel r/g4b6a6cfe6057-31-1 --contrasts--> d/g4b6a6cfe6057-31
+
+@rel r/g4b6a6cfe6057-32-1 --contrasts--> d/g4b6a6cfe6057-32
+
+@rel r/g4b6a6cfe6057-32-2 --contrasts--> d/g4b6a6cfe6057-32
+
+@rel r/g4b6a6cfe6057-33-1 --contrasts--> d/g4b6a6cfe6057-33
+
+@rel r/g4b6a6cfe6057-33-2 --contrasts--> d/g4b6a6cfe6057-33
+
+@rel r/g4b6a6cfe6057-34-1 --contrasts--> d/g4b6a6cfe6057-34
+
+@rel r/g4b6a6cfe6057-35-1 --contrasts--> d/g4b6a6cfe6057-35
+
+@rel r/g4b6a6cfe6057-35-2 --contrasts--> d/g4b6a6cfe6057-35
+
+@rel r/g4b6a6cfe6057-36-1 --contrasts--> d/g4b6a6cfe6057-36
+
+@rel d/g4b6a6cfe6057-1 --causes--> q/g4b6a6cfe6057-1-1
+
+@rel d/g4b6a6cfe6057-1 --causes--> q/g4b6a6cfe6057-1-2
+
+@rel d/g4b6a6cfe6057-2 --causes--> q/g4b6a6cfe6057-2-1
+
+@rel d/g4b6a6cfe6057-2 --causes--> q/g4b6a6cfe6057-2-2
+
+@rel e/g4b6a6cfe6057-3-1 --backs--> q/g4b6a6cfe6057-3-1
+
+@rel d/g4b6a6cfe6057-3 --causes--> q/g4b6a6cfe6057-3-1
+
+@rel e/g4b6a6cfe6057-3-1 --backs--> q/g4b6a6cfe6057-3-2
+
+@rel d/g4b6a6cfe6057-3 --causes--> q/g4b6a6cfe6057-3-2
+
+@rel d/g4b6a6cfe6057-4 --causes--> q/g4b6a6cfe6057-4-1
+
+@rel d/g4b6a6cfe6057-5 --causes--> q/g4b6a6cfe6057-5-1
+
+@rel d/g4b6a6cfe6057-6 --causes--> q/g4b6a6cfe6057-6-1
+
+@rel d/g4b6a6cfe6057-7 --causes--> q/g4b6a6cfe6057-7-1
+
+@rel d/g4b6a6cfe6057-7 --causes--> q/g4b6a6cfe6057-7-2
+
+@rel d/g4b6a6cfe6057-8 --causes--> q/g4b6a6cfe6057-8-1
+
+@rel d/g4b6a6cfe6057-8 --causes--> q/g4b6a6cfe6057-8-2
+
+@rel d/g4b6a6cfe6057-9 --causes--> q/g4b6a6cfe6057-9-1
+
+@rel d/g4b6a6cfe6057-10 --causes--> q/g4b6a6cfe6057-10-1
+
+@rel d/g4b6a6cfe6057-10 --causes--> q/g4b6a6cfe6057-10-2
+
+@rel d/g4b6a6cfe6057-11 --causes--> q/g4b6a6cfe6057-11-1
+
+@rel d/g4b6a6cfe6057-12 --causes--> q/g4b6a6cfe6057-12-1
+
+@rel e/g4b6a6cfe6057-12-2 --backs--> q/g4b6a6cfe6057-12-2
+
+@rel d/g4b6a6cfe6057-12 --causes--> q/g4b6a6cfe6057-12-2
+
+@rel d/g4b6a6cfe6057-13 --causes--> q/g4b6a6cfe6057-13-1
+
+@rel d/g4b6a6cfe6057-13 --causes--> q/g4b6a6cfe6057-13-2
+
+@rel d/g4b6a6cfe6057-14 --causes--> q/g4b6a6cfe6057-14-1
+
+@rel d/g4b6a6cfe6057-15 --causes--> q/g4b6a6cfe6057-15-1
+
+@rel d/g4b6a6cfe6057-16 --causes--> q/g4b6a6cfe6057-16-1
+
+@rel d/g4b6a6cfe6057-17 --causes--> q/g4b6a6cfe6057-17-1
+
+@rel d/g4b6a6cfe6057-18 --causes--> q/g4b6a6cfe6057-18-1
+
+@rel d/g4b6a6cfe6057-19 --causes--> q/g4b6a6cfe6057-19-1
+
+@rel d/g4b6a6cfe6057-20 --causes--> q/g4b6a6cfe6057-20-1
+
+@rel e/g4b6a6cfe6057-21-1 --backs--> q/g4b6a6cfe6057-21-1
+
+@rel d/g4b6a6cfe6057-21 --causes--> q/g4b6a6cfe6057-21-1
+
+@rel d/g4b6a6cfe6057-22 --causes--> q/g4b6a6cfe6057-22-1
+
+@rel d/g4b6a6cfe6057-22 --causes--> q/g4b6a6cfe6057-22-2
+
+@rel e/g4b6a6cfe6057-23-1 --backs--> q/g4b6a6cfe6057-23-1
+
+@rel d/g4b6a6cfe6057-23 --causes--> q/g4b6a6cfe6057-23-1
+
+@rel d/g4b6a6cfe6057-23 --causes--> q/g4b6a6cfe6057-23-2
+
+@rel d/g4b6a6cfe6057-24 --causes--> q/g4b6a6cfe6057-24-1
+
+@rel d/g4b6a6cfe6057-25 --causes--> q/g4b6a6cfe6057-25-1
+
+@rel d/g4b6a6cfe6057-25 --causes--> q/g4b6a6cfe6057-25-2
+
+@rel e/g4b6a6cfe6057-26-1 --backs--> q/g4b6a6cfe6057-26-1
+
+@rel d/g4b6a6cfe6057-26 --causes--> q/g4b6a6cfe6057-26-1
+
+@rel e/g4b6a6cfe6057-23-1 --backs--> q/g4b6a6cfe6057-26-2
+
+@rel d/g4b6a6cfe6057-26 --causes--> q/g4b6a6cfe6057-26-2
+
+@rel d/g4b6a6cfe6057-27 --causes--> q/g4b6a6cfe6057-27-1
+
+@rel d/g4b6a6cfe6057-27 --causes--> q/g4b6a6cfe6057-27-2
+
+@rel d/g4b6a6cfe6057-28 --causes--> q/g4b6a6cfe6057-28-1
+
+@rel d/g4b6a6cfe6057-29 --causes--> q/g4b6a6cfe6057-29-1
+
+@rel d/g4b6a6cfe6057-30 --causes--> q/g4b6a6cfe6057-30-1
+
+@rel d/g4b6a6cfe6057-30 --causes--> q/g4b6a6cfe6057-30-2
+
+@rel d/g4b6a6cfe6057-31 --causes--> q/g4b6a6cfe6057-31-1
+
+@rel d/g4b6a6cfe6057-32 --causes--> q/g4b6a6cfe6057-32-1
+
+@rel d/g4b6a6cfe6057-33 --causes--> q/g4b6a6cfe6057-33-1
+
+@rel d/g4b6a6cfe6057-34 --causes--> q/g4b6a6cfe6057-34-1
+
+@rel d/g4b6a6cfe6057-34 --causes--> q/g4b6a6cfe6057-34-2
+
+@rel d/g4b6a6cfe6057-35 --causes--> q/g4b6a6cfe6057-35-1
+
+@rel d/g4b6a6cfe6057-36 --causes--> q/g4b6a6cfe6057-36-1
+
+@rel e/g4b6a6cfe6057-36-2 --backs--> q/g4b6a6cfe6057-36-2
+
+@rel d/g4b6a6cfe6057-36 --causes--> q/g4b6a6cfe6057-36-2

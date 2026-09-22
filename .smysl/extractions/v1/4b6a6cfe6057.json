@@ -1,0 +1,1455 @@
+{
+  "decisions": [
+    {
+      "decision": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.",
+      "kind": "act",
+      "rationale": "To ensure extraction is done at a moment chosen by a person, without failing a commit or taking time during the commit process.",
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.",
+      "kind": "act",
+      "rationale": "To enable smysl's own merge driver for handling corpus document merges without user intervention.",
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone."
+    },
+    {
+      "decision": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed.",
+      "kind": "act",
+      "rationale": "To prevent a silent overwrite of someone's file by a merge driver that does not understand the content.",
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed."
+    },
+    {
+      "decision": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels.",
+      "kind": "act",
+      "rationale": "To ensure that the record and a person's labels are preserved across clones and not lost during extraction or other operations.",
+      "quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels."
+    },
+    {
+      "decision": "Add `cargo-smysl-facts` as a dependency.",
+      "kind": "act",
+      "rationale": "To support the retrieval and matching of facts, which is part of the verdict stage.",
+      "quote": "Add `cargo-smysl-facts` as a dependency"
+    },
+    {
+      "decision": "Add `matching` module to `lib.rs`.",
+      "kind": "act",
+      "rationale": "To handle the checking of one claim against the facts, as part of the matching process.",
+      "quote": "Add `matching` module to `lib.rs`"
+    },
+    {
+      "decision": "Update `Cargo.toml` with new dependencies and features.",
+      "kind": "act",
+      "rationale": "To include necessary crates for the new functionality and to define features like `hosted` that require TLS.",
+      "quote": "Update `Cargo.toml` with new dependencies and features"
+    },
+    {
+      "decision": "Add `Evidence` command to `cli.rs`.",
+      "kind": "act",
+      "rationale": "To allow checking a recorded claim against the code and saying what may be concluded, as part of Phase 3.",
+      "quote": "Add `Evidence` command to `cli.rs`"
+    },
+    {
+      "decision": "Add `retrieve` function to `matching.rs`.",
+      "kind": "act",
+      "rationale": "To retrieve the facts worth showing for one claim based on the overlap with the claim's terms.",
+      "quote": "Add `retrieve` function to `matching.rs`"
+    },
+    {
+      "decision": "Add `match_claim` function to `matching.rs`.",
+      "kind": "act",
+      "rationale": "To ask about one claim and validate the citations provided by the model.",
+      "quote": "Add `match_claim` function to `matching.rs`"
+    },
+    {
+      "decision": "Add `SYSTEM` constant to `matching.rs`.",
+      "kind": "act",
+      "rationale": "To define the system prompt for the model when checking one claim against facts.",
+      "quote": "Add `SYSTEM` constant to `matching.rs`"
+    },
+    {
+      "decision": "Add `Answer` struct to `matching.rs`.",
+      "kind": "act",
+      "rationale": "To represent the JSON answer provided by the model after checking a claim.",
+      "quote": "Add `Answer` struct to `matching.rs`"
+    },
+    {
+      "decision": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded.",
+      "kind": "act",
+      "rationale": "This allows for resumable extraction runs and ensures that failed commits stay queued for further processing.",
+      "quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded."
+    },
+    {
+      "decision": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.",
+      "kind": "act",
+      "rationale": "This change ensures that the merge driver does not silently replace someone's file, which would be worse than no merge driver at all.",
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document."
+    },
+    {
+      "decision": "Text that yields no records is now refused, and git is told the merge failed.",
+      "kind": "act",
+      "rationale": "This prevents silent data loss during merges by ensuring that any text not yielding records results in a merge failure.",
+      "quote": "Text that yields no records is now refused, and git is told the merge failed."
+    },
+    {
+      "decision": "The store, the facts, the queue and a mutation backup are derived and ignored.",
+      "kind": "act",
+      "rationale": "These files are considered temporary or derivative and do not need to be tracked in version control.",
+      "quote": "The store, the facts, the queue and a mutation backup are derived and ignored."
+    },
+    {
+      "decision": ".smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts.",
+      "kind": "act",
+      "rationale": "This allows for efficient cloning by avoiding the need to track large extraction files, which can be regenerated as needed.",
+      "quote": ".smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts."
+    },
+    {
+      "decision": "The merge driver is hidden because git calls it and people do not.",
+      "kind": "act",
+      "rationale": "This simplifies the user experience by hiding internal details of the merge process from users.",
+      "quote": "`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge:"
+    },
+    {
+      "decision": "The `queued` flag is added to the `Extract` command to record everything the post-commit hook queued.",
+      "kind": "act",
+      "rationale": "This allows for processing all queued commits in one go, making it easier to manage extraction runs.",
+      "quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded."
+    },
+    {
+      "decision": "The `Hooks` subcommand is added with `Install`, `Uninstall`, and `Status` steps.",
+      "kind": "act",
+      "rationale": "This provides a way to manage the installation and configuration of git hooks and merge drivers, making it easier for users to set up their environment.",
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued.",
+      "kind": "act",
+      "rationale": "This ensures that the extraction process is robust to interruptions and failures, allowing for resumption of processing without data loss.",
+      "quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued."
+    },
+    {
+      "decision": "The merge driver merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent.",
+      "kind": "act",
+      "rationale": "This ensures that the merge process for corpus documents is efficient and conflict-free, as it only appends new records without considering their order.",
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone."
+    },
+    {
+      "decision": "The merge driver `cargo smysl merge-driver` refuses to merge documents that do not parse, causing git to treat it as a conflict.",
+      "kind": "act",
+      "rationale": "This prevents silent data loss by ensuring that only valid documents are merged.",
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed."
+    },
+    {
+      "decision": ".smysl/commits/` and `.smysl/bench/` are tracked in version control.",
+      "kind": "act",
+      "rationale": "Tracking these directories ensures that the record and labels are preserved across clones and changes.",
+      "quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels."
+    },
+    {
+      "decision": "`cargo smysl extract --queued` drains the queue oldest first, ensuring that interrupted runs can resume.",
+      "kind": "act",
+      "rationale": "This allows for robust handling of extraction processes that may be interrupted or fail.",
+      "quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued."
+    },
+    {
+      "decision": "The merge driver `cargo smysl merge-driver` merges two versions of a corpus document by appending records from both branches.",
+      "kind": "act",
+      "rationale": "This allows for order-independent merging of documents, ensuring that all recorded information is preserved.",
+      "quote": "records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing."
+    },
+    {
+      "decision": "`cargo smysl hooks install` registers `*.smy merge=smysl` in `.gitattributes`, enabling custom merge handling for `.smy` files.",
+      "kind": "act",
+      "rationale": "This ensures that git uses the custom merge driver for `.smy` files, allowing for proper merging of corpus documents.",
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone."
+    },
+    {
+      "decision": "`cargo smysl hooks install` prints a `git config` line required for each clone to use the custom merge driver.",
+      "kind": "act",
+      "rationale": "This ensures that the custom merge driver is properly configured in each clone, allowing for seamless merging of `.smy` files.",
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone."
+    },
+    {
+      "decision": "`cargo smysl extract --queued` is designed to be called manually after commits are made, rather than automatically.",
+      "kind": "decline",
+      "rationale": "This allows for more control over when extraction occurs, ensuring that it happens at a time chosen by the user.",
+      "quote": "extraction is 7 to 30 minutes and belongs to a moment a person chose."
+    },
+    {
+      "decision": "`cargo smysl extract --queued` does not remove commits from the queue until they are successfully recorded.",
+      "kind": "act",
+      "rationale": "This ensures that no data is lost in case of extraction failures, allowing for retries and resumption.",
+      "quote": "forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued."
+    },
+    {
+      "decision": "`cargo smysl merge-driver` is hidden from users because git calls it directly during merges.",
+      "kind": "decline",
+      "rationale": "This simplifies the user experience by hiding internal implementation details, focusing on ease of use.",
+      "quote": "`cargo smysl merge-driver`, hidden because git calls it and people do not."
+    },
+    {
+      "decision": ".smysl/extractions/` is ignored in version control, with the intention of re-extracting on clone.",
+      "kind": "decline",
+      "rationale": "This allows for more flexibility in how extractions are handled across different clones and environments.",
+      "quote": ".smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts."
+    },
+    {
+      "decision": "`cargo smysl hooks install` does not fail if called multiple times, ensuring idempotency.",
+      "kind": "act",
+      "rationale": "This prevents errors and ensures that the hook installation process is reliable and repeatable.",
+      "quote": "It calls no model, cannot fail a commit, and takes no time."
+    },
+    {
+      "decision": ".smysl/store.cbor` and `.smysl/facts/` ignored, both being derived and rebuildable.",
+      "kind": "act",
+      "rationale": "These files are derived from other data and can be rebuilt if necessary, so they do not need to be tracked in the repository.",
+      "quote": ".smysl/store.cbor` and `.smysl/facts/` ignored, both being derived and rebuildable."
+    },
+    {
+      "decision": "`cargo smysl check` ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set.",
+      "kind": "act",
+      "rationale": "The commit message states that `check` is advisory because it does not meet all the required bounds, but it can be used as a gate if `--strict` is given.",
+      "quote": "`check` ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set."
+    },
+    {
+      "decision": "The model client is our own, and the default build has no network stack.",
+      "kind": "act",
+      "rationale": "This ensures that the tool can be used without an internet connection if desired, and it avoids pulling in unnecessary dependencies.",
+      "quote": "The model client is our own, and the default build has no network stack."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "extraction is 7 to 30 minutes",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "because extraction is 7 to 30 minutes and belongs to a moment a person chose."
+    },
+    {
+      "decision": 1,
+      "text": "post-commit hook should not fail a commit",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "It calls no model, cannot fail a commit, and takes no time"
+    },
+    {
+      "decision": 1,
+      "text": "post-commit hook should be fast",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "It calls no model, cannot fail a commit, and takes no time"
+    },
+    {
+      "decision": 2,
+      "text": "The project needs to handle corpus document merges without user intervention.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To enable smysl's own merge driver for handling corpus document merges without user intervention."
+    },
+    {
+      "decision": 2,
+      "text": "Git requires a specific configuration line per clone to register custom merge drivers.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "and prints the one `git config` line git requires per clone"
+    },
+    {
+      "decision": 3,
+      "text": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document."
+    },
+    {
+      "decision": 3,
+      "text": "The merge driver should not silently replace someone's file if it does not understand the content.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A merge driver that silently replaces someone's file is worse than no merge driver."
+    },
+    {
+      "decision": 4,
+      "text": ".smysl/commits/` and `.smysl/bench/` should be tracked to preserve the record and a person's labels.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels."
+    },
+    {
+      "decision": 5,
+      "text": "The project needs to retrieve and match facts as part of the verdict stage.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To support the retrieval and matching of facts, which is part of the verdict stage."
+    },
+    {
+      "decision": 5,
+      "text": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3).",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)."
+    },
+    {
+      "decision": 6,
+      "text": "The project needs a way to check one claim against the facts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)."
+    },
+    {
+      "decision": 6,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 7,
+      "text": "The project needs new crates for additional functionality.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To include necessary crates for the new functionality and to define features like `hosted` that require TLS."
+    },
+    {
+      "decision": 7,
+      "text": "TLS is required for certain features, specifically the `hosted` feature.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To include necessary crates for the new functionality and to define features like `hosted` that require TLS."
+    },
+    {
+      "decision": 8,
+      "text": "The project needs to check one claim against facts as part of the verdict stage.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To support the retrieval and matching of facts, which is part of the verdict stage."
+    },
+    {
+      "decision": 8,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 9,
+      "text": "The project needs to retrieve and match facts as part of the verdict stage.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To support the retrieval and matching of facts, which is part of the verdict stage."
+    },
+    {
+      "decision": 9,
+      "text": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3).",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)."
+    },
+    {
+      "decision": 9,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 10,
+      "text": "The project needs a way to check one claim against the facts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)."
+    },
+    {
+      "decision": 10,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 11,
+      "text": "The project needs a way to check one claim against the facts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Verdicts: per-prerequisite fact retrieval, matching, and the status policy (plan D11–D12,\n//! Phase 3)."
+    },
+    {
+      "decision": 11,
+      "text": "The `matching` module will handle this checking process.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "pub mod matching;"
+    },
+    {
+      "decision": 12,
+      "text": "The project needs to retrieve and match facts as part of the verdict stage.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To support the retrieval and matching of facts, which is part of the verdict stage."
+    },
+    {
+      "decision": 12,
+      "text": "The model checks one claim against facts and provides a JSON answer.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {"
+    },
+    {
+      "decision": 13,
+      "text": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": 13,
+      "text": "Extraction is 7 to 30 minutes and belongs to a moment a person chose.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "because extraction is 7 to 30 minutes and belongs to a moment a person chose."
+    },
+    {
+      "decision": 14,
+      "text": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document."
+    },
+    {
+      "decision": 15,
+      "text": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document."
+    },
+    {
+      "decision": 15,
+      "text": "The merge driver silently replaces someone's file is worse than no merge driver.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A merge driver that silently replaces someone's file is worse than no merge driver."
+    },
+    {
+      "decision": 16,
+      "text": "The store, the facts, the queue, and a mutation backup are considered temporary or derivative.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "These files are considered temporary or derivative and do not need to be tracked in version control."
+    },
+    {
+      "decision": 17,
+      "text": ".smysl/extractions/` stays ignored",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ".smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts."
+    },
+    {
+      "decision": 18,
+      "text": "git calls the merge driver",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver."
+    },
+    {
+      "decision": 18,
+      "text": "people do not call the merge driver",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver."
+    },
+    {
+      "decision": 19,
+      "text": "The post-commit hook queues a commit but never calls a model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The hook only *queues* a commit — it never calls a model, so committing stays instant."
+    },
+    {
+      "decision": 19,
+      "text": "Draining the queue is done with `cargo smysl extract --queued`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Drain the queue when you choose to: `cargo smysl extract --queued`."
+    },
+    {
+      "decision": 20,
+      "text": "The project needs a way to manage the installation and configuration of git hooks and merge drivers.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "This provides a way to manage the installation and configuration of git hooks and merge drivers, making it easier for users to set up their environment."
+    },
+    {
+      "decision": 21,
+      "text": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": 21,
+      "text": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone."
+    },
+    {
+      "decision": 21,
+      "text": "`cargo smysl extract --queued` drains it oldest first.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued."
+    },
+    {
+      "decision": 22,
+      "text": "Records in the corpus document are append-only.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "records are append-only"
+    },
+    {
+      "decision": 22,
+      "text": "The merge process for corpus documents should be efficient and conflict-free.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "This ensures that the merge process for corpus documents is efficient and conflict-free"
+    },
+    {
+      "decision": 23,
+      "text": "The merge driver `cargo smysl merge-driver` is responsible for merging two versions of a corpus document.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "/// The merge driver git calls for `*.smy`: two branches that recorded different commits merge without\n/// anyone choosing, because records are append-only and smysl's merge is order-independent."
+    },
+    {
+      "decision": 23,
+      "text": "A document that does not parse should be left untouched to prevent silent data loss.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A document that does not parse is left to a person rather than half-merged.\nRATIONALE: This prevents silent data loss by ensuring that only valid documents are merged."
+    },
+    {
+      "decision": 24,
+      "text": ".smysl/commits/` and `.smysl/bench/` should be tracked to preserve records and labels.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels."
+    },
+    {
+      "decision": 25,
+      "text": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": 25,
+      "text": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone."
+    },
+    {
+      "decision": 25,
+      "text": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded."
+    },
+    {
+      "decision": 26,
+      "text": "Records are append-only and the merge is order-independent.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "records are append-only and smysl's merge is order-independent."
+    },
+    {
+      "decision": 26,
+      "text": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document."
+    },
+    {
+      "decision": 27,
+      "text": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": 27,
+      "text": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone."
+    },
+    {
+      "decision": 27,
+      "text": "`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing."
+    },
+    {
+      "decision": 27,
+      "text": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document."
+    },
+    {
+      "decision": 27,
+      "text": "Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver."
+    },
+    {
+      "decision": 28,
+      "text": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": 28,
+      "text": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone."
+    },
+    {
+      "decision": 28,
+      "text": "`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without anyone choosing."
+    },
+    {
+      "decision": 29,
+      "text": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": 29,
+      "text": "extraction is 7 to 30 minutes and belongs to a moment a person chose.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "extraction is 7 to 30 minutes and belongs to a moment a person chose."
+    },
+    {
+      "decision": 30,
+      "text": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": 30,
+      "text": "Extraction is 7 to 30 minutes and belongs to a moment a person chose.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "because extraction is 7 to 30 minutes and belongs to a moment a person chose."
+    },
+    {
+      "decision": 30,
+      "text": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded."
+    },
+    {
+      "decision": 31,
+      "text": "`cargo smysl merge-driver` is called directly by git during merges.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone. `cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge:"
+    },
+    {
+      "decision": 32,
+      "text": ".smysl/extractions/ stays ignored",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ".smysl/extractions/ stays ignored with the question written down in the plan: a clone without it re-extracts."
+    },
+    {
+      "decision": 33,
+      "text": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue` and nothing else."
+    },
+    {
+      "decision": 33,
+      "text": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone."
+    },
+    {
+      "decision": 33,
+      "text": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued."
+    },
+    {
+      "decision": 34,
+      "text": ".smysl/store.cbor and .smysl/facts/ are derived files.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "These files are derived from other data and can be rebuilt if necessary, so they do not need to be tracked in the repository."
+    },
+    {
+      "decision": 35,
+      "text": "`cargo smysl check` operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "S4 — does `cargo smysl check` operate as designed?"
+    },
+    {
+      "decision": 35,
+      "text": "The tool promises to operate as designed, so a gate is functional acceptance: does a command do what its design says.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "What a gate measures."
+    },
+    {
+      "decision": 36,
+      "text": "The project aims to operate as designed, with measured figures where a model is involved.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool promises that each command does what its design says, with measured figures where a model is involved (recall, precision, cost)."
+    },
+    {
+      "decision": 36,
+      "text": "The default build should not include unnecessary dependencies.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "This ensures that the tool can be used without an internet connection if desired, and it avoids pulling in unnecessary dependencies."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "The post-commit hook could perform extraction immediately.",
+      "reason": "",
+      "quote": "because extraction is 7 to 30 minutes and belongs to a moment a person chose."
+    },
+    {
+      "decision": 1,
+      "alternative": "The post-commit hook could fail the commit if extraction fails.",
+      "reason": "",
+      "quote": "It calls no model, cannot fail a commit, and takes no time"
+    },
+    {
+      "decision": 2,
+      "alternative": "Not registering a custom merge driver and handling merges manually.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Registering the merge driver in a different way that does not require a specific configuration line per clone.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Allow the merge driver to overwrite files it does not understand with an empty document.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Modify the merge driver to handle unknown content differently, but still silently replace the file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Do not track .smysl/commits/` and `.smysl/bench/`, allowing them to be lost during extraction or other operations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Implement fact retrieval and matching within an existing crate.",
+      "reason": "",
+      "quote": "~ Rejected: Implement fact retrieval and matching within an existing crate."
+    },
+    {
+      "decision": 5,
+      "alternative": "Use a different library for fact retrieval and matching.",
+      "reason": "",
+      "quote": "~ Rejected: Use a different library for fact retrieval and matching."
+    },
+    {
+      "decision": 6,
+      "alternative": "Implement fact retrieval and matching within an existing crate.",
+      "reason": "",
+      "quote": "~ Rejected: Implement fact retrieval and matching within an existing crate."
+    },
+    {
+      "decision": 6,
+      "alternative": "Use a different library for fact retrieval and matching.",
+      "reason": "",
+      "quote": "~ Rejected: Use a different library for fact retrieval and matching."
+    },
+    {
+      "decision": 7,
+      "alternative": "Do not update dependencies and features.",
+      "reason": "",
+      "quote": "Rejected: Do not update dependencies and features."
+    },
+    {
+      "decision": 7,
+      "alternative": "Update only the dependencies without defining new features.",
+      "reason": "",
+      "quote": "Rejected: Update only the dependencies without defining new features."
+    },
+    {
+      "decision": 7,
+      "alternative": "Define new features but do not update dependencies.",
+      "reason": "",
+      "quote": "Rejected: Define new features but do not update dependencies."
+    },
+    {
+      "decision": 8,
+      "alternative": "Not adding the `Evidence` command, continuing without this functionality.",
+      "reason": "",
+      "quote": "~ Rejected: Not adding the `Evidence` command, continuing without this functionality."
+    },
+    {
+      "decision": 9,
+      "alternative": "Retrieve all facts without considering overlap with claim terms.",
+      "reason": "",
+      "quote": "~ Rejected: Retrieve all facts without considering overlap with claim terms."
+    },
+    {
+      "decision": 9,
+      "alternative": "Combine structural and prose facts together when showing to the model.",
+      "reason": "",
+      "quote": "~ Rejected: Combine structural and prose facts together when showing to the model."
+    },
+    {
+      "decision": 10,
+      "alternative": "Do not validate citations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Ask about multiple claims at once.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Define a different system prompt that does not specify how to handle structural facts and prose separately.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Do not define a system prompt for the model.",
+      "reason": "",
+      "quote": "Rejected: Do not define a system prompt for the model."
+    },
+    {
+      "decision": 11,
+      "alternative": "Define a different system prompt that does not specify how to handle structural facts and prose separately.",
+      "reason": "",
+      "quote": "Rejected: Define a different system prompt that does not specify how to handle structural facts and prose …"
+    },
+    {
+      "decision": 12,
+      "alternative": "Use a different data structure to represent the JSON answer.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Parse the JSON answer manually without defining a struct.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Drain the queue in any order, not necessarily oldest first.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Forget a commit as soon as it is queued.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "The merge driver continues to silently replace someone's file.",
+      "reason": "",
+      "quote": "A merge driver that silently replaces someone's file is worse than no merge driver."
+    },
+    {
+      "decision": 15,
+      "alternative": "Allow the merge to proceed with an empty document if no records are yielded.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Log a warning instead of failing the merge.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "Track the store, facts, queue, and mutation backup.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "Track .smysl/extractions/",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 18,
+      "alternative": "expose the merge driver to users",
+      "reason": "",
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone. `cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without any conflict."
+    },
+    {
+      "decision": 19,
+      "alternative": "Keep the existing behavior where each commit is processed individually.",
+      "reason": "",
+      "quote": "This allows for processing all queued commits in one go, making it easier to manage extraction runs."
+    },
+    {
+      "decision": 20,
+      "alternative": "Manual setup of git hooks and merge drivers.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "drain the queue in random order",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "drain the queue newest first",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 22,
+      "alternative": "The merge driver could attempt to reconcile differences between records, considering their order.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 22,
+      "alternative": "The merge driver could overwrite one version of the document with the other.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 23,
+      "alternative": "The merge driver could attempt to merge the documents even if they do not parse.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 23,
+      "alternative": "The merge driver could overwrite one of the documents with an empty document if it does not parse.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 24,
+      "alternative": "Do not track .smysl/commits/` and `.smysl/bench/`, allowing them to be ignored.",
+      "reason": "",
+      "quote": ".smysl/extractions/` stays ignored with the question written down in the plan: a clone without it re-extracts."
+    },
+    {
+      "decision": 25,
+      "alternative": "drain the queue in any order",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 25,
+      "alternative": "forget a commit as soon as it is queued",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "The merge driver silently replaces someone's file.",
+      "reason": "",
+      "quote": "a merge driver that silently replaces someone's file is worse than no merge driver."
+    },
+    {
+      "decision": 26,
+      "alternative": "The merge driver does not handle non-parsable documents gracefully.",
+      "reason": "",
+      "quote": "A document that does not parse is left to a person rather than half-merged."
+    },
+    {
+      "decision": 27,
+      "alternative": "Do not register `*.smy merge=smysl` in `.gitattributes`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Register a different merge driver for `.smy` files.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "Do not print the `git config` line required for each clone.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "`cargo smysl extract --queued` is called automatically after commits are made.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 30,
+      "alternative": "Remove commits from the queue immediately after they are processed.",
+      "reason": "",
+      "quote": "A test caught the driver accepting a file it understood nothing of and overwriting it with an empty document. Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver."
+    },
+    {
+      "decision": 31,
+      "alternative": "`cargo smysl merge-driver` is exposed to users.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "Track .smysl/extractions/ in version control",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "Automatically handle extractions differently based on environment",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 33,
+      "alternative": "Fail if the hook or git configuration already exists.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 33,
+      "alternative": "Overwrite existing hooks or configurations without checking.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 34,
+      "alternative": "Track .smysl/store.cbor and .smysl/facts/ in the repository.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 35,
+      "alternative": "`cargo smysl check` ships as a gate without the `--strict` option.",
+      "reason": "",
+      "quote": "all bounds met: `check` ships as a gate;"
+    },
+    {
+      "decision": 35,
+      "alternative": "`cargo smysl check` does not ship with any advisory mode.",
+      "reason": "",
+      "quote": "any bound missed: it ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set."
+    },
+    {
+      "decision": 36,
+      "alternative": "Using a third-party model client with a network stack.",
+      "reason": "",
+      "quote": "Item 7, settled (D18): our own client. The default build carries no network stack; `hosted` adds TLS for a paid provider."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Extraction is deferred to a moment chosen by a person.",
+      "quote": "because extraction is 7 to 30 minutes and belongs to a moment a person chose.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "The commit process remains unaffected by the extraction task.",
+      "quote": "It calls no model, cannot fail a commit, and takes no time",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The project will have a custom merge driver for handling corpus document merges without user intervention.",
+      "quote": "To enable smysl's own merge driver for handling corpus document merges without user intervention.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Users of the project will need to run a specific `git config` command per clone to set up the custom merge driver.",
+      "quote": "and prints the one `git config` line git requires per clone",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Text that yields no records is now refused by the merge driver.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Text that yields no records is now refused, and git is told the merge failed."
+    },
+    {
+      "decision": 3,
+      "text": "Git is informed when the merge fails due to unknown content.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Text that yields no records is now refused, and git is told the merge failed."
+    },
+    {
+      "decision": 4,
+      "text": "The record and a person's labels are preserved across clones and not lost during extraction or other operations.",
+      "quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching facts.",
+      "quote": "~ The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching …",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "The project now has a dedicated module for checking one claim against the facts.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The project will include necessary crates for new functionality.",
+      "quote": "To include necessary crates for the new functionality and to define features like `hosted` that require TLS.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The `hosted` feature will require TLS, as defined in the features section of `Cargo.toml`.",
+      "quote": "To include necessary crates for the new functionality and to define features like `hosted` that require TLS.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching facts.",
+      "quote": "~ The `cargo-smysl-verdict` crate will have access to the necessary functionality for retrieving and matching …",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The project now has a dedicated module for checking one claim against the facts.",
+      "quote": "~ The project now has a dedicated module for checking one claim against the facts.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The `retrieve` function is added to `matching.rs` to retrieve the facts worth showing for one claim based on the overlap with the claim's terms.",
+      "quote": "To retrieve the facts worth showing for one claim based on the overlap with the claim's terms.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "The `match_claim` function uses the `Answer` struct to process the model's response.",
+      "quote": "pub fn match_claim(\n    claim: &str,\n    shown: &Shown<'_>,\n    judge: &dyn Judge,\n    r: &Retrieval,\n) -> Result<Matched, JudgeError> {",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Ensures that the retrieval and matching of claims against facts works as expected.",
+      "quote": "RATIONALE: To ensure that the retrieval and matching of claims against facts works as expected.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The model will receive a clear instruction on how to check one claim against facts, including the distinction between structural facts and prose.",
+      "quote": "pub const SYSTEM: &str = \"You check one claim about a Rust codebase against facts taken from the code.\\n\\\nThe facts are `F1`, `F2`, … (what the code does) and `P1`, `P2`, … (what the code says about itself: doc comments, string literals, string constants).\\n\\\nBreak the claim into its parts — each thing it asserts — and for each part say whether the facts show it. Cite the facts you used by name.\\n\\\nRules you must follow:\\n- Cite only facts you were shown. Do not recall anything about this project from memory.\\n- A part no fact shows is uncovered. Saying so is the useful answer; guessing is not.\\n- If a fact shows the claim is false, set `contradicted` and cite it.\\n- `P` facts are what someone wrote, not what the code does: they may point at the right place, and they never establish a part on their own.\\n\\\nReturn one JSON object: {\"covered\": [{\"part\": string, \"facts\": [string]}], \"uncovered\": [string], \"contradicted\": boolean, \"contradicted_by\": [string]}\";",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The `Answer` struct is used to deserialize the JSON response from the model.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "pub struct Answer {\n    #[serde(default)]\n    covered: Vec<Covered>,\n    #[serde(default)]\n    uncovered: Vec<String>,\n    #[serde(default)]\n    contradicted: bool,\n    #[serde(default)]\n    contradicted_by: Vec<String>,\n}"
+    },
+    {
+      "decision": 12,
+      "text": "The `match_claim` function uses the `Answer` struct to process the model's response.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "let answer: Answer = serde_json::from_str(&text).map_err(|e| JudgeError::Shape(e.to_string()))?"
+    },
+    {
+      "decision": 13,
+      "text": "Resumable extraction runs are possible.",
+      "quote": "This allows for resumable extraction runs",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "Failed commits stay queued for further processing.",
+      "quote": "ensures that failed commits stay queued for further processing.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "Text that yields no records is now refused, and git is told the merge failed.",
+      "quote": "Text that yields no records is now refused, and git is told the merge failed — a merge driver that silently replaces someone's file is worse than no merge driver.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The merge driver now refuses text that yields no records and tells git the merge failed.",
+      "quote": "Text that yields no records is now refused, and git is told the merge failed.",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": ".smysl/commits/ and .smysl/bench/ are tracked in version control.",
+      "quote": ".smysl/commits/ and .smysl/bench/ are tracked: the record, and a person's labels.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "Efficient cloning is achieved by avoiding the need to track large extraction files",
+      "quote": "This allows for efficient cloning by avoiding the need to track large extraction files, which can be regenerated as needed.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "simplifies the user experience by hiding internal details of the merge process from users",
+      "quote": "The same command registers `*.smy merge=smysl` in .gitattributes, and prints the one `git config` line git requires per clone. `cargo smysl merge-driver`, hidden because git calls it and people do not, merges two versions of a corpus document with smysl's own merge: records are append-only and the merge is order-independent, so two branches that recorded different commits merge without any conflict.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "Users can now process all queued commits in a single command.",
+      "quote": "This allows for processing all queued commits in one go, making it easier to manage extraction runs.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "Users can now easily install, uninstall, and check the status of git hooks and merge drivers using the `Hooks` subcommand.",
+      "quote": "This provides a way to manage the installation and configuration of git hooks and merge drivers, making it easier for users to set up their environment.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 21,
+      "text": "an interrupted run resumes and a failed commit stays queued.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "`cargo smysl extract --queued` drains it oldest first, forgetting a commit only once it is recorded, so an interrupted run resumes and a failed commit stays queued."
+    },
+    {
+      "decision": 22,
+      "text": "The merge process for corpus documents will be efficient and conflict-free.",
+      "quote": "This ensures that the merge process for corpus documents is efficient and conflict-free",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "Two branches that recorded different commits can be merged without any user intervention.",
+      "quote": "two branches that recorded different commits merge without anyone choosing",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "Git will treat the merge as a conflict when a document does not parse.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert_ne!(out.status.code(), Some(0), \"git is told the merge failed\");"
+    },
+    {
+      "decision": 23,
+      "text": "The original content of the file will be preserved if it does not parse.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert_eq!(std::fs::read_to_string(&ours).unwrap(), \"this is not a smysl document\", \"and our file is untouched\");"
+    },
+    {
+      "decision": 24,
+      "text": "The record and labels are preserved across clones and changes.",
+      "quote": ".smysl/commits/` and `.smysl/bench/` are tracked: the record, and a person's labels.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "interrupted runs can resume",
+      "quote": "`cargo smysl extract --queued` drains it oldest first, ensuring that interrupted runs can resume.",
+      "verified": true,
+      "verification_quote": "`cargo smysl extract --queued` drains it oldest first, ensuring that interrupted runs can resume."
+    },
+    {
+      "decision": 25,
+      "text": "failed commits stay queued",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 26,
+      "text": "Both branches' reasoning is preserved in the merged file.",
+      "quote": "let out = cargo(&[\n        \"smysl\",\n        \"merge-driver\",\n        base.to_str().unwrap(),\n        ours.to_str().unwrap(),\n        theirs.to_str().unwrap(),\n    ]);\n    assert_eq!(out.status.code(), Some(0), \"{}\", text(&out));",
+      "verified": true,
+      "verification_quote": "Both branches' reasoning is in the file git will keep."
+    },
+    {
+      "decision": 26,
+      "text": "If a document does not parse, the merge fails and the original file is untouched.",
+      "quote": "let out = cargo(&[\n        \"smysl\",\n        \"merge-driver\",\n        base.to_str().unwrap(),\n        ours.to_str().unwrap(),\n        theirs.to_str().unwrap(),\n    ]);\n    assert_ne!(out.status.code(), Some(0), \"git is told the merge failed\");",
+      "verified": true,
+      "verification_quote": "assert_ne!(out.status.code(), Some(0), \"git is told the merge failed\");"
+    },
+    {
+      "decision": 27,
+      "text": "`cargo smysl hooks install` now registers `*.smy merge=smysl` in `.gitattributes`, enabling custom merge handling for `.smy` files.",
+      "quote": "`cargo smysl hooks install` now registers `*.smy merge=smysl` in `.gitattributes`, enabling custom merge handling for `.smy` files.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 27,
+      "text": "Git uses the custom merge driver for `.smy` files, allowing for proper merging of corpus documents.",
+      "quote": "This ensures that git uses the custom merge driver for `.smy` files, allowing for proper merging of corpus documents.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 28,
+      "text": "The custom merge driver is properly configured in each clone, allowing for seamless merging of `.smy` files.",
+      "quote": "This ensures that the custom merge driver is properly configured in each clone, allowing for seamless merging of `.smy` files.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 29,
+      "text": "allows for more control over when extraction occurs, ensuring that it happens at a time chosen by the user.",
+      "quote": "This allows for more control over when extraction occurs, ensuring that it happens at a time chosen by the user.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 30,
+      "text": "No data is lost in case of extraction failures.",
+      "quote": "This ensures that no data is lost in case of extraction failures, allowing for retries and resumption.",
+      "verified": true,
+      "verification_quote": "This ensures that no data is lost in case of extraction failures, allowing for retries and resumption."
+    },
+    {
+      "decision": 30,
+      "text": "Extractions can be retried and resumed.",
+      "quote": "This ensures that no data is lost in case of extraction failures, allowing for retries and resumption.",
+      "verified": true,
+      "verification_quote": "This ensures that no data is lost in case of extraction failures, allowing for retries and resumption."
+    },
+    {
+      "decision": 31,
+      "text": "The user experience is simplified by hiding internal implementation details.",
+      "quote": "RATIONALE: This simplifies the user experience by hiding internal implementation details, focusing on ease of use.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 32,
+      "text": "Users may need to re-extract data after cloning the repository",
+      "quote": ".smysl/extractions/ stays ignored with the question written down in the plan: a clone without it re-extracts.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 33,
+      "text": "`cargo smysl hooks install` can be called multiple times without causing errors.",
+      "quote": "This prevents errors and ensures that the hook installation process is reliable and repeatable.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 34,
+      "text": "Reduces the size of the tracked files in the repository.",
+      "quote": "These files are derived from other data and can be rebuilt if necessary, so they do not need to be tracked in the repository.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 34,
+      "text": "Simplifies the process of rebuilding the repository state.",
+      "quote": "These files are derived from other data and can be rebuilt if necessary, so they do not need to be tracked in the repository.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 35,
+      "text": "`cargo smysl check` is shipped as an advisory tool, with `--strict` option to block.",
+      "quote": "RATIONALE: The commit message states that `check` is advisory because it does not meet all the required bounds, but it can be used as a gate if `--strict` is given.",
+      "verified": true,
+      "verification_quote": "DECISION 35: `cargo smysl check` ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set."
+    },
+    {
+      "decision": 36,
+      "text": "The tool can be used without an internet connection if desired.",
+      "quote": "This ensures that the tool can be used without an internet connection if desired, and it avoids pulling in unnecessary dependencies.",
+      "verified": true,
+      "verification_quote": "This ensures that the tool can be used without an internet connection if desired, and it avoids pulling in unnecessary dependencies."
+    },
+    {
+      "decision": 36,
+      "text": "The default build has no network stack.",
+      "quote": "Item 7, settled (D18): our own client. The default build carries no network stack; `hosted` adds TLS for a paid provider.",
+      "verified": true,
+      "verification_quote": "Item 7, settled (D18): our own client. The default build carries no network stack; `hosted` adds TLS for a paid provider."
+    }
+  ]
+}
