@@ -1,0 +1,328 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g8a8e503bbff0-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "**Order matters.** crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Publishing order matters due to path dependencies.
+
+Crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on.
+
+@decision d/g8a8e503bbff0-2 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "Publishing 0.2.0 stopped after the fifth with:\n\n```\n429 Too Many Requests: You have published too many new crates in a short period of time.\n```" }
+~ Rate limit handling is implemented with retries and checks.
+
+The rate limit refills from the last success, not from the first refusal, so the last three crates took about forty minutes and the final one seven attempts.
+
+@decision d/g8a8e503bbff0-3 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "**Test the publish, not the pipe.** `cargo publish … | tail -3` in a retry loop tests `tail`, which always succeeds; that reported two crates published when both had been refused." }
+~ Testing cargo's exit status instead of piping into `tail`.
+
+A retry loop must test cargo's exit status: piping into `tail` tests the pipe, which is how two crates were reported published while both had been refused.
+
+@decision d/g8a8e503bbff0-4 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": decline, "ingest:quote": Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ `cargo-smysl-eval` is excluded from publishing.
+
+`cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package).
+
+@decision d/g8a8e503bbff0-5 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "- **Its own `README.md`.** A published package cannot reach outside itself, so each crate has a short one and the full documentation stays in the repository." }
+~ Each crate has its own `README.md`.
+
+A published package cannot reach outside itself, so each crate has a short one and the full documentation stays in the repository.
+
+@decision d/g8a8e503bbff0-6 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "- **`rust-version = \"1.86\"`**, the MSRV CI checks for the shipped crates." }
+~ `rust-version = "1.86"` is set for all crates.
+
+The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag. Publishing 0.1.0 means publishing from `main` at that tag, where the manifests say `0.1.0`. A pre-release version such as `0.2.0-dev` can be published, but `cargo install cargo-smysl` will not pick it up without `--version 0.2.0-dev`, so it is rarely what anyone wants.
+
+@decision d/g8a8e503bbff0-7 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "- **Keywords and categories** from the workspace, except `cargo-smysl` itself, which carries its own: it is the crate people install and they find it by searching for a cargo subcommand." }
+~ Keywords and categories are set from the workspace, except for `cargo-smysl` itself.
+
+Keywords and categories from the workspace, except `cargo-smysl` itself, which carries its own: it is the crate people install and they find it by searching for a cargo subcommand.
+
+@decision d/g8a8e503bbff0-8 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "**Tag and merge before or immediately after publishing, not later.** For a few hours 0.2.0 was on crates.io while the repository's only tag was `v0.1.0`, so `cargo install` and a browser gave different answers about what this project was." }
+~ Tagging and merging are done before or immediately after publishing.
+
+For a few hours 0.2.0 was on crates.io while the repository's only tag was `v0.1.0`, so `cargo install` and a browser gave different answers about what this project was.
+
+@decision d/g8a8e503bbff0-9 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": The version in the manifest is the version that publishes. }
+~ The version in the manifest is the version that publishes.
+
+Publish from the branch whose manifests carry the version you mean, and tag that same commit. A pre-release such as `0.2.0-dev` can be published, but `cargo install cargo-smysl` will not pick it up without `--version 0.2.0-dev`, so it is rarely what anyone wants.
+
+@decision d/g8a8e503bbff0-10 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "**`cargo package` fails before the first publish, and that is expected.** Until `cargo-smysl-git` exists on crates.io, any crate depending on it reports `no matching package named cargo-smysl-git found`. Only wave 1 can be packaged or verified locally; the rest can be checked only as the waves land." }
+~ `cargo package` fails before the first publish, and this is expected.
+
+`cargo package` fails before the first publish, and that is expected. Until `cargo-smysl-git` exists on crates.io, any crate depending on it reports `no matching package named cargo-smysl-git found`. Only wave 1 can be packaged or verified locally; the rest can be checked only as the waves land.
+
+@decision d/g8a8e503bbff0-11 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "Publishing to crates.io is a separate, later step, and it is the only irreversible one: a version can be yanked but never removed." }
+~ Publishing is a separate step from tagging and merging.
+
+Publishing to crates.io is a separate, later step, and it is the only irreversible one: a version can be yanked but never removed.
+
+@decision d/g8a8e503bbff0-12 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": act, "ingest:quote": "Then publish only what is missing, in wave order, ten minutes apart." }
+~ Checking what landed before resuming publishing.
+
+Nothing is lost when that happens — the crates already accepted stay accepted, and the rest publish when the clock allows. Check what landed before resuming:
+
+@constraint p/g8a8e503bbff0-1-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Crates.io resolves path dependencies by version.
+
+@constraint p/g8a8e503bbff0-12-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "**crates.io rate-limits new crates, and this workspace is eight of them.** The allowance is a burst of five, then roughly one new crate per ten minutes — and each publish consumes the refill, so the wait restarts from the last one that succeeded rather than from the first refusal." }
+~ crates.io rate-limits new crates
+
+@constraint p/g8a8e503bbff0-2-2 { status: cited, source: { kind: doc, ref: git:8a8e503bbff07b78083a4e090c8ed1e0ae200d70 }, "code:kind": existing-behaviour, "ingest:quote": "The rate limit refills from the last success, not from the first refusal, so the last three crates took about forty minutes and the final one seven attempts." }
+~ The rate limit refills from the last success
+
+@constraint p/g8a8e503bbff0-3-1 { status: cited, source: { kind: doc, ref: git:8a8e503bbff07b78083a4e090c8ed1e0ae200d70 }, "code:kind": existing-behaviour, "ingest:quote": "A retry loop must test cargo's exit status: piping into `tail` tests the pipe, which is how two crates were reported published while both had been refused." }
+~ A retry loop must test cargo's exit status
+
+@constraint p/g8a8e503bbff0-3-2 { status: cited, source: { kind: doc, ref: git:8a8e503bbff07b78083a4e090c8ed1e0ae200d70 }, "code:kind": existing-behaviour, "ingest:quote": "piping into `tail` tests the pipe, which is how two crates were reported published while both had been refused." }
+~ Piping into `tail` tests the pipe
+
+@constraint p/g8a8e503bbff0-4-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ `cargo-smysl-eval` is marked with `publish = false` in its manifest.
+
+@constraint p/g8a8e503bbff0-5-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "A published package cannot reach outside itself, so each crate has a short one and the full documentation stays in the repository." }
+~ A published package cannot reach outside itself
+
+@constraint p/g8a8e503bbff0-6-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "Publish from the branch whose manifests carry the version you mean, and tag that same commit. A pre-release such as `0.2.0-dev` can be published, but `cargo install cargo-smysl` will not pick it up without `--version 0.2.0-dev`, so it is rarely what anyone wants." }
+~ The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag.
+
+@constraint p/g8a8e503bbff0-6-2 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": prior-change, "ingest:quote": "**`rust-version = \"1.86\"`**, the MSRV CI checks for the shipped crates." }
+~ `rust-version = "1.86"` is set for all crates.
+
+@constraint p/g8a8e503bbff0-7-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "Keywords and categories from the workspace, except `cargo-smysl` itself, which carries its own: it is the crate people install and they find it by searching for a cargo subcommand." }
+~ Keywords and categories are set from the workspace
+
+@constraint p/g8a8e503bbff0-7-2 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": it is the crate people install and they find it by searching for a cargo subcommand. }
+~ `cargo-smysl` is the crate people install
+
+@constraint p/g8a8e503bbff0-8-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing to crates.io is a separate, later step, and it is the only irreversible one: a version can be yanked but never removed." }
+~ Publishing to crates.io is irreversible, and tagging and merging should reflect the published version.
+
+@constraint p/g8a8e503bbff0-8-2 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": prior-change, "ingest:quote": "For a few hours 0.2.0 was on crates.io while the repository's only tag was `v0.1.0`, so `cargo install` and a browser gave different answers about what this project was." }
+~ There was an incident where 0.2.0 was published on crates.io while the repository's tag was still v0.1.0.
+
+@constraint p/g8a8e503bbff0-9-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing to crates.io is a separate, later step, and it is the only irreversible one: a version can be yanked but never removed." }
+~ Publishing to crates.io is a separate, later step from creating a release.
+
+@constraint p/g8a8e503bbff0-9-2 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag. }
+~ The workspace version on the development branch is `0.2.0-dev`.
+
+@constraint p/g8a8e503bbff0-9-3 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "A pre-release such as `0.2.0-dev` can be published, but `cargo install cargo-smysl` will not pick it up without `--version 0.2.0-dev`, so it is rarely what anyone wants." }
+~ Publishing a pre-release version such as `0.2.0-dev` requires specifying the version explicitly.
+
+@constraint p/g8a8e503bbff0-10-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "Until `cargo-smysl-git` exists on crates.io, any crate depending on it reports `no matching package named cargo-smysl-git found`." }
+~ `cargo-smysl-git` does not exist on crates.io
+
+@constraint p/g8a8e503bbff0-10-2 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": invariant, "ingest:quote": "**Order matters.** crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Order matters for publishing crates
+
+@constraint p/g8a8e503bbff0-11-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing to crates.io is a separate, later step, and it is the only irreversible one: a version can be yanked but never removed." }
+~ Publishing to crates.io is a separate, later step
+
+@constraint p/g8a8e503bbff0-11-2 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing to crates.io is a separate, later step, and it is the only irreversible one: a version can be yanked but never removed." }
+~ A version can be yanked but never removed
+
+@constraint p/g8a8e503bbff0-12-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "**crates.io rate-limits new crates, and this workspace is eight of them.** The allowance is a burst of five, then roughly one new crate per ten minutes — and each publish consumes the refill, so the wait restarts from the last one that succeeded rather than from the first refusal." }
+~ crates.io rate-limits new crates
+
+@constraint p/g8a8e503bbff0-12-2 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing 0.2.0 took about forty minutes for the last three crates, the final one succeeding on its seventh attempt. It stopped after the fifth with:\n\n```\n429 Too Many Requests: You have published too many new crates in a short period of time.\n```" }
+~ Publishing 0.2.0 stopped after the fifth with '429 Too Many Requests'
+
+@constraint p/g8a8e503bbff0-12-3 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": existing-behaviour, "ingest:quote": "Nothing is lost when that happens — the crates already accepted stay accepted, and the rest publish when the clock allows." }
+~ The crates already accepted stay accepted
+
+@claim r/g8a8e503bbff0-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: No retries or checks
+
+@claim r/g8a8e503bbff0-2-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Retries without checking cargo's exit status
+
+@claim r/g8a8e503bbff0-3-1 { status: cited, source: { kind: doc, ref: git:8a8e503bbff07b78083a4e090c8ed1e0ae200d70 }, "code:kind": rejected-alternative, "ingest:quote": "piping into `tail` tests the pipe, which is how two crates were reported published while both had been refused." }
+~ Rejected: Piping into `tail` to test cargo's exit status
+
+@claim r/g8a8e503bbff0-4-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include `cargo-smysl-eval` in publishing.
+
+@claim r/g8a8e503bbff0-6-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Set a different `rust-version` for each crate.
+
+@claim r/g8a8e503bbff0-6-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not specify `rust-version` in the manifest.
+
+@claim r/g8a8e503bbff0-7-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keywords and categories are set individually for each crate
+
+@claim r/g8a8e503bbff0-7-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: `cargo-smysl` shares keywords and categories with other crates in the workspace
+
+@claim r/g8a8e503bbff0-8-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "code:kind": rejected-alternative, "ingest:quote": "Tag and merge before or immediately after publishing, not later." }
+~ Rejected: Tagging and merging after publishing.
+
+@claim r/g8a8e503bbff0-9-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Publishing a pre-release version without specifying the version explicitly.
+
+@claim r/g8a8e503bbff0-9-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Publishing from a branch with a different version in the manifest.
+
+@claim r/g8a8e503bbff0-10-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Allow `cargo package` to succeed before the first publish
+
+@claim r/g8a8e503bbff0-11-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Publishing could be combined with tagging and merging
+
+@claim r/g8a8e503bbff0-12-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not check what landed before resuming publishing
+
+@claim q/g8a8e503bbff0-1-1 { status: inferred, grounds: [d/g8a8e503bbff0-1], "code:kind": anticipated, "ingest:quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Publishing order must follow the dependency hierarchy.
+
+@evidence e/g8a8e503bbff0-2-1 { status: cited, source: { kind: file, ref: docs/releasing.md@8a8e503bbff0 }, "ingest:quote": "Publishing 0.2.0 took about forty minutes for the last three crates, the final one succeeding on its seventh attempt." }
+~ Check: Publishing 0.2.0 took about forty minutes for the last three crates, the final one succeeding on its …
+
+Check: Publishing 0.2.0 took about forty minutes for the last three crates, the final one succeeding on its seventh attempt.
+
+@finding q/g8a8e503bbff0-2-1 { status: speculative }
+~ Publishing process takes longer due to rate limits and retries
+
+@claim q/g8a8e503bbff0-2-2 { status: inferred, grounds: [d/g8a8e503bbff0-2], "code:kind": anticipated }
+~ Some crates may be published multiple times before success
+
+@claim q/g8a8e503bbff0-3-1 { status: inferred, grounds: [d/g8a8e503bbff0-3], "code:kind": anticipated, "ingest:quote": "Test the publish, not the pipe. `cargo publish … | tail -3` in a retry loop tests `tail`, which always succeeds; that reported two crates published when both had been refused. Check cargo's own exit status, and confirm against the registry rather than against the script:" }
+~ Check cargo's own exit status and confirm against the registry rather than against the script
+
+@claim q/g8a8e503bbff0-4-1 { status: inferred, grounds: [d/g8a8e503bbff0-4], "code:kind": anticipated, "ingest:quote": `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ `cargo-smysl-eval` will not be published to crates.io.
+
+@claim q/g8a8e503bbff0-5-1 { status: inferred, grounds: [d/g8a8e503bbff0-5], "code:kind": anticipated, "ingest:quote": "A published package cannot reach outside itself, so each crate has a short one and the full documentation stays in the repository." }
+~ Each crate has its own `README.md`
+
+@claim q/g8a8e503bbff0-6-1 { status: inferred, grounds: [d/g8a8e503bbff0-6], "code:kind": anticipated, "ingest:quote": "**`rust-version = \"1.86\"`**, the MSRV CI checks for the shipped crates." }
+~ The MSRV CI will check for Rust version 1.86.
+
+@claim q/g8a8e503bbff0-7-1 { status: inferred, grounds: [d/g8a8e503bbff0-7], "code:kind": anticipated, "ingest:quote": "Keywords and categories from the workspace, except `cargo-smysl` itself, which carries its own: it is the crate people install and they find it by searching for a cargo subcommand." }
+~ The `cargo-smysl` crate has its own set of keywords and categories
+
+@claim q/g8a8e503bbff0-8-1 { status: inferred, grounds: [d/g8a8e503bbff0-8], "code:kind": anticipated, "ingest:quote": "Tag and merge before or immediately after publishing, not later." }
+~ Ensures that the repository's tag accurately reflects the version published on crates.io.
+
+@claim q/g8a8e503bbff0-8-2 { status: inferred, grounds: [d/g8a8e503bbff0-8], "code:kind": anticipated, "ingest:quote": "For a few hours 0.2.0 was on crates.io while the repository's only tag was `v0.1.0`, so `cargo install` and a browser gave different answers about what this project was." }
+~ Prevents confusion caused by discrepancies between the published version and the repository's tag.
+
+@claim q/g8a8e503bbff0-9-1 { status: inferred, grounds: [d/g8a8e503bbff0-9], "code:kind": anticipated, "ingest:quote": "Publish from the branch whose manifests carry the version you mean, and tag that same commit." }
+~ The version in the manifest on the tag should match the version being published.
+
+@claim q/g8a8e503bbff0-9-2 { status: inferred, grounds: [d/g8a8e503bbff0-9], "code:kind": anticipated, "ingest:quote": "A pre-release such as `0.2.0-dev` can be published, but `cargo install cargo-smysl` will not pick it up without `--version 0.2.0-dev`, so it is rarely what anyone wants." }
+~ Using `cargo install cargo-smysl` without specifying a version will not pick up pre-release versions.
+
+@claim q/g8a8e503bbff0-10-1 { status: inferred, grounds: [d/g8a8e503bbff0-10], "code:kind": anticipated, "ingest:quote": Only wave 1 can be packaged or verified locally; the rest can be checked only as the waves land. }
+~ Only wave 1 can be packaged or verified locally
+
+@claim q/g8a8e503bbff0-11-1 { status: inferred, grounds: [d/g8a8e503bbff0-11], "code:kind": anticipated, "ingest:quote": "Publishing to crates.io is a separate, later step, and it is the only irreversible one: a version can be yanked but never removed." }
+~ The process of publishing is distinct from the version control steps
+
+@claim q/g8a8e503bbff0-12-1 { status: inferred, grounds: [d/g8a8e503bbff0-12], "code:kind": anticipated, "ingest:quote": "Then publish only what is missing, in wave order, ten minutes apart." }
+~ Check which crates have been published and resume publishing only what is missing
+
+@rel p/g8a8e503bbff0-1-1 --conditions--> d/g8a8e503bbff0-1
+
+@rel p/g8a8e503bbff0-12-1 --conditions--> d/g8a8e503bbff0-2
+
+@rel p/g8a8e503bbff0-2-2 --conditions--> d/g8a8e503bbff0-2
+
+@rel p/g8a8e503bbff0-3-1 --conditions--> d/g8a8e503bbff0-3
+
+@rel p/g8a8e503bbff0-3-2 --conditions--> d/g8a8e503bbff0-3
+
+@rel p/g8a8e503bbff0-4-1 --conditions--> d/g8a8e503bbff0-4
+
+@rel p/g8a8e503bbff0-5-1 --conditions--> d/g8a8e503bbff0-5
+
+@rel p/g8a8e503bbff0-6-1 --conditions--> d/g8a8e503bbff0-6
+
+@rel p/g8a8e503bbff0-6-2 --conditions--> d/g8a8e503bbff0-6
+
+@rel p/g8a8e503bbff0-7-1 --conditions--> d/g8a8e503bbff0-7
+
+@rel p/g8a8e503bbff0-7-2 --conditions--> d/g8a8e503bbff0-7
+
+@rel p/g8a8e503bbff0-8-1 --conditions--> d/g8a8e503bbff0-8
+
+@rel p/g8a8e503bbff0-8-2 --conditions--> d/g8a8e503bbff0-8
+
+@rel p/g8a8e503bbff0-9-1 --conditions--> d/g8a8e503bbff0-9
+
+@rel p/g8a8e503bbff0-9-2 --conditions--> d/g8a8e503bbff0-9
+
+@rel p/g8a8e503bbff0-9-3 --conditions--> d/g8a8e503bbff0-9
+
+@rel p/g8a8e503bbff0-10-1 --conditions--> d/g8a8e503bbff0-10
+
+@rel p/g8a8e503bbff0-10-2 --conditions--> d/g8a8e503bbff0-10
+
+@rel p/g8a8e503bbff0-11-1 --conditions--> d/g8a8e503bbff0-11
+
+@rel p/g8a8e503bbff0-11-2 --conditions--> d/g8a8e503bbff0-11
+
+@rel p/g8a8e503bbff0-12-1 --conditions--> d/g8a8e503bbff0-12
+
+@rel p/g8a8e503bbff0-12-2 --conditions--> d/g8a8e503bbff0-12
+
+@rel p/g8a8e503bbff0-12-3 --conditions--> d/g8a8e503bbff0-12
+
+@rel r/g8a8e503bbff0-2-1 --contrasts--> d/g8a8e503bbff0-2
+
+@rel r/g8a8e503bbff0-2-2 --contrasts--> d/g8a8e503bbff0-2
+
+@rel r/g8a8e503bbff0-3-1 --contrasts--> d/g8a8e503bbff0-3
+
+@rel r/g8a8e503bbff0-4-1 --contrasts--> d/g8a8e503bbff0-4
+
+@rel r/g8a8e503bbff0-6-1 --contrasts--> d/g8a8e503bbff0-6
+
+@rel r/g8a8e503bbff0-6-2 --contrasts--> d/g8a8e503bbff0-6
+
+@rel r/g8a8e503bbff0-7-1 --contrasts--> d/g8a8e503bbff0-7
+
+@rel r/g8a8e503bbff0-7-2 --contrasts--> d/g8a8e503bbff0-7
+
+@rel r/g8a8e503bbff0-8-1 --contrasts--> d/g8a8e503bbff0-8
+
+@rel r/g8a8e503bbff0-9-1 --contrasts--> d/g8a8e503bbff0-9
+
+@rel r/g8a8e503bbff0-9-2 --contrasts--> d/g8a8e503bbff0-9
+
+@rel r/g8a8e503bbff0-10-1 --contrasts--> d/g8a8e503bbff0-10
+
+@rel r/g8a8e503bbff0-11-1 --contrasts--> d/g8a8e503bbff0-11
+
+@rel r/g8a8e503bbff0-12-1 --contrasts--> d/g8a8e503bbff0-12
+
+@rel d/g8a8e503bbff0-1 --causes--> q/g8a8e503bbff0-1-1
+
+@rel e/g8a8e503bbff0-2-1 --backs--> q/g8a8e503bbff0-2-1
+
+@rel d/g8a8e503bbff0-2 --causes--> q/g8a8e503bbff0-2-1
+
+@rel d/g8a8e503bbff0-2 --causes--> q/g8a8e503bbff0-2-2
+
+@rel d/g8a8e503bbff0-3 --causes--> q/g8a8e503bbff0-3-1
+
+@rel d/g8a8e503bbff0-4 --causes--> q/g8a8e503bbff0-4-1
+
+@rel d/g8a8e503bbff0-5 --causes--> q/g8a8e503bbff0-5-1
+
+@rel d/g8a8e503bbff0-6 --causes--> q/g8a8e503bbff0-6-1
+
+@rel d/g8a8e503bbff0-7 --causes--> q/g8a8e503bbff0-7-1
+
+@rel d/g8a8e503bbff0-8 --causes--> q/g8a8e503bbff0-8-1
+
+@rel d/g8a8e503bbff0-8 --causes--> q/g8a8e503bbff0-8-2
+
+@rel d/g8a8e503bbff0-9 --causes--> q/g8a8e503bbff0-9-1
+
+@rel d/g8a8e503bbff0-9 --causes--> q/g8a8e503bbff0-9-2
+
+@rel d/g8a8e503bbff0-10 --causes--> q/g8a8e503bbff0-10-1
+
+@rel d/g8a8e503bbff0-11 --causes--> q/g8a8e503bbff0-11-1
+
+@rel d/g8a8e503bbff0-12 --causes--> q/g8a8e503bbff0-12-1

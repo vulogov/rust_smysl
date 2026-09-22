@@ -1,0 +1,158 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g221f362dbc1d-1 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": act, "ingest:quote": sleep 630     # see the rate limit below: a new crate every 10 minutes after the first five }
+~ Added a sleep of 630 seconds after the fifth crate to comply with crates.io rate limits.
+
+To avoid hitting the rate limit and ensure all crates are published successfully.
+
+@decision d/g221f362dbc1d-2 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": act, "ingest:quote": Check what landed before resuming: }
+~ Included a command to check which crates have already landed before resuming publishing.
+
+To handle cases where the publishing process is interrupted due to rate limits.
+
+@decision d/g221f362dbc1d-3 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": act, "ingest:quote": sleep 630     # see the rate limit below: a new crate every 10 minutes after the first five }
+~ Updated the sleep duration from 30 seconds to 630 seconds after the fifth crate.
+
+To comply with crates.io's rate limit of one new crate per ten minutes after the initial burst of five.
+
+@decision d/g221f362dbc1d-4 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": act, "ingest:quote": "**crates.io rate-limits new crates, and this workspace is eight of them.** The allowance is a burst of five, then one new crate per ten minutes." }
+~ Documented the crates.io rate limits and how to handle them during publishing.
+
+To provide guidance for future releases on how to manage the rate limits effectively.
+
+@decision d/g221f362dbc1d-5 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": act, "ingest:quote": Check what landed before resuming: }
+~ Added a command to check which crates have already landed before resuming publishing.
+
+To handle cases where the publishing process is interrupted due to rate limits.
+
+@constraint p/g221f362dbc1d-1-1 { status: cited, source: { kind: doc, ref: git:221f362dbc1d8283cfaf55c52ca3d8f55830beb1 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time." }
+~ crates.io rate-limits new crates, five then one per ten minutes
+
+@constraint p/g221f362dbc1d-1-2 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": existing-behaviour, "ingest:quote": Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ The workspace consists of eight crates
+
+@constraint p/g221f362dbc1d-1-1 { status: cited, source: { kind: doc, ref: git:221f362dbc1d8283cfaf55c52ca3d8f55830beb1 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time." }
+~ crates.io rate-limits new crates, five then one per ten minutes
+
+@constraint p/g221f362dbc1d-2-2 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": existing-behaviour, "ingest:quote": Publishing 0.2.0 stopped after the fifth with: 429 Too Many Requests: You have published too many new crates in a short period of time. }
+~ The publishing process can be interrupted due to rate limits
+
+@constraint p/g221f362dbc1d-1-1 { status: cited, source: { kind: doc, ref: git:221f362dbc1d8283cfaf55c52ca3d8f55830beb1 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time." }
+~ crates.io rate-limits new crates, five then one per ten minutes
+
+@constraint p/g221f362dbc1d-1-2 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": existing-behaviour, "ingest:quote": Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ The workspace consists of eight crates
+
+@constraint p/g221f362dbc1d-1-1 { status: cited, source: { kind: doc, ref: git:221f362dbc1d8283cfaf55c52ca3d8f55830beb1 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time." }
+~ crates.io rate-limits new crates, five then one per ten minutes
+
+@constraint p/g221f362dbc1d-1-2 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": existing-behaviour, "ingest:quote": Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ The workspace consists of eight crates
+
+@constraint p/g221f362dbc1d-1-1 { status: cited, source: { kind: doc, ref: git:221f362dbc1d8283cfaf55c52ca3d8f55830beb1 }, "code:kind": existing-behaviour, "ingest:quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time." }
+~ crates.io rate-limits new crates, five then one per ten minutes
+
+@constraint p/g221f362dbc1d-2-2 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": existing-behaviour, "ingest:quote": Publishing 0.2.0 stopped after the fifth with: 429 Too Many Requests: You have published too many new crates in a short period of time. }
+~ The publishing process can be interrupted due to rate limits
+
+@claim r/g221f362dbc1d-1-1 { status: cited, source: { kind: doc, ref: git:221f362dbc1d8283cfaf55c52ca3d8f55830beb1 }, "code:kind": rejected-alternative, "ingest:quote": Publishing 0.2.0 stopped after the fifth crate with a 429. }
+~ Rejected: Continue publishing without any delay
+
+@claim r/g221f362dbc1d-1-2 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": rejected-alternative, "ingest:quote": sleep 630     # see the rate limit below: a new crate every 10 minutes after the first five }
+~ Rejected: Adjust the sleep duration to less than 630 seconds
+
+@claim r/g221f362dbc1d-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Continue publishing without checking which crates have already landed
+
+@claim r/g221f362dbc1d-2-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Manually check which crates have already landed before resuming publishing
+
+@claim r/g221f362dbc1d-3-1 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": rejected-alternative, "ingest:quote": sleep 30     # see the rate limit below: a new crate every 10 minutes after the first five }
+~ Rejected: Keep the sleep duration at 30 seconds
+
+@claim r/g221f362dbc1d-4-1 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "code:kind": rejected-alternative, "ingest:quote": "Publishing 0.2.0 stopped after the fifth with:\n\n```\n429 Too Many Requests: You have published too many new crates in a short period of time.\n```" }
+~ Rejected: Continue publishing without handling rate limits
+
+@claim r/g221f362dbc1d-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Continue publishing without checking which crates have already landed
+
+@claim r/g221f362dbc1d-5-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Manually check and resume publishing
+
+@claim q/g221f362dbc1d-1-1 { status: inferred, grounds: [d/g221f362dbc1d-1], "code:kind": anticipated, "ingest:quote": "Then publish only what is missing, in wave order, ten minutes apart." }
+~ All crates will be published successfully without hitting the rate limit
+
+@claim q/g221f362dbc1d-1-2 { status: inferred, grounds: [d/g221f362dbc1d-1], "code:kind": anticipated, "ingest:quote": Check what landed before resuming: }
+~ The script now includes a check to see which crates have already been published before resuming
+
+@claim q/g221f362dbc1d-2-1 { status: inferred, grounds: [d/g221f362dbc1d-2], "code:kind": anticipated, "ingest:quote": Check what landed before resuming: }
+~ The command to check which crates have already landed is included in the documentation
+
+@claim q/g221f362dbc1d-2-2 { status: inferred, grounds: [d/g221f362dbc1d-2], "code:kind": anticipated, "ingest:quote": "Nothing is lost when that happens — the crates already accepted stay accepted, and the rest publish when the clock allows." }
+~ Publishing can be resumed without losing any progress
+
+@claim q/g221f362dbc1d-3-1 { status: inferred, grounds: [d/g221f362dbc1d-3], "code:kind": anticipated, "ingest:quote": sleep 630     # see the rate limit below: a new crate every 10 minutes after the first five }
+~ The script will now wait for ten minutes between publishing each of the last three crates
+
+@claim q/g221f362dbc1d-4-1 { status: inferred, grounds: [d/g221f362dbc1d-4], "code:kind": anticipated, "ingest:quote": "crates.io rate-limits new crates, and this workspace is eight of them. The allowance is a burst of five, then one new crate per ten minutes." }
+~ The document now includes guidance on handling rate limits during publishing
+
+@evidence e/g221f362dbc1d-5-1 { status: cited, source: { kind: file, ref: docs/releasing.md@221f362dbc1d }, "ingest:quote": "Check what landed before resuming: for c in cargo-smysl-git cargo-smysl-facts cargo-smysl-corpus cargo-smysl-bench cargo-smysl-extract cargo-smysl-verdict cargo-smysl-evidence cargo-smysl; do printf \"%-22s \" \"$c\" curl -s \"https://crates.io/api/v1/crates/$c\" | python3 -c \"import sys,json;print(json.load(sys.stdin).get('crate',{}).get('max_version','not published'))\"" }
+~ Check: Check what landed before resuming: for c in cargo-smysl-git cargo-smysl-facts cargo-smysl-corpus …
+
+Check: Check what landed before resuming: for c in cargo-smysl-git cargo-smysl-facts cargo-smysl-corpus cargo-smysl-bench cargo-smysl-extract cargo-smysl-verdict cargo-smysl-evidence cargo-smysl; do printf "%-22s " "$c" curl -s "https://crates.io/api/v1/crates/$c" | python3 -c "import sys,json;print(json.load(sys.stdin).get('crate',{}).get('max_version','not published'))"
+
+@finding q/g221f362dbc1d-5-1 { status: speculative }
+~ The script now checks which crates have already landed before resuming publishing
+
+@rel p/g221f362dbc1d-1-1 --conditions--> d/g221f362dbc1d-1
+
+@rel p/g221f362dbc1d-1-2 --conditions--> d/g221f362dbc1d-1
+
+@rel p/g221f362dbc1d-1-1 --conditions--> d/g221f362dbc1d-2
+
+@rel p/g221f362dbc1d-2-2 --conditions--> d/g221f362dbc1d-2
+
+@rel p/g221f362dbc1d-1-1 --conditions--> d/g221f362dbc1d-3
+
+@rel p/g221f362dbc1d-1-2 --conditions--> d/g221f362dbc1d-3
+
+@rel p/g221f362dbc1d-1-1 --conditions--> d/g221f362dbc1d-4
+
+@rel p/g221f362dbc1d-1-2 --conditions--> d/g221f362dbc1d-4
+
+@rel p/g221f362dbc1d-1-1 --conditions--> d/g221f362dbc1d-5
+
+@rel p/g221f362dbc1d-2-2 --conditions--> d/g221f362dbc1d-5
+
+@rel r/g221f362dbc1d-1-1 --contrasts--> d/g221f362dbc1d-1
+
+@rel r/g221f362dbc1d-1-2 --contrasts--> d/g221f362dbc1d-1
+
+@rel r/g221f362dbc1d-2-1 --contrasts--> d/g221f362dbc1d-2
+
+@rel r/g221f362dbc1d-2-2 --contrasts--> d/g221f362dbc1d-2
+
+@rel r/g221f362dbc1d-3-1 --contrasts--> d/g221f362dbc1d-3
+
+@rel r/g221f362dbc1d-4-1 --contrasts--> d/g221f362dbc1d-4
+
+@rel r/g221f362dbc1d-2-1 --contrasts--> d/g221f362dbc1d-5
+
+@rel r/g221f362dbc1d-5-2 --contrasts--> d/g221f362dbc1d-5
+
+@rel d/g221f362dbc1d-1 --causes--> q/g221f362dbc1d-1-1
+
+@rel d/g221f362dbc1d-1 --causes--> q/g221f362dbc1d-1-2
+
+@rel d/g221f362dbc1d-2 --causes--> q/g221f362dbc1d-2-1
+
+@rel d/g221f362dbc1d-2 --causes--> q/g221f362dbc1d-2-2
+
+@rel d/g221f362dbc1d-3 --causes--> q/g221f362dbc1d-3-1
+
+@rel d/g221f362dbc1d-4 --causes--> q/g221f362dbc1d-4-1
+
+@rel e/g221f362dbc1d-5-1 --backs--> q/g221f362dbc1d-5-1
+
+@rel d/g221f362dbc1d-5 --causes--> q/g221f362dbc1d-5-1

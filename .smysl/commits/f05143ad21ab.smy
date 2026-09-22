@@ -1,0 +1,426 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/gf05143ad21ab-1 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": act, "ingest:quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error." }
+~ The test now asserts what holds in any shape of history.
+
+To make the test more robust and applicable to different shapes of history, including those with merges.
+
+@decision d/gf05143ad21ab-2 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": decline, "ingest:quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought." }
+~ The test no longer assumes history is a straight line.
+
+To handle cases where history includes merges, which can alter the expected number of commits in a range.
+
+@decision d/gf05143ad21ab-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": act, "ingest:quote": "assert_eq!(all.len(), 5, \"a limit is a limit\");" }
+~ The test now checks if the limit is respected.
+
+To ensure that the function correctly handles limits on the number of commits returned.
+
+@decision d/gf05143ad21ab-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": act, "ingest:quote": "// Newest first: the first is HEAD itself.\nlet head = read_commit(&repo, \"HEAD\").unwrap().sha;\nassert_eq!(all[0], head);" }
+~ The test now checks if the newest commit is first in the range.
+
+To ensure that the function returns commits in the correct order, with the newest first.
+
+@decision d/gf05143ad21ab-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": act, "ingest:quote": "// A range reaching nothing new is empty, whatever the shape of the history.\nassert!(commits_between(&repo, Some(\"HEAD\"), \"HEAD\", 0)\n    .unwrap()\n    .is_empty());" }
+~ The test now checks if a range reaching nothing new is empty.
+
+To ensure that the function correctly handles cases where the start and end of the range are the same commit.
+
+@decision d/gf05143ad21ab-6 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": act, "ingest:quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());" }
+~ The test now checks if a wider range contains a narrower one.
+
+To ensure that the function correctly handles nested ranges, where a wider range should contain all commits of a narrower range.
+
+@decision d/gf05143ad21ab-7 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": act, "ingest:quote": "assert!(\n    commits_between(&repo, Some(\"no-such-rev\"), \"HEAD\", 0).is_err(),\n    \"an unknown revision is an error, not silence\"\n);" }
+~ The test now checks if an unknown revision is an error.
+
+To ensure that the function correctly handles invalid revisions by returning an appropriate error.
+
+@decision d/gf05143ad21ab-8 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": act, "ingest:quote": "let Ok(all) = commits_between(&repo, None, \"HEAD\", 5) else {\n    eprintln!(\"history not in this clone (shallow?); skipping\");\n    return;\n};" }
+~ The test now checks if the function correctly handles shallow clones.
+
+To ensure that the function can operate in environments where the full history may not be available.
+
+@decision d/gf05143ad21ab-9 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": act, "ingest:quote": "// A range reaching nothing new is empty, whatever the shape of the history.\nassert!(commits_between(&repo, Some(\"HEAD\"), \"HEAD\", 0)\n    .unwrap()\n    .is_empty());" }
+~ The test now checks if the function correctly handles cases where the start and end of the range are the …
+
+To ensure that the function can handle edge cases where the range is effectively empty.
+
+@decision d/gf05143ad21ab-10 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": act, "ingest:quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());" }
+~ The test now checks if the function correctly handles nested ranges.
+
+To ensure that the function can handle cases where a wider range should contain all commits of a narrower range.
+
+@decision d/gf05143ad21ab-11 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": act, "ingest:quote": "assert!(\n    commits_between(&repo, Some(\"no-such-rev\"), \"HEAD\", 0).is_err(),\n    \"an unknown revision is an error, not silence\"\n);" }
+~ The test now checks if the function correctly handles invalid revisions.
+
+To ensure that the function can handle cases where a revision is not found in the repository.
+
+@artifact-ref a/gf05143ad21ab-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:body_hash": 1c7d7cd8439c3169 }
+~ crates/cargo-smysl-git/tests/history.rs::a_range_is_what_the_newer_revision_reaches_and_the_older_does_not
+
+@constraint p/gf05143ad21ab-1-1 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": existing-behaviour, "ingest:quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands" }
+~ HEAD~3..HEAD is three commits
+
+@constraint p/gf05143ad21ab-1-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": prior-change, "ingest:quote": The first version of this test asserted the count and failed on `main` the moment a release was merged — the function was right and the test was describing one shape of history as though it were the only one. }
+~ A range test assumed history is a straight line
+
+@constraint p/gf05143ad21ab-1-1 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": existing-behaviour, "ingest:quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands" }
+~ HEAD~3..HEAD is three commits
+
+@constraint p/gf05143ad21ab-2-2 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": assumption, "ingest:quote": the function was right and the test was describing one shape of history as though it were the only one. }
+~ A merge can alter the expected number of commits in a range
+
+@constraint p/gf05143ad21ab-3-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": invariant, "ingest:quote": "A range names what the newer revision reaches and the older one does not, newest first." }
+~ The function `commits_between` should respect a specified limit on the number of commits returned.
+
+@constraint p/gf05143ad21ab-3-2 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": existing-behaviour, "ingest:quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought." }
+~ The test previously assumed a linear history for `HEAD~3..HEAD`, which is incorrect after a merge.
+
+@constraint p/gf05143ad21ab-3-3 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": existing-behaviour, "ingest:quote": It failed on main the moment 0.2.0 was merged: the function was right and the test was describing one shape of history as though it were the only one. }
+~ The test failed on `main` when a release was merged because it did not account for non-linear history.
+
+@constraint p/gf05143ad21ab-4-1 { status: speculative, "code:kind": invariant, "ingest:quote": "To ensure that the function returns commits in the correct order, with the newest first." }
+~ The function should return commits in the correct order, with the newest first.
+
+@constraint p/gf05143ad21ab-4-2 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": existing-behaviour, "ingest:quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought." }
+~ A range test previously assumed history is a straight line.
+
+@constraint p/gf05143ad21ab-4-3 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": existing-behaviour, "ingest:quote": It failed on main the moment 0.2.0 was merged: the function was right and the test was describing one shape of history as though it were the only one. }
+~ The function was right in its implementation.
+
+@constraint p/gf05143ad21ab-5-1 { status: speculative, "code:kind": existing-behaviour }
+~ The function `commits_between` should handle cases where the start and end of the range are the same commit.
+
+@constraint p/gf05143ad21ab-5-2 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": existing-behaviour, "ingest:quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought." }
+~ The test previously assumed a linear history for the range `HEAD~3..HEAD`, which is not always true after a …
+
+The test previously assumed a linear history for the range `HEAD~3..HEAD`, which is not always true after a merge.
+
+@constraint p/gf05143ad21ab-6-1 { status: speculative, "code:kind": existing-behaviour }
+~ The function `commits_between` should handle nested ranges correctly.
+
+@constraint p/gf05143ad21ab-6-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": invariant, "ingest:quote": And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`. }
+~ A wider range should contain all commits of a narrower range.
+
+@constraint p/gf05143ad21ab-7-1 { status: speculative, "code:kind": existing-behaviour }
+~ The function should return an appropriate error for invalid revisions.
+
+@constraint p/gf05143ad21ab-7-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": tool-setting, "ingest:quote": "//! CI checks out full history for these tests; in a shallow clone without the commits they report and return rather than fail." }
+~ CI checks out full history for these tests; in a shallow clone without the commits they report and return …
+
+CI checks out full history for these tests; in a shallow clone without the commits they report and return rather than fail.
+
+@constraint p/gf05143ad21ab-8-1 { status: speculative, "code:kind": assumption }
+~ The function `read_commit` should handle cases where the full history is not available.
+
+@constraint p/gf05143ad21ab-8-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": existing-behaviour, "ingest:quote": "//! Reads commits from this repository's own history. CI checks out full history for these tests; in a shallow clone without the commits they report and return rather than fail." }
+~ CI checks out full history for these tests; in a shallow clone without the commits they report and return …
+
+CI checks out full history for these tests; in a shallow clone without the commits they report and return rather than fail.
+
+@constraint p/gf05143ad21ab-9-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": existing-behaviour, "ingest:quote": "assert_eq!(all.len(), 5, \"a limit is a limit\");" }
+~ The function `commits_between` should respect the limit parameter.
+
+@constraint p/gf05143ad21ab-9-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": invariant, "ingest:quote": "A range reaching nothing new is empty, whatever the shape of the history." }
+~ A range reaching nothing new is empty, whatever the shape of the history.
+
+@constraint p/gf05143ad21ab-9-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": invariant, "ingest:quote": And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`. }
+~ A wider range contains a narrower one.
+
+@constraint p/gf05143ad21ab-10-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": existing-behaviour, "ingest:quote": "let Ok(all) = commits_between(&repo, None, \"HEAD\", 5) else {" }
+~ The function `commits_between` should respect the limit parameter.
+
+@constraint p/gf05143ad21ab-10-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": existing-behaviour, "ingest:quote": "let head = read_commit(&repo, \"HEAD\").unwrap().sha;\nassert_eq!(all[0], head);" }
+~ The function `commits_between` should return the newest commits first.
+
+@constraint p/gf05143ad21ab-10-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": existing-behaviour, "ingest:quote": "assert!(commits_between(&repo, Some(\"HEAD\"), \"HEAD\", 0)\n    .unwrap()\n    .is_empty());" }
+~ The function `commits_between` should handle cases where the start and end revisions are the same.
+
+@constraint p/gf05143ad21ab-10-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": existing-behaviour, "ingest:quote": "assert!(\n    commits_between(&repo, Some(\"no-such-rev\"), \"HEAD\", 0).is_err(),\n    \"an unknown revision is an error, not silence\"\n);" }
+~ The function `commits_between` should handle cases where the start revision is unknown.
+
+@constraint p/gf05143ad21ab-11-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "assert!(matches!(read_commit(repo(), \"no-such-branch-xyz\"), Err(GitError::Revision { .. })));" }
+~ The function `read_commit` should return an error for unknown revisions.
+
+@claim r/gf05143ad21ab-1-1 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": rejected-alternative, "ingest:quote": It failed on main the moment 0.2.0 was merged: the function was right and the test was describing one shape of history as though it were the only one. }
+~ Rejected: Keep the original test that assumes a straight line history
+
+@claim r/gf05143ad21ab-2-1 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": rejected-alternative, "ingest:quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands" }
+~ Rejected: Continue assuming history is a straight line
+
+@claim r/gf05143ad21ab-2-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": rejected-alternative, "ingest:quote": The first version of this test asserted the count and failed on `main` the moment a release was merged — the function was right and the test was describing one shape of history as though it were the only one. }
+~ Rejected: Handle merges differently in the test
+
+@claim r/gf05143ad21ab-3-1 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": rejected-alternative, "ingest:quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought." }
+~ Rejected: The test could continue to assume a linear history.
+
+@claim r/gf05143ad21ab-3-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": rejected-alternative, "ingest:quote": "Not \"three commits for `HEAD~3..HEAD`\": that holds on a straight line and not after a merge, where the range properly contains everything the merged branch brought with it." }
+~ Rejected: The test could only check for specific cases of non-linear history.
+
+@claim r/gf05143ad21ab-4-1 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": rejected-alternative, "ingest:quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought." }
+~ Rejected: The test continues to assume a straight line history.
+
+@claim r/gf05143ad21ab-4-2 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "code:kind": rejected-alternative, "ingest:quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error." }
+~ Rejected: The test does not check if the newest commit is first in the range.
+
+@claim r/gf05143ad21ab-5-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test could continue to assume a linear history for the range `HEAD~3..HEAD`.
+
+@claim r/gf05143ad21ab-5-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test could check if a range reaching nothing new is not empty, but this would be incorrect …
+
+Rejected: The test could check if a range reaching nothing new is not empty, but this would be incorrect behavior.
+
+@claim r/gf05143ad21ab-6-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test does not check if a wider range contains a narrower one.
+
+@claim r/gf05143ad21ab-7-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test could ignore invalid revisions.
+
+@claim r/gf05143ad21ab-7-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test could assert that invalid revisions are handled silently.
+
+@claim r/gf05143ad21ab-8-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test could continue to assume that the full history is always available.
+
+@claim r/gf05143ad21ab-8-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The function `read_commit` could be modified to throw an error when it encounters a shallow clone.
+
+@claim r/gf05143ad21ab-9-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test could have checked if the function correctly handles cases where the start and end of the …
+
+Rejected: The test could have checked if the function correctly handles cases where the start and end of the range are different commits.
+
+@claim r/gf05143ad21ab-9-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test could have checked if the function correctly handles cases where the start and end of the …
+
+Rejected: The test could have checked if the function correctly handles cases where the start and end of the range are the same commit, but with a different approach.
+
+@claim r/gf05143ad21ab-10-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "code:kind": rejected-alternative, "ingest:quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());" }
+~ Rejected: The test could have checked if the function correctly handles nested ranges by comparing the length …
+
+Rejected: The test could have checked if the function correctly handles nested ranges by comparing the length of the returned vectors.
+
+@claim r/gf05143ad21ab-11-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test could ignore unknown revisions and continue.
+
+@claim r/gf05143ad21ab-11-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The test could assert that the function returns a different error type for unknown revisions.
+
+@evidence e/gf05143ad21ab-1-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "ingest:quote": "assert_eq!(all.len(), 5, \"a limit is a limit\");" }
+~ Check: assert_eq!(all.len(), 5, "a limit is a limit");
+
+@finding q/gf05143ad21ab-1-1 { status: cited, source: { kind: doc, ref: git:f05143ad21ab9a13e727098647bde8c4d46eb68f }, "ingest:quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error." }
+~ The test now correctly handles different shapes of history, including those with merges
+
+@claim q/gf05143ad21ab-2-1 { status: inferred, grounds: [d/gf05143ad21ab-2], "code:kind": anticipated, "ingest:quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error." }
+~ The test now correctly handles cases where history includes merges
+
+@evidence e/gf05143ad21ab-1-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "ingest:quote": "assert_eq!(all.len(), 5, \"a limit is a limit\");" }
+~ Check: assert_eq!(all.len(), 5, "a limit is a limit");
+
+@finding q/gf05143ad21ab-3-1 { status: speculative, "ingest:quote": The test now checks if the limit is respected. }
+~ The test now correctly handles non-linear history by checking if the limit is respected.
+
+@claim q/gf05143ad21ab-3-2 { status: inferred, grounds: [d/gf05143ad21ab-3], "code:kind": anticipated, "ingest:quote": "A range names what the newer revision reaches and the older one does not, newest first." }
+~ The function `commits_between` is expected to return no more commits than the specified limit.
+
+@claim q/gf05143ad21ab-4-1 { status: inferred, grounds: [d/gf05143ad21ab-4], "code:kind": anticipated, "ingest:quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error." }
+~ The test now correctly handles ranges in any shape of history.
+
+@claim q/gf05143ad21ab-4-2 { status: inferred, grounds: [d/gf05143ad21ab-4], "code:kind": anticipated, "ingest:quote": "To ensure that the function returns commits in the correct order, with the newest first." }
+~ The test ensures that the function returns commits with the newest first.
+
+@claim q/gf05143ad21ab-5-1 { status: inferred, grounds: [d/gf05143ad21ab-5], "code:kind": anticipated }
+~ The function `commits_between` will now correctly handle cases where the start and end of the range are the …
+
+The function `commits_between` will now correctly handle cases where the start and end of the range are the same commit by returning an empty list.
+
+@claim q/gf05143ad21ab-5-2 { status: inferred, grounds: [d/gf05143ad21ab-5], "code:kind": anticipated }
+~ The test will now be more robust and handle different shapes of history correctly.
+
+@evidence e/gf05143ad21ab-6-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "ingest:quote": "for sha in &near {\n            assert!(far.contains(sha), \"{sha} is in the wider range too\");\n        }" }
+~ Check: for sha in &near { assert!(far.contains(sha), "{sha} is in the wider range too"); } …
+
+Check: for sha in &near {             assert!(far.contains(sha), "{sha} is in the wider range too");         }
+
+@finding q/gf05143ad21ab-6-1 { status: speculative }
+~ The function `commits_between` is tested for its ability to handle nested ranges correctly.
+
+@claim q/gf05143ad21ab-7-1 { status: inferred, grounds: [d/gf05143ad21ab-7], "code:kind": anticipated }
+~ The function will now correctly handle invalid revisions by returning an appropriate error.
+
+@evidence e/gf05143ad21ab-8-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "ingest:quote": "let Some(c) = commit(\"d69fced\") else { return };" }
+~ Check: let Some(c) = commit("d69fced") else { return };
+
+@finding q/gf05143ad21ab-8-1 { status: speculative }
+~ The test now checks if the function correctly handles shallow clones.
+
+@claim q/gf05143ad21ab-8-2 { status: inferred, grounds: [d/gf05143ad21ab-8], "code:kind": anticipated }
+~ The function `read_commit` will now handle cases where the full history is not available.
+
+@claim q/gf05143ad21ab-9-1 { status: inferred, grounds: [d/gf05143ad21ab-9], "code:kind": anticipated }
+~ The function `commits_between` is now tested for its ability to handle edge cases where the range is …
+
+The function `commits_between` is now tested for its ability to handle edge cases where the range is effectively empty.
+
+@evidence e/gf05143ad21ab-10-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "ingest:quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());" }
+~ Check: // And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`. let near = …
+
+Check: // And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`. let near = commits_between(&repo, Some("HEAD~1"), "HEAD", 0).unwrap(); let far = commits_between(&repo, Some("HEAD~3"), "HEAD", 0).unwrap(); assert!(!near.is_empty() && near.len() <= far.len());
+
+@finding q/gf05143ad21ab-10-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/tests/history.rs@f05143ad21ab }, "ingest:quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());" }
+~ The test now checks if the function correctly handles nested ranges.
+
+@claim q/gf05143ad21ab-11-1 { status: inferred, grounds: [d/gf05143ad21ab-11], "code:kind": anticipated }
+~ The test ensures that the function correctly handles invalid revisions by checking for the …
+
+The test ensures that the function correctly handles invalid revisions by checking for the `GitError::Revision` error.
+
+@rel d/gf05143ad21ab-3 --x.code/touches--> a/gf05143ad21ab-1
+
+@rel d/gf05143ad21ab-4 --x.code/touches--> a/gf05143ad21ab-1
+
+@rel d/gf05143ad21ab-5 --x.code/touches--> a/gf05143ad21ab-1
+
+@rel d/gf05143ad21ab-6 --x.code/touches--> a/gf05143ad21ab-1
+
+@rel d/gf05143ad21ab-7 --x.code/touches--> a/gf05143ad21ab-1
+
+@rel d/gf05143ad21ab-8 --x.code/touches--> a/gf05143ad21ab-1
+
+@rel d/gf05143ad21ab-9 --x.code/touches--> a/gf05143ad21ab-1
+
+@rel d/gf05143ad21ab-10 --x.code/touches--> a/gf05143ad21ab-1
+
+@rel d/gf05143ad21ab-11 --x.code/touches--> a/gf05143ad21ab-1
+
+@rel p/gf05143ad21ab-1-1 --conditions--> d/gf05143ad21ab-1
+
+@rel p/gf05143ad21ab-1-2 --conditions--> d/gf05143ad21ab-1
+
+@rel p/gf05143ad21ab-1-1 --conditions--> d/gf05143ad21ab-2
+
+@rel p/gf05143ad21ab-2-2 --conditions--> d/gf05143ad21ab-2
+
+@rel p/gf05143ad21ab-3-1 --conditions--> d/gf05143ad21ab-3
+
+@rel p/gf05143ad21ab-3-2 --conditions--> d/gf05143ad21ab-3
+
+@rel p/gf05143ad21ab-3-3 --conditions--> d/gf05143ad21ab-3
+
+@rel p/gf05143ad21ab-4-1 --conditions--> d/gf05143ad21ab-4
+
+@rel p/gf05143ad21ab-4-2 --conditions--> d/gf05143ad21ab-4
+
+@rel p/gf05143ad21ab-4-3 --conditions--> d/gf05143ad21ab-4
+
+@rel p/gf05143ad21ab-5-1 --conditions--> d/gf05143ad21ab-5
+
+@rel p/gf05143ad21ab-5-2 --conditions--> d/gf05143ad21ab-5
+
+@rel p/gf05143ad21ab-6-1 --conditions--> d/gf05143ad21ab-6
+
+@rel p/gf05143ad21ab-6-2 --conditions--> d/gf05143ad21ab-6
+
+@rel p/gf05143ad21ab-7-1 --conditions--> d/gf05143ad21ab-7
+
+@rel p/gf05143ad21ab-7-2 --conditions--> d/gf05143ad21ab-7
+
+@rel p/gf05143ad21ab-8-1 --conditions--> d/gf05143ad21ab-8
+
+@rel p/gf05143ad21ab-8-2 --conditions--> d/gf05143ad21ab-8
+
+@rel p/gf05143ad21ab-9-1 --conditions--> d/gf05143ad21ab-9
+
+@rel p/gf05143ad21ab-9-2 --conditions--> d/gf05143ad21ab-9
+
+@rel p/gf05143ad21ab-9-3 --conditions--> d/gf05143ad21ab-9
+
+@rel p/gf05143ad21ab-10-1 --conditions--> d/gf05143ad21ab-10
+
+@rel p/gf05143ad21ab-10-2 --conditions--> d/gf05143ad21ab-10
+
+@rel p/gf05143ad21ab-10-3 --conditions--> d/gf05143ad21ab-10
+
+@rel p/gf05143ad21ab-10-4 --conditions--> d/gf05143ad21ab-10
+
+@rel p/gf05143ad21ab-11-1 --conditions--> d/gf05143ad21ab-11
+
+@rel r/gf05143ad21ab-1-1 --contrasts--> d/gf05143ad21ab-1
+
+@rel r/gf05143ad21ab-2-1 --contrasts--> d/gf05143ad21ab-2
+
+@rel r/gf05143ad21ab-2-2 --contrasts--> d/gf05143ad21ab-2
+
+@rel r/gf05143ad21ab-3-1 --contrasts--> d/gf05143ad21ab-3
+
+@rel r/gf05143ad21ab-3-2 --contrasts--> d/gf05143ad21ab-3
+
+@rel r/gf05143ad21ab-4-1 --contrasts--> d/gf05143ad21ab-4
+
+@rel r/gf05143ad21ab-4-2 --contrasts--> d/gf05143ad21ab-4
+
+@rel r/gf05143ad21ab-5-1 --contrasts--> d/gf05143ad21ab-5
+
+@rel r/gf05143ad21ab-5-2 --contrasts--> d/gf05143ad21ab-5
+
+@rel r/gf05143ad21ab-6-1 --contrasts--> d/gf05143ad21ab-6
+
+@rel r/gf05143ad21ab-7-1 --contrasts--> d/gf05143ad21ab-7
+
+@rel r/gf05143ad21ab-7-2 --contrasts--> d/gf05143ad21ab-7
+
+@rel r/gf05143ad21ab-8-1 --contrasts--> d/gf05143ad21ab-8
+
+@rel r/gf05143ad21ab-8-2 --contrasts--> d/gf05143ad21ab-8
+
+@rel r/gf05143ad21ab-9-1 --contrasts--> d/gf05143ad21ab-9
+
+@rel r/gf05143ad21ab-9-2 --contrasts--> d/gf05143ad21ab-9
+
+@rel r/gf05143ad21ab-10-1 --contrasts--> d/gf05143ad21ab-10
+
+@rel r/gf05143ad21ab-11-1 --contrasts--> d/gf05143ad21ab-11
+
+@rel r/gf05143ad21ab-11-2 --contrasts--> d/gf05143ad21ab-11
+
+@rel e/gf05143ad21ab-1-1 --backs--> q/gf05143ad21ab-1-1
+
+@rel d/gf05143ad21ab-1 --causes--> q/gf05143ad21ab-1-1
+
+@rel d/gf05143ad21ab-2 --causes--> q/gf05143ad21ab-2-1
+
+@rel e/gf05143ad21ab-1-1 --backs--> q/gf05143ad21ab-3-1
+
+@rel d/gf05143ad21ab-3 --causes--> q/gf05143ad21ab-3-1
+
+@rel d/gf05143ad21ab-3 --causes--> q/gf05143ad21ab-3-2
+
+@rel d/gf05143ad21ab-4 --causes--> q/gf05143ad21ab-4-1
+
+@rel d/gf05143ad21ab-4 --causes--> q/gf05143ad21ab-4-2
+
+@rel d/gf05143ad21ab-5 --causes--> q/gf05143ad21ab-5-1
+
+@rel d/gf05143ad21ab-5 --causes--> q/gf05143ad21ab-5-2
+
+@rel e/gf05143ad21ab-6-1 --backs--> q/gf05143ad21ab-6-1
+
+@rel d/gf05143ad21ab-6 --causes--> q/gf05143ad21ab-6-1
+
+@rel d/gf05143ad21ab-7 --causes--> q/gf05143ad21ab-7-1
+
+@rel e/gf05143ad21ab-8-1 --backs--> q/gf05143ad21ab-8-1
+
+@rel d/gf05143ad21ab-8 --causes--> q/gf05143ad21ab-8-1
+
+@rel d/gf05143ad21ab-8 --causes--> q/gf05143ad21ab-8-2
+
+@rel d/gf05143ad21ab-9 --causes--> q/gf05143ad21ab-9-1
+
+@rel e/gf05143ad21ab-10-1 --backs--> q/gf05143ad21ab-10-1
+
+@rel d/gf05143ad21ab-10 --causes--> q/gf05143ad21ab-10-1
+
+@rel d/gf05143ad21ab-11 --causes--> q/gf05143ad21ab-11-1

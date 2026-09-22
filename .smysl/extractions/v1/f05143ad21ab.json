@@ -1,0 +1,477 @@
+{
+  "decisions": [
+    {
+      "decision": "The test now asserts what holds in any shape of history.",
+      "kind": "act",
+      "rationale": "To make the test more robust and applicable to different shapes of history, including those with merges.",
+      "quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error."
+    },
+    {
+      "decision": "The test no longer assumes history is a straight line.",
+      "kind": "decline",
+      "rationale": "To handle cases where history includes merges, which can alter the expected number of commits in a range.",
+      "quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought."
+    },
+    {
+      "decision": "The test now checks if the limit is respected.",
+      "kind": "act",
+      "rationale": "To ensure that the function correctly handles limits on the number of commits returned.",
+      "quote": "assert_eq!(all.len(), 5, \"a limit is a limit\");"
+    },
+    {
+      "decision": "The test now checks if the newest commit is first in the range.",
+      "kind": "act",
+      "rationale": "To ensure that the function returns commits in the correct order, with the newest first.",
+      "quote": "// Newest first: the first is HEAD itself.\nlet head = read_commit(&repo, \"HEAD\").unwrap().sha;\nassert_eq!(all[0], head);"
+    },
+    {
+      "decision": "The test now checks if a range reaching nothing new is empty.",
+      "kind": "act",
+      "rationale": "To ensure that the function correctly handles cases where the start and end of the range are the same commit.",
+      "quote": "// A range reaching nothing new is empty, whatever the shape of the history.\nassert!(commits_between(&repo, Some(\"HEAD\"), \"HEAD\", 0)\n    .unwrap()\n    .is_empty());"
+    },
+    {
+      "decision": "The test now checks if a wider range contains a narrower one.",
+      "kind": "act",
+      "rationale": "To ensure that the function correctly handles nested ranges, where a wider range should contain all commits of a narrower range.",
+      "quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());"
+    },
+    {
+      "decision": "The test now checks if an unknown revision is an error.",
+      "kind": "act",
+      "rationale": "To ensure that the function correctly handles invalid revisions by returning an appropriate error.",
+      "quote": "assert!(\n    commits_between(&repo, Some(\"no-such-rev\"), \"HEAD\", 0).is_err(),\n    \"an unknown revision is an error, not silence\"\n);"
+    },
+    {
+      "decision": "The test now checks if the function correctly handles shallow clones.",
+      "kind": "act",
+      "rationale": "To ensure that the function can operate in environments where the full history may not be available.",
+      "quote": "let Ok(all) = commits_between(&repo, None, \"HEAD\", 5) else {\n    eprintln!(\"history not in this clone (shallow?); skipping\");\n    return;\n};"
+    },
+    {
+      "decision": "The test now checks if the function correctly handles cases where the start and end of the range are the same commit.",
+      "kind": "act",
+      "rationale": "To ensure that the function can handle edge cases where the range is effectively empty.",
+      "quote": "// A range reaching nothing new is empty, whatever the shape of the history.\nassert!(commits_between(&repo, Some(\"HEAD\"), \"HEAD\", 0)\n    .unwrap()\n    .is_empty());"
+    },
+    {
+      "decision": "The test now checks if the function correctly handles nested ranges.",
+      "kind": "act",
+      "rationale": "To ensure that the function can handle cases where a wider range should contain all commits of a narrower range.",
+      "quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());"
+    },
+    {
+      "decision": "The test now checks if the function correctly handles invalid revisions.",
+      "kind": "act",
+      "rationale": "To ensure that the function can handle cases where a revision is not found in the repository.",
+      "quote": "assert!(\n    commits_between(&repo, Some(\"no-such-rev\"), \"HEAD\", 0).is_err(),\n    \"an unknown revision is an error, not silence\"\n);"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "HEAD~3..HEAD is three commits",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands"
+    },
+    {
+      "decision": 1,
+      "text": "A range test assumed history is a straight line",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "The first version of this test asserted the count and failed on `main` the moment a release was merged — the function was right and the test was describing one shape of history as though it were the only one."
+    },
+    {
+      "decision": 2,
+      "text": "HEAD~3..HEAD is three commits",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands"
+    },
+    {
+      "decision": 2,
+      "text": "A merge can alter the expected number of commits in a range",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "the function was right and the test was describing one shape of history as though it were the only one."
+    },
+    {
+      "decision": 3,
+      "text": "The function `commits_between` should respect a specified limit on the number of commits returned.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A range names what the newer revision reaches and the older one does not, newest first."
+    },
+    {
+      "decision": 3,
+      "text": "The test previously assumed a linear history for `HEAD~3..HEAD`, which is incorrect after a merge.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought."
+    },
+    {
+      "decision": 3,
+      "text": "The test failed on `main` when a release was merged because it did not account for non-linear history.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It failed on main the moment 0.2.0 was merged: the function was right and the test was describing one shape of history as though it were the only one."
+    },
+    {
+      "decision": 4,
+      "text": "The function should return commits in the correct order, with the newest first.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "To ensure that the function returns commits in the correct order, with the newest first."
+    },
+    {
+      "decision": 4,
+      "text": "A range test previously assumed history is a straight line.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought."
+    },
+    {
+      "decision": 4,
+      "text": "The function was right in its implementation.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It failed on main the moment 0.2.0 was merged: the function was right and the test was describing one shape of history as though it were the only one."
+    },
+    {
+      "decision": 5,
+      "text": "The function `commits_between` should handle cases where the start and end of the range are the same commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The test previously assumed a linear history for the range `HEAD~3..HEAD`, which is not always true after a merge.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought."
+    },
+    {
+      "decision": 6,
+      "text": "The function `commits_between` should handle nested ranges correctly.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "A wider range should contain all commits of a narrower range.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`."
+    },
+    {
+      "decision": 7,
+      "text": "The function should return an appropriate error for invalid revisions.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "CI checks out full history for these tests; in a shallow clone without the commits they report and return rather than fail.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "//! CI checks out full history for these tests; in a shallow clone without the commits they report and return rather than fail."
+    },
+    {
+      "decision": 8,
+      "text": "The function `read_commit` should handle cases where the full history is not available.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "CI checks out full history for these tests; in a shallow clone without the commits they report and return rather than fail.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "//! Reads commits from this repository's own history. CI checks out full history for these tests; in a shallow clone without the commits they report and return rather than fail."
+    },
+    {
+      "decision": 9,
+      "text": "The function `commits_between` should respect the limit parameter.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "assert_eq!(all.len(), 5, \"a limit is a limit\");"
+    },
+    {
+      "decision": 9,
+      "text": "A range reaching nothing new is empty, whatever the shape of the history.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A range reaching nothing new is empty, whatever the shape of the history."
+    },
+    {
+      "decision": 9,
+      "text": "A wider range contains a narrower one.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`."
+    },
+    {
+      "decision": 10,
+      "text": "The function `commits_between` should respect the limit parameter.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "let Ok(all) = commits_between(&repo, None, \"HEAD\", 5) else {"
+    },
+    {
+      "decision": 10,
+      "text": "The function `commits_between` should return the newest commits first.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "let head = read_commit(&repo, \"HEAD\").unwrap().sha;\nassert_eq!(all[0], head);"
+    },
+    {
+      "decision": 10,
+      "text": "The function `commits_between` should handle cases where the start and end revisions are the same.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "assert!(commits_between(&repo, Some(\"HEAD\"), \"HEAD\", 0)\n    .unwrap()\n    .is_empty());"
+    },
+    {
+      "decision": 10,
+      "text": "The function `commits_between` should handle cases where the start revision is unknown.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "assert!(\n    commits_between(&repo, Some(\"no-such-rev\"), \"HEAD\", 0).is_err(),\n    \"an unknown revision is an error, not silence\"\n);"
+    },
+    {
+      "decision": 11,
+      "text": "The function `read_commit` should return an error for unknown revisions.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "assert!(matches!(read_commit(repo(), \"no-such-branch-xyz\"), Err(GitError::Revision { .. })));"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the original test that assumes a straight line history",
+      "reason": "",
+      "quote": "It failed on main the moment 0.2.0 was merged: the function was right and the test was describing one shape of history as though it were the only one."
+    },
+    {
+      "decision": 2,
+      "alternative": "Continue assuming history is a straight line",
+      "reason": "",
+      "quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands"
+    },
+    {
+      "decision": 2,
+      "alternative": "Handle merges differently in the test",
+      "reason": "",
+      "quote": "The first version of this test asserted the count and failed on `main` the moment a release was merged — the function was right and the test was describing one shape of history as though it were the only one."
+    },
+    {
+      "decision": 3,
+      "alternative": "The test could continue to assume a linear history.",
+      "reason": "",
+      "quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought."
+    },
+    {
+      "decision": 3,
+      "alternative": "The test could only check for specific cases of non-linear history.",
+      "reason": "",
+      "quote": "Not \"three commits for `HEAD~3..HEAD`\": that holds on a straight line and not after a merge, where the range properly contains everything the merged branch brought with it."
+    },
+    {
+      "decision": 4,
+      "alternative": "The test continues to assume a straight line history.",
+      "reason": "",
+      "quote": "It asserted that HEAD~3..HEAD is three commits, which is true until a merge lands — and then the range properly contains everything the merged branch brought."
+    },
+    {
+      "decision": 4,
+      "alternative": "The test does not check if the newest commit is first in the range.",
+      "reason": "",
+      "quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error."
+    },
+    {
+      "decision": 5,
+      "alternative": "The test could continue to assume a linear history for the range `HEAD~3..HEAD`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "The test could check if a range reaching nothing new is not empty, but this would be incorrect behavior.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "The test does not check if a wider range contains a narrower one.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "The test could ignore invalid revisions.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "The test could assert that invalid revisions are handled silently.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "The test could continue to assume that the full history is always available.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "The function `read_commit` could be modified to throw an error when it encounters a shallow clone.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "The test could have checked if the function correctly handles cases where the start and end of the range are different commits.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "The test could have checked if the function correctly handles cases where the start and end of the range are the same commit, but with a different approach.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "The test could have checked if the function correctly handles nested ranges by comparing the length of the returned vectors.",
+      "reason": "",
+      "quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());"
+    },
+    {
+      "decision": 11,
+      "alternative": "The test could ignore unknown revisions and continue.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "The test could assert that the function returns a different error type for unknown revisions.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The test now correctly handles different shapes of history, including those with merges",
+      "quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error.",
+      "verified": true,
+      "verification_quote": "assert_eq!(all.len(), 5, \"a limit is a limit\");"
+    },
+    {
+      "decision": 2,
+      "text": "The test now correctly handles cases where history includes merges",
+      "quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The test now correctly handles non-linear history by checking if the limit is respected.",
+      "quote": "The test now checks if the limit is respected.",
+      "verified": true,
+      "verification_quote": "assert_eq!(all.len(), 5, \"a limit is a limit\");"
+    },
+    {
+      "decision": 3,
+      "text": "The function `commits_between` is expected to return no more commits than the specified limit.",
+      "quote": "A range names what the newer revision reaches and the older one does not, newest first.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The test now correctly handles ranges in any shape of history.",
+      "quote": "It now asserts what holds in any shape: the limit is respected, the newest is first, a range reaching nothing new is empty, a wider range contains a narrower one, and an unknown revision is an error.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The test ensures that the function returns commits with the newest first.",
+      "quote": "To ensure that the function returns commits in the correct order, with the newest first.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The function `commits_between` will now correctly handle cases where the start and end of the range are the same commit by returning an empty list.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert!(commits_between(&repo, Some(\"HEAD\"), \"HEAD\", 0).unwrap().is_empty());"
+    },
+    {
+      "decision": 5,
+      "text": "The test will now be more robust and handle different shapes of history correctly.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "The function `commits_between` is tested for its ability to handle nested ranges correctly.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "for sha in &near {\n            assert!(far.contains(sha), \"{sha} is in the wider range too\");\n        }"
+    },
+    {
+      "decision": 7,
+      "text": "The function will now correctly handle invalid revisions by returning an appropriate error.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert!(matches!(read_commit(repo(), \"no-such-branch-xyz\"), Err(GitError::Revision { .. })));"
+    },
+    {
+      "decision": 8,
+      "text": "The test now checks if the function correctly handles shallow clones.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "let Some(c) = commit(\"d69fced\") else { return };"
+    },
+    {
+      "decision": 8,
+      "text": "The function `read_commit` will now handle cases where the full history is not available.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The function `commits_between` is now tested for its ability to handle edge cases where the range is effectively empty.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert!(commits_between(&repo, Some(\"HEAD\"), \"HEAD\", 0).unwrap().is_empty());"
+    },
+    {
+      "decision": 10,
+      "text": "The test now checks if the function correctly handles nested ranges.",
+      "quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());",
+      "verified": true,
+      "verification_quote": "// And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.\nlet near = commits_between(&repo, Some(\"HEAD~1\"), \"HEAD\", 0).unwrap();\nlet far = commits_between(&repo, Some(\"HEAD~3\"), \"HEAD\", 0).unwrap();\nassert!(!near.is_empty() && near.len() <= far.len());"
+    },
+    {
+      "decision": 11,
+      "text": "The test ensures that the function correctly handles invalid revisions by checking for the `GitError::Revision` error.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert!(matches!(read_commit(repo(), \"no-such-branch-xyz\"), Err(GitError::Revision { .. })));"
+    }
+  ]
+}

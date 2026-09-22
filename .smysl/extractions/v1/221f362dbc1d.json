@@ -1,0 +1,207 @@
+{
+  "decisions": [
+    {
+      "decision": "Added a sleep of 630 seconds after the fifth crate to comply with crates.io rate limits.",
+      "kind": "act",
+      "rationale": "To avoid hitting the rate limit and ensure all crates are published successfully.",
+      "quote": "sleep 630     # see the rate limit below: a new crate every 10 minutes after the first five"
+    },
+    {
+      "decision": "Included a command to check which crates have already landed before resuming publishing.",
+      "kind": "act",
+      "rationale": "To handle cases where the publishing process is interrupted due to rate limits.",
+      "quote": "Check what landed before resuming:"
+    },
+    {
+      "decision": "Updated the sleep duration from 30 seconds to 630 seconds after the fifth crate.",
+      "kind": "act",
+      "rationale": "To comply with crates.io's rate limit of one new crate per ten minutes after the initial burst of five.",
+      "quote": "sleep 630     # see the rate limit below: a new crate every 10 minutes after the first five"
+    },
+    {
+      "decision": "Documented the crates.io rate limits and how to handle them during publishing.",
+      "kind": "act",
+      "rationale": "To provide guidance for future releases on how to manage the rate limits effectively.",
+      "quote": "**crates.io rate-limits new crates, and this workspace is eight of them.** The allowance is a burst of five, then one new crate per ten minutes."
+    },
+    {
+      "decision": "Added a command to check which crates have already landed before resuming publishing.",
+      "kind": "act",
+      "rationale": "To handle cases where the publishing process is interrupted due to rate limits.",
+      "quote": "Check what landed before resuming:"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "crates.io rate-limits new crates, five then one per ten minutes",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time."
+    },
+    {
+      "decision": 1,
+      "text": "The workspace consists of eight crates",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package)."
+    },
+    {
+      "decision": 2,
+      "text": "crates.io rate-limits new crates, five then one per ten minutes",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time."
+    },
+    {
+      "decision": 2,
+      "text": "The publishing process can be interrupted due to rate limits",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Publishing 0.2.0 stopped after the fifth with: 429 Too Many Requests: You have published too many new crates in a short period of time."
+    },
+    {
+      "decision": 3,
+      "text": "crates.io rate-limits new crates, five then one per ten minutes",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time."
+    },
+    {
+      "decision": 3,
+      "text": "The workspace consists of eight crates",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package)."
+    },
+    {
+      "decision": 4,
+      "text": "crates.io rate-limits new crates, five then one per ten minutes",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time."
+    },
+    {
+      "decision": 4,
+      "text": "The workspace consists of eight crates",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package)."
+    },
+    {
+      "decision": 5,
+      "text": "crates.io rate-limits new crates, five then one per ten minutes",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Publishing 0.2.0 stopped after the fifth crate with a 429. The allowance is a burst of five new crates and then one per ten minutes, which this workspace of eight runs into every time it is published for the first time."
+    },
+    {
+      "decision": 5,
+      "text": "The publishing process can be interrupted due to rate limits",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Publishing 0.2.0 stopped after the fifth with: 429 Too Many Requests: You have published too many new crates in a short period of time."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Continue publishing without any delay",
+      "reason": "",
+      "quote": "Publishing 0.2.0 stopped after the fifth crate with a 429."
+    },
+    {
+      "decision": 1,
+      "alternative": "Adjust the sleep duration to less than 630 seconds",
+      "reason": "",
+      "quote": "sleep 630     # see the rate limit below: a new crate every 10 minutes after the first five"
+    },
+    {
+      "decision": 2,
+      "alternative": "Continue publishing without checking which crates have already landed",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Manually check which crates have already landed before resuming publishing",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep the sleep duration at 30 seconds",
+      "reason": "",
+      "quote": "sleep 30     # see the rate limit below: a new crate every 10 minutes after the first five"
+    },
+    {
+      "decision": 4,
+      "alternative": "Continue publishing without handling rate limits",
+      "reason": "",
+      "quote": "Publishing 0.2.0 stopped after the fifth with:\n\n```\n429 Too Many Requests: You have published too many new crates in a short period of time.\n```"
+    },
+    {
+      "decision": 5,
+      "alternative": "Continue publishing without checking which crates have already landed",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Manually check and resume publishing",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "All crates will be published successfully without hitting the rate limit",
+      "quote": "Then publish only what is missing, in wave order, ten minutes apart.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "The script now includes a check to see which crates have already been published before resuming",
+      "quote": "Check what landed before resuming:",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The command to check which crates have already landed is included in the documentation",
+      "quote": "Check what landed before resuming:",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Publishing can be resumed without losing any progress",
+      "quote": "Nothing is lost when that happens — the crates already accepted stay accepted, and the rest publish when the clock allows.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The script will now wait for ten minutes between publishing each of the last three crates",
+      "quote": "sleep 630     # see the rate limit below: a new crate every 10 minutes after the first five",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The document now includes guidance on handling rate limits during publishing",
+      "quote": "crates.io rate-limits new crates, and this workspace is eight of them. The allowance is a burst of five, then one new crate per ten minutes.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The script now checks which crates have already landed before resuming publishing",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Check what landed before resuming: for c in cargo-smysl-git cargo-smysl-facts cargo-smysl-corpus cargo-smysl-bench cargo-smysl-extract cargo-smysl-verdict cargo-smysl-evidence cargo-smysl; do printf \"%-22s \" \"$c\" curl -s \"https://crates.io/api/v1/crates/$c\" | python3 -c \"import sys,json;print(json.load(sys.stdin).get('crate',{}).get('max_version','not published'))\""
+    }
+  ]
+}
