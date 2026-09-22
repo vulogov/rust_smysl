@@ -152,6 +152,6 @@ running 70 tests
 test result: ok. 68 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 10.34s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/9.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run2/task-9-corpus-r1/tree'
+$ '<repo>/eval/s3/oracles/9.sh' '<repo>/eval/.s3work/runs/run2/task-9-corpus-r1/tree'
 [exit 0, 1s]
 

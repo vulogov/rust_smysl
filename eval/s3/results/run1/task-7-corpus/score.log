@@ -152,7 +152,7 @@ ii...............................................................
 test result: ok. 63 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 9.24s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/7-replacement.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run1/task-7-corpus/tree' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run1/task-7-corpus/target/debug/ucal'
+$ '<repo>/eval/s3/oracles/7-replacement.sh' '<repo>/eval/.s3work/runs/run1/task-7-corpus/tree' '<repo>/eval/.s3work/runs/run1/task-7-corpus/target/debug/ucal'
 [exit 0, 0s]
 oracle 7: commands that never ask the time read no clock
 

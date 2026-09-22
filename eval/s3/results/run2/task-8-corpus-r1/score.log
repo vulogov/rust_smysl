@@ -152,7 +152,7 @@ running 65 tests
 test result: ok. 63 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 10.76s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/8.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run2/task-8-corpus-r1/tree'
+$ '<repo>/eval/s3/oracles/8.sh' '<repo>/eval/.s3work/runs/run2/task-8-corpus-r1/tree'
 [exit 1, 1s]
 thread 'a_sixty_second_forward_step_is_taken_whole' (6139889) panicked at crates/ucal/tests/s3_oracle_8.rs:14:5:
   left: "1910504193185683000000000000000000000000000000"

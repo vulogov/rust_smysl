@@ -152,7 +152,7 @@ running 65 tests
 test result: ok. 63 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 10.09s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/7-replacement.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run2/task-7-corpus-r1/tree' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run2/task-7-corpus-r1/target/debug/ucal'
+$ '<repo>/eval/s3/oracles/7-replacement.sh' '<repo>/eval/.s3work/runs/run2/task-7-corpus-r1/tree' '<repo>/eval/.s3work/runs/run2/task-7-corpus-r1/target/debug/ucal'
 [exit 1, 0s]
 oracle 7: `ucal datum` read the wall clock 1 time(s); it never asks the time
 oracle 7: `ucal ladder` read the wall clock 1 time(s); it never asks the time

@@ -73,9 +73,9 @@ stack backtrace:
    1: core::panicking::panic_fmt
              at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/panicking.rs:80:14
    2: doc_output::the_manual_still_describes_this_binary
-             at /Users/gandalf/Src/rust_smysl/eval/.s3work/base/smysl/tree/tests/doc_output.rs:97:5
+             at <repo>/eval/.s3work/base/smysl/tree/tests/doc_output.rs:97:5
    3: doc_output::the_manual_still_describes_this_binary::{{closure}}
-             at /Users/gandalf/Src/rust_smysl/eval/.s3work/base/smysl/tree/tests/doc_output.rs:51:44
+             at <repo>/eval/.s3work/base/smysl/tree/tests/doc_output.rs:51:44
    4: core::ops::function::FnOnce::call_once
              at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:250:5
    5: core::ops::function::FnOnce::call_once
@@ -165,7 +165,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/1.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/s4-heldout/task-1-control-r2/tree'
+$ '<repo>/eval/s3/oracles/1.sh' '<repo>/eval/.s3work/runs/s4-heldout/task-1-control-r2/tree'
 [exit 0, 0s]
 intact
 

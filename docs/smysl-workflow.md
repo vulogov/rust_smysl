@@ -36,13 +36,13 @@ cargo smysl doctor
 ```
 
 ```
-cargo-smysl: 0.1.0
+cargo-smysl: 0.2.0
 smysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)
 code schema: x.code/v1
-invoked by cargo: /Users/you/.rustup/toolchains/1.94.1-aarch64-apple-darwin/bin/cargo
-workspace: /Users/you/Src/rust_smysl
+invoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo
+workspace: <your repository>
 members: 9
-corpus: /Users/you/Src/rust_smysl/.smysl (present)
+corpus: <your repository>/.smysl (present)
 facts: 50 Rust file(s), 485 function(s), 0 parse failure(s)
 ```
 

@@ -170,7 +170,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/3-replacement.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/s4-heldout/task-3-control-r1/tree' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/s4-heldout/task-3-control-r1/target/debug/smysl'
+$ '<repo>/eval/s3/oracles/3-replacement.sh' '<repo>/eval/.s3work/runs/s4-heldout/task-3-control-r1/tree' '<repo>/eval/.s3work/runs/s4-heldout/task-3-control-r1/target/debug/smysl'
 [exit 1, 0s]
 violated: the working directory's ledger was not read: /var/folders/rs/txyc17rj25n5hqkksv0m3xvh0000gn/T/tmp.kVmxIRK249/home/.smysl/usage.log: no model calls recorded
 

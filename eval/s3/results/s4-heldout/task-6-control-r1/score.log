@@ -165,7 +165,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/6.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/s4-heldout/task-6-control-r1/tree' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/s4-heldout/task-6-control-r1/target/debug/smysl'
+$ '<repo>/eval/s3/oracles/6.sh' '<repo>/eval/.s3work/runs/s4-heldout/task-6-control-r1/tree' '<repo>/eval/.s3work/runs/s4-heldout/task-6-control-r1/target/debug/smysl'
 [exit 1, 0s]
 violated: uids moved (cited=b3:qpmebcp6glhjv4lq2qsxxrbcbk derived=b3:r4yj6jwwpkoawjjflc72qw7pu4)
 

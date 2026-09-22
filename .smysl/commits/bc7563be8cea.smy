@@ -1,0 +1,41 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/gbc7563be8cea-1 { status: cited, source: { kind: doc, ref: git:bc7563be8cea8cd5c4d3948436df9ce0696f4a9f }, "code:kind": act, "ingest:quote": "`unnecessary_sort_by`: the comparator was reversing an ordering that\n`sort_by_key` with `Reverse` states directly." }
+~ Take clippy's note on the extraction pass sort
+
+The comparator was reversing an ordering that `sort_by_key` with `Reverse` states directly. It failed CI on main and on the v0.1.0 tag, and a local run had called it clean — the CI command is the one to trust.
+
+@artifact-ref a/gbc7563be8cea-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/src/pass.rs@bc7563be8cea }, "code:body_hash": 76e808f403b46562 }
+~ crates/cargo-smysl-extract/src/pass.rs::extract
+
+@constraint p/gbc7563be8cea-1-1 { status: cited, source: { kind: doc, ref: git:bc7563be8cea8cd5c4d3948436df9ce0696f4a9f }, "code:kind": existing-behaviour, "ingest:quote": the comparator was reversing an ordering that `sort_by_key` with `Reverse` states directly. }
+~ The comparator was reversing an ordering that `sort_by_key` with `Reverse` states directly.
+
+@constraint p/gbc7563be8cea-1-2 { status: cited, source: { kind: doc, ref: git:bc7563be8cea8cd5c4d3948436df9ce0696f4a9f }, "code:kind": existing-behaviour, "ingest:quote": "It failed CI on main and on the v0.1.0 tag," }
+~ It failed CI on main and on the v0.1.0 tag.
+
+@constraint p/gbc7563be8cea-1-3 { status: cited, source: { kind: doc, ref: git:bc7563be8cea8cd5c4d3948436df9ce0696f4a9f }, "code:kind": existing-behaviour, "ingest:quote": a local run had called it clean — the CI command is the one to trust. }
+~ A local run had called it clean — the CI command is the one to trust.
+
+@claim r/gbc7563be8cea-1-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the original sorting method.
+
+@claim r/gbc7563be8cea-1-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use a different sorting method that does not involve reversing an ordering.
+
+@claim q/gbc7563be8cea-1-1 { status: inferred, grounds: [d/gbc7563be8cea-1], "code:kind": anticipated, "ingest:quote": Take clippy's note on the extraction pass sort }
+~ The code now uses `sort_by_key` with `Reverse` as suggested by clippy, which aligns with the CI command's …
+
+The code now uses `sort_by_key` with `Reverse` as suggested by clippy, which aligns with the CI command's expectations.
+
+@rel p/gbc7563be8cea-1-1 --conditions--> d/gbc7563be8cea-1
+
+@rel p/gbc7563be8cea-1-2 --conditions--> d/gbc7563be8cea-1
+
+@rel p/gbc7563be8cea-1-3 --conditions--> d/gbc7563be8cea-1
+
+@rel r/gbc7563be8cea-1-1 --contrasts--> d/gbc7563be8cea-1
+
+@rel r/gbc7563be8cea-1-2 --contrasts--> d/gbc7563be8cea-1
+
+@rel d/gbc7563be8cea-1 --causes--> q/gbc7563be8cea-1-1

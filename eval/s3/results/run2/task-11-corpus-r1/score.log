@@ -152,7 +152,7 @@ i.i..............................................................
 test result: ok. 63 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 9.99s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/11.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run2/task-11-corpus-r1/tree'
+$ '<repo>/eval/s3/oracles/11.sh' '<repo>/eval/.s3work/runs/run2/task-11-corpus-r1/tree'
 [exit 1, 0s]
 violated: crates/ucal/tests/json_surface.rs does not read the committed fixture
 

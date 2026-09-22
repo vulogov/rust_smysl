@@ -1,0 +1,352 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g9e883b906b45-1 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": act, "ingest:quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code." }
+~ Every figure in the changelog names the model it was measured on.
+
+To ensure clarity about the quality of measurements, which is a property of the model used.
+
+@decision d/g9e883b906b45-2 { status: cited, source: { kind: doc, ref: git:9e883b906b45c1d82062f44f9cd0fca675830cc7 }, "code:kind": act, "ingest:quote": "They cost real time, and a release note that hides them invites someone to spend it again." }
+~ Rejected experiments are listed beside shipped ones in the changelog.
+
+To document what did not work and why, to prevent others from repeating unnecessary experiments.
+
+@decision d/g9e883b906b45-3 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": act, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ The `check` command runs two passes by default.
+
+To improve the precision of findings without incurring excessive costs.
+
+@decision d/g9e883b906b45-4 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": act, "ingest:quote": "The tool assigns every label, source and status; a model proposes content only." }
+~ The tool assigns labels, sources, and statuses; a model proposes content only.
+
+To ensure that the tool's output is reliable and verifiable.
+
+@decision d/g9e883b906b45-5 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": act, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit it came from.
+
+To ensure that quotes are accurate and relevant to the code being analyzed.
+
+@decision d/g9e883b906b45-6 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": act, "ingest:quote": "What the code says about itself never verifies it. Doc comments, string literals and commit subjects are marked as prose: they help find the right code and never establish a claim." }
+~ What the code says about itself never verifies it.
+
+To prevent self-referential claims from being treated as verified facts.
+
+@decision d/g9e883b906b45-7 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": act, "ingest:quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word." }
+~ A single run never raises a status.
+
+To ensure that claims are supported by multiple independent runs or human review before being considered verified.
+
+@decision d/g9e883b906b45-8 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": act, "ingest:quote": A test linked to a claim waits for a person. A model proposing the link is not a review; a failing test never backs anything. }
+~ A test linked to a claim waits for a person.
+
+To ensure that tests are reviewed and verified by humans before being considered evidence.
+
+@decision d/g9e883b906b45-9 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": act, "ingest:quote": "Review is recorded, never a rewrite. Confirming writes an attestation, rejecting a withdrawal with a reason, closing a resolution with a note. Nothing is deleted." }
+~ Review is recorded, never a rewrite.
+
+To maintain an immutable record of decisions and reviews, ensuring transparency and accountability.
+
+@decision d/g9e883b906b45-10 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": act, "ingest:quote": "Nothing is hidden. A prompt that had to be cut, an answer that had to be salvaged, a set of units split across calls, a provider that truncated — each is reported where it happened." }
+~ Nothing is hidden in the tool's output.
+
+To provide complete transparency about the processes and decisions made by the tool.
+
+@decision d/g9e883b906b45-11 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": act, "ingest:quote": The default build has no TLS stack and speaks plain HTTP to a model on your machine; `--features hosted` is the opt-in for a hosted provider. }
+~ The default build has no TLS stack and speaks plain HTTP to a model on your machine.
+
+To provide a lightweight and secure default configuration for users who do not require a hosted provider.
+
+@decision d/g9e883b906b45-12 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": act, "ingest:quote": MSRV 1.86 for the shipped crates. }
+~ MSRV 1.86 for the shipped crates.
+
+To ensure compatibility with a wide range of Rust versions while maintaining modern features and performance improvements.
+
+@constraint p/g9e883b906b45-1-1 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": quality where a model is involved is a property of that model and not of this code. }
+~ Quality where a model is involved is a property of that model and not of this code.
+
+@constraint p/g9e883b906b45-2-1 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": A cargo subcommand that records why Rust code changed and keeps the record honest. }
+~ The project aims to keep a record of why Rust code changed.
+
+@constraint p/g9e883b906b45-2-2 { status: cited, source: { kind: doc, ref: git:9e883b906b45c1d82062f44f9cd0fca675830cc7 }, "code:kind": existing-behaviour, "ingest:quote": "They cost real time, and a release note that hides them invites someone to spend it again." }
+~ Rejected experiments cost real time.
+
+@constraint p/g9e883b906b45-3-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": invariant, "ingest:quote": "**The tool assigns labels, sources and statuses; a model proposes content only.** Sources are the commit as the tool read it with `gix`." }
+~ The tool assigns labels, sources and statuses; a model proposes content only.
+
+@constraint p/g9e883b906b45-3-2 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": invariant, "ingest:quote": "**A single run never raises a status.** `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word." }
+~ A single run never raises a status.
+
+@constraint p/g9e883b906b45-3-3 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": prior-change, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ Two-pass agreement removed every false flag on a real commit in development.
+
+@constraint p/g9e883b906b45-4-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes content only." }
+~ The tool needs to assign labels, sources, and statuses to ensure reliability and verifiability.
+
+@constraint p/g9e883b906b45-5-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": "**The tool assigns labels, sources and statuses; a model proposes content only.** Sources are the commit as the tool read it with `gix`." }
+~ The tool assigns labels, sources and statuses; a model proposes content only.
+
+@constraint p/g9e883b906b45-5-2 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": "**What the code says about itself never verifies it.** Doc comments, string literals and commit subjects are marked as prose: they help find the right code and never establish a claim." }
+~ What the code says about itself never verifies it.
+
+@constraint p/g9e883b906b45-5-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": "**The tool assigns labels, sources and statuses; a model proposes content only.** Sources are the commit as the tool read it with `gix`." }
+~ The tool assigns labels, sources and statuses; a model proposes content only.
+
+@constraint p/g9e883b906b45-6-2 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": "Doc comments, string literals and commit subjects are marked as prose: they help find the right code and never establish a claim." }
+~ Doc comments, string literals and commit subjects are marked as prose.
+
+@constraint p/g9e883b906b45-7-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": invariant, "ingest:quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word." }
+~ Claims need to be supported by multiple independent runs or human review.
+
+@constraint p/g9e883b906b45-8-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": "**The tool assigns labels, sources and statuses; a model proposes content only.**" }
+~ A model proposes content only.
+
+@constraint p/g9e883b906b45-8-2 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": **A test linked to a claim waits for a person.** A model proposing the link is not a review; a failing test never backs anything. }
+~ Tests are linked to claims.
+
+@constraint p/g9e883b906b45-5-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": "**The tool assigns labels, sources and statuses; a model proposes content only.** Sources are the commit as the tool read it with `gix`." }
+~ The tool assigns labels, sources and statuses; a model proposes content only.
+
+@constraint p/g9e883b906b45-9-2 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": "**A single run never raises a status.** `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word." }
+~ A single run never raises a status.
+
+@constraint p/g9e883b906b45-10-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": assumption, "ingest:quote": "Nothing is hidden. A prompt that had to be cut, an answer that had to be salvaged, a set of units split across calls, a provider that truncated — each is reported where it happened." }
+~ The tool needs to report all details of its operations for transparency.
+
+@constraint p/g9e883b906b45-11-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": existing-behaviour, "ingest:quote": "A model proposes content; the tool assigns every label, source and status, and checks every quote against the commit it came from." }
+~ The tool needs to communicate with a model.
+
+@constraint p/g9e883b906b45-11-2 { status: speculative, "code:kind": assumption, "ingest:quote": To provide a lightweight and secure default configuration for users who do not require a hosted provider. }
+~ Users may not require a hosted provider.
+
+@constraint p/g9e883b906b45-12-1 { status: speculative, "code:kind": assumption, "ingest:quote": To ensure compatibility with a wide range of Rust versions while maintaining modern features and performance improvements. }
+~ The project aims to maintain compatibility with a wide range of Rust versions.
+
+@constraint p/g9e883b906b45-12-2 { status: speculative, "code:kind": assumption, "ingest:quote": To ensure compatibility with a wide range of Rust versions while maintaining modern features and performance improvements. }
+~ The project needs to support modern features and performance improvements.
+
+@claim r/g9e883b906b45-1-1 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code." }
+~ Rejected: Not naming the model in figures.
+
+@claim r/g9e883b906b45-2-1 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code. Protocols and caveats:" }
+~ Rejected: Not listing rejected experiments in the changelog.
+
+@claim r/g9e883b906b45-3-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "- **A stricter `check` prompt** — recall fell 0.65 → 0.30, and it dropped 10 of 22 correct flags." }
+~ Rejected: A stricter `check` prompt
+
+@claim r/g9e883b906b45-3-2 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "- **A tightened extraction prompt** naming what is not a decision — no reduction in false positives, and more of the kind it forbade." }
+~ Rejected: A tightened extraction prompt
+
+@claim r/g9e883b906b45-3-3 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "- **Ranking decisions by whether their quote is in the commit** — measured against the owner's labels, decisions with a quote in the commit are 88% real and those without are 97% real. The signal is not there; it ships off." }
+~ Rejected: Ranking decisions by whether their quote is in the commit
+
+@claim r/g9e883b906b45-3-4 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": - **Retrieval-side term filtering** for `check` — correct and wrong flags have overlapping term profiles. }
+~ Rejected: Retrieval-side term filtering
+
+@claim r/g9e883b906b45-4-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes content only." }
+~ Rejected: Allow the model to assign all aspects of the output.
+
+@claim r/g9e883b906b45-4-2 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word." }
+~ Rejected: Let the tool automatically verify the correctness of the model's proposals without human …
+
+Rejected: Let the tool automatically verify the correctness of the model's proposals without human intervention.
+
+@claim r/g9e883b906b45-5-1 { status: cited, source: { kind: file, ref: CHANGELOG.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "Recorded because each cost real time: a stricter `check` prompt (recall 0.65 → 0.30); a tightened extraction prompt (no fewer false positives, more of the kind it forbade); ranking decisions by whether their quote is in the commit (decisions with a quote are 88% real, those without 97%); retrieval-side term filtering (overlapping profiles). Two-pass agreement did work, and is the default." }
+~ Rejected: Quotes are not checked against the commit.
+
+@claim r/g9e883b906b45-6-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Allow doc comments, string literals, and commit subjects to verify claims.
+
+@claim r/g9e883b906b45-7-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word." }
+~ Rejected: Allow a single run to raise the status.
+
+@claim r/g9e883b906b45-8-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Automatically verify tests without human review.
+
+@claim r/g9e883b906b45-8-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Allow models to propose and verify tests independently.
+
+@claim r/g9e883b906b45-9-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "code:kind": rejected-alternative, "ingest:quote": "**Review is recorded, never a rewrite.** Confirming writes an attestation, rejecting a withdrawal with a reason, closing a resolution with a note. Nothing is deleted." }
+~ Rejected: Rewriting the record to reflect changes in review.
+
+@claim r/g9e883b906b45-10-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool could hide some details of its operations.
+
+@claim r/g9e883b906b45-11-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include TLS stack by default.
+
+@claim r/g9e883b906b45-11-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Require users to specify the communication protocol.
+
+@claim r/g9e883b906b45-12-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Setting a lower MSRV to support even older Rust versions.
+
+@claim r/g9e883b906b45-12-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not setting an explicit MSRV, allowing users to choose their own.
+
+@claim q/g9e883b906b45-1-1 { status: inferred, grounds: [d/g9e883b906b45-1], "code:kind": anticipated, "ingest:quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code." }
+~ Users can understand which model's performance each figure represents.
+
+@claim q/g9e883b906b45-2-1 { status: inferred, grounds: [d/g9e883b906b45-2], "code:kind": anticipated, "ingest:quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code. Protocols and caveats:" }
+~ The changelog provides transparency about what did not work.
+
+@claim q/g9e883b906b45-2-2 { status: inferred, grounds: [d/g9e883b906b45-2], "code:kind": anticipated, "ingest:quote": "They cost real time, and a release note that hides them invites someone to spend it again." }
+~ It prevents others from repeating unnecessary experiments.
+
+@evidence e/g9e883b906b45-3-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ Check: What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on …
+
+Check: What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default.
+
+@finding q/g9e883b906b45-3-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "ingest:quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. On a local 14B about one flag in ten was correct — read a finding as a place to look, not as a claim that something is wrong. The deterministic half (retrieval, packing, quote and label validation, determinism) holds regardless of the model; the judgement is the part that moves." }
+~ `check` command runs two passes by default to improve precision without excessive costs.
+
+@claim q/g9e883b906b45-4-1 { status: inferred, grounds: [d/g9e883b906b45-4], "code:kind": anticipated, "ingest:quote": To ensure that the tool's output is reliable and verifiable. }
+~ The tool's output is more reliable and verifiable because it assigns labels, sources, and statuses.
+
+@claim q/g9e883b906b45-4-2 { status: inferred, grounds: [d/g9e883b906b45-4], "code:kind": anticipated, "ingest:quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word." }
+~ Human intervention is required to verify the correctness of the model's proposals.
+
+@evidence e/g9e883b906b45-5-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "ingest:quote": **Every quote is checked against the commit.** A quote that is not there caps its unit at `speculative`. }
+~ Check: **Every quote is checked against the commit.** A quote that is not there caps its unit at …
+
+Check: **Every quote is checked against the commit.** A quote that is not there caps its unit at `speculative`.
+
+@finding q/g9e883b906b45-5-1 { status: cited, source: { kind: file, ref: README.md@9e883b906b45 }, "ingest:quote": **Every quote is checked against the commit.** A quote that is not there caps its unit at `speculative`. }
+~ Quotes that are not in the commit are capped at `speculative`.
+
+@claim q/g9e883b906b45-6-1 { status: inferred, grounds: [d/g9e883b906b45-6], "code:kind": anticipated, "ingest:quote": "**What the code says about itself never verifies it.** Doc comments, string literals and commit subjects are marked as prose: they help find the right code and never establish a claim." }
+~ Self-referential claims are not treated as verified facts.
+
+@claim q/g9e883b906b45-7-1 { status: inferred, grounds: [d/g9e883b906b45-7], "code:kind": anticipated, "ingest:quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word." }
+~ Claims must be verified through multiple independent runs or human review before being considered supported.
+
+@claim q/g9e883b906b45-8-1 { status: inferred, grounds: [d/g9e883b906b45-8], "code:kind": anticipated, "ingest:quote": **A test linked to a claim waits for a person.** A model proposing the link is not a review; a failing test never backs anything. }
+~ Tests must be reviewed by humans before being considered evidence.
+
+@claim q/g9e883b906b45-9-1 { status: inferred, grounds: [d/g9e883b906b45-9], "code:kind": anticipated, "ingest:quote": "**Review is recorded, never a rewrite.** Confirming writes an attestation, rejecting a withdrawal with a reason, closing a resolution with a note. Nothing is deleted." }
+~ Maintains transparency and accountability by keeping an immutable record of decisions and reviews.
+
+@claim q/g9e883b906b45-10-1 { status: inferred, grounds: [d/g9e883b906b45-10], "code:kind": anticipated, "ingest:quote": "Nothing is hidden. A prompt that had to be cut, an answer that had to be salvaged, a set of units split across calls, a provider that truncated — each is reported where it happened." }
+~ Users will have complete visibility into the tool's processes and decisions.
+
+@claim q/g9e883b906b45-11-1 { status: inferred, grounds: [d/g9e883b906b45-11], "code:kind": anticipated, "ingest:quote": The default build has no TLS stack and speaks plain HTTP to a model on your machine. }
+~ The tool communicates with a model over plain HTTP by default.
+
+@claim q/g9e883b906b45-11-2 { status: inferred, grounds: [d/g9e883b906b45-11], "code:kind": anticipated, "ingest:quote": "A hosted provider over TLS is the `hosted` feature, off by default." }
+~ Users who require a hosted provider can enable it using the `hosted` feature.
+
+@claim q/g9e883b906b45-12-1 { status: inferred, grounds: [d/g9e883b906b45-12], "code:kind": anticipated, "ingest:quote": MSRV 1.86 for the shipped crates. }
+~ Users of the project will need at least Rust version 1.86 to compile and run the crates.
+
+@rel p/g9e883b906b45-1-1 --conditions--> d/g9e883b906b45-1
+
+@rel p/g9e883b906b45-2-1 --conditions--> d/g9e883b906b45-2
+
+@rel p/g9e883b906b45-2-2 --conditions--> d/g9e883b906b45-2
+
+@rel p/g9e883b906b45-3-1 --conditions--> d/g9e883b906b45-3
+
+@rel p/g9e883b906b45-3-2 --conditions--> d/g9e883b906b45-3
+
+@rel p/g9e883b906b45-3-3 --conditions--> d/g9e883b906b45-3
+
+@rel p/g9e883b906b45-4-1 --conditions--> d/g9e883b906b45-4
+
+@rel p/g9e883b906b45-5-1 --conditions--> d/g9e883b906b45-5
+
+@rel p/g9e883b906b45-5-2 --conditions--> d/g9e883b906b45-5
+
+@rel p/g9e883b906b45-5-1 --conditions--> d/g9e883b906b45-6
+
+@rel p/g9e883b906b45-6-2 --conditions--> d/g9e883b906b45-6
+
+@rel p/g9e883b906b45-7-1 --conditions--> d/g9e883b906b45-7
+
+@rel p/g9e883b906b45-8-1 --conditions--> d/g9e883b906b45-8
+
+@rel p/g9e883b906b45-8-2 --conditions--> d/g9e883b906b45-8
+
+@rel p/g9e883b906b45-5-1 --conditions--> d/g9e883b906b45-9
+
+@rel p/g9e883b906b45-9-2 --conditions--> d/g9e883b906b45-9
+
+@rel p/g9e883b906b45-10-1 --conditions--> d/g9e883b906b45-10
+
+@rel p/g9e883b906b45-11-1 --conditions--> d/g9e883b906b45-11
+
+@rel p/g9e883b906b45-11-2 --conditions--> d/g9e883b906b45-11
+
+@rel p/g9e883b906b45-12-1 --conditions--> d/g9e883b906b45-12
+
+@rel p/g9e883b906b45-12-2 --conditions--> d/g9e883b906b45-12
+
+@rel r/g9e883b906b45-1-1 --contrasts--> d/g9e883b906b45-1
+
+@rel r/g9e883b906b45-2-1 --contrasts--> d/g9e883b906b45-2
+
+@rel r/g9e883b906b45-3-1 --contrasts--> d/g9e883b906b45-3
+
+@rel r/g9e883b906b45-3-2 --contrasts--> d/g9e883b906b45-3
+
+@rel r/g9e883b906b45-3-3 --contrasts--> d/g9e883b906b45-3
+
+@rel r/g9e883b906b45-3-4 --contrasts--> d/g9e883b906b45-3
+
+@rel r/g9e883b906b45-4-1 --contrasts--> d/g9e883b906b45-4
+
+@rel r/g9e883b906b45-4-2 --contrasts--> d/g9e883b906b45-4
+
+@rel r/g9e883b906b45-5-1 --contrasts--> d/g9e883b906b45-5
+
+@rel r/g9e883b906b45-6-1 --contrasts--> d/g9e883b906b45-6
+
+@rel r/g9e883b906b45-7-1 --contrasts--> d/g9e883b906b45-7
+
+@rel r/g9e883b906b45-8-1 --contrasts--> d/g9e883b906b45-8
+
+@rel r/g9e883b906b45-8-2 --contrasts--> d/g9e883b906b45-8
+
+@rel r/g9e883b906b45-9-1 --contrasts--> d/g9e883b906b45-9
+
+@rel r/g9e883b906b45-10-1 --contrasts--> d/g9e883b906b45-10
+
+@rel r/g9e883b906b45-11-1 --contrasts--> d/g9e883b906b45-11
+
+@rel r/g9e883b906b45-11-2 --contrasts--> d/g9e883b906b45-11
+
+@rel r/g9e883b906b45-12-1 --contrasts--> d/g9e883b906b45-12
+
+@rel r/g9e883b906b45-12-2 --contrasts--> d/g9e883b906b45-12
+
+@rel d/g9e883b906b45-1 --causes--> q/g9e883b906b45-1-1
+
+@rel d/g9e883b906b45-2 --causes--> q/g9e883b906b45-2-1
+
+@rel d/g9e883b906b45-2 --causes--> q/g9e883b906b45-2-2
+
+@rel e/g9e883b906b45-3-1 --backs--> q/g9e883b906b45-3-1
+
+@rel d/g9e883b906b45-3 --causes--> q/g9e883b906b45-3-1
+
+@rel d/g9e883b906b45-4 --causes--> q/g9e883b906b45-4-1
+
+@rel d/g9e883b906b45-4 --causes--> q/g9e883b906b45-4-2
+
+@rel e/g9e883b906b45-5-1 --backs--> q/g9e883b906b45-5-1
+
+@rel d/g9e883b906b45-5 --causes--> q/g9e883b906b45-5-1
+
+@rel d/g9e883b906b45-6 --causes--> q/g9e883b906b45-6-1
+
+@rel d/g9e883b906b45-7 --causes--> q/g9e883b906b45-7-1
+
+@rel d/g9e883b906b45-8 --causes--> q/g9e883b906b45-8-1
+
+@rel d/g9e883b906b45-9 --causes--> q/g9e883b906b45-9-1
+
+@rel d/g9e883b906b45-10 --causes--> q/g9e883b906b45-10-1
+
+@rel d/g9e883b906b45-11 --causes--> q/g9e883b906b45-11-1
+
+@rel d/g9e883b906b45-11 --causes--> q/g9e883b906b45-11-2
+
+@rel d/g9e883b906b45-12 --causes--> q/g9e883b906b45-12-1

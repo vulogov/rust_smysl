@@ -68,6 +68,11 @@ def env_for(home, target):
     return env
 
 
+def redact(text):
+    """A log is published; a home directory is not the result and does not belong in it."""
+    return text.replace(str(EVAL.parent), "<repo>").replace(str(Path.home()), "~")
+
+
 def sh(cmd, cwd, env, log, timeout=3600):
     t0 = time.time()
     try:
@@ -76,7 +81,7 @@ def sh(cmd, cwd, env, log, timeout=3600):
     except subprocess.TimeoutExpired as e:
         code, out = 124, f"timeout after {timeout}s\n{e.stdout or ''}{e.stderr or ''}"
     with open(log, "a") as f:
-        f.write(f"$ {cmd}\n[exit {code}, {time.time() - t0:.0f}s]\n{out[-20000:]}\n")
+        f.write(redact(f"$ {cmd}\n[exit {code}, {time.time() - t0:.0f}s]\n{out[-20000:]}\n"))
     return code, out
 
 
