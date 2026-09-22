@@ -1,0 +1,40 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@artifact-ref a/g2a3520c07618-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/store.rs@2a3520c07618 }, "code:body_hash": 29096a7df229a79b }
+~ crates/cargo-smysl-corpus/src/store.rs::Corpus::record
+
+@artifact-ref a/g2a3520c07618-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/tests/guarantees.rs@2a3520c07618 }, "code:body_hash": d4a983c28c85d5e6 }
+~ crates/cargo-smysl-corpus/tests/guarantees.rs::every_constant_this_crate_takes_for_granted_parses
+
+@artifact-ref a/g2a3520c07618-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-facts/src/item.rs@2a3520c07618 }, "code:body_hash": 99096a5440d5b4a4 }
+~ crates/cargo-smysl-facts/src/item.rs::Body::visit_macro
+
+@artifact-ref a/g2a3520c07618-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@2a3520c07618 }, "code:body_hash": d9853b32ffd66bc5 }
+~ crates/cargo-smysl-verdict/src/check.rs::ask_all
+
+@artifact-ref a/g2a3520c07618-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@2a3520c07618 }, "code:body_hash": 34ea81fb87efbd67 }
+~ crates/cargo-smysl/src/commands.rs::doctor
+
+@artifact-ref a/g2a3520c07618-6 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@2a3520c07618 }, "code:body_hash": 319697e370572b3f }
+~ crates/cargo-smysl/src/commands.rs::extract
+
+@artifact-ref a/g2a3520c07618-7 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@2a3520c07618 }, "code:body_hash": c542459f8bc0d122 }
+~ crates/cargo-smysl/src/commands.rs::extract_command
+
+@artifact-ref a/g2a3520c07618-8 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@2a3520c07618 }, "code:body_hash": eeb73e578b538e95 }
+~ crates/cargo-smysl/src/commands.rs::extract_queued
+
+@artifact-ref a/g2a3520c07618-9 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@2a3520c07618 }, "code:body_hash": 71c40ea52bc35bdd }
+~ crates/cargo-smysl/src/commands.rs::run
+
+@artifact-ref a/g2a3520c07618-10 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@2a3520c07618 }, "code:body_hash": 5656beab7e217b31 }
+~ crates/cargo-smysl/src/commands.rs::short
+
+@artifact-ref a/g2a3520c07618-11 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@2a3520c07618 }, "code:body_hash": bf11315f8d49f86c }
+~ crates/cargo-smysl/src/commands.rs::why_commit
+
+@artifact-ref a/g2a3520c07618-12 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/main.rs@2a3520c07618 }, "code:body_hash": f59dc62a70ee44aa }
+~ crates/cargo-smysl/src/main.rs::main
+
+@artifact-ref a/g2a3520c07618-13 { status: cited, source: { kind: file, ref: crates/cargo-smysl/tests/cargo_subcommand.rs@2a3520c07618 }, "code:body_hash": 4cc62b17320dca54 }
+~ crates/cargo-smysl/tests/cargo_subcommand.rs::a_panic_is_reported_as_something_to_send_back

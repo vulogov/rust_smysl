@@ -230,3 +230,41 @@ fn every_research_extraction_records_into_a_store_that_checks() {
         "every system and repository with extractions was recorded"
     );
 }
+
+/// A clone has the documents and no store, because the store is derived and ignored. It loads anyway.
+///
+/// This failed in CI the first time a corpus was tracked: every commit's reasoning was in the checkout
+/// and `load` reported "no corpus recorded yet", which was true of the derived file and false of the
+/// repository.
+#[test]
+fn a_checkout_with_documents_and_no_store_rebuilds_it() {
+    let root = std::env::temp_dir().join(format!("smysl-clone-{}", std::process::id()));
+    std::fs::remove_dir_all(&root).ok();
+    let corpus = Corpus::at(&root);
+
+    let store = Store::from_records(Vec::new());
+    let staged = staged_against(
+        &store,
+        &extraction("research-pro-v2", "smysl", "90ec2f7"),
+        SMYSL_90EC2F7,
+    );
+    corpus.record(SMYSL_90EC2F7, &staged).unwrap();
+    let recorded = corpus.load().unwrap().units().count();
+    assert!(recorded > 0);
+
+    // What a clone looks like: documents tracked, store ignored.
+    std::fs::remove_file(corpus.store_path()).unwrap();
+    assert!(!corpus.store_path().exists());
+
+    let loaded = corpus.load().unwrap();
+    assert_eq!(
+        loaded.units().count(),
+        recorded,
+        "the documents are the record, and they are enough"
+    );
+    assert!(
+        corpus.store_path().exists(),
+        "and the derived file is written back, so the next command need not rebuild"
+    );
+    std::fs::remove_dir_all(&root).ok();
+}

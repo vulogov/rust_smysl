@@ -1,0 +1,28 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@artifact-ref a/gb77cdd9552cc-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-evidence/src/mutate.rs@b77cdd9552cc }, "code:body_hash": 3f12519a6b726c1f }
+~ crates/cargo-smysl-evidence/src/mutate.rs::recover
+
+@artifact-ref a/gb77cdd9552cc-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-evidence/src/mutate.rs@b77cdd9552cc }, "code:body_hash": 39bdb382787aa024 }
+~ crates/cargo-smysl-evidence/src/mutate.rs::within
+
+@artifact-ref a/gb77cdd9552cc-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-evidence/tests/evidence.rs@b77cdd9552cc }, "code:body_hash": 8dab799559f22f2a }
+~ crates/cargo-smysl-evidence/tests/evidence.rs::a_backup_naming_a_path_outside_the_workspace_is_refused
+
+@artifact-ref a/gb77cdd9552cc-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/src/judge.rs@b77cdd9552cc }, "code:body_hash": c5b6fe806760cb18 }
+~ crates/cargo-smysl-extract/src/judge.rs::ProviderJudge::post_plain
+
+@artifact-ref a/gb77cdd9552cc-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/src/judge.rs@b77cdd9552cc }, "code:body_hash": a2532e5d5ad2034e }
+~ crates/cargo-smysl-extract/src/judge.rs::is_loopback
+
+@artifact-ref a/gb77cdd9552cc-6 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/tests/extract.rs@b77cdd9552cc }, "code:body_hash": e57171d3bc6063d9 }
+~ crates/cargo-smysl-extract/tests/extract.rs::plain_http_will_not_carry_a_commit_off_this_machine
+
+@artifact-ref a/gb77cdd9552cc-7 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b77cdd9552cc }, "code:body_hash": 7ec25dc7412246ee }
+~ crates/cargo-smysl/src/commands.rs::check
+
+@artifact-ref a/gb77cdd9552cc-8 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b77cdd9552cc }, "code:body_hash": a145739d0ee8e6a9 }
+~ crates/cargo-smysl/src/commands.rs::extract
+
+@artifact-ref a/gb77cdd9552cc-9 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@b77cdd9552cc }, "code:body_hash": afe1020903e23285 }
+~ crates/cargo-smysl/src/commands.rs::say_what_is_sent

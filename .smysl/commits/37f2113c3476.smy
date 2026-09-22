@@ -1,0 +1,10 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@artifact-ref a/g37f2113c3476-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-corpus/src/report.rs@37f2113c3476 }, "code:body_hash": 6a736aabd741fb74 }
+~ crates/cargo-smysl-corpus/src/report.rs::commit_record
+
+@artifact-ref a/g37f2113c3476-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/matching.rs@37f2113c3476 }, "code:body_hash": e30316ca4e369151 }
+~ crates/cargo-smysl-verdict/src/matching.rs::retrieve
+
+@artifact-ref a/g37f2113c3476-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@37f2113c3476 }, "code:body_hash": 222011560241e88f }
+~ crates/cargo-smysl/src/commands.rs::stale

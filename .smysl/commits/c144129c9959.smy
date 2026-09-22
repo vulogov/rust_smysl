@@ -1,0 +1,34 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@artifact-ref a/gc144129c9959-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@c144129c9959 }, "code:body_hash": c6b5581b45c6cade }
+~ crates/cargo-smysl-verdict/src/check.rs::Change::from_diff
+
+@artifact-ref a/gc144129c9959-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@c144129c9959 }, "code:body_hash": 02889780c44d1856 }
+~ crates/cargo-smysl-verdict/src/check.rs::Change::ordered_by
+
+@artifact-ref a/gc144129c9959-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@c144129c9959 }, "code:body_hash": f152c79020b11b61 }
+~ crates/cargo-smysl-verdict/src/check.rs::Change::unexamined
+
+@artifact-ref a/gc144129c9959-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@c144129c9959 }, "code:body_hash": 2895a0ae868414a3 }
+~ crates/cargo-smysl-verdict/src/check.rs::Settings::default
+
+@artifact-ref a/gc144129c9959-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@c144129c9959 }, "code:body_hash": f0778104e171eac8 }
+~ crates/cargo-smysl-verdict/src/check.rs::check
+
+@artifact-ref a/gc144129c9959-6 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@c144129c9959 }, "code:body_hash": 71ffa21f5983c822 }
+~ crates/cargo-smysl-verdict/src/check.rs::shortened
+
+@artifact-ref a/gc144129c9959-7 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@c144129c9959 }, "code:body_hash": f91aa6dd76d6e970 }
+~ crates/cargo-smysl-verdict/tests/check.rs::a_change_that_fits_reports_no_unexamined_files
+
+@artifact-ref a/gc144129c9959-8 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@c144129c9959 }, "code:body_hash": ba93043d89d0c668 }
+~ crates/cargo-smysl-verdict/tests/check.rs::a_cut_change_shows_what_the_corpus_knows_about
+
+@artifact-ref a/gc144129c9959-9 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@c144129c9959 }, "code:body_hash": 0f90cd084a57fee8 }
+~ crates/cargo-smysl-verdict/tests/check.rs::what_was_not_examined_is_named
+
+@artifact-ref a/gc144129c9959-10 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@c144129c9959 }, "code:body_hash": e2467bd4177497c1 }
+~ crates/cargo-smysl/src/commands.rs::check
+
+@artifact-ref a/gc144129c9959-11 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@c144129c9959 }, "code:body_hash": d315d87f30157ca3 }
+~ crates/cargo-smysl/src/commands.rs::run
