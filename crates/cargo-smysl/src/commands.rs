@@ -2172,6 +2172,11 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
             .count()
     };
 
+    // The working tree is the same for every commit, so parse each file once rather than once per
+    // commit that touched it: with a hundred commits over the same files that is the difference between
+    // a hundred parses and one.
+    let mut now_cache: std::collections::BTreeMap<String, Vec<cargo_smysl_facts::Fact>> =
+        std::collections::BTreeMap::new();
     let mut reports = Vec::new();
     for sha in &shas {
         let commit = match cargo_smysl_git::read_commit(&root, sha) {
@@ -2196,9 +2201,14 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
                 }
             }
             // The file as it is now. A file that is gone leaves its items gone, which is the answer.
-            if let Ok(text) = std::fs::read_to_string(root.join(&file.path)) {
+            if let Some(cached) = now_cache.get(&file.path) {
+                now.extend(cached.iter().cloned());
+            } else if let Ok(text) = std::fs::read_to_string(root.join(&file.path)) {
                 match cargo_smysl_facts::facts(&file.path, &text) {
-                    Ok(facts) => now.extend(facts),
+                    Ok(facts) => {
+                        now_cache.insert(file.path.clone(), facts.clone());
+                        now.extend(facts);
+                    }
                     Err(e) => unreadable.push(format!("{}: {e}", file.path)),
                 }
             }
