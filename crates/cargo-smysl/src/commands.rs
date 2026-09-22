@@ -1302,6 +1302,7 @@ fn extract(
             return exit::FAILURE;
         }
     };
+    let batch_reflowed = batch.reflowed;
     let staged = cargo_smysl_corpus::stage(&store, batch, 0);
     let errors: Vec<String> = staged
         .report
@@ -1310,10 +1311,51 @@ fn extract(
         .map(|d| d.to_string())
         .collect();
     if !errors.is_empty() {
+        // A diagnostic names a uid, which tells a person nothing. Show the unit it is about.
+        let units: std::collections::BTreeMap<String, (String, String)> = staged
+            .records()
+            .iter()
+            .filter_map(|r| match r {
+                smysl::Record::Unit(u) => Some((
+                    smysl::canonical_uid(u).to_string(),
+                    (u.gist.clone(), u.body.clone().unwrap_or_default()),
+                )),
+                _ => None,
+            })
+            .collect();
         for e in errors.iter().take(5) {
             eprintln!("cargo smysl extract: {e}");
+            if let Some((uid, (gist, body))) = units
+                .iter()
+                .find(|(uid, _)| e.contains(uid.as_str()))
+                .map(|(uid, v)| (uid.clone(), v.clone()))
+            {
+                let _ = uid;
+                eprintln!("      gist: {}", gist.lines().next().unwrap_or(&gist));
+                for line in body.lines().take(4) {
+                    eprintln!("      body: {line}");
+                }
+            }
         }
+        if errors.len() > 5 {
+            eprintln!("cargo smysl extract: and {} more", errors.len() - 5);
+        }
+        // The model's answers are already cached (D7), so this failure costs minutes of reading, not
+        // minutes of a model. Saying so is the difference between "try again" and "that was wasted".
+        eprintln!(
+            "cargo smysl extract: the model's answers are kept in {}; \n\
+             this failed while recording them, so `cargo smysl extract {}` after a fix \
+             costs no model calls.",
+            cache.path(&commit.sha, &recipe).display(),
+            short(&commit.sha)
+        );
         return exit::FAILURE;
+    }
+    if batch_reflowed > 0 {
+        println!(
+            "{batch_reflowed} body/bodies were joined into one paragraph, which is what this \
+             granularity admits"
+        );
     }
     match corpus.record(&commit.sha, &staged) {
         Ok(r) => {

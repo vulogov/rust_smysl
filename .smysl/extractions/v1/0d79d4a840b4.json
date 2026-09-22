@@ -1,0 +1,1209 @@
+{
+  "decisions": [
+    {
+      "decision": "Open with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across await, a test that builds its own fixture.",
+      "kind": "act",
+      "rationale": "To make the documentation relatable and understandable for Rust developers.",
+      "quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture."
+    },
+    {
+      "decision": "Show what the tool does rather than describe it.",
+      "kind": "act",
+      "rationale": "To provide clear and practical information about the tool's functionality.",
+      "quote": "Then what the tool does, shown rather than described, with real output from this repository:"
+    },
+    {
+      "decision": "Drop the claim of answering 'why is this like this?' as a product feature.",
+      "kind": "decline",
+      "rationale": "To focus on the tool's actual capabilities rather than unmet claims.",
+      "quote": "Answering \"why is this like this?\" was dropped as a product claim."
+    },
+    {
+      "decision": "Assign labels, sources and statuses; the model proposes wording only.",
+      "kind": "act",
+      "rationale": "To maintain control over the integrity of recorded information.",
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": "Detect staleness by item body hash rather than line ranges.",
+      "kind": "act",
+      "rationale": "To accurately track changes in code identity rather than just line positions.",
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": "Record review as confirmations, withdrawals with reasons, and closures with notes.",
+      "kind": "act",
+      "rationale": "To keep a comprehensive log of all reviews and decisions made.",
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution. The log keeps everything."
+    },
+    {
+      "decision": "Ship its own instrument for benchmarking the model.",
+      "kind": "act",
+      "rationale": "To provide users with the ability to measure the performance of their chosen models on their own commits.",
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": "Focus on deterministic commands over model-dependent ones.",
+      "kind": "act",
+      "rationale": "To prioritize commands that are reliable, tested, and cost-effective to run.",
+      "quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run."
+    },
+    {
+      "decision": "Publish figures naming the model each came from, including failed experiments.",
+      "kind": "act",
+      "rationale": "To provide transparency about which models were tested and their results, including any failures.",
+      "quote": "The figures are published, naming the model each came from, including the experiments that failed."
+    },
+    {
+      "decision": "Highlight over-production as the failure mode that matters.",
+      "kind": "act",
+      "rationale": "To emphasize the importance of avoiding unnecessary or excessive output in the tool's operations.",
+      "quote": "Over-production is the failure mode that matters. A corpus of 54 decisions for a four-decision commit is worse than no corpus, and prompt wording was measured twice as not being the lever."
+    },
+    {
+      "decision": "Meaningfully price extraction runs before starting them.",
+      "kind": "act",
+      "rationale": "To inform users about the cost of extraction runs before they start, allowing them to make informed decisions.",
+      "quote": "The hook only queues and `--estimate` prices a run before it starts."
+    },
+    {
+      "decision": "Label cloned corpora as someone else's claims.",
+      "kind": "act",
+      "rationale": "To clarify the status of units in cloned corpora, indicating that they are not the tool's own claims.",
+      "quote": "A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says."
+    },
+    {
+      "decision": "Research the truncated-change problem before building for it",
+      "kind": "act",
+      "rationale": "The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.",
+      "quote": "Research the truncated-change problem before building for it"
+    },
+    {
+      "decision": "Reporting what was left out costs nothing and is honest",
+      "kind": "act",
+      "rationale": "The commit message suggests that reporting what was left out is a cost-free and honest approach to dealing with the truncated-change problem.",
+      "quote": "Reporting what was left out costs nothing and is honest"
+    },
+    {
+      "decision": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set",
+      "kind": "act",
+      "rationale": "The commit message proposes a method for choosing which 400 lines to show, which is cost-effective and can be measured deterministically.",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set"
+    },
+    {
+      "decision": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured",
+      "kind": "act",
+      "rationale": "The commit message suggests that splitting the change across multiple calls is expensive and should be avoided unless cheaper methods prove ineffective.",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary"
+    },
+    {
+      "decision": "The tool's promise is that it operates as designed",
+      "kind": "act",
+      "rationale": "The commit message states that the tool promises to operate as designed, without making any claims about how an agent or person acts on its reports.",
+      "quote": "The tool's promise is that it operates as designed"
+    },
+    {
+      "decision": "Feasibility: met",
+      "kind": "act",
+      "rationale": "The commit message confirms that the feasibility of the project has been met, indicating that smysl works as a self-contained library under an installable cargo subcommand.",
+      "quote": "Feasibility: met"
+    },
+    {
+      "decision": "S3, done: rationale packed into an agent's prompt did not change what the agent did",
+      "kind": "act",
+      "rationale": "The commit message states that packing rationale into an agent's prompt did not influence the agent's actions.",
+      "quote": "S3, done: rationale packed into an agent's prompt did not change what the agent did"
+    },
+    {
+      "decision": "S4, done (2026-09-19): `check` ships advisory",
+      "kind": "act",
+      "rationale": "The commit message indicates that the `check` command has been implemented and is now shipping as an advisory tool.",
+      "quote": "S4, done (2026-09-19): `check` ships advisory"
+    },
+    {
+      "decision": "S0, done (2026-09-20): the extraction figures exist, and they are figures about models",
+      "kind": "act",
+      "rationale": "The commit message confirms that the extraction figures have been established and are related to model performance.",
+      "quote": "S0, done (2026-09-20): the extraction figures exist, and they are figures about models"
+    },
+    {
+      "decision": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool",
+      "kind": "act",
+      "rationale": "The commit message states that the project has reassessed its approach to measurement, focusing on the tool rather than the models.",
+      "quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool"
+    },
+    {
+      "decision": "The model is the operator's choice, never the tool's",
+      "kind": "act",
+      "rationale": "The commit message states that the model selection is left to the operator, with the tool not making any decisions about which model to use.",
+      "quote": "The model is the operator's choice, never the tool's"
+    },
+    {
+      "decision": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this",
+      "kind": "act",
+      "rationale": "The commit message outlines the next steps for the project, focusing on tool-side acceptance and providing an operator's benchmark for model selection.",
+      "quote": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this"
+    },
+    {
+      "decision": "The README now leads with the seven deterministic commands rather than with extraction.",
+      "kind": "act",
+      "rationale": "It focuses on the part that needs no model and is worth someone's time today.",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction."
+    },
+    {
+      "decision": "It also no longer implies `stale` works on a fresh clone.",
+      "kind": "act",
+      "rationale": "Clarifies that `stale` reads a corpus, which is written by extraction.",
+      "quote": "It also no longer implies `stale` works on a fresh clone."
+    },
+    {
+      "decision": "`check` ships advisory: it prints findings and exits 0 unless `--strict`.",
+      "kind": "act",
+      "rationale": "Acknowledges the limitations of the model's precision and advises caution.",
+      "quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": "`extract` is honest about being weak.",
+      "kind": "act",
+      "rationale": "Discloses the limitations of the extraction process based on measured performance.",
+      "quote": "The model-dependent third is honest about being weak."
+    },
+    {
+      "decision": "Two-pass agreement is used by default for `check` to remove false flags.",
+      "kind": "act",
+      "rationale": "Improves the precision of findings by ensuring two independent runs agree.",
+      "quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default."
+    },
+    {
+      "decision": "Staleness is detected by item body hash rather than line ranges.",
+      "kind": "act",
+      "rationale": "Prevents false positives for functions that have merely moved.",
+      "quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": "`bench` measures the model you chose on your own commits.",
+      "kind": "act",
+      "rationale": "Allows users to measure and verify the performance of their chosen models.",
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from."
+    },
+    {
+      "decision": "The tool does not trust a cloned corpus as an established fact.",
+      "kind": "act",
+      "rationale": "Encourages users to verify claims in the corpus independently.",
+      "quote": "A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says."
+    },
+    {
+      "decision": "The project focuses on providing a queryable, code-anchored record of decisions with staleness detection and an honest account of model performance.",
+      "kind": "act",
+      "rationale": "Defines the core purpose and value proposition of the tool.",
+      "quote": "If you want one sentence for why this exists: **a queryable, code-anchored record of decisions, with staleness detection, and an honest account of what the model half is worth.**"
+    },
+    {
+      "decision": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary",
+      "kind": "act",
+      "rationale": "The commit message suggests that splitting the change across multiple calls is expensive and should be avoided unless cheaper methods prove ineffective.",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "A Rust developer recognizes common patterns in code such as dependencies pinned to exact versions, locks held across awaits, and tests building their own fixtures.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture."
+    },
+    {
+      "decision": 2,
+      "text": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was."
+    },
+    {
+      "decision": 2,
+      "text": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved."
+    },
+    {
+      "decision": 3,
+      "text": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was."
+    },
+    {
+      "decision": 3,
+      "text": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved."
+    },
+    {
+      "decision": 4,
+      "text": "The tool assigns labels, sources and statuses; the model proposes wording only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": 4,
+      "text": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`."
+    },
+    {
+      "decision": 5,
+      "text": "Staleness detection should be based on code identity rather than line ranges.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": 6,
+      "text": "The tool needs to maintain a record of all reviews and decisions for transparency and accountability.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution."
+    },
+    {
+      "decision": 7,
+      "text": "The tool needs to measure the performance of different models.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 8,
+      "text": "Two thirds of the commands never call a model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two thirds of the commands never call a model."
+    },
+    {
+      "decision": 9,
+      "text": "The tool needs to measure the performance of different models.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 9,
+      "text": "The figures are published",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The figures are published, naming the model each came from, including the experiments that failed."
+    },
+    {
+      "decision": 10,
+      "text": "The tool assigns labels, sources and statuses; the model proposes wording only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": 10,
+      "text": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`."
+    },
+    {
+      "decision": 10,
+      "text": "Most tooling in this area stores what the model said as though it were established.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Most tooling in this area stores what the model said as though it were established."
+    },
+    {
+      "decision": 11,
+      "text": "The hook only queues and `--estimate` prices a run before it starts.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "The hook only queues and `--estimate` prices a run before it starts."
+    },
+    {
+      "decision": 12,
+      "text": "The tool needs to measure the performance of different models.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 12,
+      "text": "A cloned corpus is someone else's claim.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says."
+    },
+    {
+      "decision": 13,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 13,
+      "text": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction."
+    },
+    {
+      "decision": 14,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 14,
+      "text": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction."
+    },
+    {
+      "decision": 14,
+      "text": "extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did."
+    },
+    {
+      "decision": 15,
+      "text": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction."
+    },
+    {
+      "decision": 15,
+      "text": "extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did."
+    },
+    {
+      "decision": 16,
+      "text": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    },
+    {
+      "decision": 16,
+      "text": "Reporting what was left out costs nothing and is honest.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Reporting what was left out costs nothing and is honest."
+    },
+    {
+      "decision": 17,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 17,
+      "text": "The tool makes no promise about how an agent or a person acts on what it reports.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports."
+    },
+    {
+      "decision": 18,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 18,
+      "text": "Feasibility: met.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Feasibility: met."
+    },
+    {
+      "decision": 19,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 19,
+      "text": "Agents do not act on context they are given.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Agents do not act on context they are given (S3: 1 of 14 corpus-arm summaries mentioned it)"
+    },
+    {
+      "decision": 20,
+      "text": "The project stops measuring models and measures the tool.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool."
+    },
+    {
+      "decision": 20,
+      "text": "`check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help."
+    },
+    {
+      "decision": 21,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 21,
+      "text": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history."
+    },
+    {
+      "decision": 21,
+      "text": "The tool assigns sources, labels and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool assigns sources, labels and statuses; a model proposes content only."
+    },
+    {
+      "decision": 22,
+      "text": "The tool's promise is that it operates as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 22,
+      "text": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction."
+    },
+    {
+      "decision": 22,
+      "text": "extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did."
+    },
+    {
+      "decision": 23,
+      "text": "The tool promises to operate as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 23,
+      "text": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history."
+    },
+    {
+      "decision": 23,
+      "text": "The tool assigns sources, labels and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool assigns sources, labels and statuses; a model proposes content only."
+    },
+    {
+      "decision": 24,
+      "text": "The tool promises to operate as designed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool's promise is that it operates as designed."
+    },
+    {
+      "decision": 24,
+      "text": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction."
+    },
+    {
+      "decision": 24,
+      "text": "The tool assigns sources, labels and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool assigns sources, labels and statuses; a model proposes content only."
+    },
+    {
+      "decision": 25,
+      "text": "Two thirds of this tool never calls a model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run."
+    },
+    {
+      "decision": 25,
+      "text": "The part that needs no model is worth someone's time today.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "It focuses on the part that needs no model and is worth someone's time today."
+    },
+    {
+      "decision": 26,
+      "text": "`stale` command reads a corpus",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 26,
+      "text": "Extraction involves asking a model",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A corpus is written by extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 27,
+      "text": "`check` was right about one flag in ten on a free local model and about nine in ten on a hosted one.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "On a free local model about one flag in ten was correct."
+    },
+    {
+      "decision": 27,
+      "text": "`check` is meant to be advisory, not a gate.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "`check` ships advisory: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": 28,
+      "text": "The project has measured the performance of the 'extract' command.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six commits labelled blind by the repository owner (73 decisions, 68 prerequisites, 29 alternatives), three systems adjudicated item by item. Precision / recall:"
+    },
+    {
+      "decision": 28,
+      "text": "The 'extract' command relies on a model to propose content.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "| Command | What it does | Needs a model |\n|---|---|---|\n| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |"
+    },
+    {
+      "decision": 29,
+      "text": "`check` was right about one flag in ten on a free local model and about nine in ten on a hosted one.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "On a free local model about one flag in ten was correct."
+    },
+    {
+      "decision": 30,
+      "text": "Commit messages already carry reasons.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Essay-style commit messages already hold the reasons."
+    },
+    {
+      "decision": 30,
+      "text": "Staleness detection is needed for reasoning that becomes unexamined because the code under it changed.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "which recorded reasoning is now *unexamined* because the code under it changed"
+    },
+    {
+      "decision": 31,
+      "text": "The tool needs to measure the performance of different models.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 32,
+      "text": "A cloned corpus is someone else's claim.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "A cloned corpus is someone else's claim."
+    },
+    {
+      "decision": 33,
+      "text": "Two thirds of this tool never calls a model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two thirds of the commands never call a model."
+    },
+    {
+      "decision": 33,
+      "text": "The part that needs no model is worth someone's time today.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "It focuses on the part that needs no model and is worth someone's time today."
+    },
+    {
+      "decision": 34,
+      "text": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Describing what the tool does.",
+      "reason": "",
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet."
+    },
+    {
+      "decision": 2,
+      "alternative": "Describing what the tool does.",
+      "reason": "",
+      "quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture. Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved."
+    },
+    {
+      "decision": 3,
+      "alternative": "Keep 'why is this like this?' as a product feature",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "The model assigns labels, sources and statuses.",
+      "reason": "",
+      "quote": "Most tooling in this area stores what the model said as though it were established."
+    },
+    {
+      "decision": 4,
+      "alternative": "The tool does not check quotes against commits.",
+      "reason": "",
+      "quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`."
+    },
+    {
+      "decision": 5,
+      "alternative": "Detect staleness by line ranges.",
+      "reason": "",
+      "quote": "Tried and rejected: Detect staleness by line ranges."
+    },
+    {
+      "decision": 6,
+      "alternative": "Do not record reviews and decisions.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Record only confirmations without reasons or notes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Record only withdrawals without reasons or notes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Record only closures without notes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Use an external benchmarking tool.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Do not include any benchmarking functionality.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Not publishing figures naming the model each came from",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Publishing figures without naming the model",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Ranking decisions by whether their quote is in the commit",
+      "reason": "",
+      "quote": "Tried and rejected: ranking decisions by whether their quote is in the commit"
+    },
+    {
+      "decision": 10,
+      "alternative": "Retrieval term filtering",
+      "reason": "",
+      "quote": "Tried and rejected: retrieval term filtering"
+    },
+    {
+      "decision": 11,
+      "alternative": "Start extraction runs without pricing them first.",
+      "reason": "",
+      "quote": "Rejected: Start extraction runs without pricing them first."
+    },
+    {
+      "decision": 12,
+      "alternative": "Do not label cloned corpora as someone else's claims.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "reason": "",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    },
+    {
+      "decision": 13,
+      "alternative": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "reason": "",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": 14,
+      "alternative": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "reason": "",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    },
+    {
+      "decision": 14,
+      "alternative": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "reason": "",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": 15,
+      "alternative": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "reason": "",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": 16,
+      "alternative": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "reason": "",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    },
+    {
+      "decision": 16,
+      "alternative": "Reporting what was left out costs nothing and is honest.",
+      "reason": "",
+      "quote": "Reporting what was left out costs nothing and is honest."
+    },
+    {
+      "decision": 17,
+      "alternative": "The tool promises to operate as designed and also guarantees how agents or people will act on its reports.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "The tool does not make any promises about its operation.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "alternative": "The rationale in the prompt could have influenced the agent's actions.",
+      "reason": "",
+      "quote": "Rejected: The rationale in the prompt could have influenced the agent's actions."
+    },
+    {
+      "decision": 20,
+      "alternative": "`check` ships as a gate.",
+      "reason": "",
+      "quote": "all bounds met: `check` ships as a gate; any bound missed: it ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set."
+    },
+    {
+      "decision": 21,
+      "alternative": "Continue measuring models.",
+      "reason": "",
+      "quote": "Rejected: Continue measuring models."
+    },
+    {
+      "decision": 21,
+      "alternative": "Measure both the tool and the models together.",
+      "reason": "",
+      "quote": "Rejected: Measure both the tool and the models together."
+    },
+    {
+      "decision": 22,
+      "alternative": "Continue measuring models.",
+      "reason": "",
+      "quote": "Rejected: Continue measuring models."
+    },
+    {
+      "decision": 22,
+      "alternative": "Measure both the tool and the models together.",
+      "reason": "",
+      "quote": "Rejected: Measure both the tool and the models together."
+    },
+    {
+      "decision": 23,
+      "alternative": "The tool selects a model based on some criteria.",
+      "reason": "",
+      "quote": "Rejected: The tool selects a model based on some criteria."
+    },
+    {
+      "decision": 24,
+      "alternative": "Continue measuring models.",
+      "reason": "",
+      "quote": "Rejected: Continue measuring models."
+    },
+    {
+      "decision": 24,
+      "alternative": "Measure both the tool and the models together.",
+      "reason": "",
+      "quote": "Rejected: Measure both the tool and the models together."
+    },
+    {
+      "decision": 25,
+      "alternative": "Leading with extraction, which asks a model once per commit.",
+      "reason": "",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction."
+    },
+    {
+      "decision": 26,
+      "alternative": "`stale` could imply it works on a fresh clone without a corpus",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "`check` could exit with an error code if any flags are found.",
+      "reason": "",
+      "quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": 27,
+      "alternative": "`check` could be more strict by default, requiring manual confirmation of findings.",
+      "reason": "",
+      "quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": 28,
+      "alternative": "The project could downplay the limitations of the 'extract' command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "The project could not disclose the measured performance of the 'extract' command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "One-pass agreement for `check`.",
+      "reason": "",
+      "quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default."
+    },
+    {
+      "decision": 30,
+      "alternative": "Detect staleness by line ranges.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 31,
+      "alternative": "Use an external benchmarking tool.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 31,
+      "alternative": "Do not include any benchmarking functionality.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "The tool trusts a cloned corpus as an established fact.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 34,
+      "alternative": "Choosing which 400 lines to show, by how much corpus attaches to each file",
+      "reason": "",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The documentation now begins with examples that are more relatable and understandable for Rust developers.",
+      "quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The tool shows its functionality through real output from the repository.",
+      "quote": "Then what the tool does, shown rather than described, with real output from this repository: one commit read back with its rejected alternative beside it, and `stale` naming the functions that have changed under recorded reasoning.",
+      "verified": true,
+      "verification_quote": "Then what the tool does, shown rather than described, with real output from this repository: one commit read back with its rejected alternative beside it, and `stale` naming the functions that have changed under recorded reasoning."
+    },
+    {
+      "decision": 3,
+      "text": "The tool's focus shifts from unmet claims to its actual capabilities.",
+      "quote": "To focus on the tool's actual capabilities rather than unmet claims.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The tool maintains control over the integrity of recorded information.",
+      "quote": "To maintain control over the integrity of recorded information.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "A function that merely moved will not be flagged as stale.",
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "A function that changed will be flagged as stale.",
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "The log will keep a comprehensive record of all reviews and decisions made, ensuring transparency and accountability.",
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Users can measure the performance of their chosen model on their own commits.",
+      "quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The tool provides transparency about which models were tested and their results.",
+      "quote": "every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Deterministic commands are worth your time today.",
+      "quote": "Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run.",
+      "verified": true,
+      "verification_quote": "Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run."
+    },
+    {
+      "decision": 9,
+      "text": "Users can measure the performance of their chosen model on their own commits.",
+      "quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The tool provides transparency about which models were tested and their results.",
+      "quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Failed experiments are documented, preventing others from repeating them",
+      "quote": "including four experiments that failed and are listed so nobody repeats them.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "A corpus of 54 decisions for a four-decision commit is worse than no corpus.",
+      "quote": "Over-production is the failure mode that matters. A corpus of 54 decisions for a four-decision commit is worse than no corpus, and prompt wording was measured twice as not being the lever.",
+      "verified": true,
+      "verification_quote": "| `extract` on a local 14B | over-produces: 54 decisions on a commit labelled with 4"
+    },
+    {
+      "decision": 11,
+      "text": "Users are informed about the cost of extraction runs before they start, allowing them to make informed decisions.",
+      "quote": "Users are informed about the cost of extraction runs before they start, allowing them to make informed decisions.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Units in a cloned corpus are marked as `speculative`.",
+      "quote": "A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "The decision to research the truncated-change problem before building for it helps in understanding and addressing the issue affecting 59% of held-out changes.",
+      "quote": "Research the truncated-change problem before building for it",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "The decision to report what was left out is adopted as a cost-free and honest approach.",
+      "quote": "Reporting what was left out costs nothing and is honest.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The method for choosing which 400 lines to show is implemented.",
+      "quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "The project focuses on ensuring that the tool operates as intended without making claims about external actions based on its reports.",
+      "quote": "The tool's promise is that it operates as designed.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "The project is confirmed to be feasible and functional as a self-contained library under an installable cargo subcommand.",
+      "quote": "Feasibility: met.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "The project records this as information about one usage pattern: rationale in the prompt does not change what an agent does.",
+      "quote": "The project records this as information about one usage pattern: rationale in the prompt does not change what an agent does.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "`check` now operates in advisory mode, providing findings without enforcing strict rules.",
+      "quote": "S4, done (2026-09-19): `check` ships advisory.",
+      "verified": true,
+      "verification_quote": "`check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help."
+    },
+    {
+      "decision": 21,
+      "text": "The project focuses on measuring the tool rather than the models.",
+      "quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool.",
+      "verified": true,
+      "verification_quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool."
+    },
+    {
+      "decision": 21,
+      "text": "The project separates the measurement of the tool from the measurement of the models.",
+      "quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice.",
+      "verified": true,
+      "verification_quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice."
+    },
+    {
+      "decision": 22,
+      "text": "The project focuses on measuring the tool rather than the models.",
+      "quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool.",
+      "verified": true,
+      "verification_quote": "Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool."
+    },
+    {
+      "decision": 22,
+      "text": "The project separates the measurement of the tool from the measurement of the models.",
+      "quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice.",
+      "verified": true,
+      "verification_quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice."
+    },
+    {
+      "decision": 23,
+      "text": "The operator has full control over the model selection process.",
+      "quote": "The model is the operator's choice, never the tool's.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "The project will focus on tool-side acceptance and provide an operator's benchmark for model selection.",
+      "quote": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "The operator has full control over the model selection process.",
+      "quote": "The model is the operator's choice, never the tool's.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "README.md is updated to lead with the seven deterministic commands.",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction.",
+      "verified": true,
+      "verification_quote": "## The commands\n\nA full walk-through, on this repository, is in [`docs/smysl-workflow.md`](docs/smysl-workflow.md)."
+    },
+    {
+      "decision": 29,
+      "text": "The precision of findings is improved by ensuring two independent runs agree.",
+      "quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default.",
+      "verified": true,
+      "verification_quote": "170 and 192 flags became 96, and it removed every false flag on a real commit in development"
+    },
+    {
+      "decision": 31,
+      "text": "Users can measure the performance of their chosen model on their own commits.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 31,
+      "text": "The tool provides transparency about which models were tested and their results.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 32,
+      "text": "Users are encouraged to verify claims in the corpus independently.",
+      "quote": "Encourages users to verify claims in the corpus independently.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 34,
+      "text": "Splitting the change across calls triples the cost",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}
