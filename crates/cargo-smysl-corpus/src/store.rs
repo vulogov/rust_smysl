@@ -80,7 +80,9 @@ impl Corpus {
     /// every record type in 1.4.0).
     pub fn record(&self, sha: &str, staged: &Staged) -> Result<Recorded, StoreError> {
         let doc = self.commit_path(sha);
-        let parent = doc.parent().expect("commit path has a directory");
+        // This path is one we built, so it has a parent — but a tool that reads other people's
+        // repositories should not be one assertion away from stopping.
+        let parent = doc.parent().unwrap_or(Path::new("."));
         std::fs::create_dir_all(parent).map_err(|e| StoreError::Io(parent.to_path_buf(), e))?;
         let text = surface(staged);
         std::fs::write(&doc, &text).map_err(|e| StoreError::Io(doc.clone(), e))?;

@@ -37,6 +37,8 @@ pub fn run(args: SmyslArgs) -> u8 {
         ),
         Command::Hooks { what } => hooks(&args, what),
         Command::MergeDriver { base, ours, theirs } => merge_driver(base, ours, theirs),
+        // Hidden, and the only place this tool panics on purpose: it is how the handler is tested.
+        Command::SelfTestPanic => panic!("a deliberate panic, to test the report"),
         Command::Extract {
             rev,
             queued,
@@ -202,8 +204,8 @@ fn why_commit(args: &SmyslArgs, sha: &str, markdown: bool) -> u8 {
     if record.is_empty() {
         println!(
             "{}: nothing recorded for this commit — cargo smysl extract {}",
-            &resolved[..12.min(resolved.len())],
-            &resolved[..12.min(resolved.len())]
+            short(&resolved),
+            short(&resolved)
         );
         return exit::OK;
     }
@@ -1045,7 +1047,7 @@ fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u
         .collect();
     let todo: Vec<String> = shas
         .iter()
-        .filter(|sha| r.force || !recorded.contains(&sha[..12.min(sha.len())]))
+        .filter(|sha| r.force || !recorded.contains(&short(sha)))
         .cloned()
         .collect();
 
@@ -1064,7 +1066,7 @@ fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u
         if r.estimate {
             println!(
                 "  {}  {:>7} KB  about {:.0} min",
-                &sha[..12.min(sha.len())],
+                short(sha),
                 size / 1024,
                 estimate_minutes(size)
             );
@@ -1081,11 +1083,11 @@ fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u
 
     let mut done = 0;
     for (n, sha) in todo.iter().enumerate() {
-        println!("\n[{}/{}] {}", n + 1, todo.len(), &sha[..12.min(sha.len())]);
+        println!("\n[{}/{}] {}", n + 1, todo.len(), short(sha));
         let code = extract(args, Some(sha), r.force, r.dry_run, how);
         if code != exit::OK {
             // One commit failing is not the run failing: the rest are still worth recording.
-            eprintln!("cargo smysl extract: {} failed; carrying on", &sha[..12]);
+            eprintln!("cargo smysl extract: {} failed; carrying on", short(sha));
             continue;
         }
         done += 1;
@@ -1137,16 +1139,13 @@ fn extract_queued(args: &SmyslArgs, r: &Recording<'_>, how: ExtractHow<'_>) -> u
 
     let mut left: Vec<String> = queued.clone();
     for sha in queued.iter().take(take) {
-        println!("\n{}", &sha[..12.min(sha.len())]);
+        println!("\n{}", short(sha));
         if extract(args, Some(sha), r.force, r.dry_run, how) == exit::OK {
             left.retain(|s| s != sha);
             // Written after each one, so an interrupted run does not redo what it finished.
             let _ = std::fs::write(&path, left.join("\n"));
         } else {
-            eprintln!(
-                "cargo smysl extract: {} stays queued",
-                &sha[..12.min(sha.len())]
-            );
+            eprintln!("cargo smysl extract: {} stays queued", short(sha));
         }
     }
     println!("\n{} left in the queue", left.len());
@@ -1195,7 +1194,11 @@ fn extract(
     };
     let extraction = match kept {
         Some(extraction) => {
-            println!("{}: already extracted ({})", &commit.sha[..12], recipe.name);
+            println!(
+                "{}: already extracted ({})",
+                short(&commit.sha),
+                recipe.name
+            );
             extraction
         }
         None => {
@@ -1708,6 +1711,14 @@ fn default_features(args: &SmyslArgs) -> std::collections::BTreeSet<String> {
 }
 
 /// The workspace root, the way cargo sees it.
+/// The first twelve characters of a revision, however short or strange it is.
+///
+/// Slicing a string by byte count panics on a short one or on a character boundary, and shas reach this
+/// tool from a queue file as well as from git.
+fn short(sha: &str) -> String {
+    sha.chars().take(12).collect()
+}
+
 fn workspace_root(args: &SmyslArgs) -> Result<std::path::PathBuf, String> {
     let mut cmd = cargo_metadata::MetadataCommand::new();
     if let Some(path) = &args.manifest_path {
@@ -1767,7 +1778,7 @@ fn doctor(args: &SmyslArgs) -> u8 {
             Ok(history) => {
                 let behind = history
                     .iter()
-                    .take_while(|sha| !recorded.contains(&sha[..12.min(sha.len())]))
+                    .take_while(|sha| !recorded.contains(&short(sha)))
                     .count();
                 println!(
                     "recorded: {} commit(s); {behind} newer commit(s) not recorded{}",

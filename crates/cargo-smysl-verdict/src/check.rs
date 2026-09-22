@@ -540,7 +540,9 @@ fn ask_all(
                 let i = next.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 let Some(ask) = asks.get(i) else { break };
                 let answer = judge.ask(s.system_prompt(), ask);
-                *answers[i].lock().unwrap() = Some(answer);
+                // A poisoned lock means another call panicked; this answer is still good.
+                let mut slot = answers[i].lock().unwrap_or_else(|e| e.into_inner());
+                *slot = Some(answer);
             });
         }
     });
@@ -548,7 +550,7 @@ fn ask_all(
         .into_iter()
         .map(|slot| {
             slot.into_inner()
-                .unwrap()
+                .unwrap_or_else(|e| e.into_inner())
                 .unwrap_or_else(|| Err(JudgeError::Shape("no answer".into())))
         })
         .collect()

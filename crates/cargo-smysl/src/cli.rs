@@ -229,6 +229,9 @@ pub enum Command {
         #[command(subcommand)]
         what: HooksStep,
     },
+    /// Panic on purpose, to check that a panic is reported like a bug report and not like a crash.
+    #[command(hide = true)]
+    SelfTestPanic,
     /// Merge two versions of a corpus document (git calls this; you do not).
     #[command(hide = true)]
     MergeDriver {

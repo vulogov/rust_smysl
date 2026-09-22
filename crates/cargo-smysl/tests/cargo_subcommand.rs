@@ -284,3 +284,36 @@ fn a_document_that_does_not_parse_is_left_alone() {
     );
     std::fs::remove_dir_all(&dir).ok();
 }
+
+/// A panic is reported as a bug in this tool, with somewhere to send it — not as a backtrace.
+///
+/// `human_panic` stands aside when `RUST_BACKTRACE` is set or the build has debug assertions, which is
+/// what a developer wants; this checks the other case, which is what an installed binary does.
+#[test]
+fn a_panic_is_reported_as_something_to_send_back() {
+    let binary = env!("CARGO_BIN_EXE_cargo-smysl");
+    let out = std::process::Command::new(binary)
+        .args(["smysl", "self-test-panic"])
+        .env_remove("RUST_BACKTRACE")
+        .output()
+        .unwrap();
+    let said = format!(
+        "{}{}",
+        String::from_utf8_lossy(&out.stdout),
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert!(!out.status.success(), "a panic is still a failure");
+
+    // In a test build, debug assertions are on, so the raw panic is what a developer sees and should.
+    if cfg!(debug_assertions) {
+        assert!(
+            said.contains("a deliberate panic"),
+            "the developer gets the panic itself: {said}"
+        );
+        return;
+    }
+    assert!(
+        said.contains("crash report") && said.contains("rust_smysl"),
+        "an installed binary points the person at where to send it: {said}"
+    );
+}

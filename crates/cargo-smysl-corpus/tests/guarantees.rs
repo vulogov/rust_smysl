@@ -149,3 +149,32 @@ fn a_second_extraction_of_the_same_commit_does_not_collide_with_the_first() {
         "the reworded prerequisite is a new unit"
     );
 }
+
+/// The constants this crate asserts on are valid, so CI finds a broken one rather than a person.
+///
+/// `build` and `Labels` parse fixed strings — the schema id, the relation kinds, the tool's agent id —
+/// and treat failure as impossible. It is impossible only while smysl's rules stay as they are, and
+/// this is what notices if they change.
+#[test]
+fn every_constant_this_crate_takes_for_granted_parses() {
+    use cargo_smysl_corpus::{AGENT, CODE_SCHEMA_ID, REL_EXERCISES, REL_TOUCHES};
+
+    assert!(
+        smysl::SchemaId::parse(CODE_SCHEMA_ID).is_ok(),
+        "{CODE_SCHEMA_ID} is the schema every unit is declared under"
+    );
+    for kind in [REL_TOUCHES, REL_EXERCISES] {
+        assert!(
+            smysl::RelKind::parse(kind).is_ok(),
+            "{kind} is an edge this tool writes"
+        );
+    }
+    assert!(
+        smysl::AgentId::new(AGENT).is_ok(),
+        "{AGENT} attests everything this tool records"
+    );
+    // And a label built from a real revision, which `Labels` also takes for granted.
+    let labels = cargo_smysl_corpus::Labels::new("90ec2f781421002876548124", 0)
+        .expect("a hex revision makes a label");
+    assert_eq!(labels.decision(1).to_string(), "d/g90ec2f781421-1");
+}

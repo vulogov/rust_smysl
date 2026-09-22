@@ -58,6 +58,32 @@ sending and where, once, before the first call, whenever the endpoint is not on 
 - **`cargo smysl hooks install` writes into `.git/hooks`**, and refuses to replace a hook this tool did
   not write unless `--force` is given.
 
+## Stability: what can stop this tool
+
+Scanned 2026-09-22 alongside the rest. A panic in a tool that reads other people's repositories is a
+denial of the tool, so the rule is that nothing a repository, a queue file or a model can contain should
+reach one.
+
+**Fixed:**
+
+- **A short revision in `.smysl/queue`** would have panicked: shas were shortened by slicing twelve
+  bytes, and that file is plain text anyone can edit or truncate. Shortening now takes twelve
+  *characters*, of however many there are.
+- **A macro path with no segments** panicked the fact extractor, which indexed the first segment of
+  every macro path it met. It places such an event vaguely rather than stopping.
+- **A poisoned lock** — another call panicking while holding it — would have taken the rest of the run
+  with it. The answer that is there is used.
+
+**Left as assertions, with CI to catch them:** `build` and `Labels` parse fixed strings — the schema id,
+the relation kinds, the tool's agent id — and treat failure as impossible. It is impossible only while
+smysl's rules stay as they are, so a test parses each of them; a change upstream fails the build rather
+than someone's run.
+
+**And when something does panic**, `human_panic` reports it as a bug in this tool with somewhere to send
+it and a report file to attach, rather than a backtrace. It stands aside when `RUST_BACKTRACE` is set or
+the build has debug assertions, which is what a developer wants. `cargo smysl self-test-panic` is hidden
+and exists to test that path.
+
 ## Reporting something
 
 Open an issue at <https://github.com/vulogov/rust_smysl>. If it is a way to make this tool write, read or
