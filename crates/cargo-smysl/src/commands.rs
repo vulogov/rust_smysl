@@ -95,6 +95,7 @@ pub fn run(args: SmyslArgs) -> u8 {
             dry_run,
             no_corpus_order,
             parts,
+            jobs,
         } => check(
             &args,
             CheckArgs {
@@ -113,6 +114,7 @@ pub fn run(args: SmyslArgs) -> u8 {
                 dry_run: *dry_run,
                 no_corpus_order: *no_corpus_order,
                 parts: *parts,
+                jobs: *jobs,
             },
         ),
         Command::Evidence {
@@ -1366,6 +1368,71 @@ fn touched_items(commit: &cargo_smysl_git::CommitData) -> Vec<cargo_smysl_corpus
     out
 }
 
+/// A judge that says what it is doing, because a minute of silence reads as a hang.
+///
+/// It wraps the real one and prints to stderr: a line when a call goes out, a line when it comes back
+/// with how long it took. Nothing is printed when the output is machine-readable or quiet was asked for
+/// — a progress line in a pipe is noise.
+struct Narrating<'a> {
+    inner: &'a (dyn cargo_smysl_extract::Judge + Sync),
+    state: std::sync::Mutex<(usize, usize)>,
+    quiet: bool,
+}
+
+impl<'a> Narrating<'a> {
+    fn around(inner: &'a (dyn cargo_smysl_extract::Judge + Sync), quiet: bool) -> Narrating<'a> {
+        Narrating {
+            inner,
+            state: std::sync::Mutex::new((0, 0)),
+            quiet,
+        }
+    }
+}
+
+impl cargo_smysl_extract::Judge for Narrating<'_> {
+    fn describe(&self) -> String {
+        self.inner.describe()
+    }
+
+    fn input_chars(&self) -> Option<usize> {
+        self.inner.input_chars()
+    }
+
+    fn ask_text(
+        &self,
+        system: &str,
+        user: &str,
+    ) -> Result<(String, cargo_smysl_extract::Charged), cargo_smysl_extract::JudgeError> {
+        let started = std::time::Instant::now();
+        let n = {
+            let mut state = self.state.lock().unwrap();
+            state.0 += 1;
+            state.1 += 1;
+            if !self.quiet {
+                eprintln!(
+                    "  asking {} — call {} ({} in flight, {} KB)",
+                    self.inner.describe(),
+                    state.0,
+                    state.1,
+                    user.len() / 1024
+                );
+            }
+            state.0
+        };
+        let answer = self.inner.ask_text(system, user);
+        let mut state = self.state.lock().unwrap();
+        state.1 -= 1;
+        if !self.quiet {
+            eprintln!(
+                "  call {n} {} after {:.0}s",
+                if answer.is_ok() { "answered" } else { "failed" },
+                started.elapsed().as_secs_f32()
+            );
+        }
+        answer
+    }
+}
+
 struct CheckArgs<'a> {
     rev: Option<&'a str>,
     patch: Option<&'a str>,
@@ -1382,6 +1449,7 @@ struct CheckArgs<'a> {
     dry_run: bool,
     no_corpus_order: bool,
     parts: usize,
+    jobs: usize,
 }
 
 /// `check`: what this change contradicts in the corpus.
@@ -1419,6 +1487,7 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         chars_per_token: c.chars_per_token,
         order_by_corpus: !c.no_corpus_order,
         max_parts: c.parts.max(1),
+        jobs: c.jobs.max(1),
         ..Settings::default()
     };
     if let Some(path) = c.prompt_file {
@@ -1495,10 +1564,21 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         .cycle()
         .take(c.passes.max(1))
         .collect();
+    // Say what is happening while it happens: these calls take about a minute each.
+    let narrating = Narrating::around(&judge, c.json || args.quiet);
+    if !(c.json || args.quiet) {
+        eprintln!(
+            "checking {} file(s) against {} recorded commit(s), {} pass(es), {} call(s) at a time",
+            change.files.len(),
+            store.units().count().min(9999),
+            seeds.len().max(1),
+            settings.jobs.max(1)
+        );
+    }
     let outcome = if seeds.len() > 1 {
-        cargo_smysl_verdict::check::check_agreed(&store, &change, &judge, &settings, &seeds)
+        cargo_smysl_verdict::check::check_agreed(&store, &change, &narrating, &settings, &seeds)
     } else {
-        cargo_smysl_verdict::check(&store, &change, &judge, &settings)
+        cargo_smysl_verdict::check(&store, &change, &narrating, &settings)
     };
 
     if c.json {

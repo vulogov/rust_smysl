@@ -1,8 +1,8 @@
 //! The deterministic half of `check`, on a real corpus and without a model: what it asks about, what it
 //! accepts as an answer, and what it refuses.
 
-use std::cell::RefCell;
 use std::path::Path;
+use std::sync::Mutex;
 
 use cargo_smysl_corpus::{build, stage, CommitText, Extraction};
 use cargo_smysl_verdict::check::{check_agreed, AGREEMENT_SEEDS};
@@ -12,16 +12,17 @@ use smysl::Store;
 const SHA: &str = "90ec2f781421002876548124e9fe02073503372c";
 
 /// A judge that answers from a script, and records what it was asked.
+/// Shared rather than borrowed, because `check` may ask several questions at once.
 struct Scripted {
-    answers: RefCell<Vec<Vec<RawVerdict>>>,
-    asked: RefCell<Vec<String>>,
+    answers: Mutex<Vec<Vec<RawVerdict>>>,
+    asked: Mutex<Vec<String>>,
 }
 
 impl Scripted {
     fn new(answers: Vec<Vec<RawVerdict>>) -> Scripted {
         Scripted {
-            answers: RefCell::new(answers),
-            asked: RefCell::new(Vec::new()),
+            answers: Mutex::new(answers),
+            asked: Mutex::new(Vec::new()),
         }
     }
 }
@@ -32,8 +33,8 @@ impl Judge for Scripted {
     }
     // The trait's primitive is the model's text, so a scripted judge answers as a model would.
     fn ask_text(&self, _system: &str, user: &str) -> Result<(String, Charged), JudgeError> {
-        self.asked.borrow_mut().push(user.to_string());
-        let mut answers = self.answers.borrow_mut();
+        self.asked.lock().unwrap().push(user.to_string());
+        let mut answers = self.answers.lock().unwrap();
         let next = if answers.is_empty() {
             Vec::new()
         } else {
@@ -96,7 +97,7 @@ fn it_asks_about_recorded_units_and_shows_the_change_with_numbered_lines() {
     let judge = Scripted::new(vec![]);
     let outcome = check(&store, &change, &judge, &settings);
 
-    let asked = judge.asked.borrow();
+    let asked = judge.asked.lock().unwrap();
     assert!(!asked.is_empty(), "the judge was asked something");
     assert!(asked[0].contains("RECORDED UNITS:"), "{}", asked[0]);
     assert!(
@@ -126,7 +127,7 @@ fn a_verdict_stands_when_its_label_was_judged_and_its_line_is_in_the_change() {
     // Ask once to learn which labels this change puts in front of the model.
     let probe = Scripted::new(vec![]);
     check(&store, &change, &probe, &settings);
-    let asked = probe.asked.borrow()[0].clone();
+    let asked = probe.asked.lock().unwrap()[0].clone();
     let judged: Vec<String> = asked
         .lines()
         .find(|l| l.starts_with("JUDGE: "))
@@ -163,7 +164,7 @@ fn a_verdict_is_refused_when_the_label_was_not_judged_or_the_quote_is_invented()
     let change = Change::from_diff(DIFF, &settings);
     let probe = Scripted::new(vec![]);
     check(&store, &change, &probe, &settings);
-    let judged = probe.asked.borrow()[0]
+    let judged = probe.asked.lock().unwrap()[0]
         .lines()
         .find(|l| l.starts_with("JUDGE: "))
         .unwrap()
@@ -233,7 +234,7 @@ fn findings_are_advisory_unless_strict() {
     let change = Change::from_diff(DIFF, &settings);
     let probe = Scripted::new(vec![]);
     check(&store, &change, &probe, &settings);
-    let asked = probe.asked.borrow()[0].clone();
+    let asked = probe.asked.lock().unwrap()[0].clone();
     let judged = asked
         .lines()
         .find(|l| l.starts_with("JUDGE: "))
@@ -282,7 +283,7 @@ fn a_finding_only_one_pass_reports_is_not_kept() {
     let change = Change::from_diff(DIFF, &settings);
     let probe = Scripted::new(vec![]);
     check(&store, &change, &probe, &settings);
-    let asked = probe.asked.borrow()[0].clone();
+    let asked = probe.asked.lock().unwrap()[0].clone();
     let judged: Vec<String> = asked
         .lines()
         .find(|l| l.starts_with("JUDGE: "))
@@ -574,4 +575,63 @@ fn one_part_is_what_fits_and_the_rest_named() {
         "and it says what it skipped"
     );
     assert!(!outcome.warnings.iter().any(|w| w.contains("read in")));
+}
+
+/// Several calls at once answer the same as one at a time, in the same order.
+#[test]
+fn asking_concurrently_gives_the_same_answers_in_the_same_order() {
+    let store = corpus();
+    let change = Change::from_diff(DIFF, &Settings::default());
+
+    // A judge that answers slowly, so a sequential run and a concurrent one differ in wall clock.
+    struct Slow {
+        asked: Mutex<Vec<String>>,
+    }
+    impl Judge for Slow {
+        fn describe(&self) -> String {
+            "slow".into()
+        }
+        fn ask_text(&self, _system: &str, user: &str) -> Result<(String, Charged), JudgeError> {
+            std::thread::sleep(std::time::Duration::from_millis(120));
+            self.asked.lock().unwrap().push(user.to_string());
+            Ok((r#"{"verdicts":[]}"#.to_string(), Charged::default()))
+        }
+    }
+
+    let one = Settings {
+        jobs: 1,
+        chunk: 2,
+        ..Settings::default()
+    };
+    let many = Settings {
+        jobs: 4,
+        ..one.clone()
+    };
+
+    let sequential = Slow {
+        asked: Mutex::new(Vec::new()),
+    };
+    let began = std::time::Instant::now();
+    let a = check(&store, &change, &sequential, &one);
+    let alone = began.elapsed();
+
+    let concurrent = Slow {
+        asked: Mutex::new(Vec::new()),
+    };
+    let began = std::time::Instant::now();
+    let b = check(&store, &change, &concurrent, &many);
+    let together = began.elapsed();
+
+    assert_eq!(a.calls, b.calls, "the same questions are asked");
+    assert_eq!(a.findings.len(), b.findings.len());
+    assert_eq!(a.units_judged, b.units_judged);
+    assert!(
+        a.calls > 1,
+        "there is something to do concurrently: {}",
+        a.calls
+    );
+    assert!(
+        together < alone,
+        "and doing it at once is quicker: {together:?} against {alone:?}"
+    );
 }

@@ -62,6 +62,11 @@ pub struct Settings {
     /// When a change does not fit, show the files the corpus has reasoning about rather than whichever
     /// sort first. Costs nothing: the same number of lines is shown either way.
     pub order_by_corpus: bool,
+    /// Calls to have in flight at once. The calls are independent — a chunk of units against a part —
+    /// so waiting for them one at a time is waiting for nothing. Measured: a call takes about a minute
+    /// on a local 14B, and a check makes four of them. A local provider serves them one at a time unless
+    /// it is configured otherwise, so more jobs help a hosted provider most.
+    pub jobs: usize,
     /// Parts a change too large for one view may be read in. `1` shows what fits and names the rest;
     /// more reads the rest too, at one set of calls per part. Measured on held-out data: 59% of changes
     /// are truncated and 307 files across 55 cases are never examined, which is what more parts buys —
@@ -86,6 +91,7 @@ impl Default for Settings {
             window: 32768,
             answer_tokens: 2048,
             system: None,
+            jobs: 1,
             order_by_corpus: true,
             // One part: the same work as before. Reading a change in parts is opt-in because it
             // multiplies what a check costs, and `check` is advisory whatever it reads.
@@ -509,6 +515,45 @@ fn context(store: &Store, change: &Change, s: &Settings) -> Option<(String, Vec<
     None
 }
 
+/// Ask every question, up to `jobs` at a time, and return the answers in the order they were asked.
+///
+/// Order is kept because a report that changes between identical runs is a report nobody can compare.
+fn ask_all(
+    judge: &(dyn Judge + Sync),
+    s: &Settings,
+    asks: &[String],
+) -> Vec<Result<(Vec<RawVerdict>, crate::Charged), JudgeError>> {
+    let jobs = s.jobs.max(1).min(asks.len().max(1));
+    if jobs == 1 || asks.len() == 1 {
+        return asks
+            .iter()
+            .map(|a| judge.ask(s.system_prompt(), a))
+            .collect();
+    }
+    let next = std::sync::atomic::AtomicUsize::new(0);
+    let answers: Vec<std::sync::Mutex<Option<_>>> = (0..asks.len())
+        .map(|_| std::sync::Mutex::new(None))
+        .collect();
+    std::thread::scope(|scope| {
+        for _ in 0..jobs {
+            scope.spawn(|| loop {
+                let i = next.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                let Some(ask) = asks.get(i) else { break };
+                let answer = judge.ask(s.system_prompt(), ask);
+                *answers[i].lock().unwrap() = Some(answer);
+            });
+        }
+    });
+    answers
+        .into_iter()
+        .map(|slot| {
+            slot.into_inner()
+                .unwrap()
+                .unwrap_or_else(|| Err(JudgeError::Shape("no answer".into())))
+        })
+        .collect()
+}
+
 /// A list a person can read: the first few names, then how many more.
 fn shortened(files: &[String]) -> String {
     const SHOWN: usize = 6;
@@ -534,7 +579,7 @@ pub const AGREEMENT_SEEDS: [usize; 2] = [0, 5];
 pub fn check_agreed(
     store: &Store,
     change: &Change,
-    judge: &dyn Judge,
+    judge: &(dyn Judge + Sync),
     s: &Settings,
     seeds: &[usize],
 ) -> Outcome {
@@ -583,7 +628,7 @@ pub fn check_agreed(
 /// Each part is judged against the units retrieved for *it*, so a file that never reached the model
 /// before is now judged against the reasoning recorded about that file. Findings are unioned and a unit
 /// reported by two parts is reported once.
-pub fn check(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) -> Outcome {
+pub fn check(store: &Store, change: &Change, judge: &(dyn Judge + Sync), s: &Settings) -> Outcome {
     let parts = change.parts(s);
     if parts.len() <= 1 {
         return check_one(store, change, judge, s);
@@ -633,7 +678,7 @@ pub fn check(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) ->
     out
 }
 
-fn check_one(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) -> Outcome {
+fn check_one(store: &Store, change: &Change, judge: &(dyn Judge + Sync), s: &Settings) -> Outcome {
     let mut out = Outcome {
         judge: judge.describe(),
         ..Outcome::default()
@@ -695,22 +740,33 @@ fn check_one(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) ->
             s.window
         ));
     }
+    // What to ask, before anything is asked: the work is decided here and then carried out, which is
+    // what lets it be carried out in any order.
+    let asks: Vec<String> = groups
+        .iter()
+        .map(|group| {
+            let block: String = group
+                .iter()
+                .filter_map(|l| units.get(l).cloned())
+                .collect::<Vec<_>>()
+                .join("\n\n");
+            format!(
+                "RECORDED UNITS:\n\n{block}\n\nJUDGE: {}\n\nCHANGE{}:\n{}\n",
+                group.join(", "),
+                if change.truncated { " (truncated)" } else { "" },
+                change.shown
+            )
+        })
+        .collect();
+    out.calls += asks.len();
+    for ask in &asks {
+        out.predicted_tokens += u64::from(s.tokens(ask) + s.tokens(s.system_prompt()));
+    }
+
+    let answers = ask_all(judge, s, &asks);
     let mut verdicts: Vec<RawVerdict> = Vec::new();
-    for group in groups {
-        let block: String = group
-            .iter()
-            .filter_map(|l| units.get(l).cloned())
-            .collect::<Vec<_>>()
-            .join("\n\n");
-        let user = format!(
-            "RECORDED UNITS:\n\n{block}\n\nJUDGE: {}\n\nCHANGE{}:\n{}\n",
-            group.join(", "),
-            if change.truncated { " (truncated)" } else { "" },
-            change.shown
-        );
-        out.calls += 1;
-        out.predicted_tokens += u64::from(s.tokens(&user) + s.tokens(s.system_prompt()));
-        match judge.ask(s.system_prompt(), &user) {
+    for answer in answers {
+        match answer {
             Ok((mut v, charged)) => {
                 out.charged_tokens += charged.prompt_tokens;
                 verdicts.append(&mut v);

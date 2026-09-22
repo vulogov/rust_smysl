@@ -147,6 +147,11 @@ pub enum Command {
         /// A file holding the judgement prompt, replacing the built-in one.
         #[arg(long, env = "SMYSL_CHECK_PROMPT_FILE")]
         prompt_file: Option<PathBuf>,
+        /// Calls to have in flight at once. The calls are independent, so waiting for them one at a
+        /// time waits for nothing — but a local provider usually serves one at a time whatever this
+        /// says, so it helps a hosted provider most.
+        #[arg(long, env = "SMYSL_CHECK_JOBS", default_value_t = 1)]
+        jobs: usize,
         /// Read a change too large to show in this many parts, judging each against the reasoning
         /// recorded for its own files. One shows what fits and names the rest. Every part costs another
         /// set of calls.
