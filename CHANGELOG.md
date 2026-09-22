@@ -1,8 +1,26 @@
 # Changelog
 
-## 0.2.0 — unreleased
+## 0.2.0 — 2026-09-21
 
-Development is on `development/0.2.0`. What is known to be worth doing, from what 0.1.0 measured:
+**Packaging only. No behaviour differs from 0.1.0**, which was a git-install release; this is the first
+version published to crates.io.
+
+- Eight crates carry `homepage`, `keywords`, `categories` and a README of their own, because a published
+  package cannot reach outside itself. `cargo-smysl` keeps its own keywords: it is the crate people
+  install. `cargo-smysl-eval` does not publish — it is evaluation tooling and reads files outside its
+  package.
+- [`docs/releasing.md`](docs/releasing.md) records the publish order, which is a constraint rather than a
+  preference: crates.io resolves path dependencies by version, so `git`, `facts` and `corpus` go first,
+  then `bench` and `extract`, then `verdict` and `evidence`, then the subcommand.
+
+```sh
+cargo install cargo-smysl
+```
+
+### Known, and not fixed in this version
+
+These are what 0.1.0 measured and left undone. They are the work of the next release, and they are here
+so that anyone installing this knows what they are getting:
 
 - **Anchors for every decision, not only the file-quoted ones.** A decision quoted from the commit
   message anchors to nothing today, and most decisions quote the message — so `stale` reports at commit

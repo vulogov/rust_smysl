@@ -171,7 +171,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-smysl"
-version = "0.2.0-dev"
+version = "0.2.0"
 dependencies = [
  "cargo-smysl-bench",
  "cargo-smysl-corpus",
@@ -189,7 +189,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-smysl-bench"
-version = "0.2.0-dev"
+version = "0.2.0"
 dependencies = [
  "cargo-smysl-git",
  "serde",
@@ -199,7 +199,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-smysl-corpus"
-version = "0.2.0-dev"
+version = "0.2.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -209,7 +209,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-smysl-eval"
-version = "0.2.0-dev"
+version = "0.2.0"
 dependencies = [
  "cargo-smysl-bench",
  "cargo-smysl-corpus",
@@ -225,7 +225,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-smysl-evidence"
-version = "0.2.0-dev"
+version = "0.2.0"
 dependencies = [
  "cargo-smysl-corpus",
  "cargo-smysl-extract",
@@ -238,7 +238,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-smysl-extract"
-version = "0.2.0-dev"
+version = "0.2.0"
 dependencies = [
  "cargo-smysl-corpus",
  "serde",
@@ -250,7 +250,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-smysl-facts"
-version = "0.2.0-dev"
+version = "0.2.0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -263,7 +263,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-smysl-git"
-version = "0.2.0-dev"
+version = "0.2.0"
 dependencies = [
  "gix",
  "thiserror",
@@ -271,7 +271,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-smysl-verdict"
-version = "0.2.0-dev"
+version = "0.2.0"
 dependencies = [
  "cargo-smysl-corpus",
  "cargo-smysl-extract",

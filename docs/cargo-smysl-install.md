@@ -17,6 +17,12 @@ constraint — see D18 in the plan — and it is checked in CI.
 
 ## 2. Install
 
+From crates.io:
+
+```sh
+cargo install cargo-smysl
+```
+
 From a checkout:
 
 ```sh

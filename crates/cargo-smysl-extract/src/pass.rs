@@ -341,7 +341,7 @@ pub fn extract(
     if recipe.rank_by_quote {
         // Best support first, and the model's own order within a level: the cap then keeps what the
         // commit bears out rather than what came back first.
-        checked.sort_by(|a, b| b.2.support.cmp(&a.2.support));
+        checked.sort_by_key(|c| std::cmp::Reverse(c.2.support));
     }
     let mut found: Vec<(DecisionAnswer, usize)> = Vec::new();
     let mut unsupported = 0;
