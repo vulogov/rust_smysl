@@ -72,6 +72,11 @@ fn an_unknown_revision_is_a_revision_error() {
 }
 
 /// A range names what the newer revision reaches and the older one does not, newest first.
+///
+/// Not "three commits for `HEAD~3..HEAD`": that holds on a straight line and not after a merge, where
+/// the range properly contains everything the merged branch brought with it. The first version of this
+/// test asserted the count and failed on `main` the moment a release was merged — the function was
+/// right and the test was describing one shape of history as though it were the only one.
 #[test]
 fn a_range_is_what_the_newer_revision_reaches_and_the_older_does_not() {
     use cargo_smysl_git::commits_between;
@@ -84,17 +89,25 @@ fn a_range_is_what_the_newer_revision_reaches_and_the_older_does_not() {
         eprintln!("shallow clone; skipping");
         return;
     }
+    assert_eq!(all.len(), 5, "a limit is a limit");
 
-    let from_third = commits_between(&repo, Some("HEAD~3"), "HEAD", 0).unwrap();
-    assert_eq!(from_third.len(), 3, "HEAD~3..HEAD is three commits");
-    assert_eq!(
-        from_third,
-        all[..3].to_vec(),
-        "and they are the newest three, newest first"
-    );
+    // Newest first: the first is HEAD itself.
+    let head = read_commit(&repo, "HEAD").unwrap().sha;
+    assert_eq!(all[0], head);
 
-    let none = commits_between(&repo, Some("HEAD"), "HEAD", 0).unwrap();
-    assert!(none.is_empty(), "a range that reaches nothing new is empty");
+    // A range reaching nothing new is empty, whatever the shape of the history.
+    assert!(commits_between(&repo, Some("HEAD"), "HEAD", 0)
+        .unwrap()
+        .is_empty());
+
+    // And a wider range contains a narrower one: `HEAD~1..HEAD` is part of `HEAD~3..HEAD`.
+    let near = commits_between(&repo, Some("HEAD~1"), "HEAD", 0).unwrap();
+    let far = commits_between(&repo, Some("HEAD~3"), "HEAD", 0).unwrap();
+    assert!(!near.is_empty() && near.len() <= far.len());
+    for sha in &near {
+        assert!(far.contains(sha), "{sha} is in the wider range too");
+    }
+
     assert!(
         commits_between(&repo, Some("no-such-rev"), "HEAD", 0).is_err(),
         "an unknown revision is an error, not silence"
