@@ -1,0 +1,1 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }

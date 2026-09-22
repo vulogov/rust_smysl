@@ -152,6 +152,6 @@ ii...............................................................
 test result: ok. 63 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 9.74s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/8.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run1/task-8-corpus/tree'
+$ '<repo>/eval/s3/oracles/8.sh' '<repo>/eval/.s3work/runs/run1/task-8-corpus/tree'
 [exit 0, 0s]
 

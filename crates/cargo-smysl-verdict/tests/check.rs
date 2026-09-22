@@ -1,8 +1,8 @@
 //! The deterministic half of `check`, on a real corpus and without a model: what it asks about, what it
 //! accepts as an answer, and what it refuses.
 
-use std::cell::RefCell;
 use std::path::Path;
+use std::sync::Mutex;
 
 use cargo_smysl_corpus::{build, stage, CommitText, Extraction};
 use cargo_smysl_verdict::check::{check_agreed, AGREEMENT_SEEDS};
@@ -12,16 +12,17 @@ use smysl::Store;
 const SHA: &str = "90ec2f781421002876548124e9fe02073503372c";
 
 /// A judge that answers from a script, and records what it was asked.
+/// Shared rather than borrowed, because `check` may ask several questions at once.
 struct Scripted {
-    answers: RefCell<Vec<Vec<RawVerdict>>>,
-    asked: RefCell<Vec<String>>,
+    answers: Mutex<Vec<Vec<RawVerdict>>>,
+    asked: Mutex<Vec<String>>,
 }
 
 impl Scripted {
     fn new(answers: Vec<Vec<RawVerdict>>) -> Scripted {
         Scripted {
-            answers: RefCell::new(answers),
-            asked: RefCell::new(Vec::new()),
+            answers: Mutex::new(answers),
+            asked: Mutex::new(Vec::new()),
         }
     }
 }
@@ -32,8 +33,8 @@ impl Judge for Scripted {
     }
     // The trait's primitive is the model's text, so a scripted judge answers as a model would.
     fn ask_text(&self, _system: &str, user: &str) -> Result<(String, Charged), JudgeError> {
-        self.asked.borrow_mut().push(user.to_string());
-        let mut answers = self.answers.borrow_mut();
+        self.asked.lock().unwrap().push(user.to_string());
+        let mut answers = self.answers.lock().unwrap();
         let next = if answers.is_empty() {
             Vec::new()
         } else {
@@ -96,7 +97,7 @@ fn it_asks_about_recorded_units_and_shows_the_change_with_numbered_lines() {
     let judge = Scripted::new(vec![]);
     let outcome = check(&store, &change, &judge, &settings);
 
-    let asked = judge.asked.borrow();
+    let asked = judge.asked.lock().unwrap();
     assert!(!asked.is_empty(), "the judge was asked something");
     assert!(asked[0].contains("RECORDED UNITS:"), "{}", asked[0]);
     assert!(
@@ -126,7 +127,7 @@ fn a_verdict_stands_when_its_label_was_judged_and_its_line_is_in_the_change() {
     // Ask once to learn which labels this change puts in front of the model.
     let probe = Scripted::new(vec![]);
     check(&store, &change, &probe, &settings);
-    let asked = probe.asked.borrow()[0].clone();
+    let asked = probe.asked.lock().unwrap()[0].clone();
     let judged: Vec<String> = asked
         .lines()
         .find(|l| l.starts_with("JUDGE: "))
@@ -163,7 +164,7 @@ fn a_verdict_is_refused_when_the_label_was_not_judged_or_the_quote_is_invented()
     let change = Change::from_diff(DIFF, &settings);
     let probe = Scripted::new(vec![]);
     check(&store, &change, &probe, &settings);
-    let judged = probe.asked.borrow()[0]
+    let judged = probe.asked.lock().unwrap()[0]
         .lines()
         .find(|l| l.starts_with("JUDGE: "))
         .unwrap()
@@ -233,7 +234,7 @@ fn findings_are_advisory_unless_strict() {
     let change = Change::from_diff(DIFF, &settings);
     let probe = Scripted::new(vec![]);
     check(&store, &change, &probe, &settings);
-    let asked = probe.asked.borrow()[0].clone();
+    let asked = probe.asked.lock().unwrap()[0].clone();
     let judged = asked
         .lines()
         .find(|l| l.starts_with("JUDGE: "))
@@ -282,7 +283,7 @@ fn a_finding_only_one_pass_reports_is_not_kept() {
     let change = Change::from_diff(DIFF, &settings);
     let probe = Scripted::new(vec![]);
     check(&store, &change, &probe, &settings);
-    let asked = probe.asked.borrow()[0].clone();
+    let asked = probe.asked.lock().unwrap()[0].clone();
     let judged: Vec<String> = asked
         .lines()
         .find(|l| l.starts_with("JUDGE: "))
@@ -336,4 +337,301 @@ fn a_finding_only_one_pass_reports_is_not_kept() {
     let outcome = check_agreed(&store, &change, &agreeing, &settings, &AGREEMENT_SEEDS);
     assert_eq!(outcome.findings.len(), 1, "{:?}", outcome.dropped);
     assert_eq!(outcome.findings[0].label, judged[0]);
+}
+
+/// A change too large to show is reported by name: which files the model never saw.
+#[test]
+fn what_was_not_examined_is_named() {
+    // Three files, and a cap that cannot reach the third.
+    let mut diff = String::new();
+    for n in 1..=3 {
+        diff.push_str(&format!(
+            "diff --git a/src/f{n}.rs b/src/f{n}.rs\n--- a/src/f{n}.rs\n+++ b/src/f{n}.rs\n"
+        ));
+        for line in 0..60 {
+            diff.push_str(&format!("+    let v{n}_{line} = {line};\n"));
+        }
+    }
+    let settings = Settings {
+        diff_lines: 70,
+        ..Settings::default()
+    };
+    let change = Change::from_diff(&diff, &settings);
+    assert!(change.truncated, "the cap is reached");
+    assert_eq!(
+        change.unexamined(),
+        vec!["src/f3.rs".to_string()],
+        "the file no line of which was shown is named, and the others are not"
+    );
+
+    let store = corpus();
+    let judge = Scripted::new(vec![]);
+    let outcome = check(&store, &change, &judge, &settings);
+    assert_eq!(outcome.unexamined, vec!["src/f3.rs".to_string()]);
+    assert!(
+        outcome
+            .warnings
+            .iter()
+            .any(|w| w.contains("not examined at all") && w.contains("src/f3.rs")),
+        "and the warning names it: {:?}",
+        outcome.warnings
+    );
+}
+
+/// A change that fits leaves nothing unexamined, and says nothing about it.
+#[test]
+fn a_change_that_fits_reports_no_unexamined_files() {
+    let store = corpus();
+    let settings = Settings::default();
+    let change = Change::from_diff(DIFF, &settings);
+    assert!(!change.truncated);
+    assert!(change.unexamined().is_empty());
+    let outcome = check(&store, &change, &Scripted::new(vec![]), &settings);
+    assert!(outcome.unexamined.is_empty());
+    assert!(
+        !outcome.warnings.iter().any(|w| w.contains("not examined")),
+        "{:?}",
+        outcome.warnings
+    );
+}
+
+/// When only part of a change fits, the files the corpus knows about are the ones shown.
+#[test]
+fn a_cut_change_shows_what_the_corpus_knows_about() {
+    // A corpus whose units are anchored to a file: quotes that are in the file get `path@sha` sources,
+    // which is what "the corpus knows about this file" means.
+    let store = {
+        let ex: Extraction = serde_json::from_value(serde_json::json!({
+            "decisions": [{"decision": "Give each test its own scratch directory", "kind": "act",
+                           "rationale": "", "quote": "vec![\".smysl/store\"]"}],
+            "prerequisites": [], "alternatives": [], "consequences": []
+        }))
+        .unwrap();
+        let batch = build(
+            &ex,
+            &CommitText {
+                touched: Vec::new(),
+                sha: SHA,
+                message: "",
+                files: vec![("tests/dispatch.rs", "let scratch = vec![\".smysl/store\"];")],
+            },
+            0,
+        )
+        .unwrap();
+        let staged = stage(&Store::from_records(Vec::new()), batch, 0);
+        Store::from_records(staged.records())
+    };
+    assert_eq!(
+        store.units_with_source_prefix("tests/dispatch.rs@").len(),
+        1,
+        "the corpus is anchored to that file"
+    );
+    // The corpus for this test was built from a commit touching tests/dispatch.rs. Put that file last
+    // in the diff, behind enough unrelated lines to push it out of view.
+    let mut diff = String::new();
+    for n in 1..=3 {
+        diff.push_str(&format!(
+            "diff --git a/src/unrelated{n}.rs b/src/unrelated{n}.rs\n--- a/src/unrelated{n}.rs\n+++ b/src/unrelated{n}.rs\n"
+        ));
+        for line in 0..40 {
+            diff.push_str(&format!("+    let x{n}_{line} = {line};\n"));
+        }
+    }
+    diff.push_str("diff --git a/tests/dispatch.rs b/tests/dispatch.rs\n--- a/tests/dispatch.rs\n+++ b/tests/dispatch.rs\n");
+    diff.push_str("+    let scratch = vec![\".smysl/store\"];\n");
+
+    let settings = Settings {
+        diff_lines: 50,
+        ..Settings::default()
+    };
+    let change = Change::from_diff(&diff, &settings);
+    assert!(change.truncated);
+    assert!(
+        change
+            .unexamined()
+            .contains(&"tests/dispatch.rs".to_string()),
+        "in diff order the file the corpus knows about is never reached"
+    );
+
+    let weight = |path: &str| store.units_with_source_prefix(&format!("{path}@")).len();
+    let ordered = change.ordered_by(&weight, &settings);
+    assert!(
+        !ordered
+            .unexamined()
+            .contains(&"tests/dispatch.rs".to_string()),
+        "ordered by what the corpus knows, it is shown: unexamined {:?}",
+        ordered.unexamined()
+    );
+    assert_eq!(
+        ordered.files.len(),
+        change.files.len(),
+        "and no file is lost from the report, only from the view"
+    );
+
+    // `check` does this itself when a change did not fit, so no caller has to remember to.
+    let probe = Scripted::new(vec![]);
+    let outcome = check(&store, &change, &probe, &settings);
+    assert!(
+        !outcome
+            .unexamined
+            .contains(&"tests/dispatch.rs".to_string()),
+        "check reorders before judging: {:?}",
+        outcome.unexamined
+    );
+}
+
+/// A change too large to show is read in parts, and a file unseen in one part may be seen in another.
+#[test]
+fn a_change_read_in_parts_examines_what_one_view_could_not() {
+    let store = corpus();
+    let mut diff = String::new();
+    for n in 1..=4 {
+        diff.push_str(&format!(
+            "diff --git a/src/f{n}.rs b/src/f{n}.rs\n--- a/src/f{n}.rs\n+++ b/src/f{n}.rs\n"
+        ));
+        for line in 0..40 {
+            diff.push_str(&format!("+    let v{n}_{line} = {line};\n"));
+        }
+    }
+    let one = Settings {
+        diff_lines: 50,
+        ..Settings::default()
+    };
+    let change = Change::from_diff(&diff, &one);
+    assert!(change.truncated);
+    let unseen_with_one = change.unexamined().len();
+    assert!(unseen_with_one >= 2, "one view cannot reach them all");
+
+    let many = Settings {
+        max_parts: 4,
+        ..one.clone()
+    };
+    let parts = change.parts(&many);
+    assert!(parts.len() > 1, "it is read in parts: {}", parts.len());
+    for part in &parts {
+        assert!(
+            !part.files.is_empty(),
+            "each part carries whole files of the change"
+        );
+    }
+    let examined_by_parts: std::collections::BTreeSet<String> = parts
+        .iter()
+        .flat_map(|p| {
+            p.files
+                .iter()
+                .filter(|f| !p.unexamined().contains(*f))
+                .cloned()
+        })
+        .collect();
+    assert!(
+        examined_by_parts.len() > change.files.len() - unseen_with_one,
+        "more files are examined across parts than in one view: {examined_by_parts:?}"
+    );
+
+    // And `check` reports the reading, and counts each part's calls.
+    let judge = Scripted::new(vec![]);
+    let outcome = check(&store, &change, &judge, &many);
+    assert!(
+        outcome.warnings.iter().any(|w| w.contains("read in")),
+        "the parts are reported: {:?}",
+        outcome.warnings
+    );
+    // Nothing here is anchored to these files, so no part had anything to judge — and that is the
+    // honest outcome, not a failure. What parts change is coverage: every file was examined by some
+    // part, so nothing is left named as unexamined.
+    assert!(
+        outcome.unexamined.is_empty(),
+        "read in parts, no file is left unexamined: {:?}",
+        outcome.unexamined
+    );
+    assert!(outcome
+        .warnings
+        .iter()
+        .any(|w| w.contains("nothing recorded bears on")));
+}
+
+/// One part is the old behaviour exactly: what fits, and the rest named.
+#[test]
+fn one_part_is_what_fits_and_the_rest_named() {
+    let store = corpus();
+    let settings = Settings {
+        diff_lines: 50,
+        ..Settings::default()
+    };
+    let mut diff = String::new();
+    for n in 1..=3 {
+        diff.push_str(&format!(
+            "diff --git a/src/f{n}.rs b/src/f{n}.rs\n--- a/src/f{n}.rs\n+++ b/src/f{n}.rs\n"
+        ));
+        for line in 0..40 {
+            diff.push_str(&format!("+    let v{n}_{line} = {line};\n"));
+        }
+    }
+    let change = Change::from_diff(&diff, &settings);
+    assert_eq!(change.parts(&settings).len(), 1);
+    let outcome = check(&store, &change, &Scripted::new(vec![]), &settings);
+    assert!(
+        !outcome.unexamined.is_empty(),
+        "and it says what it skipped"
+    );
+    assert!(!outcome.warnings.iter().any(|w| w.contains("read in")));
+}
+
+/// Several calls at once answer the same as one at a time, in the same order.
+#[test]
+fn asking_concurrently_gives_the_same_answers_in_the_same_order() {
+    let store = corpus();
+    let change = Change::from_diff(DIFF, &Settings::default());
+
+    // A judge that answers slowly, so a sequential run and a concurrent one differ in wall clock.
+    struct Slow {
+        asked: Mutex<Vec<String>>,
+    }
+    impl Judge for Slow {
+        fn describe(&self) -> String {
+            "slow".into()
+        }
+        fn ask_text(&self, _system: &str, user: &str) -> Result<(String, Charged), JudgeError> {
+            std::thread::sleep(std::time::Duration::from_millis(120));
+            self.asked.lock().unwrap().push(user.to_string());
+            Ok((r#"{"verdicts":[]}"#.to_string(), Charged::default()))
+        }
+    }
+
+    let one = Settings {
+        jobs: 1,
+        chunk: 2,
+        ..Settings::default()
+    };
+    let many = Settings {
+        jobs: 4,
+        ..one.clone()
+    };
+
+    let sequential = Slow {
+        asked: Mutex::new(Vec::new()),
+    };
+    let began = std::time::Instant::now();
+    let a = check(&store, &change, &sequential, &one);
+    let alone = began.elapsed();
+
+    let concurrent = Slow {
+        asked: Mutex::new(Vec::new()),
+    };
+    let began = std::time::Instant::now();
+    let b = check(&store, &change, &concurrent, &many);
+    let together = began.elapsed();
+
+    assert_eq!(a.calls, b.calls, "the same questions are asked");
+    assert_eq!(a.findings.len(), b.findings.len());
+    assert_eq!(a.units_judged, b.units_judged);
+    assert!(
+        a.calls > 1,
+        "there is something to do concurrently: {}",
+        a.calls
+    );
+    assert!(
+        together < alone,
+        "and doing it at once is quicker: {together:?} against {alone:?}"
+    );
 }

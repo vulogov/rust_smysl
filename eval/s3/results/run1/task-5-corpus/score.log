@@ -132,7 +132,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/5.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run1/task-5-corpus/tree' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run1/task-5-corpus/target/debug/smysl'
+$ '<repo>/eval/s3/oracles/5.sh' '<repo>/eval/.s3work/runs/run1/task-5-corpus/tree' '<repo>/eval/.s3work/runs/run1/task-5-corpus/target/debug/smysl'
 [exit 1, 0s]
 violated: bare trace reached the router: smysl trace: no store given
 

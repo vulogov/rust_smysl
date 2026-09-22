@@ -1,0 +1,1040 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g0d79d4a840b4-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture." }
+~ Open with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across …
+
+To make the documentation relatable and understandable for Rust developers.
+
+@decision d/g0d79d4a840b4-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Then what the tool does, shown rather than described, with real output from this repository:" }
+~ Show what the tool does rather than describe it.
+
+To provide clear and practical information about the tool's functionality.
+
+@decision d/g0d79d4a840b4-3 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": decline, "ingest:quote": "Answering \"why is this like this?\" was dropped as a product claim." }
+~ Drop the claim of answering 'why is this like this?' as a product feature.
+
+To focus on the tool's actual capabilities rather than unmet claims.
+
+@decision d/g0d79d4a840b4-4 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ Assign labels, sources and statuses; the model proposes wording only.
+
+To maintain control over the integrity of recorded information.
+
+@decision d/g0d79d4a840b4-5 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Detect staleness by item body hash rather than line ranges.
+
+To accurately track changes in code identity rather than just line positions.
+
+@decision d/g0d79d4a840b4-6 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution. The log keeps everything." }
+~ Record review as confirmations, withdrawals with reasons, and closures with notes.
+
+To keep a comprehensive log of all reviews and decisions made.
+
+@decision d/g0d79d4a840b4-7 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ Ship its own instrument for benchmarking the model.
+
+To provide users with the ability to measure the performance of their chosen models on their own commits.
+
+@decision d/g0d79d4a840b4-8 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Focus on deterministic commands over model-dependent ones.
+
+To prioritize commands that are reliable, tested, and cost-effective to run.
+
+@decision d/g0d79d4a840b4-9 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "The figures are published, naming the model each came from, including the experiments that failed." }
+~ Publish figures naming the model each came from, including failed experiments.
+
+To provide transparency about which models were tested and their results, including any failures.
+
+@decision d/g0d79d4a840b4-10 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Over-production is the failure mode that matters. A corpus of 54 decisions for a four-decision commit is worse than no corpus, and prompt wording was measured twice as not being the lever." }
+~ Highlight over-production as the failure mode that matters.
+
+To emphasize the importance of avoiding unnecessary or excessive output in the tool's operations.
+
+@decision d/g0d79d4a840b4-11 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": The hook only queues and `--estimate` prices a run before it starts. }
+~ Meaningfully price extraction runs before starting them.
+
+To inform users about the cost of extraction runs before they start, allowing them to make informed decisions.
+
+@decision d/g0d79d4a840b4-12 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says. }
+~ Label cloned corpora as someone else's claims.
+
+To clarify the status of units in cloned corpora, indicating that they are not the tool's own claims.
+
+@decision d/g0d79d4a840b4-13 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": Research the truncated-change problem before building for it }
+~ Research the truncated-change problem before building for it
+
+The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.
+
+@decision d/g0d79d4a840b4-14 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": Reporting what was left out costs nothing and is honest }
+~ Reporting what was left out costs nothing and is honest
+
+The commit message suggests that reporting what was left out is a cost-free and honest approach to dealing with the truncated-change problem.
+
+@decision d/g0d79d4a840b4-15 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set" }
+~ Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can …
+
+The commit message proposes a method for choosing which 400 lines to show, which is cost-effective and can be measured deterministically.
+
+@decision d/g0d79d4a840b4-16 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary" }
+~ Splitting the change across calls triples the cost and should wait until the two cheap ones are measured
+
+The commit message suggests that splitting the change across multiple calls is expensive and should be avoided unless cheaper methods prove ineffective.
+
+@decision d/g0d79d4a840b4-17 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": The tool's promise is that it operates as designed }
+~ The tool's promise is that it operates as designed
+
+The commit message states that the tool promises to operate as designed, without making any claims about how an agent or person acts on its reports.
+
+@decision d/g0d79d4a840b4-18 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": Feasibility: met }
+~ Feasibility: met
+
+The commit message confirms that the feasibility of the project has been met, indicating that smysl works as a self-contained library under an installable cargo subcommand.
+
+@decision d/g0d79d4a840b4-19 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "S3, done: rationale packed into an agent's prompt did not change what the agent did" }
+~ S3, done: rationale packed into an agent's prompt did not change what the agent did
+
+The commit message states that packing rationale into an agent's prompt did not influence the agent's actions.
+
+@decision d/g0d79d4a840b4-20 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "S4, done (2026-09-19): `check` ships advisory" }
+~ S4, done (2026-09-19): `check` ships advisory
+
+The commit message indicates that the `check` command has been implemented and is now shipping as an advisory tool.
+
+@decision d/g0d79d4a840b4-21 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "S0, done (2026-09-20): the extraction figures exist, and they are figures about models" }
+~ S0, done (2026-09-20): the extraction figures exist, and they are figures about models
+
+The commit message confirms that the extraction figures have been established and are related to model performance.
+
+@decision d/g0d79d4a840b4-22 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool }
+~ Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool
+
+The commit message states that the project has reassessed its approach to measurement, focusing on the tool rather than the models.
+
+@decision d/g0d79d4a840b4-23 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "The model is the operator's choice, never the tool's" }
+~ The model is the operator's choice, never the tool's
+
+The commit message states that the model selection is left to the operator, with the tool not making any decisions about which model to use.
+
+@decision d/g0d79d4a840b4-24 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this" }
+~ Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark …
+
+The commit message outlines the next steps for the project, focusing on tool-side acceptance and providing an operator's benchmark for model selection.
+
+@decision d/g0d79d4a840b4-25 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": act, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ The README now leads with the seven deterministic commands rather than with extraction.
+
+It focuses on the part that needs no model and is worth someone's time today.
+
+@decision d/g0d79d4a840b4-26 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": act, "ingest:quote": It also no longer implies `stale` works on a fresh clone. }
+~ It also no longer implies `stale` works on a fresh clone.
+
+Clarifies that `stale` reads a corpus, which is written by extraction.
+
+@decision d/g0d79d4a840b4-27 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": act, "ingest:quote": So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. }
+~ `check` ships advisory: it prints findings and exits 0 unless `--strict`.
+
+Acknowledges the limitations of the model's precision and advises caution.
+
+@decision d/g0d79d4a840b4-28 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": act, "ingest:quote": The model-dependent third is honest about being weak. }
+~ `extract` is honest about being weak.
+
+Discloses the limitations of the extraction process based on measured performance.
+
+@decision d/g0d79d4a840b4-29 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ Two-pass agreement is used by default for `check` to remove false flags.
+
+Improves the precision of findings by ensuring two independent runs agree.
+
+@decision d/g0d79d4a840b4-30 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Staleness is detected by item body hash rather than line ranges.
+
+Prevents false positives for functions that have merely moved.
+
+@decision d/g0d79d4a840b4-31 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from." }
+~ `bench` measures the model you chose on your own commits.
+
+Allows users to measure and verify the performance of their chosen models.
+
+@decision d/g0d79d4a840b4-32 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says. }
+~ The tool does not trust a cloned corpus as an established fact.
+
+Encourages users to verify claims in the corpus independently.
+
+@decision d/g0d79d4a840b4-33 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "If you want one sentence for why this exists: **a queryable, code-anchored record of decisions, with staleness detection, and an honest account of what the model half is worth.**" }
+~ The project focuses on providing a queryable, code-anchored record of decisions with staleness detection and …
+
+Defines the core purpose and value proposition of the tool.
+
+@decision d/g0d79d4a840b4-34 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": act, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, …
+
+The commit message suggests that splitting the change across multiple calls is expensive and should be avoided unless cheaper methods prove ineffective.
+
+@constraint p/g0d79d4a840b4-1-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture." }
+~ A Rust developer recognizes common patterns in code such as dependencies pinned to exact versions, locks held …
+
+A Rust developer recognizes common patterns in code such as dependencies pinned to exact versions, locks held across awaits, and tests building their own fixtures.
+
+@constraint p/g0d79d4a840b4-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was." }
+~ The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.
+
+@constraint p/g0d79d4a840b4-2-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ Each was a decision resting on something true at the time, none of it in the code, and some of …
+
+Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.
+
+@constraint p/g0d79d4a840b4-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was." }
+~ The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.
+
+@constraint p/g0d79d4a840b4-2-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ Each was a decision resting on something true at the time, none of it in the code, and some of …
+
+Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.
+
+@constraint p/g0d79d4a840b4-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; the model proposes wording only.
+
+@constraint p/g0d79d4a840b4-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.
+
+@constraint p/g0d79d4a840b4-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": assumption, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Staleness detection should be based on code identity rather than line ranges.
+
+@constraint p/g0d79d4a840b4-6-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ The tool needs to maintain a record of all reviews and decisions for transparency and accountability.
+
+@constraint p/g0d79d4a840b4-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ The tool needs to measure the performance of different models.
+
+@constraint p/g0d79d4a840b4-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": Two thirds of the commands never call a model. }
+~ Two thirds of the commands never call a model.
+
+@constraint p/g0d79d4a840b4-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ The tool needs to measure the performance of different models.
+
+@constraint p/g0d79d4a840b4-9-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "The figures are published, naming the model each came from, including the experiments that failed." }
+~ The figures are published
+
+@constraint p/g0d79d4a840b4-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; the model proposes wording only.
+
+@constraint p/g0d79d4a840b4-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.
+
+@constraint p/g0d79d4a840b4-10-3 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": Most tooling in this area stores what the model said as though it were established. }
+~ Most tooling in this area stores what the model said as though it were established.
+
+@constraint p/g0d79d4a840b4-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": tool-setting, "ingest:quote": The hook only queues and `--estimate` prices a run before it starts. }
+~ The hook only queues and `--estimate` prices a run before it starts.
+
+@constraint p/g0d79d4a840b4-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ The tool needs to measure the performance of different models.
+
+@constraint p/g0d79d4a840b4-12-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": assumption, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says. }
+~ A cloned corpus is someone else's claim.
+
+@constraint p/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/g0d79d4a840b4-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction." }
+~ 59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.
+
+@constraint p/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/g0d79d4a840b4-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction." }
+~ 59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.
+
+@constraint p/g0d79d4a840b4-14-3 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did. }
+~ extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it …
+
+extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did.
+
+@constraint p/g0d79d4a840b4-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction." }
+~ 59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.
+
+@constraint p/g0d79d4a840b4-14-3 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did. }
+~ extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it …
+
+extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did.
+
+@constraint p/g0d79d4a840b4-16-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can …
+
+Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.
+
+@constraint p/g0d79d4a840b4-16-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": Reporting what was left out costs nothing and is honest. }
+~ Reporting what was left out costs nothing and is honest.
+
+@constraint p/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/g0d79d4a840b4-17-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. It makes no promise about how an agent or a person acts on what it reports. }
+~ The tool makes no promise about how an agent or a person acts on what it reports.
+
+@constraint p/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/g0d79d4a840b4-18-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": Feasibility: met. }
+~ Feasibility: met.
+
+@constraint p/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/g0d79d4a840b4-19-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": Agents do not act on context they are given (S3: 1 of 14 corpus-arm summaries mentioned it) }
+~ Agents do not act on context they are given.
+
+@constraint p/g0d79d4a840b4-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. }
+~ The project stops measuring models and measures the tool.
+
+@constraint p/g0d79d4a840b4-20-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "`check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help." }
+~ `check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help.
+
+@constraint p/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/g0d79d4a840b4-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history." }
+~ Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust …
+
+Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history.
+
+@constraint p/g0d79d4a840b4-21-3 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns sources, labels and statuses; a model proposes content only." }
+~ The tool assigns sources, labels and statuses; a model proposes content only.
+
+@constraint p/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool's promise is that it operates as designed.
+
+@constraint p/g0d79d4a840b4-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction." }
+~ 59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.
+
+@constraint p/g0d79d4a840b4-14-3 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did. }
+~ extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it …
+
+extract reads a large commit in parts; check still cuts at the first 400 lines and says only that it did.
+
+@constraint p/g0d79d4a840b4-23-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool promises to operate as designed.
+
+@constraint p/g0d79d4a840b4-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history." }
+~ Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust …
+
+Feasibility: met. smysl works as a self-contained library under an installable cargo subcommand, on real Rust history.
+
+@constraint p/g0d79d4a840b4-21-3 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns sources, labels and statuses; a model proposes content only." }
+~ The tool assigns sources, labels and statuses; a model proposes content only.
+
+@constraint p/g0d79d4a840b4-23-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The tool promises to operate as designed.
+
+@constraint p/g0d79d4a840b4-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction." }
+~ 59% of held-out changes were truncated, and 9 of the 16 that contain a contradiction.
+
+@constraint p/g0d79d4a840b4-21-3 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns sources, labels and statuses; a model proposes content only." }
+~ The tool assigns sources, labels and statuses; a model proposes content only.
+
+@constraint p/g0d79d4a840b4-25-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Two thirds of this tool never calls a model.
+
+@constraint p/g0d79d4a840b4-25-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": assumption, "ingest:quote": It focuses on the part that needs no model and is worth someone's time today. }
+~ The part that needs no model is worth someone's time today.
+
+@constraint p/g0d79d4a840b4-26-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "`stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit." }
+~ `stale` command reads a corpus
+
+@constraint p/g0d79d4a840b4-26-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "A corpus is written by extraction, which asks a model once per commit." }
+~ Extraction involves asking a model
+
+@constraint p/g0d79d4a840b4-27-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": On a free local model about one flag in ten was correct. }
+~ `check` was right about one flag in ten on a free local model and about nine in ten on a …
+
+`check` was right about one flag in ten on a free local model and about nine in ten on a hosted one.
+
+@constraint p/g0d79d4a840b4-27-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": assumption, "ingest:quote": `check` ships advisory: it prints findings and exits 0 unless `--strict`. }
+~ `check` is meant to be advisory, not a gate.
+
+@constraint p/g0d79d4a840b4-28-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Six commits labelled blind by the repository owner (73 decisions, 68 prerequisites, 29 alternatives), three systems adjudicated item by item. Precision / recall:" }
+~ The project has measured the performance of the 'extract' command.
+
+@constraint p/g0d79d4a840b4-28-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "| Command | What it does | Needs a model |\n|---|---|---|\n| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |" }
+~ The 'extract' command relies on a model to propose content.
+
+@constraint p/g0d79d4a840b4-27-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": On a free local model about one flag in ten was correct. }
+~ `check` was right about one flag in ten on a free local model and about nine in ten on a …
+
+`check` was right about one flag in ten on a free local model and about nine in ten on a hosted one.
+
+@constraint p/g0d79d4a840b4-30-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": Essay-style commit messages already hold the reasons. }
+~ Commit messages already carry reasons.
+
+@constraint p/g0d79d4a840b4-30-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": invariant, "ingest:quote": which recorded reasoning is now *unexamined* because the code under it changed }
+~ Staleness detection is needed for reasoning that becomes unexamined because the code under it changed.
+
+@constraint p/g0d79d4a840b4-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ The tool needs to measure the performance of different models.
+
+@constraint p/g0d79d4a840b4-32-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": assumption, "ingest:quote": A cloned corpus is someone else's claim. }
+~ A cloned corpus is someone else's claim.
+
+@constraint p/g0d79d4a840b4-33-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": Two thirds of the commands never call a model. }
+~ Two thirds of this tool never calls a model.
+
+@constraint p/g0d79d4a840b4-25-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": assumption, "ingest:quote": It focuses on the part that needs no model and is worth someone's time today. }
+~ The part that needs no model is worth someone's time today.
+
+@constraint p/g0d79d4a840b4-34-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": existing-behaviour, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can …
+
+Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set
+
+@claim r/g0d79d4a840b4-1-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet." }
+~ Rejected: Describing what the tool does.
+
+@claim r/g0d79d4a840b4-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture. Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ Rejected: Describing what the tool does.
+
+@claim r/g0d79d4a840b4-3-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep 'why is this like this?' as a product feature
+
+@claim r/g0d79d4a840b4-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Most tooling in this area stores what the model said as though it were established. }
+~ Rejected: The model assigns labels, sources and statuses.
+
+@claim r/g0d79d4a840b4-4-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Rejected: The tool does not check quotes against commits.
+
+@claim r/g0d79d4a840b4-5-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": Tried and rejected: Detect staleness by line ranges. }
+~ Rejected: Detect staleness by line ranges.
+
+@claim r/g0d79d4a840b4-6-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not record reviews and decisions.
+
+@claim r/g0d79d4a840b4-6-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Record only confirmations without reasons or notes.
+
+@claim r/g0d79d4a840b4-6-3 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Record only withdrawals without reasons or notes.
+
+@claim r/g0d79d4a840b4-6-4 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Record only closures without notes.
+
+@claim r/g0d79d4a840b4-31-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use an external benchmarking tool.
+
+@claim r/g0d79d4a840b4-31-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include any benchmarking functionality.
+
+@claim r/g0d79d4a840b4-9-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not publishing figures naming the model each came from
+
+@claim r/g0d79d4a840b4-9-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Publishing figures without naming the model
+
+@claim r/g0d79d4a840b4-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Tried and rejected: ranking decisions by whether their quote is in the commit }
+~ Rejected: Ranking decisions by whether their quote is in the commit
+
+@claim r/g0d79d4a840b4-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Tried and rejected: retrieval term filtering }
+~ Rejected: Retrieval term filtering
+
+@claim r/g0d79d4a840b4-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Start extraction runs without pricing them first. }
+~ Rejected: Start extraction runs without pricing them first.
+
+@claim r/g0d79d4a840b4-12-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not label cloned corpora as someone else's claims.
+
+@claim r/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and …
+
+Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.
+
+@claim r/g0d79d4a840b4-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are …
+
+Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@claim r/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and …
+
+Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.
+
+@claim r/g0d79d4a840b4-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are …
+
+Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@claim r/g0d79d4a840b4-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are …
+
+Rejected: Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@claim r/g0d79d4a840b4-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and …
+
+Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set.
+
+@claim r/g0d79d4a840b4-16-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Reporting what was left out costs nothing and is honest. }
+~ Rejected: Reporting what was left out costs nothing and is honest.
+
+@claim r/g0d79d4a840b4-17-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool promises to operate as designed and also guarantees how agents or people will act on its …
+
+Rejected: The tool promises to operate as designed and also guarantees how agents or people will act on its reports.
+
+@claim r/g0d79d4a840b4-17-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool does not make any promises about its operation.
+
+@claim r/g0d79d4a840b4-19-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: The rationale in the prompt could have influenced the agent's actions. }
+~ Rejected: The rationale in the prompt could have influenced the agent's actions.
+
+@claim r/g0d79d4a840b4-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "all bounds met: `check` ships as a gate; any bound missed: it ships advisory (`--strict` to block), with the measured figures documented and at most one step reworked against a fresh held-out set." }
+~ Rejected: `check` ships as a gate.
+
+@claim r/g0d79d4a840b4-21-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Continue measuring models. }
+~ Rejected: Continue measuring models.
+
+@claim r/g0d79d4a840b4-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Measure both the tool and the models together. }
+~ Rejected: Measure both the tool and the models together.
+
+@claim r/g0d79d4a840b4-21-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Continue measuring models. }
+~ Rejected: Continue measuring models.
+
+@claim r/g0d79d4a840b4-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Measure both the tool and the models together. }
+~ Rejected: Measure both the tool and the models together.
+
+@claim r/g0d79d4a840b4-23-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: The tool selects a model based on some criteria. }
+~ Rejected: The tool selects a model based on some criteria.
+
+@claim r/g0d79d4a840b4-21-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Continue measuring models. }
+~ Rejected: Continue measuring models.
+
+@claim r/g0d79d4a840b4-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Measure both the tool and the models together. }
+~ Rejected: Measure both the tool and the models together.
+
+@claim r/g0d79d4a840b4-25-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ Rejected: Leading with extraction, which asks a model once per commit.
+
+@claim r/g0d79d4a840b4-26-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: `stale` could imply it works on a fresh clone without a corpus
+
+@claim r/g0d79d4a840b4-27-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. }
+~ Rejected: `check` could exit with an error code if any flags are found.
+
+@claim r/g0d79d4a840b4-27-2 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. }
+~ Rejected: `check` could be more strict by default, requiring manual confirmation of findings.
+
+@claim r/g0d79d4a840b4-28-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The project could downplay the limitations of the 'extract' command.
+
+@claim r/g0d79d4a840b4-28-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The project could not disclose the measured performance of the 'extract' command.
+
+@claim r/g0d79d4a840b4-29-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ Rejected: One-pass agreement for `check`.
+
+@claim r/g0d79d4a840b4-30-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Detect staleness by line ranges.
+
+@claim r/g0d79d4a840b4-31-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use an external benchmarking tool.
+
+@claim r/g0d79d4a840b4-31-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include any benchmarking functionality.
+
+@claim r/g0d79d4a840b4-32-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool trusts a cloned corpus as an established fact.
+
+@claim r/g0d79d4a840b4-34-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "code:kind": rejected-alternative, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ Rejected: Choosing which 400 lines to show, by how much corpus attaches to each file
+
+@claim q/g0d79d4a840b4-1-1 { status: inferred, grounds: [d/g0d79d4a840b4-1], "code:kind": anticipated, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture." }
+~ The documentation now begins with examples that are more relatable and understandable for Rust developers.
+
+@evidence e/g0d79d4a840b4-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "ingest:quote": "Then what the tool does, shown rather than described, with real output from this repository: one commit read back with its rejected alternative beside it, and `stale` naming the functions that have changed under recorded reasoning." }
+~ Check: Then what the tool does, shown rather than described, with real output from this repository: one commit …
+
+Check: Then what the tool does, shown rather than described, with real output from this repository: one commit read back with its rejected alternative beside it, and `stale` naming the functions that have changed under recorded reasoning.
+
+@finding q/g0d79d4a840b4-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "ingest:quote": "Then what the tool does, shown rather than described, with real output from this repository: one commit read back with its rejected alternative beside it, and `stale` naming the functions that have changed under recorded reasoning." }
+~ The tool shows its functionality through real output from the repository.
+
+@claim q/g0d79d4a840b4-3-1 { status: inferred, grounds: [d/g0d79d4a840b4-3], "code:kind": anticipated, "ingest:quote": To focus on the tool's actual capabilities rather than unmet claims. }
+~ The tool's focus shifts from unmet claims to its actual capabilities.
+
+@claim q/g0d79d4a840b4-4-1 { status: inferred, grounds: [d/g0d79d4a840b4-4], "code:kind": anticipated, "ingest:quote": To maintain control over the integrity of recorded information. }
+~ The tool maintains control over the integrity of recorded information.
+
+@claim q/g0d79d4a840b4-5-1 { status: inferred, grounds: [d/g0d79d4a840b4-5], "code:kind": anticipated, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ A function that merely moved will not be flagged as stale.
+
+@claim q/g0d79d4a840b4-5-2 { status: inferred, grounds: [d/g0d79d4a840b4-5], "code:kind": anticipated, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ A function that changed will be flagged as stale.
+
+@claim q/g0d79d4a840b4-6-1 { status: inferred, grounds: [d/g0d79d4a840b4-6], "code:kind": anticipated, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ The log will keep a comprehensive record of all reviews and decisions made, ensuring transparency and …
+
+The log will keep a comprehensive record of all reviews and decisions made, ensuring transparency and accountability.
+
+@claim q/g0d79d4a840b4-7-1 { status: inferred, grounds: [d/g0d79d4a840b4-7], "code:kind": anticipated, "ingest:quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ Users can measure the performance of their chosen model on their own commits.
+
+@claim q/g0d79d4a840b4-7-2 { status: inferred, grounds: [d/g0d79d4a840b4-7], "code:kind": anticipated, "ingest:quote": every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them. }
+~ The tool provides transparency about which models were tested and their results.
+
+@evidence e/g0d79d4a840b4-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "ingest:quote": "Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Check: Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run.
+
+@finding q/g0d79d4a840b4-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "ingest:quote": "Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Deterministic commands are worth your time today.
+
+@claim q/g0d79d4a840b4-9-1 { status: inferred, grounds: [d/g0d79d4a840b4-9], "code:kind": anticipated, "ingest:quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ Users can measure the performance of their chosen model on their own commits.
+
+@claim q/g0d79d4a840b4-9-2 { status: inferred, grounds: [d/g0d79d4a840b4-9], "code:kind": anticipated, "ingest:quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ The tool provides transparency about which models were tested and their results.
+
+@claim q/g0d79d4a840b4-9-3 { status: inferred, grounds: [d/g0d79d4a840b4-9], "code:kind": anticipated, "ingest:quote": including four experiments that failed and are listed so nobody repeats them. }
+~ Failed experiments are documented, preventing others from repeating them
+
+@evidence e/g0d79d4a840b4-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "ingest:quote": | `extract` on a local 14B | over-produces: 54 decisions on a commit labelled with 4 }
+~ Check: | `extract` on a local 14B | over-produces: 54 decisions on a commit labelled with 4
+
+@finding q/g0d79d4a840b4-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "ingest:quote": "Over-production is the failure mode that matters. A corpus of 54 decisions for a four-decision commit is worse than no corpus, and prompt wording was measured twice as not being the lever." }
+~ A corpus of 54 decisions for a four-decision commit is worse than no corpus.
+
+@claim q/g0d79d4a840b4-11-1 { status: inferred, grounds: [d/g0d79d4a840b4-11], "code:kind": anticipated, "ingest:quote": "Users are informed about the cost of extraction runs before they start, allowing them to make informed decisions." }
+~ Users are informed about the cost of extraction runs before they start, allowing them to make informed …
+
+Users are informed about the cost of extraction runs before they start, allowing them to make informed decisions.
+
+@claim q/g0d79d4a840b4-12-1 { status: inferred, grounds: [d/g0d79d4a840b4-12], "code:kind": anticipated, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says. }
+~ Units in a cloned corpus are marked as `speculative`.
+
+@claim q/g0d79d4a840b4-13-1 { status: inferred, grounds: [d/g0d79d4a840b4-13], "code:kind": anticipated, "ingest:quote": Research the truncated-change problem before building for it }
+~ The decision to research the truncated-change problem before building for it helps in understanding and …
+
+The decision to research the truncated-change problem before building for it helps in understanding and addressing the issue affecting 59% of held-out changes.
+
+@claim q/g0d79d4a840b4-14-1 { status: inferred, grounds: [d/g0d79d4a840b4-14], "code:kind": anticipated, "ingest:quote": Reporting what was left out costs nothing and is honest. }
+~ The decision to report what was left out is adopted as a cost-free and honest approach.
+
+@claim q/g0d79d4a840b4-15-1 { status: inferred, grounds: [d/g0d79d4a840b4-15], "code:kind": anticipated, "ingest:quote": "Choosing which 400 lines to show, by how much corpus attaches to each file, costs no extra call and can be measured deterministically on the held-out set." }
+~ The method for choosing which 400 lines to show is implemented.
+
+@claim q/g0d79d4a840b4-16-1 { status: inferred, grounds: [d/g0d79d4a840b4-16], "code:kind": anticipated, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, …
+
+Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.
+
+@claim q/g0d79d4a840b4-17-1 { status: inferred, grounds: [d/g0d79d4a840b4-17], "code:kind": anticipated, "ingest:quote": The tool's promise is that it operates as designed. }
+~ The project focuses on ensuring that the tool operates as intended without making claims about external …
+
+The project focuses on ensuring that the tool operates as intended without making claims about external actions based on its reports.
+
+@claim q/g0d79d4a840b4-18-1 { status: inferred, grounds: [d/g0d79d4a840b4-18], "code:kind": anticipated, "ingest:quote": Feasibility: met. }
+~ The project is confirmed to be feasible and functional as a self-contained library under an installable cargo …
+
+The project is confirmed to be feasible and functional as a self-contained library under an installable cargo subcommand.
+
+@claim q/g0d79d4a840b4-19-1 { status: inferred, grounds: [d/g0d79d4a840b4-19], "code:kind": anticipated, "ingest:quote": The project records this as information about one usage pattern: rationale in the prompt does not change what an agent does. }
+~ The project records this as information about one usage pattern: rationale in the prompt does not change what …
+
+The project records this as information about one usage pattern: rationale in the prompt does not change what an agent does.
+
+@evidence e/g0d79d4a840b4-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": "`check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help." }
+~ Check: `check` ships advisory: exit 0 with findings unless `--strict`, with these figures in its help.
+
+@finding q/g0d79d4a840b4-20-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": "S4, done (2026-09-19): `check` ships advisory." }
+~ `check` now operates in advisory mode, providing findings without enforcing strict rules.
+
+@evidence e/g0d79d4a840b4-21-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. }
+~ Check: Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool.
+
+@finding q/g0d79d4a840b4-21-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. }
+~ The project focuses on measuring the tool rather than the models.
+
+@evidence e/g0d79d4a840b4-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice." }
+~ Check: Every figure this project has produced separates into two parts: what the code does, which is ours and …
+
+Check: Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice.
+
+@finding q/g0d79d4a840b4-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice." }
+~ The project separates the measurement of the tool from the measurement of the models.
+
+@evidence e/g0d79d4a840b4-21-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. }
+~ Check: Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool.
+
+@finding q/g0d79d4a840b4-21-1 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": Reassessed 2026-09-20 (D19): the project stops measuring models and measures the tool. }
+~ The project focuses on measuring the tool rather than the models.
+
+@evidence e/g0d79d4a840b4-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice." }
+~ Check: Every figure this project has produced separates into two parts: what the code does, which is ours and …
+
+Check: Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice.
+
+@finding q/g0d79d4a840b4-21-2 { status: cited, source: { kind: file, ref: .smysl/commits/dec7c232f8ba.smy@0d79d4a840b4 }, "ingest:quote": "Every figure this project has produced separates into two parts: what the code does, which is ours and is testable without a model, and how well a model answers, which is the operator's choice." }
+~ The project separates the measurement of the tool from the measurement of the models.
+
+@claim q/g0d79d4a840b4-23-1 { status: inferred, grounds: [d/g0d79d4a840b4-23], "code:kind": anticipated, "ingest:quote": "The model is the operator's choice, never the tool's." }
+~ The operator has full control over the model selection process.
+
+@claim q/g0d79d4a840b4-24-1 { status: inferred, grounds: [d/g0d79d4a840b4-24], "code:kind": anticipated, "ingest:quote": "Next: the tool-side acceptance in §6 and §7 (deterministic, model-free), then the operator's own benchmark (§8, item 11) so model choice is an informed decision by whoever installs this" }
+~ The project will focus on tool-side acceptance and provide an operator's benchmark for model selection.
+
+@claim q/g0d79d4a840b4-24-2 { status: inferred, grounds: [d/g0d79d4a840b4-24], "code:kind": anticipated, "ingest:quote": "The model is the operator's choice, never the tool's." }
+~ The operator has full control over the model selection process.
+
+@evidence e/g0d79d4a840b4-25-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "ingest:quote": "## The commands\n\nA full walk-through, on this repository, is in [`docs/smysl-workflow.md`](docs/smysl-workflow.md)." }
+~ Check: ## The commands A full walk-through, on this repository, is in …
+
+Check: ## The commands A full walk-through, on this repository, is in [`docs/smysl-workflow.md`](docs/smysl-workflow.md).
+
+@finding q/g0d79d4a840b4-25-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ README.md is updated to lead with the seven deterministic commands.
+
+@evidence e/g0d79d4a840b4-29-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "ingest:quote": "170 and 192 flags became 96, and it removed every false flag on a real commit in development" }
+~ Check: 170 and 192 flags became 96, and it removed every false flag on a real commit in development
+
+@finding q/g0d79d4a840b4-29-1 { status: cited, source: { kind: file, ref: .smysl/extractions/v1/856a434cf607.json@0d79d4a840b4 }, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ The precision of findings is improved by ensuring two independent runs agree.
+
+@evidence e/g0d79d4a840b4-31-1 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "ingest:quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ Check: `bench` measures the model *you* chose on *your* commits, and every published figure names the model it …
+
+Check: `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.
+
+@finding q/g0d79d4a840b4-31-1 { status: speculative }
+~ Users can measure the performance of their chosen model on their own commits.
+
+@evidence e/g0d79d4a840b4-31-2 { status: cited, source: { kind: file, ref: .smysl/commits/ceaa000d8f9e.smy@0d79d4a840b4 }, "ingest:quote": every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them. }
+~ Check: every published figure names the model it came from — including four experiments that failed and are …
+
+Check: every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.
+
+@finding q/g0d79d4a840b4-31-2 { status: speculative }
+~ The tool provides transparency about which models were tested and their results.
+
+@claim q/g0d79d4a840b4-32-1 { status: inferred, grounds: [d/g0d79d4a840b4-32], "code:kind": anticipated, "ingest:quote": Encourages users to verify claims in the corpus independently. }
+~ Users are encouraged to verify claims in the corpus independently.
+
+@claim q/g0d79d4a840b4-34-1 { status: inferred, grounds: [d/g0d79d4a840b4-34], "code:kind": anticipated, "ingest:quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary." }
+~ Splitting the change across calls triples the cost
+
+@rel p/g0d79d4a840b4-1-1 --conditions--> d/g0d79d4a840b4-1
+
+@rel p/g0d79d4a840b4-2-1 --conditions--> d/g0d79d4a840b4-2
+
+@rel p/g0d79d4a840b4-2-2 --conditions--> d/g0d79d4a840b4-2
+
+@rel p/g0d79d4a840b4-2-1 --conditions--> d/g0d79d4a840b4-3
+
+@rel p/g0d79d4a840b4-2-2 --conditions--> d/g0d79d4a840b4-3
+
+@rel p/g0d79d4a840b4-10-1 --conditions--> d/g0d79d4a840b4-4
+
+@rel p/g0d79d4a840b4-10-2 --conditions--> d/g0d79d4a840b4-4
+
+@rel p/g0d79d4a840b4-5-1 --conditions--> d/g0d79d4a840b4-5
+
+@rel p/g0d79d4a840b4-6-1 --conditions--> d/g0d79d4a840b4-6
+
+@rel p/g0d79d4a840b4-12-1 --conditions--> d/g0d79d4a840b4-7
+
+@rel p/g0d79d4a840b4-8-1 --conditions--> d/g0d79d4a840b4-8
+
+@rel p/g0d79d4a840b4-12-1 --conditions--> d/g0d79d4a840b4-9
+
+@rel p/g0d79d4a840b4-9-2 --conditions--> d/g0d79d4a840b4-9
+
+@rel p/g0d79d4a840b4-10-1 --conditions--> d/g0d79d4a840b4-10
+
+@rel p/g0d79d4a840b4-10-2 --conditions--> d/g0d79d4a840b4-10
+
+@rel p/g0d79d4a840b4-10-3 --conditions--> d/g0d79d4a840b4-10
+
+@rel p/g0d79d4a840b4-11-1 --conditions--> d/g0d79d4a840b4-11
+
+@rel p/g0d79d4a840b4-12-1 --conditions--> d/g0d79d4a840b4-12
+
+@rel p/g0d79d4a840b4-12-2 --conditions--> d/g0d79d4a840b4-12
+
+@rel p/g0d79d4a840b4-13-1 --conditions--> d/g0d79d4a840b4-13
+
+@rel p/g0d79d4a840b4-13-2 --conditions--> d/g0d79d4a840b4-13
+
+@rel p/g0d79d4a840b4-13-1 --conditions--> d/g0d79d4a840b4-14
+
+@rel p/g0d79d4a840b4-13-2 --conditions--> d/g0d79d4a840b4-14
+
+@rel p/g0d79d4a840b4-14-3 --conditions--> d/g0d79d4a840b4-14
+
+@rel p/g0d79d4a840b4-13-2 --conditions--> d/g0d79d4a840b4-15
+
+@rel p/g0d79d4a840b4-14-3 --conditions--> d/g0d79d4a840b4-15
+
+@rel p/g0d79d4a840b4-16-1 --conditions--> d/g0d79d4a840b4-16
+
+@rel p/g0d79d4a840b4-16-2 --conditions--> d/g0d79d4a840b4-16
+
+@rel p/g0d79d4a840b4-13-1 --conditions--> d/g0d79d4a840b4-17
+
+@rel p/g0d79d4a840b4-17-2 --conditions--> d/g0d79d4a840b4-17
+
+@rel p/g0d79d4a840b4-13-1 --conditions--> d/g0d79d4a840b4-18
+
+@rel p/g0d79d4a840b4-18-2 --conditions--> d/g0d79d4a840b4-18
+
+@rel p/g0d79d4a840b4-13-1 --conditions--> d/g0d79d4a840b4-19
+
+@rel p/g0d79d4a840b4-19-2 --conditions--> d/g0d79d4a840b4-19
+
+@rel p/g0d79d4a840b4-20-1 --conditions--> d/g0d79d4a840b4-20
+
+@rel p/g0d79d4a840b4-20-2 --conditions--> d/g0d79d4a840b4-20
+
+@rel p/g0d79d4a840b4-13-1 --conditions--> d/g0d79d4a840b4-21
+
+@rel p/g0d79d4a840b4-21-2 --conditions--> d/g0d79d4a840b4-21
+
+@rel p/g0d79d4a840b4-21-3 --conditions--> d/g0d79d4a840b4-21
+
+@rel p/g0d79d4a840b4-13-1 --conditions--> d/g0d79d4a840b4-22
+
+@rel p/g0d79d4a840b4-13-2 --conditions--> d/g0d79d4a840b4-22
+
+@rel p/g0d79d4a840b4-14-3 --conditions--> d/g0d79d4a840b4-22
+
+@rel p/g0d79d4a840b4-23-1 --conditions--> d/g0d79d4a840b4-23
+
+@rel p/g0d79d4a840b4-21-2 --conditions--> d/g0d79d4a840b4-23
+
+@rel p/g0d79d4a840b4-21-3 --conditions--> d/g0d79d4a840b4-23
+
+@rel p/g0d79d4a840b4-23-1 --conditions--> d/g0d79d4a840b4-24
+
+@rel p/g0d79d4a840b4-13-2 --conditions--> d/g0d79d4a840b4-24
+
+@rel p/g0d79d4a840b4-21-3 --conditions--> d/g0d79d4a840b4-24
+
+@rel p/g0d79d4a840b4-25-1 --conditions--> d/g0d79d4a840b4-25
+
+@rel p/g0d79d4a840b4-25-2 --conditions--> d/g0d79d4a840b4-25
+
+@rel p/g0d79d4a840b4-26-1 --conditions--> d/g0d79d4a840b4-26
+
+@rel p/g0d79d4a840b4-26-2 --conditions--> d/g0d79d4a840b4-26
+
+@rel p/g0d79d4a840b4-27-1 --conditions--> d/g0d79d4a840b4-27
+
+@rel p/g0d79d4a840b4-27-2 --conditions--> d/g0d79d4a840b4-27
+
+@rel p/g0d79d4a840b4-28-1 --conditions--> d/g0d79d4a840b4-28
+
+@rel p/g0d79d4a840b4-28-2 --conditions--> d/g0d79d4a840b4-28
+
+@rel p/g0d79d4a840b4-27-1 --conditions--> d/g0d79d4a840b4-29
+
+@rel p/g0d79d4a840b4-30-1 --conditions--> d/g0d79d4a840b4-30
+
+@rel p/g0d79d4a840b4-30-2 --conditions--> d/g0d79d4a840b4-30
+
+@rel p/g0d79d4a840b4-12-1 --conditions--> d/g0d79d4a840b4-31
+
+@rel p/g0d79d4a840b4-32-1 --conditions--> d/g0d79d4a840b4-32
+
+@rel p/g0d79d4a840b4-33-1 --conditions--> d/g0d79d4a840b4-33
+
+@rel p/g0d79d4a840b4-25-2 --conditions--> d/g0d79d4a840b4-33
+
+@rel p/g0d79d4a840b4-34-1 --conditions--> d/g0d79d4a840b4-34
+
+@rel r/g0d79d4a840b4-1-1 --contrasts--> d/g0d79d4a840b4-1
+
+@rel r/g0d79d4a840b4-2-1 --contrasts--> d/g0d79d4a840b4-2
+
+@rel r/g0d79d4a840b4-3-1 --contrasts--> d/g0d79d4a840b4-3
+
+@rel r/g0d79d4a840b4-4-1 --contrasts--> d/g0d79d4a840b4-4
+
+@rel r/g0d79d4a840b4-4-2 --contrasts--> d/g0d79d4a840b4-4
+
+@rel r/g0d79d4a840b4-5-1 --contrasts--> d/g0d79d4a840b4-5
+
+@rel r/g0d79d4a840b4-6-1 --contrasts--> d/g0d79d4a840b4-6
+
+@rel r/g0d79d4a840b4-6-2 --contrasts--> d/g0d79d4a840b4-6
+
+@rel r/g0d79d4a840b4-6-3 --contrasts--> d/g0d79d4a840b4-6
+
+@rel r/g0d79d4a840b4-6-4 --contrasts--> d/g0d79d4a840b4-6
+
+@rel r/g0d79d4a840b4-31-1 --contrasts--> d/g0d79d4a840b4-7
+
+@rel r/g0d79d4a840b4-31-2 --contrasts--> d/g0d79d4a840b4-7
+
+@rel r/g0d79d4a840b4-9-1 --contrasts--> d/g0d79d4a840b4-9
+
+@rel r/g0d79d4a840b4-9-2 --contrasts--> d/g0d79d4a840b4-9
+
+@rel r/g0d79d4a840b4-10-1 --contrasts--> d/g0d79d4a840b4-10
+
+@rel r/g0d79d4a840b4-10-2 --contrasts--> d/g0d79d4a840b4-10
+
+@rel r/g0d79d4a840b4-11-1 --contrasts--> d/g0d79d4a840b4-11
+
+@rel r/g0d79d4a840b4-12-1 --contrasts--> d/g0d79d4a840b4-12
+
+@rel r/g0d79d4a840b4-13-1 --contrasts--> d/g0d79d4a840b4-13
+
+@rel r/g0d79d4a840b4-13-2 --contrasts--> d/g0d79d4a840b4-13
+
+@rel r/g0d79d4a840b4-13-1 --contrasts--> d/g0d79d4a840b4-14
+
+@rel r/g0d79d4a840b4-13-2 --contrasts--> d/g0d79d4a840b4-14
+
+@rel r/g0d79d4a840b4-13-2 --contrasts--> d/g0d79d4a840b4-15
+
+@rel r/g0d79d4a840b4-13-1 --contrasts--> d/g0d79d4a840b4-16
+
+@rel r/g0d79d4a840b4-16-2 --contrasts--> d/g0d79d4a840b4-16
+
+@rel r/g0d79d4a840b4-17-1 --contrasts--> d/g0d79d4a840b4-17
+
+@rel r/g0d79d4a840b4-17-2 --contrasts--> d/g0d79d4a840b4-17
+
+@rel r/g0d79d4a840b4-19-1 --contrasts--> d/g0d79d4a840b4-19
+
+@rel r/g0d79d4a840b4-20-1 --contrasts--> d/g0d79d4a840b4-20
+
+@rel r/g0d79d4a840b4-21-1 --contrasts--> d/g0d79d4a840b4-21
+
+@rel r/g0d79d4a840b4-21-2 --contrasts--> d/g0d79d4a840b4-21
+
+@rel r/g0d79d4a840b4-21-1 --contrasts--> d/g0d79d4a840b4-22
+
+@rel r/g0d79d4a840b4-21-2 --contrasts--> d/g0d79d4a840b4-22
+
+@rel r/g0d79d4a840b4-23-1 --contrasts--> d/g0d79d4a840b4-23
+
+@rel r/g0d79d4a840b4-21-1 --contrasts--> d/g0d79d4a840b4-24
+
+@rel r/g0d79d4a840b4-21-2 --contrasts--> d/g0d79d4a840b4-24
+
+@rel r/g0d79d4a840b4-25-1 --contrasts--> d/g0d79d4a840b4-25
+
+@rel r/g0d79d4a840b4-26-1 --contrasts--> d/g0d79d4a840b4-26
+
+@rel r/g0d79d4a840b4-27-1 --contrasts--> d/g0d79d4a840b4-27
+
+@rel r/g0d79d4a840b4-27-2 --contrasts--> d/g0d79d4a840b4-27
+
+@rel r/g0d79d4a840b4-28-1 --contrasts--> d/g0d79d4a840b4-28
+
+@rel r/g0d79d4a840b4-28-2 --contrasts--> d/g0d79d4a840b4-28
+
+@rel r/g0d79d4a840b4-29-1 --contrasts--> d/g0d79d4a840b4-29
+
+@rel r/g0d79d4a840b4-30-1 --contrasts--> d/g0d79d4a840b4-30
+
+@rel r/g0d79d4a840b4-31-1 --contrasts--> d/g0d79d4a840b4-31
+
+@rel r/g0d79d4a840b4-31-2 --contrasts--> d/g0d79d4a840b4-31
+
+@rel r/g0d79d4a840b4-32-1 --contrasts--> d/g0d79d4a840b4-32
+
+@rel r/g0d79d4a840b4-34-1 --contrasts--> d/g0d79d4a840b4-34
+
+@rel d/g0d79d4a840b4-1 --causes--> q/g0d79d4a840b4-1-1
+
+@rel e/g0d79d4a840b4-2-1 --backs--> q/g0d79d4a840b4-2-1
+
+@rel d/g0d79d4a840b4-2 --causes--> q/g0d79d4a840b4-2-1
+
+@rel d/g0d79d4a840b4-3 --causes--> q/g0d79d4a840b4-3-1
+
+@rel d/g0d79d4a840b4-4 --causes--> q/g0d79d4a840b4-4-1
+
+@rel d/g0d79d4a840b4-5 --causes--> q/g0d79d4a840b4-5-1
+
+@rel d/g0d79d4a840b4-5 --causes--> q/g0d79d4a840b4-5-2
+
+@rel d/g0d79d4a840b4-6 --causes--> q/g0d79d4a840b4-6-1
+
+@rel d/g0d79d4a840b4-7 --causes--> q/g0d79d4a840b4-7-1
+
+@rel d/g0d79d4a840b4-7 --causes--> q/g0d79d4a840b4-7-2
+
+@rel e/g0d79d4a840b4-8-1 --backs--> q/g0d79d4a840b4-8-1
+
+@rel d/g0d79d4a840b4-8 --causes--> q/g0d79d4a840b4-8-1
+
+@rel d/g0d79d4a840b4-9 --causes--> q/g0d79d4a840b4-9-1
+
+@rel d/g0d79d4a840b4-9 --causes--> q/g0d79d4a840b4-9-2
+
+@rel d/g0d79d4a840b4-9 --causes--> q/g0d79d4a840b4-9-3
+
+@rel e/g0d79d4a840b4-10-1 --backs--> q/g0d79d4a840b4-10-1
+
+@rel d/g0d79d4a840b4-10 --causes--> q/g0d79d4a840b4-10-1
+
+@rel d/g0d79d4a840b4-11 --causes--> q/g0d79d4a840b4-11-1
+
+@rel d/g0d79d4a840b4-12 --causes--> q/g0d79d4a840b4-12-1
+
+@rel d/g0d79d4a840b4-13 --causes--> q/g0d79d4a840b4-13-1
+
+@rel d/g0d79d4a840b4-14 --causes--> q/g0d79d4a840b4-14-1
+
+@rel d/g0d79d4a840b4-15 --causes--> q/g0d79d4a840b4-15-1
+
+@rel d/g0d79d4a840b4-16 --causes--> q/g0d79d4a840b4-16-1
+
+@rel d/g0d79d4a840b4-17 --causes--> q/g0d79d4a840b4-17-1
+
+@rel d/g0d79d4a840b4-18 --causes--> q/g0d79d4a840b4-18-1
+
+@rel d/g0d79d4a840b4-19 --causes--> q/g0d79d4a840b4-19-1
+
+@rel e/g0d79d4a840b4-20-1 --backs--> q/g0d79d4a840b4-20-1
+
+@rel d/g0d79d4a840b4-20 --causes--> q/g0d79d4a840b4-20-1
+
+@rel e/g0d79d4a840b4-21-1 --backs--> q/g0d79d4a840b4-21-1
+
+@rel d/g0d79d4a840b4-21 --causes--> q/g0d79d4a840b4-21-1
+
+@rel e/g0d79d4a840b4-21-2 --backs--> q/g0d79d4a840b4-21-2
+
+@rel d/g0d79d4a840b4-21 --causes--> q/g0d79d4a840b4-21-2
+
+@rel e/g0d79d4a840b4-21-1 --backs--> q/g0d79d4a840b4-21-1
+
+@rel d/g0d79d4a840b4-22 --causes--> q/g0d79d4a840b4-21-1
+
+@rel e/g0d79d4a840b4-21-2 --backs--> q/g0d79d4a840b4-21-2
+
+@rel d/g0d79d4a840b4-22 --causes--> q/g0d79d4a840b4-21-2
+
+@rel d/g0d79d4a840b4-23 --causes--> q/g0d79d4a840b4-23-1
+
+@rel d/g0d79d4a840b4-24 --causes--> q/g0d79d4a840b4-24-1
+
+@rel d/g0d79d4a840b4-24 --causes--> q/g0d79d4a840b4-24-2
+
+@rel e/g0d79d4a840b4-25-1 --backs--> q/g0d79d4a840b4-25-1
+
+@rel d/g0d79d4a840b4-25 --causes--> q/g0d79d4a840b4-25-1
+
+@rel e/g0d79d4a840b4-29-1 --backs--> q/g0d79d4a840b4-29-1
+
+@rel d/g0d79d4a840b4-29 --causes--> q/g0d79d4a840b4-29-1
+
+@rel e/g0d79d4a840b4-31-1 --backs--> q/g0d79d4a840b4-31-1
+
+@rel d/g0d79d4a840b4-31 --causes--> q/g0d79d4a840b4-31-1
+
+@rel e/g0d79d4a840b4-31-2 --backs--> q/g0d79d4a840b4-31-2
+
+@rel d/g0d79d4a840b4-31 --causes--> q/g0d79d4a840b4-31-2
+
+@rel d/g0d79d4a840b4-32 --causes--> q/g0d79d4a840b4-32-1
+
+@rel d/g0d79d4a840b4-34 --causes--> q/g0d79d4a840b4-34-1

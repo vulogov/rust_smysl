@@ -80,7 +80,9 @@ impl Corpus {
     /// every record type in 1.4.0).
     pub fn record(&self, sha: &str, staged: &Staged) -> Result<Recorded, StoreError> {
         let doc = self.commit_path(sha);
-        let parent = doc.parent().expect("commit path has a directory");
+        // This path is one we built, so it has a parent — but a tool that reads other people's
+        // repositories should not be one assertion away from stopping.
+        let parent = doc.parent().unwrap_or(Path::new("."));
         std::fs::create_dir_all(parent).map_err(|e| StoreError::Io(parent.to_path_buf(), e))?;
         let text = surface(staged);
         std::fs::write(&doc, &text).map_err(|e| StoreError::Io(doc.clone(), e))?;
@@ -101,10 +103,24 @@ impl Corpus {
     }
 
     /// The merged store, empty when nothing has been recorded yet.
+    /// The corpus as a store, rebuilding it from the documents when there is no store to read.
+    ///
+    /// The documents are the record and the store is derived from them, so a repository commits the
+    /// former and ignores the latter — which means a fresh clone has every commit's reasoning and no
+    /// store at all. Rebuilding is the right answer there, and saying "no corpus recorded yet" was the
+    /// wrong one: it was true of the derived file and false of the repository.
     pub fn load(&self) -> Result<Store, StoreError> {
         let path = self.store_path();
         if !path.exists() {
-            return Ok(Store::from_records(Vec::new()));
+            return if self
+                .commit_documents()
+                .map(|d| !d.is_empty())
+                .unwrap_or(false)
+            {
+                self.rebuild()
+            } else {
+                Ok(Store::from_records(Vec::new()))
+            };
         }
         let bytes = std::fs::read(&path).map_err(|e| StoreError::Io(path.clone(), e))?;
         let (records, _) =
@@ -141,7 +157,9 @@ impl Corpus {
             merge(&mut store, &batch, MergeOptions::default())
                 .map_err(|e| StoreError::Smysl(e.to_string()))?;
         }
-        self.save(&store)?;
+        // Saving is a convenience — the next command reads it instead of rebuilding — so a checkout
+        // that cannot be written to still gets its corpus.
+        let _ = self.save(&store);
         Ok(store)
     }
 

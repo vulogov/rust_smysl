@@ -324,7 +324,14 @@ impl<'ast> Visit<'ast> for Body {
     fn visit_macro(&mut self, i: &'ast syn::Macro) {
         self.push(
             EventKind::Macro,
-            line_of(i.path.segments[0].ident.span()),
+            // `::foo!()` parses with a leading colon and no first segment on some inputs, and a fact
+            // extractor that panics on a file it was asked to read is worse than one that places it
+            // vaguely.
+            i.path
+                .segments
+                .first()
+                .map(|seg| line_of(seg.ident.span()))
+                .unwrap_or(0),
             detail([
                 ("name", tokens(&i.path, 40)),
                 ("tokens", tokens(&i.tokens, 200)),

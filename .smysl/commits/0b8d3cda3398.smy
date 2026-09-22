@@ -1,0 +1,1041 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g0b8d3cda3398-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": act, "ingest:quote": "A commit that touches nothing but `.smysl/` is the tool's own output. It carries no decisions that were not already recorded, so `extract --since` skips it, `extract --queued` drops it from the queue, and `doctor` does not count it as behind." }
+~ A commit that touches nothing but `.smysl/` is skipped by `extract --since`, dropped from the queue by …
+
+This change ensures that commits that only affect the tool's own output are not considered part of the backlog or pending extraction, focusing on real changes to the source code.
+
+@decision d/g0b8d3cda3398-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "println!(\"{}: nothing recorded for this commit — cargo smysl extract {}\", short(&resolved), short(&resolved));" }
+~ The `why_commit` function now prints a message indicating that nothing was recorded for a given commit if no …
+
+This change improves user feedback by clearly stating when a commit has not been recorded, guiding users to use the `extract` command to record it.
+
+@decision d/g0b8d3cda3398-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "if let Some(mut around) = scope {" }
+~ The `facts` function now includes a scope parameter that allows users to specify which files or names to …
+
+This change enhances the functionality of the `facts` command by allowing more granular selection of facts based on user input, improving its usefulness for specific analysis needs.
+
+@decision d/g0b8d3cda3398-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "if shortlist_tests {" }
+~ The `evidence` function now includes a shortlist_tests parameter that allows users to specify whether to …
+
+This change provides more flexibility in the `evidence` command, allowing users to focus on specific tests or automatically select relevant ones based on their input.
+
+@decision d/g0b8d3cda3398-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "if r.estimate {" }
+~ The `extract_command` function now includes an estimate parameter that allows users to estimate the cost of …
+
+This change gives users a way to plan and budget for extraction runs by providing an estimated time and resource cost before committing to a full run.
+
+@decision d/g0b8d3cda3398-6 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "if r.estimate {" }
+~ The `extract_queued` function now includes an estimate parameter that allows users to estimate the cost of …
+
+This change provides similar functionality as the previous decision, but for queued commits, allowing users to plan and budget extraction runs more effectively.
+
+@decision d/g0b8d3cda3398-7 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "if dry_run {" }
+~ The `extract` function now includes a dry_run parameter that allows users to simulate an extraction run …
+
+This change enables users to test and validate the extraction process without making permanent changes, ensuring that the tool behaves as expected before committing to actual recordings.
+
+@decision d/g0b8d3cda3398-8 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "if c.dry_run {" }
+~ The `check` function now includes a dry_run parameter that allows users to simulate a check run without …
+
+This change provides similar functionality as the previous decision, but for the `check` command, allowing users to test and validate their configurations before running actual checks.
+
+@decision d/g0b8d3cda3398-9 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "if let Some(path) = c.prompt_file {" }
+~ The `check` function now includes a no_corpus_order parameter that allows users to specify whether to order …
+
+This change gives users more control over how the corpus is processed during checks, allowing them to prioritize certain units or maintain a specific order based on their needs.
+
+@decision d/g0b8d3cda3398-10 { status: speculative, "code:kind": act, "ingest:quote": let seeds: Vec<usize> = cargo_smysl_verdict::check::AGREEMENT_SEEDS.iter().copied().cycle().take(c.passes.max(1)).collect(); }
+~ The `check` function now includes a parts parameter that allows users to specify the maximum number of parts …
+
+This change enables more efficient and manageable checks by allowing users to divide large changes into smaller, more digestible parts, improving the overall performance and accuracy of the check process.
+
+@decision d/g0b8d3cda3398-11 { status: speculative, "code:kind": act, "ingest:quote": let seeds: Vec<usize> = cargo_smysl_verdict::check::AGREEMENT_SEEDS.iter().copied().cycle().take(c.passes.max(1)).collect(); }
+~ The `check` function now includes a jobs parameter that allows users to specify the maximum number of …
+
+This change improves the performance and efficiency of the check process by allowing users to leverage multiple CPU cores or threads, reducing overall execution time for large changes.
+
+@decision d/g0b8d3cda3398-12 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "if c.json {" }
+~ The `check` function now includes a strict parameter that allows users to specify whether the command should …
+
+This change provides more control over how the check command behaves in response to findings, allowing users to enforce stricter adherence to recorded claims or treat all findings as advisory by default.
+
+@decision d/g0b8d3cda3398-13 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": act, "ingest:quote": "A commit that touches nothing but `.smysl/` is the tool's own output. It carries no decisions that were not already recorded, so `extract --since` skips it, `extract --queued` drops it from the queue, and `doctor` does not count it as behind." }
+~ A commit that touches nothing but `.smysl/` is skipped by `extract --since`, `extract --queued`, and the …
+
+The owner noticed the shape of commits where recording a commit writes files, leading to an infinite loop. By skipping commits that only touch `.smysl/`, the tool avoids this issue.
+
+@decision d/g0b8d3cda3398-14 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": act, "ingest:quote": A commit that touches `.smysl/` *and* source is a real change and is recorded like any other. }
+~ A commit that touches `.smysl/` *and* source is recorded like any other.
+
+To distinguish between tool-generated commits and actual changes, the tool records commits that touch both `.smysl/` and source files. This ensures that real changes are captured while avoiding infinite loops with tool-generated commits.
+
+@decision d/g0b8d3cda3398-15 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": act, "ingest:quote": "Recording a commit writes files, and those files are a commit. Recording that one writes more files. The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction." }
+~ The backlog can reach zero because corpus commits are not considered work.
+
+By skipping corpus commits from the backlog, the tool ensures that only actual changes are tracked, allowing the backlog to reach zero when all real changes have been processed.
+
+@decision d/g0b8d3cda3398-16 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "The tool reads git itself. Labels, sources and statuses are its own; a model proposes wording only." }
+~ The tool reads git itself, labels, sources, and statuses are its own; a model proposes wording only.
+
+This decision ensures that the tool has full control over its data and can make independent judgments based on the actual code and commit history.
+
+@decision d/g0b8d3cda3398-17 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": act, "ingest:quote": Every quote is checked. A quote that is not in the commit caps its unit at `speculative`. }
+~ Every quote is checked. A quote that is not in the commit caps its unit at `speculative`.
+
+This decision ensures that all claims made by the tool are backed by actual code, preventing speculative or unfounded assertions.
+
+@decision d/g0b8d3cda3398-18 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": act, "ingest:quote": Nothing a model proposes changes a status on its own. Proposals queue for a person. }
+~ Nothing a model proposes changes a status on its own. Proposals queue for a person.
+
+This decision ensures that all automated proposals are reviewed by humans, preventing automatic acceptance of potentially incorrect or misleading claims.
+
+@decision d/g0b8d3cda3398-19 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "This is the one command that must ask a model, and the slowest thing here." }
+~ The `extract` command must ask a model and is the slowest thing here.
+
+This decision acknowledges that understanding and recording the reasons behind code changes requires human-like intelligence, which is provided by the model. The slowness reflects the complexity of this task.
+
+@decision d/g0b8d3cda3398-20 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "A commit larger than the model's window is **read in parts**, not truncated, and says so." }
+~ A commit larger than the model's window is read in parts, not truncated, and says so.
+
+This decision allows the tool to handle large commits by breaking them into manageable parts, ensuring that no information is lost or misinterpreted due to size limitations.
+
+@decision d/g0b8d3cda3398-21 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "Extraction happens once per commit and recipe. Improvements arrive as a new recipe, never as a re-extraction merged into the old record." }
+~ Extraction happens once per commit and recipe. Improvements arrive as a new recipe, never as a re-extraction …
+
+This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records.
+
+@decision d/g0b8d3cda3398-22 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": act, "ingest:quote": "**Advisory.** On a local 14B, about one flag in ten was correct; read a finding as a place to look." }
+~ The `check` command is advisory and does not block changes.
+
+This decision allows developers to use the tool's insights as guidance without imposing strict rules that could hinder productivity or creativity.
+
+@decision d/g0b8d3cda3398-23 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": act, "ingest:quote": With `--tests --link` the tests run at that commit and their results are imported as `measured` units: }
+~ The `evidence` command checks claims against the code and tests, with optional mutation testing.
+
+This decision ensures that all claims made by the tool are thoroughly tested against both the code and relevant tests, providing a robust verification process.
+
+@decision d/g0b8d3cda3398-24 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": act, "ingest:quote": Everything a model proposed waits here. Nothing is ever deleted or rewritten. }
+~ The `review` command allows human reviewers to confirm, reject, or close model proposals.
+
+This decision ensures that all automated proposals are reviewed by humans, allowing for the correction of errors and the incorporation of human judgment into the tool's reasoning.
+
+@artifact-ref a/g0b8d3cda3398-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:body_hash": f3069061356d584d }
+~ crates/cargo-smysl/src/commands.rs::doctor
+
+@artifact-ref a/g0b8d3cda3398-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:body_hash": 59dfaccb7045acdb }
+~ crates/cargo-smysl/src/commands.rs::extract_command
+
+@artifact-ref a/g0b8d3cda3398-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:body_hash": 79760ee0b6e15d54 }
+~ crates/cargo-smysl/src/commands.rs::extract_queued
+
+@artifact-ref a/g0b8d3cda3398-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:body_hash": c40d45626a30db4f }
+~ crates/cargo-smysl/src/commands.rs::records_only_the_corpus
+
+@artifact-ref a/g0b8d3cda3398-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:body_hash": 493141566e148b94 }
+~ crates/cargo-smysl/src/commands.rs::tests::a_commit_that_only_writes_the_corpus_is_not_work
+
+@artifact-ref a/g0b8d3cda3398-6 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:body_hash": b8d2cfb929b6252e }
+~ crates/cargo-smysl/src/commands.rs::tests::commit
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-1-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": invariant, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-1-3 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": prior-change, "ingest:quote": `extract --since` skips it }
+~ `extract --since` skips commits that only affect `.smysl/`.
+
+@constraint p/g0b8d3cda3398-1-4 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": prior-change, "ingest:quote": `extract --queued` drops it from the queue }
+~ `extract --queued` drops commits that only affect `.smysl/` from the queue.
+
+@constraint p/g0b8d3cda3398-1-5 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": prior-change, "ingest:quote": and `doctor` does not count it as behind. }
+~ `doctor` does not count commits that only affect `.smysl/` as behind.
+
+@constraint p/g0b8d3cda3398-2-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "let resolved = cargo_smysl_git::read_commit(&root, sha)\n            .map(|c| c.sha)\n            .unwrap_or_else(|_| sha.to_string());\n        let record =\n            cargo_smysl_corpus::report::commit_record(&store, &corpus.labels(&store), &resolved);" }
+~ The function checks if there are any records for a given commit SHA.
+
+@constraint p/g0b8d3cda3398-2-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "if record.is_empty() {\n            println!(\n                \"{}: nothing recorded for this commit — cargo smysl extract {}\",\n                short(&resolved),\n                short(&resolved)\n            );" }
+~ If no records are found for the commit, a message is printed to inform the user.
+
+@constraint p/g0b8d3cda3398-3-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "The cache is keyed by each file's bytes and the extractor version, so a second run reparses nothing and a changed file cannot hit a stale entry." }
+~ The `facts` function previously did not include a scope parameter.
+
+@constraint p/g0b8d3cda3398-3-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": assumption, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ Users needed more granular selection of facts based on specific files or names.
+
+@constraint p/g0b8d3cda3398-4-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "/// What the caller asked `evidence` for, beside the claim itself.\nstruct EvidenceHow<'a> {\n    /// Names this run, so two runs can be told apart when agreement is counted (D12).\n    run: &'a str,\n    shortlist_tests: bool,\n    link_tests: bool,\n    /// Changes the mutation gate may make per test; 0 leaves it off (S1).\n    mutate: usize,\n    chars_per_token: f32,\n}" }
+~ The `evidence` function now includes a shortlist_tests parameter that allows users to specify whether to …
+
+The `evidence` function now includes a shortlist_tests parameter that allows users to specify whether to shortlist tests when checking evidence against the code.
+
+@constraint p/g0b8d3cda3398-5-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "/// `extract <rev>`: read the commit, ask the model, record what it said." }
+~ The `extract_command` function handles recording commits based on various parameters.
+
+@constraint p/g0b8d3cda3398-5-2 { status: speculative, "code:kind": assumption, "ingest:quote": This change gives users a way to plan and budget for extraction runs by providing an estimated time and resource cost before committing to a full run. }
+~ Users need a way to plan and budget for extraction runs.
+
+@constraint p/g0b8d3cda3398-6-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "Record what the post-commit hook queued, oldest first." }
+~ The `extract_queued` function now includes an estimate parameter that allows users to estimate the cost of …
+
+The `extract_queued` function now includes an estimate parameter that allows users to estimate the cost of extracting queued commits without actually running them.
+
+@constraint p/g0b8d3cda3398-6-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "A commit is forgotten only when it is recorded, so an interrupted run resumes where it stopped and a commit that fails stays queued to be tried again." }
+~ A commit is forgotten only when it is recorded, so an interrupted run resumes where it stopped and a commit …
+
+A commit is forgotten only when it is recorded, so an interrupted run resumes where it stopped and a commit that fails stays queued to be tried again.
+
+@constraint p/g0b8d3cda3398-7-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "This change enables users to test and validate the extraction process without making permanent changes, ensuring that the tool behaves as expected before committing to actual recordings." }
+~ The `extract` function needs a way to simulate runs without recording changes.
+
+@constraint p/g0b8d3cda3398-7-2 { status: speculative, "code:kind": prior-change, "ingest:quote": The dry_run parameter allows users to simulate an extraction run without actually recording any changes. }
+~ The `extract` function should have a parameter to control whether changes are recorded.
+
+@constraint p/g0b8d3cda3398-8-1 { status: speculative, "code:kind": prior-change, "ingest:quote": The `check` function now includes a dry_run parameter that allows users to simulate a check run without actually performing any checks. }
+~ The `check` function previously did not include a dry_run parameter.
+
+@constraint p/g0b8d3cda3398-8-2 { status: speculative, "code:kind": assumption, "ingest:quote": "This change provides similar functionality as the previous decision, but for the `check` command, allowing users to test and validate their configurations before running actual checks." }
+~ Users need a way to test and validate their configurations before running actual checks.
+
+@constraint p/g0b8d3cda3398-9-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "/// `check`: what this change contradicts in the corpus." }
+~ The `check` function processes changes against the recorded corpus.
+
+@constraint p/g0b8d3cda3398-9-2 { status: speculative, "code:kind": assumption, "ingest:quote": "This change gives users more control over how the corpus is processed during checks, allowing them to prioritize certain units or maintain a specific order based on their needs." }
+~ Users may want to control the order of processing units in the corpus for specific needs.
+
+@constraint p/g0b8d3cda3398-10-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4)." }
+~ The `check` function previously did not include a parts parameter.
+
+@constraint p/g0b8d3cda3398-10-2 { status: speculative, "code:kind": assumption, "ingest:quote": "This change enables more efficient and manageable checks by allowing users to divide large changes into smaller, more digestible parts, improving the overall performance and accuracy of the check process." }
+~ Users may need to divide large changes into smaller parts for more efficient checking.
+
+@constraint p/g0b8d3cda3398-11-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": The `check` function now includes a jobs parameter that allows users to specify the maximum number of concurrent jobs to run during checking. }
+~ The `check` function previously did not include a jobs parameter.
+
+@constraint p/g0b8d3cda3398-11-2 { status: speculative, "code:kind": assumption }
+~ Users may want to leverage multiple CPU cores or threads for performance improvements.
+
+@constraint p/g0b8d3cda3398-12-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4)." }
+~ The `check` function now includes a strict parameter that allows users to specify whether the command should …
+
+The `check` function now includes a strict parameter that allows users to specify whether the command should return a non-zero exit code if any contradictions are found.
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-1-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": invariant, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-13-3 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": prior-change, "ingest:quote": "The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction." }
+~ The owner noticed the shape of commits where recording a commit writes files, leading to an infinite loop.
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-14-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-14-3 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording that one writes more files. The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction." }
+~ The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, …
+
+The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction.
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-1-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": invariant, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-15-3 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": `extract --since` skips it }
+~ `extract --since` skips commits that only write the corpus.
+
+@constraint p/g0b8d3cda3398-15-4 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": `extract --queued` drops it from the queue }
+~ `extract --queued` drops commits that only write the corpus from the queue.
+
+@constraint p/g0b8d3cda3398-15-5 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": and `doctor` does not count it as behind. }
+~ `doctor` does not count commits that only write the corpus as behind.
+
+@constraint p/g0b8d3cda3398-16-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": The tool reads git itself. }
+~ The tool reads git itself.
+
+@constraint p/g0b8d3cda3398-16-2 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": invariant, "ingest:quote": "Labels, sources and statuses are its own; a model proposes wording only." }
+~ Labels, sources and statuses are its own; a model proposes wording only.
+
+@constraint p/g0b8d3cda3398-16-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": The tool reads git itself. }
+~ The tool reads git itself.
+
+@constraint p/g0b8d3cda3398-17-2 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "Labels, sources and statuses are its own; a model proposes wording only." }
+~ Labels, sources and statuses are its own; a model proposes wording only.
+
+@constraint p/g0b8d3cda3398-18-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": existing-behaviour, "ingest:quote": "Labels, sources and statuses are its own; a model proposes wording only." }
+~ The tool reads git itself.
+
+@constraint p/g0b8d3cda3398-18-2 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": invariant, "ingest:quote": Nothing a model proposes changes a status on its own. Proposals queue for a person. }
+~ Nothing a model proposes changes a status on its own.
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-1-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": invariant, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-15-3 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": `extract --since` skips it }
+~ `extract --since` skips commits that only write the corpus.
+
+@constraint p/g0b8d3cda3398-15-4 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": `extract --queued` drops it from the queue }
+~ `extract --queued` drops commits that only write the corpus from the queue.
+
+@constraint p/g0b8d3cda3398-15-5 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": and `doctor` does not count it as behind. }
+~ `doctor` does not count commits that only write the corpus as behind.
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-1-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": invariant, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-20-3 { status: speculative, "code:kind": tool-setting, "ingest:quote": "This decision allows the tool to handle large commits by breaking them into manageable parts, ensuring that no information is lost or misinterpreted due to size limitations." }
+~ The model's window has a size limitation.
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-14-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-21-3 { status: speculative, "code:kind": invariant, "ingest:quote": "This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records." }
+~ Each commit should be recorded with its own context and reasoning.
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-1-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": invariant, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-15-3 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": `extract --since` skips it }
+~ `extract --since` skips commits that only write the corpus.
+
+@constraint p/g0b8d3cda3398-15-4 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": `extract --queued` drops it from the queue }
+~ `extract --queued` drops commits that only write the corpus from the queue.
+
+@constraint p/g0b8d3cda3398-15-5 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": and `doctor` does not count it as behind. }
+~ `doctor` does not count commits that only write the corpus as behind.
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-14-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-23-3 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": `extract --since` skips it }
+~ `extract --since` skips commits that only write the corpus.
+
+@constraint p/g0b8d3cda3398-23-4 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": `extract --queued` drops it from the queue }
+~ `extract --queued` drops commits that only write the corpus from the queue.
+
+@constraint p/g0b8d3cda3398-23-5 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": and `doctor` does not count it as behind. }
+~ `doctor` does not count commits that only write the corpus as behind.
+
+@constraint p/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": existing-behaviour, "ingest:quote": "Recording a commit writes files, and those files are a commit." }
+~ Recording a commit writes files, and those files are a commit.
+
+@constraint p/g0b8d3cda3398-1-2 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": invariant, "ingest:quote": A commit that touches nothing but `.smysl/` is the tool's own output. }
+~ A commit that touches nothing but `.smysl/` is the tool's own output.
+
+@constraint p/g0b8d3cda3398-15-3 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": `extract --since` skips it }
+~ `extract --since` skips commits that only write the corpus.
+
+@constraint p/g0b8d3cda3398-15-4 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": `extract --queued` drops it from the queue }
+~ `extract --queued` drops commits that only write the corpus from the queue.
+
+@constraint p/g0b8d3cda3398-15-5 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": tool-setting, "ingest:quote": and `doctor` does not count it as behind. }
+~ `doctor` does not count commits that only write the corpus as behind.
+
+@claim r/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": rejected-alternative, "ingest:quote": A commit that touches `.smysl/` *and* source is a real change and is recorded like any other. }
+~ Rejected: Consider commits that touch `.smysl/` as real changes and record them like any other.
+
+@claim r/g0b8d3cda3398-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The function could silently return without any message if no records are found.
+
+@claim r/g0b8d3cda3398-2-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The function could print a different message indicating that the commit is not in the corpus.
+
+@claim r/g0b8d3cda3398-3-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": rejected-alternative, "ingest:quote": "The cache is keyed by each file's bytes and the extractor version, so a second run reparses nothing and a changed file cannot hit a stale entry." }
+~ Rejected: Keep the existing functionality of the `facts` command without adding a scope parameter.
+
+@claim r/g0b8d3cda3398-4-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The `evidence` function does not include a shortlist_tests parameter.
+
+@claim r/g0b8d3cda3398-5-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": The `extract_command` function now includes an estimate parameter that allows users to estimate the cost of extraction without actually running it. }
+~ Rejected: Do not include the estimate parameter.
+
+@claim r/g0b8d3cda3398-6-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The `extract_queued` function does not include an estimate parameter.
+
+@claim r/g0b8d3cda3398-7-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a separate command for simulation runs.
+
+@claim r/g0b8d3cda3398-7-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Modify existing commands to include simulation mode.
+
+@claim r/g0b8d3cda3398-8-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include a dry_run parameter in the `check` function.
+
+@claim r/g0b8d3cda3398-8-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include a dry_run parameter but with different functionality.
+
+@claim r/g0b8d3cda3398-9-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": rejected-alternative, "ingest:quote": "The preview reorders exactly as a real run would, so a person sees what will be examined." }
+~ Rejected: Maintain the existing order of processing units in the corpus.
+
+@claim r/g0b8d3cda3398-9-2 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": "This change gives users more control over how the corpus is processed during checks, allowing them to prioritize certain units or maintain a specific order based on their needs." }
+~ Rejected: Add more parameters to control different aspects of corpus processing.
+
+@claim r/g0b8d3cda3398-10-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "code:kind": rejected-alternative, "ingest:quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4)." }
+~ Rejected: Keep the `check` function without a parts parameter.
+
+@claim r/g0b8d3cda3398-11-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the `check` function without a jobs parameter, maintaining the previous behavior.
+
+@claim r/g0b8d3cda3398-11-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a different concurrency control mechanism instead of a jobs parameter.
+
+@claim r/g0b8d3cda3398-12-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The command always returns a non-zero exit code if any contradictions are found.
+
+@claim r/g0b8d3cda3398-12-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The command never returns a non-zero exit code, regardless of findings.
+
+@claim r/g0b8d3cda3398-13-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Continue processing commits that only touch `.smysl/`.
+
+@claim r/g0b8d3cda3398-13-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Modify the tool to handle such commits differently without skipping them.
+
+@claim r/g0b8d3cda3398-14-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: A commit that touches `.smysl/` is skipped entirely.
+
+@claim r/g0b8d3cda3398-14-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: A commit that touches `.smysl/` and source files is treated as a special case, but not recorded like …
+
+Rejected: A commit that touches `.smysl/` and source files is treated as a special case, but not recorded like any other.
+
+@claim r/g0b8d3cda3398-15-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Consider corpus commits as work and track them in the backlog.
+
+@claim r/g0b8d3cda3398-15-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not skip corpus commits from the backlog.
+
+@claim r/g0b8d3cda3398-16-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool relies on external data for labels, sources, and statuses.
+
+@claim r/g0b8d3cda3398-16-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: A model makes independent judgments based on the actual code and commit history.
+
+@claim r/g0b8d3cda3398-17-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Allow speculative quotes without checking.
+
+@claim r/g0b8d3cda3398-18-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": "This decision ensures that all automated proposals are reviewed by humans, preventing automatic acceptance of potentially incorrect or misleading claims." }
+~ Rejected: Automated proposals can change the status immediately.
+
+@claim r/g0b8d3cda3398-19-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": rejected-alternative, "ingest:quote": "Recording a commit writes files, and those files are a commit. If the tool recorded *that*, you would extract, commit, and find one commit left to extract — for ever." }
+~ Rejected: The tool could record commits that only write the corpus.
+
+@claim r/g0b8d3cda3398-20-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Truncate large commits.
+
+@claim r/g0b8d3cda3398-20-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Ignore large commits.
+
+@claim r/g0b8d3cda3398-21-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "code:kind": rejected-alternative, "ingest:quote": "Improvements arrive as a new recipe, never as a re-extraction merged into the old record." }
+~ Rejected: Re-extracting a commit into the old record.
+
+@claim r/g0b8d3cda3398-22-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": This decision allows developers to use the tool's insights as guidance without imposing strict rules that could hinder productivity or creativity. }
+~ Rejected: The tool could block changes if `check` finds contradictions.
+
+@claim r/g0b8d3cda3398-23-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "code:kind": rejected-alternative, "ingest:quote": "Recording that one writes more files. The owner noticed the shape of it: extract, commit, push, and find one commit left to extract — for ever, by construction." }
+~ Rejected: The tool could continue to record commits that only write the corpus, leading to an infinite loop of …
+
+Rejected: The tool could continue to record commits that only write the corpus, leading to an infinite loop of extraction.
+
+@claim r/g0b8d3cda3398-24-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool could automatically review and accept all model proposals without human intervention.
+
+@claim r/g0b8d3cda3398-24-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool could reject all model proposals without human intervention.
+
+@evidence e/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded" }
+~ Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after: recorded: 20 commit(s); 0 newer …
+
+Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after:  recorded: 20 commit(s); 0 newer commit(s) not recorded
+
+@finding q/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "The march was not bad luck, it was a fixed point that did not exist. Now it does." }
+~ The backlog can reach zero because commits that only affect `.smysl/` are not counted.
+
+@claim q/g0b8d3cda3398-2-1 { status: inferred, grounds: [d/g0b8d3cda3398-2], "code:kind": anticipated }
+~ Users will receive clear feedback when they try to view details of a commit that has not been recorded, …
+
+Users will receive clear feedback when they try to view details of a commit that has not been recorded, guiding them to use the `extract` command.
+
+@evidence e/g0b8d3cda3398-3-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "ingest:quote": "if around.files.is_empty() && rev.is_some() {" }
+~ Check: if around.files.is_empty() && rev.is_some() {
+
+@finding q/g0b8d3cda3398-3-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "ingest:quote": The scope is what the names reach — otherwise every file counts as touched and the selection says nothing. }
+~ Users can now specify which files or names to consider when selecting facts.
+
+@claim q/g0b8d3cda3398-3-2 { status: inferred, grounds: [d/g0b8d3cda3398-3], "code:kind": anticipated, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ The `facts` command becomes more flexible and useful for specific analysis needs.
+
+@claim q/g0b8d3cda3398-4-1 { status: inferred, grounds: [d/g0b8d3cda3398-4], "code:kind": anticipated, "ingest:quote": "/// What the caller asked `evidence` for, beside the claim itself.\nstruct EvidenceHow<'a> {\n    /// Names this run, so two runs can be told apart when agreement is counted (D12).\n    run: &'a str,\n    shortlist_tests: bool,\n    link_tests: bool,\n    /// Changes the mutation gate may make per test; 0 leaves it off (S1).\n    mutate: usize,\n    chars_per_token: f32,\n}" }
+~ Users can now specify whether to shortlist tests when checking evidence against the code.
+
+@evidence e/g0b8d3cda3398-5-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "ingest:quote": nothing was run: --estimate only says what it would cost }
+~ Check: nothing was run: --estimate only says what it would cost
+
+@finding q/g0b8d3cda3398-5-1 { status: speculative, "ingest:quote": This change gives users a way to plan and budget for extraction runs by providing an estimated time and resource cost before committing to a full run. }
+~ Users can now estimate the time and resource cost of extraction runs before executing them.
+
+@claim q/g0b8d3cda3398-6-1 { status: inferred, grounds: [d/g0b8d3cda3398-6], "code:kind": anticipated, "ingest:quote": "This change provides similar functionality as the previous decision, but for queued commits, allowing users to plan and budget extraction runs more effectively." }
+~ Users can now plan and budget extraction runs more effectively by estimating the cost of extracting queued …
+
+Users can now plan and budget extraction runs more effectively by estimating the cost of extracting queued commits without actually running them.
+
+@claim q/g0b8d3cda3398-7-1 { status: inferred, grounds: [d/g0b8d3cda3398-7], "code:kind": anticipated }
+~ Users can now test the extraction process without affecting the corpus.
+
+@claim q/g0b8d3cda3398-7-2 { status: inferred, grounds: [d/g0b8d3cda3398-7], "code:kind": anticipated, "ingest:quote": "fn extract(args: &SmyslArgs, rev: Option<&str>, force: bool, dry_run: bool, how: ExtractHow<'_>) -> u8 {" }
+~ The `extract` function's interface is extended with a new parameter.
+
+@claim q/g0b8d3cda3398-8-1 { status: inferred, grounds: [d/g0b8d3cda3398-8], "code:kind": anticipated, "ingest:quote": "This change provides similar functionality as the previous decision, but for the `check` command, allowing users to test and validate their configurations before running actual checks." }
+~ Users can now simulate a check run without performing any checks, allowing them to test and validate their …
+
+Users can now simulate a check run without performing any checks, allowing them to test and validate their configurations.
+
+@evidence e/g0b8d3cda3398-9-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@0b8d3cda3398 }, "ingest:quote": "let settings = Settings { window: c.window, chars_per_token: c.chars_per_token, order_by_corpus: !c.no_corpus_order, max_parts: c.parts.max(1), jobs: c.jobs.max(1), ..Settings::default() };" }
+~ Check: let settings = Settings { window: c.window, chars_per_token: c.chars_per_token, order_by_corpus: …
+
+Check: let settings = Settings { window: c.window, chars_per_token: c.chars_per_token, order_by_corpus: !c.no_corpus_order, max_parts: c.parts.max(1), jobs: c.jobs.max(1), ..Settings::default() };
+
+@finding q/g0b8d3cda3398-9-1 { status: speculative, "ingest:quote": DECISION 9: The `check` function now includes a no_corpus_order parameter that allows users to specify whether to order the corpus by relevance when checking for contradictions. }
+~ Users can now specify whether to order the corpus by relevance when checking for contradictions.
+
+@claim q/g0b8d3cda3398-10-1 { status: speculative, grounds: [d/g0b8d3cda3398-10], "code:kind": anticipated, "ingest:quote": "This change enables more efficient and manageable checks by allowing users to divide large changes into smaller, more digestible parts, improving the overall performance and accuracy of the check process." }
+~ Users can now specify the maximum number of parts into which a change should be divided for checking.
+
+@claim q/g0b8d3cda3398-10-2 { status: speculative, grounds: [d/g0b8d3cda3398-10], "code:kind": anticipated, "ingest:quote": "let mut settings = Settings {\n    window: c.window,\n    chars_per_token: c.chars_per_token,\n    order_by_corpus: !c.no_corpus_order,\n    max_parts: c.parts.max(1),\n    jobs: c.jobs.max(1),\n    ..Settings::default()\n};" }
+~ The `check` function now includes a new parameter called `parts`.
+
+@claim q/g0b8d3cda3398-11-1 { status: speculative, grounds: [d/g0b8d3cda3398-11], "code:kind": anticipated, "ingest:quote": "This change improves the performance and efficiency of the check process by allowing users to leverage multiple CPU cores or threads, reducing overall execution time for large changes." }
+~ The performance and efficiency of the check process may improve for large changes, as users can specify the …
+
+The performance and efficiency of the check process may improve for large changes, as users can specify the maximum number of concurrent jobs to run.
+
+@claim q/g0b8d3cda3398-12-1 { status: inferred, grounds: [d/g0b8d3cda3398-12], "code:kind": anticipated, "ingest:quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4)." }
+~ Users can now enforce stricter adherence to recorded claims by using the `--strict` flag.
+
+@claim q/g0b8d3cda3398-12-2 { status: inferred, grounds: [d/g0b8d3cda3398-12], "code:kind": anticipated, "ingest:quote": "Advisory (D18): findings are printed and the exit code stays 0 unless `--strict`, because the measured precision does not support blocking by default (S4)." }
+~ Users can treat all findings as advisory by default, without using the `--strict` flag.
+
+@evidence e/g0b8d3cda3398-13-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "ingest:quote": "A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by the backlog doctor reports." }
+~ Check: A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by …
+
+Check: A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by the backlog doctor reports.
+
+@finding q/g0b8d3cda3398-13-1 { status: speculative }
+~ The backlog `doctor` reports will not include commits that only write the corpus.
+
+@evidence e/g0b8d3cda3398-13-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "ingest:quote": "A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by the backlog doctor reports." }
+~ Check: A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by …
+
+Check: A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by the backlog doctor reports.
+
+@finding q/g0b8d3cda3398-13-2 { status: speculative }
+~ `extract --since` will skip commits that only write the corpus.
+
+@evidence e/g0b8d3cda3398-13-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "ingest:quote": "A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by the backlog doctor reports." }
+~ Check: A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by …
+
+Check: A commit that touches nothing but `.smysl/` is skipped: by extract --since, by extract --queued, and by the backlog doctor reports.
+
+@finding q/g0b8d3cda3398-13-3 { status: speculative }
+~ `extract --queued` will skip commits that only write the corpus.
+
+@evidence e/g0b8d3cda3398-14-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@0b8d3cda3398 }, "ingest:quote": "4 commit(s) since HEAD~4, 3 already recorded, 1 that only write the corpus, 0 to do" }
+~ Check: 4 commit(s) since HEAD~4, 3 already recorded, 1 that only write the corpus, 0 to do
+
+@finding q/g0b8d3cda3398-14-1 { status: speculative, "ingest:quote": "To distinguish between tool-generated commits and actual changes, the tool records commits that touch both `.smysl/` and source files. This ensures that real changes are captured while avoiding infinite loops with tool-generated commits." }
+~ Real changes are captured while avoiding infinite loops with tool-generated commits.
+
+@evidence e/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded" }
+~ Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after: recorded: 20 commit(s); 0 newer …
+
+Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after:  recorded: 20 commit(s); 0 newer commit(s) not recorded
+
+@finding q/g0b8d3cda3398-15-1 { status: speculative, "ingest:quote": The backlog can reach zero because corpus commits are not considered work. }
+~ The backlog can reach zero when all real changes have been processed.
+
+@claim q/g0b8d3cda3398-16-1 { status: inferred, grounds: [d/g0b8d3cda3398-16], "code:kind": anticipated, "ingest:quote": This decision ensures that the tool has full control over its data and can make independent judgments based on the actual code and commit history. }
+~ The tool has full control over its data.
+
+@claim q/g0b8d3cda3398-16-2 { status: inferred, grounds: [d/g0b8d3cda3398-16], "code:kind": anticipated, "ingest:quote": This decision ensures that the tool has full control over its data and can make independent judgments based on the actual code and commit history. }
+~ Independent judgments are made by the tool based on the actual code and commit history.
+
+@claim q/g0b8d3cda3398-17-1 { status: inferred, grounds: [d/g0b8d3cda3398-17], "code:kind": anticipated, "ingest:quote": "This decision ensures that all claims made by the tool are backed by actual code, preventing speculative or unfounded assertions." }
+~ All claims made by the tool are backed by actual code, preventing speculative or unfounded assertions.
+
+@claim q/g0b8d3cda3398-18-1 { status: inferred, grounds: [d/g0b8d3cda3398-18], "code:kind": anticipated, "ingest:quote": Nothing a model proposes changes a status on its own. Proposals queue for a person. }
+~ All automated proposals must be manually reviewed before any changes to the status are made.
+
+@evidence e/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded" }
+~ Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after: recorded: 20 commit(s); 0 newer …
+
+Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after:  recorded: 20 commit(s); 0 newer commit(s) not recorded
+
+@finding q/g0b8d3cda3398-19-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "The march was not bad luck, it was a fixed point that did not exist. Now it\ndoes." }
+~ The backlog can reach zero because commits that only write the corpus are skipped.
+
+@claim q/g0b8d3cda3398-20-1 { status: inferred, grounds: [d/g0b8d3cda3398-20], "code:kind": anticipated, "ingest:quote": "A commit larger than the model's window is read in parts, not truncated, and says so." }
+~ The tool can handle large commits by breaking them into manageable parts.
+
+@claim q/g0b8d3cda3398-20-2 { status: inferred, grounds: [d/g0b8d3cda3398-20], "code:kind": anticipated, "ingest:quote": "This decision allows the tool to handle large commits by breaking them into manageable parts, ensuring that no information is lost or misinterpreted due to size limitations." }
+~ No information is lost or misinterpreted due to size limitations.
+
+@claim q/g0b8d3cda3398-21-1 { status: inferred, grounds: [d/g0b8d3cda3398-21], "code:kind": anticipated, "ingest:quote": "This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records." }
+~ Each commit is recorded with its own context and reasoning.
+
+@claim q/g0b8d3cda3398-21-2 { status: inferred, grounds: [d/g0b8d3cda3398-21], "code:kind": anticipated, "ingest:quote": "This decision ensures that each commit is recorded with its own context and reasoning, allowing for continuous improvement without altering previous records." }
+~ Continuous improvement can be achieved without altering previous records.
+
+@evidence e/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded" }
+~ Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after: recorded: 20 commit(s); 0 newer …
+
+Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after:  recorded: 20 commit(s); 0 newer commit(s) not recorded
+
+@finding q/g0b8d3cda3398-19-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "The march was not bad luck, it was a fixed point that did not exist. Now it\ndoes." }
+~ The backlog can reach zero because commits that only write the corpus are skipped.
+
+@evidence e/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded" }
+~ Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after: recorded: 20 commit(s); 0 newer …
+
+Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after:  recorded: 20 commit(s); 0 newer commit(s) not recorded
+
+@finding q/g0b8d3cda3398-23-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "The march was not bad luck, it was a fixed point that did not exist. Now it does." }
+~ The backlog can reach zero because commits that only write the corpus are skipped.
+
+@evidence e/g0b8d3cda3398-1-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "before: recorded: 20 commit(s); 1 newer commit(s) not recorded\nafter:  recorded: 20 commit(s); 0 newer commit(s) not recorded" }
+~ Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after: recorded: 20 commit(s); 0 newer …
+
+Check: before: recorded: 20 commit(s); 1 newer commit(s) not recorded after:  recorded: 20 commit(s); 0 newer commit(s) not recorded
+
+@finding q/g0b8d3cda3398-24-1 { status: cited, source: { kind: doc, ref: git:0b8d3cda3398f5b031155a0864ada7b99a69a765 }, "ingest:quote": "The corpus commits are not work, so the backlog can reach zero" }
+~ The backlog can reach zero because commits that only write the corpus are skipped by `extract --since`, …
+
+The backlog can reach zero because commits that only write the corpus are skipped by `extract --since`, dropped from the queue by `extract --queued`, and not counted as behind by `doctor`.
+
+@rel d/g0b8d3cda3398-2 --x.code/touches--> a/g0b8d3cda3398-1
+
+@rel d/g0b8d3cda3398-3 --x.code/touches--> a/g0b8d3cda3398-1
+
+@rel d/g0b8d3cda3398-4 --x.code/touches--> a/g0b8d3cda3398-1
+
+@rel d/g0b8d3cda3398-5 --x.code/touches--> a/g0b8d3cda3398-1
+
+@rel d/g0b8d3cda3398-6 --x.code/touches--> a/g0b8d3cda3398-1
+
+@rel d/g0b8d3cda3398-7 --x.code/touches--> a/g0b8d3cda3398-1
+
+@rel d/g0b8d3cda3398-8 --x.code/touches--> a/g0b8d3cda3398-1
+
+@rel d/g0b8d3cda3398-9 --x.code/touches--> a/g0b8d3cda3398-1
+
+@rel d/g0b8d3cda3398-12 --x.code/touches--> a/g0b8d3cda3398-1
+
+@rel d/g0b8d3cda3398-2 --x.code/touches--> a/g0b8d3cda3398-2
+
+@rel d/g0b8d3cda3398-3 --x.code/touches--> a/g0b8d3cda3398-2
+
+@rel d/g0b8d3cda3398-4 --x.code/touches--> a/g0b8d3cda3398-2
+
+@rel d/g0b8d3cda3398-5 --x.code/touches--> a/g0b8d3cda3398-2
+
+@rel d/g0b8d3cda3398-6 --x.code/touches--> a/g0b8d3cda3398-2
+
+@rel d/g0b8d3cda3398-7 --x.code/touches--> a/g0b8d3cda3398-2
+
+@rel d/g0b8d3cda3398-8 --x.code/touches--> a/g0b8d3cda3398-2
+
+@rel d/g0b8d3cda3398-9 --x.code/touches--> a/g0b8d3cda3398-2
+
+@rel d/g0b8d3cda3398-12 --x.code/touches--> a/g0b8d3cda3398-2
+
+@rel d/g0b8d3cda3398-2 --x.code/touches--> a/g0b8d3cda3398-3
+
+@rel d/g0b8d3cda3398-3 --x.code/touches--> a/g0b8d3cda3398-3
+
+@rel d/g0b8d3cda3398-4 --x.code/touches--> a/g0b8d3cda3398-3
+
+@rel d/g0b8d3cda3398-5 --x.code/touches--> a/g0b8d3cda3398-3
+
+@rel d/g0b8d3cda3398-6 --x.code/touches--> a/g0b8d3cda3398-3
+
+@rel d/g0b8d3cda3398-7 --x.code/touches--> a/g0b8d3cda3398-3
+
+@rel d/g0b8d3cda3398-8 --x.code/touches--> a/g0b8d3cda3398-3
+
+@rel d/g0b8d3cda3398-9 --x.code/touches--> a/g0b8d3cda3398-3
+
+@rel d/g0b8d3cda3398-12 --x.code/touches--> a/g0b8d3cda3398-3
+
+@rel d/g0b8d3cda3398-2 --x.code/touches--> a/g0b8d3cda3398-4
+
+@rel d/g0b8d3cda3398-3 --x.code/touches--> a/g0b8d3cda3398-4
+
+@rel d/g0b8d3cda3398-4 --x.code/touches--> a/g0b8d3cda3398-4
+
+@rel d/g0b8d3cda3398-5 --x.code/touches--> a/g0b8d3cda3398-4
+
+@rel d/g0b8d3cda3398-6 --x.code/touches--> a/g0b8d3cda3398-4
+
+@rel d/g0b8d3cda3398-7 --x.code/touches--> a/g0b8d3cda3398-4
+
+@rel d/g0b8d3cda3398-8 --x.code/touches--> a/g0b8d3cda3398-4
+
+@rel d/g0b8d3cda3398-9 --x.code/touches--> a/g0b8d3cda3398-4
+
+@rel d/g0b8d3cda3398-12 --x.code/touches--> a/g0b8d3cda3398-4
+
+@rel d/g0b8d3cda3398-2 --x.code/touches--> a/g0b8d3cda3398-5
+
+@rel d/g0b8d3cda3398-3 --x.code/touches--> a/g0b8d3cda3398-5
+
+@rel d/g0b8d3cda3398-4 --x.code/touches--> a/g0b8d3cda3398-5
+
+@rel d/g0b8d3cda3398-5 --x.code/touches--> a/g0b8d3cda3398-5
+
+@rel d/g0b8d3cda3398-6 --x.code/touches--> a/g0b8d3cda3398-5
+
+@rel d/g0b8d3cda3398-7 --x.code/touches--> a/g0b8d3cda3398-5
+
+@rel d/g0b8d3cda3398-8 --x.code/touches--> a/g0b8d3cda3398-5
+
+@rel d/g0b8d3cda3398-9 --x.code/touches--> a/g0b8d3cda3398-5
+
+@rel d/g0b8d3cda3398-12 --x.code/touches--> a/g0b8d3cda3398-5
+
+@rel d/g0b8d3cda3398-2 --x.code/touches--> a/g0b8d3cda3398-6
+
+@rel d/g0b8d3cda3398-3 --x.code/touches--> a/g0b8d3cda3398-6
+
+@rel d/g0b8d3cda3398-4 --x.code/touches--> a/g0b8d3cda3398-6
+
+@rel d/g0b8d3cda3398-5 --x.code/touches--> a/g0b8d3cda3398-6
+
+@rel d/g0b8d3cda3398-6 --x.code/touches--> a/g0b8d3cda3398-6
+
+@rel d/g0b8d3cda3398-7 --x.code/touches--> a/g0b8d3cda3398-6
+
+@rel d/g0b8d3cda3398-8 --x.code/touches--> a/g0b8d3cda3398-6
+
+@rel d/g0b8d3cda3398-9 --x.code/touches--> a/g0b8d3cda3398-6
+
+@rel d/g0b8d3cda3398-12 --x.code/touches--> a/g0b8d3cda3398-6
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-1
+
+@rel p/g0b8d3cda3398-1-2 --conditions--> d/g0b8d3cda3398-1
+
+@rel p/g0b8d3cda3398-1-3 --conditions--> d/g0b8d3cda3398-1
+
+@rel p/g0b8d3cda3398-1-4 --conditions--> d/g0b8d3cda3398-1
+
+@rel p/g0b8d3cda3398-1-5 --conditions--> d/g0b8d3cda3398-1
+
+@rel p/g0b8d3cda3398-2-1 --conditions--> d/g0b8d3cda3398-2
+
+@rel p/g0b8d3cda3398-2-2 --conditions--> d/g0b8d3cda3398-2
+
+@rel p/g0b8d3cda3398-3-1 --conditions--> d/g0b8d3cda3398-3
+
+@rel p/g0b8d3cda3398-3-2 --conditions--> d/g0b8d3cda3398-3
+
+@rel p/g0b8d3cda3398-4-1 --conditions--> d/g0b8d3cda3398-4
+
+@rel p/g0b8d3cda3398-5-1 --conditions--> d/g0b8d3cda3398-5
+
+@rel p/g0b8d3cda3398-5-2 --conditions--> d/g0b8d3cda3398-5
+
+@rel p/g0b8d3cda3398-6-1 --conditions--> d/g0b8d3cda3398-6
+
+@rel p/g0b8d3cda3398-6-2 --conditions--> d/g0b8d3cda3398-6
+
+@rel p/g0b8d3cda3398-7-1 --conditions--> d/g0b8d3cda3398-7
+
+@rel p/g0b8d3cda3398-7-2 --conditions--> d/g0b8d3cda3398-7
+
+@rel p/g0b8d3cda3398-8-1 --conditions--> d/g0b8d3cda3398-8
+
+@rel p/g0b8d3cda3398-8-2 --conditions--> d/g0b8d3cda3398-8
+
+@rel p/g0b8d3cda3398-9-1 --conditions--> d/g0b8d3cda3398-9
+
+@rel p/g0b8d3cda3398-9-2 --conditions--> d/g0b8d3cda3398-9
+
+@rel p/g0b8d3cda3398-10-1 --conditions--> d/g0b8d3cda3398-10
+
+@rel p/g0b8d3cda3398-10-2 --conditions--> d/g0b8d3cda3398-10
+
+@rel p/g0b8d3cda3398-11-1 --conditions--> d/g0b8d3cda3398-11
+
+@rel p/g0b8d3cda3398-11-2 --conditions--> d/g0b8d3cda3398-11
+
+@rel p/g0b8d3cda3398-12-1 --conditions--> d/g0b8d3cda3398-12
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-13
+
+@rel p/g0b8d3cda3398-1-2 --conditions--> d/g0b8d3cda3398-13
+
+@rel p/g0b8d3cda3398-13-3 --conditions--> d/g0b8d3cda3398-13
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-14
+
+@rel p/g0b8d3cda3398-14-2 --conditions--> d/g0b8d3cda3398-14
+
+@rel p/g0b8d3cda3398-14-3 --conditions--> d/g0b8d3cda3398-14
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-15
+
+@rel p/g0b8d3cda3398-1-2 --conditions--> d/g0b8d3cda3398-15
+
+@rel p/g0b8d3cda3398-15-3 --conditions--> d/g0b8d3cda3398-15
+
+@rel p/g0b8d3cda3398-15-4 --conditions--> d/g0b8d3cda3398-15
+
+@rel p/g0b8d3cda3398-15-5 --conditions--> d/g0b8d3cda3398-15
+
+@rel p/g0b8d3cda3398-16-1 --conditions--> d/g0b8d3cda3398-16
+
+@rel p/g0b8d3cda3398-16-2 --conditions--> d/g0b8d3cda3398-16
+
+@rel p/g0b8d3cda3398-16-1 --conditions--> d/g0b8d3cda3398-17
+
+@rel p/g0b8d3cda3398-17-2 --conditions--> d/g0b8d3cda3398-17
+
+@rel p/g0b8d3cda3398-18-1 --conditions--> d/g0b8d3cda3398-18
+
+@rel p/g0b8d3cda3398-18-2 --conditions--> d/g0b8d3cda3398-18
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-19
+
+@rel p/g0b8d3cda3398-1-2 --conditions--> d/g0b8d3cda3398-19
+
+@rel p/g0b8d3cda3398-15-3 --conditions--> d/g0b8d3cda3398-19
+
+@rel p/g0b8d3cda3398-15-4 --conditions--> d/g0b8d3cda3398-19
+
+@rel p/g0b8d3cda3398-15-5 --conditions--> d/g0b8d3cda3398-19
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-20
+
+@rel p/g0b8d3cda3398-1-2 --conditions--> d/g0b8d3cda3398-20
+
+@rel p/g0b8d3cda3398-20-3 --conditions--> d/g0b8d3cda3398-20
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-21
+
+@rel p/g0b8d3cda3398-14-2 --conditions--> d/g0b8d3cda3398-21
+
+@rel p/g0b8d3cda3398-21-3 --conditions--> d/g0b8d3cda3398-21
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-22
+
+@rel p/g0b8d3cda3398-1-2 --conditions--> d/g0b8d3cda3398-22
+
+@rel p/g0b8d3cda3398-15-3 --conditions--> d/g0b8d3cda3398-22
+
+@rel p/g0b8d3cda3398-15-4 --conditions--> d/g0b8d3cda3398-22
+
+@rel p/g0b8d3cda3398-15-5 --conditions--> d/g0b8d3cda3398-22
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-23
+
+@rel p/g0b8d3cda3398-14-2 --conditions--> d/g0b8d3cda3398-23
+
+@rel p/g0b8d3cda3398-23-3 --conditions--> d/g0b8d3cda3398-23
+
+@rel p/g0b8d3cda3398-23-4 --conditions--> d/g0b8d3cda3398-23
+
+@rel p/g0b8d3cda3398-23-5 --conditions--> d/g0b8d3cda3398-23
+
+@rel p/g0b8d3cda3398-1-1 --conditions--> d/g0b8d3cda3398-24
+
+@rel p/g0b8d3cda3398-1-2 --conditions--> d/g0b8d3cda3398-24
+
+@rel p/g0b8d3cda3398-15-3 --conditions--> d/g0b8d3cda3398-24
+
+@rel p/g0b8d3cda3398-15-4 --conditions--> d/g0b8d3cda3398-24
+
+@rel p/g0b8d3cda3398-15-5 --conditions--> d/g0b8d3cda3398-24
+
+@rel r/g0b8d3cda3398-1-1 --contrasts--> d/g0b8d3cda3398-1
+
+@rel r/g0b8d3cda3398-2-1 --contrasts--> d/g0b8d3cda3398-2
+
+@rel r/g0b8d3cda3398-2-2 --contrasts--> d/g0b8d3cda3398-2
+
+@rel r/g0b8d3cda3398-3-1 --contrasts--> d/g0b8d3cda3398-3
+
+@rel r/g0b8d3cda3398-4-1 --contrasts--> d/g0b8d3cda3398-4
+
+@rel r/g0b8d3cda3398-5-1 --contrasts--> d/g0b8d3cda3398-5
+
+@rel r/g0b8d3cda3398-6-1 --contrasts--> d/g0b8d3cda3398-6
+
+@rel r/g0b8d3cda3398-7-1 --contrasts--> d/g0b8d3cda3398-7
+
+@rel r/g0b8d3cda3398-7-2 --contrasts--> d/g0b8d3cda3398-7
+
+@rel r/g0b8d3cda3398-8-1 --contrasts--> d/g0b8d3cda3398-8
+
+@rel r/g0b8d3cda3398-8-2 --contrasts--> d/g0b8d3cda3398-8
+
+@rel r/g0b8d3cda3398-9-1 --contrasts--> d/g0b8d3cda3398-9
+
+@rel r/g0b8d3cda3398-9-2 --contrasts--> d/g0b8d3cda3398-9
+
+@rel r/g0b8d3cda3398-10-1 --contrasts--> d/g0b8d3cda3398-10
+
+@rel r/g0b8d3cda3398-11-1 --contrasts--> d/g0b8d3cda3398-11
+
+@rel r/g0b8d3cda3398-11-2 --contrasts--> d/g0b8d3cda3398-11
+
+@rel r/g0b8d3cda3398-12-1 --contrasts--> d/g0b8d3cda3398-12
+
+@rel r/g0b8d3cda3398-12-2 --contrasts--> d/g0b8d3cda3398-12
+
+@rel r/g0b8d3cda3398-13-1 --contrasts--> d/g0b8d3cda3398-13
+
+@rel r/g0b8d3cda3398-13-2 --contrasts--> d/g0b8d3cda3398-13
+
+@rel r/g0b8d3cda3398-14-1 --contrasts--> d/g0b8d3cda3398-14
+
+@rel r/g0b8d3cda3398-14-2 --contrasts--> d/g0b8d3cda3398-14
+
+@rel r/g0b8d3cda3398-15-1 --contrasts--> d/g0b8d3cda3398-15
+
+@rel r/g0b8d3cda3398-15-2 --contrasts--> d/g0b8d3cda3398-15
+
+@rel r/g0b8d3cda3398-16-1 --contrasts--> d/g0b8d3cda3398-16
+
+@rel r/g0b8d3cda3398-16-2 --contrasts--> d/g0b8d3cda3398-16
+
+@rel r/g0b8d3cda3398-17-1 --contrasts--> d/g0b8d3cda3398-17
+
+@rel r/g0b8d3cda3398-18-1 --contrasts--> d/g0b8d3cda3398-18
+
+@rel r/g0b8d3cda3398-19-1 --contrasts--> d/g0b8d3cda3398-19
+
+@rel r/g0b8d3cda3398-20-1 --contrasts--> d/g0b8d3cda3398-20
+
+@rel r/g0b8d3cda3398-20-2 --contrasts--> d/g0b8d3cda3398-20
+
+@rel r/g0b8d3cda3398-21-1 --contrasts--> d/g0b8d3cda3398-21
+
+@rel r/g0b8d3cda3398-22-1 --contrasts--> d/g0b8d3cda3398-22
+
+@rel r/g0b8d3cda3398-23-1 --contrasts--> d/g0b8d3cda3398-23
+
+@rel r/g0b8d3cda3398-24-1 --contrasts--> d/g0b8d3cda3398-24
+
+@rel r/g0b8d3cda3398-24-2 --contrasts--> d/g0b8d3cda3398-24
+
+@rel e/g0b8d3cda3398-1-1 --backs--> q/g0b8d3cda3398-1-1
+
+@rel d/g0b8d3cda3398-1 --causes--> q/g0b8d3cda3398-1-1
+
+@rel d/g0b8d3cda3398-2 --causes--> q/g0b8d3cda3398-2-1
+
+@rel e/g0b8d3cda3398-3-1 --backs--> q/g0b8d3cda3398-3-1
+
+@rel d/g0b8d3cda3398-3 --causes--> q/g0b8d3cda3398-3-1
+
+@rel d/g0b8d3cda3398-3 --causes--> q/g0b8d3cda3398-3-2
+
+@rel d/g0b8d3cda3398-4 --causes--> q/g0b8d3cda3398-4-1
+
+@rel e/g0b8d3cda3398-5-1 --backs--> q/g0b8d3cda3398-5-1
+
+@rel d/g0b8d3cda3398-5 --causes--> q/g0b8d3cda3398-5-1
+
+@rel d/g0b8d3cda3398-6 --causes--> q/g0b8d3cda3398-6-1
+
+@rel d/g0b8d3cda3398-7 --causes--> q/g0b8d3cda3398-7-1
+
+@rel d/g0b8d3cda3398-7 --causes--> q/g0b8d3cda3398-7-2
+
+@rel d/g0b8d3cda3398-8 --causes--> q/g0b8d3cda3398-8-1
+
+@rel e/g0b8d3cda3398-9-1 --backs--> q/g0b8d3cda3398-9-1
+
+@rel d/g0b8d3cda3398-9 --causes--> q/g0b8d3cda3398-9-1
+
+@rel d/g0b8d3cda3398-10 --causes--> q/g0b8d3cda3398-10-1
+
+@rel d/g0b8d3cda3398-10 --causes--> q/g0b8d3cda3398-10-2
+
+@rel d/g0b8d3cda3398-11 --causes--> q/g0b8d3cda3398-11-1
+
+@rel d/g0b8d3cda3398-12 --causes--> q/g0b8d3cda3398-12-1
+
+@rel d/g0b8d3cda3398-12 --causes--> q/g0b8d3cda3398-12-2
+
+@rel e/g0b8d3cda3398-13-1 --backs--> q/g0b8d3cda3398-13-1
+
+@rel d/g0b8d3cda3398-13 --causes--> q/g0b8d3cda3398-13-1
+
+@rel e/g0b8d3cda3398-13-1 --backs--> q/g0b8d3cda3398-13-2
+
+@rel d/g0b8d3cda3398-13 --causes--> q/g0b8d3cda3398-13-2
+
+@rel e/g0b8d3cda3398-13-1 --backs--> q/g0b8d3cda3398-13-3
+
+@rel d/g0b8d3cda3398-13 --causes--> q/g0b8d3cda3398-13-3
+
+@rel e/g0b8d3cda3398-14-1 --backs--> q/g0b8d3cda3398-14-1
+
+@rel d/g0b8d3cda3398-14 --causes--> q/g0b8d3cda3398-14-1
+
+@rel e/g0b8d3cda3398-1-1 --backs--> q/g0b8d3cda3398-15-1
+
+@rel d/g0b8d3cda3398-15 --causes--> q/g0b8d3cda3398-15-1
+
+@rel d/g0b8d3cda3398-16 --causes--> q/g0b8d3cda3398-16-1
+
+@rel d/g0b8d3cda3398-16 --causes--> q/g0b8d3cda3398-16-2
+
+@rel d/g0b8d3cda3398-17 --causes--> q/g0b8d3cda3398-17-1
+
+@rel d/g0b8d3cda3398-18 --causes--> q/g0b8d3cda3398-18-1
+
+@rel e/g0b8d3cda3398-1-1 --backs--> q/g0b8d3cda3398-19-1
+
+@rel d/g0b8d3cda3398-19 --causes--> q/g0b8d3cda3398-19-1
+
+@rel d/g0b8d3cda3398-20 --causes--> q/g0b8d3cda3398-20-1
+
+@rel d/g0b8d3cda3398-20 --causes--> q/g0b8d3cda3398-20-2
+
+@rel d/g0b8d3cda3398-21 --causes--> q/g0b8d3cda3398-21-1
+
+@rel d/g0b8d3cda3398-21 --causes--> q/g0b8d3cda3398-21-2
+
+@rel e/g0b8d3cda3398-1-1 --backs--> q/g0b8d3cda3398-19-1
+
+@rel d/g0b8d3cda3398-22 --causes--> q/g0b8d3cda3398-19-1
+
+@rel e/g0b8d3cda3398-1-1 --backs--> q/g0b8d3cda3398-23-1
+
+@rel d/g0b8d3cda3398-23 --causes--> q/g0b8d3cda3398-23-1
+
+@rel e/g0b8d3cda3398-1-1 --backs--> q/g0b8d3cda3398-24-1
+
+@rel d/g0b8d3cda3398-24 --causes--> q/g0b8d3cda3398-24-1

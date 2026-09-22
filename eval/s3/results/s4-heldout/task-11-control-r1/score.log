@@ -152,7 +152,7 @@ ii...............................................................
 test result: ok. 63 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.32s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/11.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/s4-heldout/task-11-control-r1/tree'
+$ '<repo>/eval/s3/oracles/11.sh' '<repo>/eval/.s3work/runs/s4-heldout/task-11-control-r1/tree'
 [exit 1, 0s]
 violated: Documentation/examples/observations.txt is missing from the working tree
 

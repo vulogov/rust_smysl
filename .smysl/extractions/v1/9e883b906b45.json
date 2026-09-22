@@ -1,0 +1,448 @@
+{
+  "decisions": [
+    {
+      "decision": "Every figure in the changelog names the model it was measured on.",
+      "kind": "act",
+      "rationale": "To ensure clarity about the quality of measurements, which is a property of the model used.",
+      "quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code."
+    },
+    {
+      "decision": "Rejected experiments are listed beside shipped ones in the changelog.",
+      "kind": "act",
+      "rationale": "To document what did not work and why, to prevent others from repeating unnecessary experiments.",
+      "quote": "They cost real time, and a release note that hides them invites someone to spend it again."
+    },
+    {
+      "decision": "The `check` command runs two passes by default.",
+      "kind": "act",
+      "rationale": "To improve the precision of findings without incurring excessive costs.",
+      "quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default."
+    },
+    {
+      "decision": "The tool assigns labels, sources, and statuses; a model proposes content only.",
+      "kind": "act",
+      "rationale": "To ensure that the tool's output is reliable and verifiable.",
+      "quote": "The tool assigns every label, source and status; a model proposes content only."
+    },
+    {
+      "decision": "Every quote is checked against the commit it came from.",
+      "kind": "act",
+      "rationale": "To ensure that quotes are accurate and relevant to the code being analyzed.",
+      "quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`."
+    },
+    {
+      "decision": "What the code says about itself never verifies it.",
+      "kind": "act",
+      "rationale": "To prevent self-referential claims from being treated as verified facts.",
+      "quote": "What the code says about itself never verifies it. Doc comments, string literals and commit subjects are marked as prose: they help find the right code and never establish a claim."
+    },
+    {
+      "decision": "A single run never raises a status.",
+      "kind": "act",
+      "rationale": "To ensure that claims are supported by multiple independent runs or human review before being considered verified.",
+      "quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word."
+    },
+    {
+      "decision": "A test linked to a claim waits for a person.",
+      "kind": "act",
+      "rationale": "To ensure that tests are reviewed and verified by humans before being considered evidence.",
+      "quote": "A test linked to a claim waits for a person. A model proposing the link is not a review; a failing test never backs anything."
+    },
+    {
+      "decision": "Review is recorded, never a rewrite.",
+      "kind": "act",
+      "rationale": "To maintain an immutable record of decisions and reviews, ensuring transparency and accountability.",
+      "quote": "Review is recorded, never a rewrite. Confirming writes an attestation, rejecting a withdrawal with a reason, closing a resolution with a note. Nothing is deleted."
+    },
+    {
+      "decision": "Nothing is hidden in the tool's output.",
+      "kind": "act",
+      "rationale": "To provide complete transparency about the processes and decisions made by the tool.",
+      "quote": "Nothing is hidden. A prompt that had to be cut, an answer that had to be salvaged, a set of units split across calls, a provider that truncated — each is reported where it happened."
+    },
+    {
+      "decision": "The default build has no TLS stack and speaks plain HTTP to a model on your machine.",
+      "kind": "act",
+      "rationale": "To provide a lightweight and secure default configuration for users who do not require a hosted provider.",
+      "quote": "The default build has no TLS stack and speaks plain HTTP to a model on your machine; `--features hosted` is the opt-in for a hosted provider."
+    },
+    {
+      "decision": "MSRV 1.86 for the shipped crates.",
+      "kind": "act",
+      "rationale": "To ensure compatibility with a wide range of Rust versions while maintaining modern features and performance improvements.",
+      "quote": "MSRV 1.86 for the shipped crates."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Quality where a model is involved is a property of that model and not of this code.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "quality where a model is involved is a property of that model and not of this code."
+    },
+    {
+      "decision": 2,
+      "text": "The project aims to keep a record of why Rust code changed.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A cargo subcommand that records why Rust code changed and keeps the record honest."
+    },
+    {
+      "decision": 2,
+      "text": "Rejected experiments cost real time.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "They cost real time, and a release note that hides them invites someone to spend it again."
+    },
+    {
+      "decision": 3,
+      "text": "The tool assigns labels, sources and statuses; a model proposes content only.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "**The tool assigns labels, sources and statuses; a model proposes content only.** Sources are the commit as the tool read it with `gix`."
+    },
+    {
+      "decision": 3,
+      "text": "A single run never raises a status.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "**A single run never raises a status.** `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word."
+    },
+    {
+      "decision": 3,
+      "text": "Two-pass agreement removed every false flag on a real commit in development.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default."
+    },
+    {
+      "decision": 4,
+      "text": "The tool needs to assign labels, sources, and statuses to ensure reliability and verifiability.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool assigns labels, sources and statuses; a model proposes content only."
+    },
+    {
+      "decision": 5,
+      "text": "The tool assigns labels, sources and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "**The tool assigns labels, sources and statuses; a model proposes content only.** Sources are the commit as the tool read it with `gix`."
+    },
+    {
+      "decision": 5,
+      "text": "What the code says about itself never verifies it.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "**What the code says about itself never verifies it.** Doc comments, string literals and commit subjects are marked as prose: they help find the right code and never establish a claim."
+    },
+    {
+      "decision": 6,
+      "text": "The tool assigns labels, sources and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "**The tool assigns labels, sources and statuses; a model proposes content only.** Sources are the commit as the tool read it with `gix`."
+    },
+    {
+      "decision": 6,
+      "text": "Doc comments, string literals and commit subjects are marked as prose.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Doc comments, string literals and commit subjects are marked as prose: they help find the right code and never establish a claim."
+    },
+    {
+      "decision": 7,
+      "text": "Claims need to be supported by multiple independent runs or human review.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word."
+    },
+    {
+      "decision": 8,
+      "text": "A model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "**The tool assigns labels, sources and statuses; a model proposes content only.**"
+    },
+    {
+      "decision": 8,
+      "text": "Tests are linked to claims.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "**A test linked to a claim waits for a person.** A model proposing the link is not a review; a failing test never backs anything."
+    },
+    {
+      "decision": 9,
+      "text": "The tool assigns labels, sources and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "**The tool assigns labels, sources and statuses; a model proposes content only.** Sources are the commit as the tool read it with `gix`."
+    },
+    {
+      "decision": 9,
+      "text": "A single run never raises a status.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "**A single run never raises a status.** `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word."
+    },
+    {
+      "decision": 10,
+      "text": "The tool needs to report all details of its operations for transparency.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "Nothing is hidden. A prompt that had to be cut, an answer that had to be salvaged, a set of units split across calls, a provider that truncated — each is reported where it happened."
+    },
+    {
+      "decision": 11,
+      "text": "The tool needs to communicate with a model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A model proposes content; the tool assigns every label, source and status, and checks every quote against the commit it came from."
+    },
+    {
+      "decision": 11,
+      "text": "Users may not require a hosted provider.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "To provide a lightweight and secure default configuration for users who do not require a hosted provider."
+    },
+    {
+      "decision": 12,
+      "text": "The project aims to maintain compatibility with a wide range of Rust versions.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "To ensure compatibility with a wide range of Rust versions while maintaining modern features and performance improvements."
+    },
+    {
+      "decision": 12,
+      "text": "The project needs to support modern features and performance improvements.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "To ensure compatibility with a wide range of Rust versions while maintaining modern features and performance improvements."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Not naming the model in figures.",
+      "reason": "",
+      "quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code."
+    },
+    {
+      "decision": 2,
+      "alternative": "Not listing rejected experiments in the changelog.",
+      "reason": "",
+      "quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code. Protocols and caveats:"
+    },
+    {
+      "decision": 3,
+      "alternative": "A stricter `check` prompt",
+      "reason": "",
+      "quote": "- **A stricter `check` prompt** — recall fell 0.65 → 0.30, and it dropped 10 of 22 correct flags."
+    },
+    {
+      "decision": 3,
+      "alternative": "A tightened extraction prompt",
+      "reason": "",
+      "quote": "- **A tightened extraction prompt** naming what is not a decision — no reduction in false positives, and more of the kind it forbade."
+    },
+    {
+      "decision": 3,
+      "alternative": "Ranking decisions by whether their quote is in the commit",
+      "reason": "",
+      "quote": "- **Ranking decisions by whether their quote is in the commit** — measured against the owner's labels, decisions with a quote in the commit are 88% real and those without are 97% real. The signal is not there; it ships off."
+    },
+    {
+      "decision": 3,
+      "alternative": "Retrieval-side term filtering",
+      "reason": "",
+      "quote": "- **Retrieval-side term filtering** for `check` — correct and wrong flags have overlapping term profiles."
+    },
+    {
+      "decision": 4,
+      "alternative": "Allow the model to assign all aspects of the output.",
+      "reason": "",
+      "quote": "The tool assigns labels, sources and statuses; a model proposes content only."
+    },
+    {
+      "decision": 4,
+      "alternative": "Let the tool automatically verify the correctness of the model's proposals without human intervention.",
+      "reason": "",
+      "quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word."
+    },
+    {
+      "decision": 5,
+      "alternative": "Quotes are not checked against the commit.",
+      "reason": "",
+      "quote": "Recorded because each cost real time: a stricter `check` prompt (recall 0.65 → 0.30); a tightened extraction prompt (no fewer false positives, more of the kind it forbade); ranking decisions by whether their quote is in the commit (decisions with a quote are 88% real, those without 97%); retrieval-side term filtering (overlapping profiles). Two-pass agreement did work, and is the default."
+    },
+    {
+      "decision": 6,
+      "alternative": "Allow doc comments, string literals, and commit subjects to verify claims.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Allow a single run to raise the status.",
+      "reason": "",
+      "quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word."
+    },
+    {
+      "decision": 8,
+      "alternative": "Automatically verify tests without human review.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Allow models to propose and verify tests independently.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Rewriting the record to reflect changes in review.",
+      "reason": "",
+      "quote": "**Review is recorded, never a rewrite.** Confirming writes an attestation, rejecting a withdrawal with a reason, closing a resolution with a note. Nothing is deleted."
+    },
+    {
+      "decision": 10,
+      "alternative": "The tool could hide some details of its operations.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Include TLS stack by default.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Require users to specify the communication protocol.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Setting a lower MSRV to support even older Rust versions.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Not setting an explicit MSRV, allowing users to choose their own.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Users can understand which model's performance each figure represents.",
+      "quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The changelog provides transparency about what did not work.",
+      "quote": "Every figure below names the model it was measured on, because quality where a model is involved is a property of that model and not of this code. Protocols and caveats:",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "It prevents others from repeating unnecessary experiments.",
+      "quote": "They cost real time, and a release note that hides them invites someone to spend it again.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "`check` command runs two passes by default to improve precision without excessive costs.",
+      "quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. On a local 14B about one flag in ten was correct — read a finding as a place to look, not as a claim that something is wrong. The deterministic half (retrieval, packing, quote and label validation, determinism) holds regardless of the model; the judgement is the part that moves.",
+      "verified": true,
+      "verification_quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default."
+    },
+    {
+      "decision": 4,
+      "text": "The tool's output is more reliable and verifiable because it assigns labels, sources, and statuses.",
+      "quote": "To ensure that the tool's output is reliable and verifiable.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Human intervention is required to verify the correctness of the model's proposals.",
+      "quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Quotes that are not in the commit are capped at `speculative`.",
+      "quote": "**Every quote is checked against the commit.** A quote that is not there caps its unit at `speculative`.",
+      "verified": true,
+      "verification_quote": "**Every quote is checked against the commit.** A quote that is not there caps its unit at `speculative`."
+    },
+    {
+      "decision": 6,
+      "text": "Self-referential claims are not treated as verified facts.",
+      "quote": "**What the code says about itself never verifies it.** Doc comments, string literals and commit subjects are marked as prose: they help find the right code and never establish a claim.",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Claims must be verified through multiple independent runs or human review before being considered supported.",
+      "quote": "A single run never raises a status. `Supported` needs every part of a claim covered by structural facts *and* two independent runs agreeing, or a person's word.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Tests must be reviewed by humans before being considered evidence.",
+      "quote": "**A test linked to a claim waits for a person.** A model proposing the link is not a review; a failing test never backs anything.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Maintains transparency and accountability by keeping an immutable record of decisions and reviews.",
+      "quote": "**Review is recorded, never a rewrite.** Confirming writes an attestation, rejecting a withdrawal with a reason, closing a resolution with a note. Nothing is deleted.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Users will have complete visibility into the tool's processes and decisions.",
+      "quote": "Nothing is hidden. A prompt that had to be cut, an answer that had to be salvaged, a set of units split across calls, a provider that truncated — each is reported where it happened.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The tool communicates with a model over plain HTTP by default.",
+      "quote": "The default build has no TLS stack and speaks plain HTTP to a model on your machine.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "Users who require a hosted provider can enable it using the `hosted` feature.",
+      "quote": "A hosted provider over TLS is the `hosted` feature, off by default.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Users of the project will need at least Rust version 1.86 to compile and run the crates.",
+      "quote": "MSRV 1.86 for the shipped crates.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

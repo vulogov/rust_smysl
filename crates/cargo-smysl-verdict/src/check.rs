@@ -59,6 +59,19 @@ pub struct Settings {
     pub answer_tokens: u32,
     /// Replaces the built-in judgement prompt.
     pub system: Option<String>,
+    /// When a change does not fit, show the files the corpus has reasoning about rather than whichever
+    /// sort first. Costs nothing: the same number of lines is shown either way.
+    pub order_by_corpus: bool,
+    /// Calls to have in flight at once. The calls are independent — a chunk of units against a part —
+    /// so waiting for them one at a time is waiting for nothing. Measured: a call takes about a minute
+    /// on a local 14B, and a check makes four of them. A local provider serves them one at a time unless
+    /// it is configured otherwise, so more jobs help a hosted provider most.
+    pub jobs: usize,
+    /// Parts a change too large for one view may be read in. `1` shows what fits and names the rest;
+    /// more reads the rest too, at one set of calls per part. Measured on held-out data: 59% of changes
+    /// are truncated and 307 files across 55 cases are never examined, which is what more parts buys —
+    /// and what they cost is a multiple of every call.
+    pub max_parts: usize,
     /// Rotates the judged units before they are grouped. Two passes with different seeds see the same
     /// units in different company, and a finding only one pass makes is an artefact of that company.
     pub order_seed: usize,
@@ -78,6 +91,11 @@ impl Default for Settings {
             window: 32768,
             answer_tokens: 2048,
             system: None,
+            jobs: 1,
+            order_by_corpus: true,
+            // One part: the same work as before. Reading a change in parts is opt-in because it
+            // multiplies what a check costs, and `check` is advisory whatever it reads.
+            max_parts: 1,
             order_seed: 0,
         }
     }
@@ -115,6 +133,7 @@ Return one JSON object: {\"verdicts\": [{\"label\": string, \"verdict\": \"contr
 \"diff_line\": string, \"reason\": string}]}";
 
 /// A unified diff, as `check` reads it.
+#[derive(Clone)]
 pub struct Change {
     pub files: Vec<String>,
     changed: Vec<String>,
@@ -122,6 +141,93 @@ pub struct Change {
     lines: BTreeSet<String>,
     numbered: BTreeMap<u32, String>,
     pub truncated: bool,
+    /// The change as it arrived, so it can be shown in a different order without being re-read.
+    raw: String,
+    /// Files of which the model saw at least one line. The rest were not examined, and a report that
+    /// does not say so lets "nothing is contradicted" stand for "nothing in what I read".
+    seen: BTreeSet<String>,
+}
+
+impl Change {
+    /// The same change with its files in a different order, so that a cut keeps what matters.
+    ///
+    /// A diff is ordered by path, which has nothing to do with what the corpus knows. When only part of
+    /// a change fits, showing the files the corpus has reasoning about beats showing whichever sort
+    /// first — and it costs nothing, because the same number of lines is shown either way.
+    pub fn ordered_by(&self, weight: &dyn Fn(&str) -> usize, s: &Settings) -> Change {
+        let mut sections: Vec<(String, String)> = Vec::new();
+        for part in self.raw.split("diff --git ") {
+            if part.trim().is_empty() {
+                continue;
+            }
+            let path = part
+                .lines()
+                .next()
+                .and_then(|l| l.split(" b/").nth(1))
+                .unwrap_or_default()
+                .to_string();
+            sections.push((path, format!("diff --git {part}")));
+        }
+        // Heaviest first, and the diff's own order among equals, so the result is stable.
+        sections.sort_by_key(|(path, _)| std::cmp::Reverse(weight(path)));
+        Change::from_diff(
+            &sections
+                .into_iter()
+                .map(|(_, text)| text)
+                .collect::<Vec<_>>()
+                .join(""),
+            s,
+        )
+    }
+
+    /// The change as parts that each fit, whole files at a time, at most `max_parts` of them.
+    ///
+    /// A file too large for a part of its own is shown cut, as before — that is the one place this still
+    /// truncates, and the part reports it like any other.
+    pub fn parts(&self, s: &Settings) -> Vec<Change> {
+        if !self.truncated || s.max_parts <= 1 {
+            return vec![self.clone()];
+        }
+        let mut sections: Vec<String> = Vec::new();
+        for part in self.raw.split("diff --git ") {
+            if !part.trim().is_empty() {
+                sections.push(format!("diff --git {part}"));
+            }
+        }
+        let mut parts = Vec::new();
+        let mut current = String::new();
+        for section in sections {
+            // A part is full when adding this file would truncate it, so each part is whole files.
+            let would = format!("{current}{section}");
+            if !current.is_empty() && Change::from_diff(&would, s).truncated {
+                parts.push(Change::from_diff(&current, s));
+                current = section;
+                if parts.len() + 1 >= s.max_parts {
+                    break;
+                }
+            } else {
+                current = would;
+            }
+        }
+        if !current.is_empty() {
+            parts.push(Change::from_diff(&current, s));
+        }
+        parts.truncate(s.max_parts);
+        parts
+    }
+
+    /// Files the model was shown nothing of.
+    ///
+    /// Measured on held-out data: 59% of changes were truncated, and 9 of the 16 that contain a
+    /// contradiction. A reader told which files went unexamined can go and look; a reader not told
+    /// cannot.
+    pub fn unexamined(&self) -> Vec<String> {
+        self.files
+            .iter()
+            .filter(|f| !self.seen.contains(*f))
+            .cloned()
+            .collect()
+    }
 }
 
 impl Change {
@@ -135,12 +241,14 @@ impl Change {
         let (mut files, mut changed, mut shown) = (Vec::new(), Vec::new(), Vec::new());
         let (mut lines, mut numbered) = (BTreeSet::new(), BTreeMap::new());
         let (mut in_file, mut tokens, mut started, mut truncated) = (0usize, 0u32, false, false);
+        let (mut seen, mut current) = (BTreeSet::new(), String::new());
         for line in text.lines() {
             if let Some(rest) = line.strip_prefix("diff --git ") {
                 started = true;
                 in_file = 0;
                 if let Some(b) = rest.split(" b/").nth(1) {
                     files.push(b.to_string());
+                    current = b.to_string();
                 }
                 // A file's header counts against the cap like any other line: past it, the change is
                 // truncated, and saying "no more files" by silence would be a lie of omission.
@@ -175,6 +283,9 @@ impl Change {
             tokens += s.tokens(line) + 1;
             let n = shown.len() as u32 + 1;
             shown.push(format!("{n:>4}| {line}"));
+            if !current.is_empty() {
+                seen.insert(current.clone());
+            }
             if let Some(c) = content {
                 let t = c.trim();
                 if !t.is_empty() {
@@ -190,6 +301,8 @@ impl Change {
             lines,
             numbered,
             truncated,
+            seen,
+            raw: text.to_string(),
         }
     }
 
@@ -246,6 +359,8 @@ pub struct Outcome {
     /// What the caller should know about how the answer was produced (D17).
     pub warnings: Vec<String>,
     pub units_judged: usize,
+    /// Files of the change the model was shown nothing of (B, 0.2.0).
+    pub unexamined: Vec<String>,
     pub calls: usize,
     pub predicted_tokens: u64,
     pub charged_tokens: u64,
@@ -400,6 +515,60 @@ fn context(store: &Store, change: &Change, s: &Settings) -> Option<(String, Vec<
     None
 }
 
+/// Ask every question, up to `jobs` at a time, and return the answers in the order they were asked.
+///
+/// Order is kept because a report that changes between identical runs is a report nobody can compare.
+fn ask_all(
+    judge: &(dyn Judge + Sync),
+    s: &Settings,
+    asks: &[String],
+) -> Vec<Result<(Vec<RawVerdict>, crate::Charged), JudgeError>> {
+    let jobs = s.jobs.max(1).min(asks.len().max(1));
+    if jobs == 1 || asks.len() == 1 {
+        return asks
+            .iter()
+            .map(|a| judge.ask(s.system_prompt(), a))
+            .collect();
+    }
+    let next = std::sync::atomic::AtomicUsize::new(0);
+    let answers: Vec<std::sync::Mutex<Option<_>>> = (0..asks.len())
+        .map(|_| std::sync::Mutex::new(None))
+        .collect();
+    std::thread::scope(|scope| {
+        for _ in 0..jobs {
+            scope.spawn(|| loop {
+                let i = next.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                let Some(ask) = asks.get(i) else { break };
+                let answer = judge.ask(s.system_prompt(), ask);
+                // A poisoned lock means another call panicked; this answer is still good.
+                let mut slot = answers[i].lock().unwrap_or_else(|e| e.into_inner());
+                *slot = Some(answer);
+            });
+        }
+    });
+    answers
+        .into_iter()
+        .map(|slot| {
+            slot.into_inner()
+                .unwrap_or_else(|e| e.into_inner())
+                .unwrap_or_else(|| Err(JudgeError::Shape("no answer".into())))
+        })
+        .collect()
+}
+
+/// A list a person can read: the first few names, then how many more.
+fn shortened(files: &[String]) -> String {
+    const SHOWN: usize = 6;
+    if files.len() <= SHOWN {
+        return files.join(", ");
+    }
+    format!(
+        "{}, and {} more",
+        files[..SHOWN].join(", "),
+        files.len() - SHOWN
+    )
+}
+
 /// The seeds two passes use, from the configuration S4 froze.
 pub const AGREEMENT_SEEDS: [usize; 2] = [0, 5];
 
@@ -412,7 +581,7 @@ pub const AGREEMENT_SEEDS: [usize; 2] = [0, 5];
 pub fn check_agreed(
     store: &Store,
     change: &Change,
-    judge: &dyn Judge,
+    judge: &(dyn Judge + Sync),
     s: &Settings,
     seeds: &[usize],
 ) -> Outcome {
@@ -456,7 +625,62 @@ pub fn check_agreed(
 }
 
 /// Run `check` over one change against one corpus.
-pub fn check(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) -> Outcome {
+/// Check a change against the corpus, reading it in parts when it does not fit and the settings allow.
+///
+/// Each part is judged against the units retrieved for *it*, so a file that never reached the model
+/// before is now judged against the reasoning recorded about that file. Findings are unioned and a unit
+/// reported by two parts is reported once.
+pub fn check(store: &Store, change: &Change, judge: &(dyn Judge + Sync), s: &Settings) -> Outcome {
+    let parts = change.parts(s);
+    if parts.len() <= 1 {
+        return check_one(store, change, judge, s);
+    }
+    let mut out = Outcome {
+        judge: judge.describe(),
+        ..Outcome::default()
+    };
+    out.warnings.push(format!(
+        "the change did not fit and was read in {} parts, one set of calls each",
+        parts.len()
+    ));
+    let mut seen: BTreeSet<(String, Option<u32>)> = BTreeSet::new();
+    let mut unexamined: Vec<String> = Vec::new();
+    for part in &parts {
+        let mut result = check_one(store, part, judge, s);
+        out.calls += result.calls;
+        out.predicted_tokens += result.predicted_tokens;
+        out.charged_tokens += result.charged_tokens;
+        out.units_judged += result.units_judged;
+        out.dropped.append(&mut result.dropped);
+        for w in result.warnings {
+            // The per-part truncation notice is the whole change's story, told once.
+            if !out.warnings.contains(&w) {
+                out.warnings.push(w);
+            }
+        }
+        for finding in result.findings {
+            if seen.insert((finding.label.clone(), finding.line)) {
+                out.findings.push(finding);
+            }
+        }
+        unexamined.extend(result.unexamined);
+    }
+    // A file is unexamined only if no part examined it.
+    let examined: BTreeSet<String> = parts
+        .iter()
+        .flat_map(|p| p.files.iter().cloned())
+        .filter(|f| !parts.iter().all(|p| p.unexamined().contains(f)))
+        .collect();
+    out.unexamined = unexamined
+        .into_iter()
+        .filter(|f| !examined.contains(f))
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect();
+    out
+}
+
+fn check_one(store: &Store, change: &Change, judge: &(dyn Judge + Sync), s: &Settings) -> Outcome {
     let mut out = Outcome {
         judge: judge.describe(),
         ..Outcome::default()
@@ -465,9 +689,30 @@ pub fn check(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) ->
         out.warnings.push("the change is empty".into());
         return out;
     }
+    // A change that did not fit is shown in the order the corpus cares about (A, 0.2.0). Measured: 59%
+    // of held-out changes were truncated, and a diff's own order has nothing to do with what is recorded.
+    let reordered;
+    let change = if change.truncated && s.order_by_corpus {
+        let weight = |path: &str| store.units_with_source_prefix(&format!("{path}@")).len();
+        reordered = change.ordered_by(&weight, s);
+        &reordered
+    } else {
+        change
+    };
     if change.truncated {
-        out.warnings
-            .push("the change is larger than this model's window and was truncated".into());
+        out.unexamined = change.unexamined();
+        let mut warning =
+            "the change is larger than this model's window and was truncated".to_string();
+        if !out.unexamined.is_empty() {
+            // Naming them is the point: "nothing is contradicted" must not stand for "nothing in the
+            // part I read".
+            warning.push_str(&format!(
+                "; {} file(s) were not examined at all: {}",
+                out.unexamined.len(),
+                shortened(&out.unexamined)
+            ));
+        }
+        out.warnings.push(warning);
     }
     let Some((text, judged)) = context(store, change, s) else {
         out.warnings
@@ -497,22 +742,33 @@ pub fn check(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) ->
             s.window
         ));
     }
+    // What to ask, before anything is asked: the work is decided here and then carried out, which is
+    // what lets it be carried out in any order.
+    let asks: Vec<String> = groups
+        .iter()
+        .map(|group| {
+            let block: String = group
+                .iter()
+                .filter_map(|l| units.get(l).cloned())
+                .collect::<Vec<_>>()
+                .join("\n\n");
+            format!(
+                "RECORDED UNITS:\n\n{block}\n\nJUDGE: {}\n\nCHANGE{}:\n{}\n",
+                group.join(", "),
+                if change.truncated { " (truncated)" } else { "" },
+                change.shown
+            )
+        })
+        .collect();
+    out.calls += asks.len();
+    for ask in &asks {
+        out.predicted_tokens += u64::from(s.tokens(ask) + s.tokens(s.system_prompt()));
+    }
+
+    let answers = ask_all(judge, s, &asks);
     let mut verdicts: Vec<RawVerdict> = Vec::new();
-    for group in groups {
-        let block: String = group
-            .iter()
-            .filter_map(|l| units.get(l).cloned())
-            .collect::<Vec<_>>()
-            .join("\n\n");
-        let user = format!(
-            "RECORDED UNITS:\n\n{block}\n\nJUDGE: {}\n\nCHANGE{}:\n{}\n",
-            group.join(", "),
-            if change.truncated { " (truncated)" } else { "" },
-            change.shown
-        );
-        out.calls += 1;
-        out.predicted_tokens += u64::from(s.tokens(&user) + s.tokens(s.system_prompt()));
-        match judge.ask(s.system_prompt(), &user) {
+    for answer in answers {
+        match answer {
             Ok((mut v, charged)) => {
                 out.charged_tokens += charged.prompt_tokens;
                 verdicts.append(&mut v);

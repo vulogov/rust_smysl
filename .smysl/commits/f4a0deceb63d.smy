@@ -1,0 +1,1085 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/gf4a0deceb63d-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": act, "ingest:quote": Rewrites now always end with a newline }
+~ Rewrites now always end with a newline
+
+To ensure that the file is correctly handled by both the queue and the hook, which have different methods of appending to the file.
+
+@decision d/gf4a0deceb63d-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs." }
+~ `stale --json` now includes the `behind` field in JSON output instead of printing it on stdout
+
+To ensure that `--json` outputs only valid JSON, preventing parsing errors when consuming the JSON output.
+
+@decision d/gf4a0deceb63d-3 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ A test is added to ensure that every `--json` command produces valid JSON output
+
+To catch future regressions where non-JSON content might be printed with `--json`, ensuring the output remains valid.
+
+@decision d/gf4a0deceb63d-4 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "if let Some(mut around) = scope {" }
+~ The `facts` function now includes an optional `scope` parameter to filter facts based on files, names, or hops
+
+To provide more granular control over which facts are displayed.
+
+@decision d/gf4a0deceb63d-5 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "if r.estimate {" }
+~ The `extract_command` function now estimates the time required for extraction based on commit size and prints …
+
+To give users an idea of how long the extraction process will take, especially when processing multiple commits.
+
+@decision d/gf4a0deceb63d-6 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "if dry_run {" }
+~ The `extract` function now includes a dry-run mode that simulates the extraction process without actually …
+
+To allow users to preview what would be extracted without making any changes.
+
+@decision d/gf4a0deceb63d-7 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "if let Some(path) = c.prompt_file {" }
+~ The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system …
+
+To provide more flexibility in how the check process is conducted.
+
+@decision d/gf4a0deceb63d-8 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "let take = if r.max_commits == 0 {" }
+~ The `extract_command` function now includes a `max_commits` parameter to limit the number of commits processed
+
+To prevent processing an excessive number of commits at once, which could be resource-intensive.
+
+@decision d/gf4a0deceb63d-9 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "let kept = if force {" }
+~ The `extract_command` function now includes a `force` parameter to force re-extraction of already recorded …
+
+To allow users to re-extract commits that have already been recorded.
+
+@decision d/gf4a0deceb63d-10 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "if r.dry_run {" }
+~ The `extract_command` function now includes a `dry_run` parameter to simulate the extraction process without …
+
+To allow users to preview what would be extracted without making any changes.
+
+@decision d/gf4a0deceb63d-11 { status: speculative, "code:kind": act, "ingest:quote": "if r.no_corpus_order {" }
+~ The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order
+
+To provide more flexibility in how the check process is conducted.
+
+@decision d/gf4a0deceb63d-12 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "if r.queued {" }
+~ The `extract_command` function now includes a `queued` parameter to handle extraction of commits from a queue
+
+To allow users to extract commits that have been queued, either by the post-commit hook or manually.
+
+@decision d/gf4a0deceb63d-13 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "`--json` must be JSON, and nothing else." }
+~ `--json` must be JSON, and nothing else
+
+CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.
+
+@decision d/gf4a0deceb63d-14 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "if r.estimate {" }
+~ The `extract_command` function now estimates the time required for extraction based on commit size and prints …
+
+To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.
+
+@decision d/gf4a0deceb63d-15 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "let take = if r.max_commits == 0 {" }
+~ The `extract_command` function now includes a `max_commits` parameter to limit the number of commits processed …
+
+To prevent processing an excessive number of commits at once, which could be resource-intensive, a `max_commits` parameter was added to limit the number of commits processed.
+
+@decision d/gf4a0deceb63d-16 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "let mut settings = Settings {" }
+~ The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order …
+
+To provide more flexibility in how the check process is conducted, the `check` function was updated to accept a `no_corpus_order` parameter for disabling corpus order.
+
+@decision d/gf4a0deceb63d-17 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": act, "ingest:quote": "let mut settings = Settings {" }
+~ The `check` function now includes an optional `parts` parameter to specify the maximum number of parts for …
+
+To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function.
+
+@decision d/gf4a0deceb63d-18 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": act, "ingest:quote": reading repairs what is already there }
+~ Reading repairs what is already there
+
+To handle existing content correctly, reading operations will repair or split lines as necessary to match the expected format.
+
+@decision d/gf4a0deceb63d-19 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": act, "ingest:quote": a line of full-length revisions run together is split back into the shas somebody meant }
+~ A line of full-length revisions run together is split back into the shas somebody meant
+
+To correctly interpret and process revision data, lines containing concatenated shas are split back into individual components.
+
+@decision d/gf4a0deceb63d-20 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": act, "ingest:quote": a line that is not a plausible revision is reported and dropped }
+~ A line that is not a plausible revision is reported and dropped
+
+To maintain data integrity, lines that do not conform to expected revision formats are identified, reported, and discarded.
+
+@decision d/gf4a0deceb63d-21 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": act, "ingest:quote": the commit that made `--json` mean JSON }
+~ `--json` now means JSON
+
+To provide clear and consistent output, the `--json` flag is updated to always produce JSON formatted data.
+
+@decision d/gf4a0deceb63d-22 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": act, "ingest:quote": "The Rust files to read: those a commit touched, or the working tree's" }
+~ The Rust files to read: those a commit touched, or the working tree's
+
+To accurately reflect changes, the tool reads either the files modified by a specific commit or all files in the working tree.
+
+@decision d/gf4a0deceb63d-23 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": act, "ingest:quote": Symlinks are not followed: a link can leave the workspace entirely }
+~ Symlinks are not followed
+
+To prevent unintended access outside the workspace, symlinks are ignored during file walks.
+
+@decision d/gf4a0deceb63d-24 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": act, "ingest:quote": A directory that cannot be read is skipped with a note }
+~ A directory that cannot be read is skipped with a note
+
+To handle partial failures gracefully, unreadable directories are skipped and noted.
+
+@decision d/gf4a0deceb63d-25 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": act, "ingest:quote": "The claim is the recorded unit's own words, not the caller's paraphrase" }
+~ The claim is the recorded unit's own words, not the caller's paraphrase
+
+To maintain accuracy and consistency, the tool uses the exact text of the recorded claim rather than any user-provided description.
+
+@decision d/gf4a0deceb63d-26 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": act, "ingest:quote": "Nothing here concludes anything: the readings are measurements, and every edge waits for a person" }
+~ Nothing here concludes anything
+
+To ensure that evidence collection remains an advisory process, no conclusions are drawn or decisions made based on collected data.
+
+@decision d/gf4a0deceb63d-27 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": act, "ingest:quote": The opt-in gate (S1): does a test that claims to verify this claim notice the code changing? }
+~ The opt-in gate (S1): does a test that claims to verify this claim notice the code changing?
+
+To validate the relevance of tests, an optional mutation gate is introduced to check if tests detect changes in the code.
+
+@decision d/gf4a0deceb63d-28 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": act, "ingest:quote": A prerequisite the extraction marked normative reaches `ImplementedBy` at most }
+~ A prerequisite the extraction marked normative reaches `ImplementedBy` at most
+
+To ensure accurate and relevant data, the tool restricts the retrieval of facts related to prerequisites that are marked as normative.
+
+@artifact-ref a/gf4a0deceb63d-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:body_hash": c23d9649338f266d }
+~ crates/cargo-smysl/src/commands.rs::extract_queued
+
+@artifact-ref a/gf4a0deceb63d-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:body_hash": ce123e3998c9b7e9 }
+~ crates/cargo-smysl/src/commands.rs::read_queue
+
+@artifact-ref a/gf4a0deceb63d-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:body_hash": 3edaff513d1c3d74 }
+~ crates/cargo-smysl/src/commands.rs::tests::a_queue_written_without_a_newline_does_not_weld_the_next_sha_on
+
+@artifact-ref a/gf4a0deceb63d-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:body_hash": 4c3214a0e634c8c3 }
+~ crates/cargo-smysl/src/commands.rs::write_queue
+
+@constraint p/gf4a0deceb63d-1-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": `extract --queued` asked git for a 120-character revision: three shas welded together. }
+~ `extract --queued` asked git for a 120-character revision: three shas welded together.
+
+@constraint p/gf4a0deceb63d-1-2 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": "The hook appends with `>>`, this tool rewrote the file with `join(\"\\n\")` and no trailing newline, so the next append landed on the last line." }
+~ The hook appends with `>>`, this tool rewrote the file with `join("\n")` and no trailing newline, so the next …
+
+The hook appends with `>>`, this tool rewrote the file with `join("\n")` and no trailing newline, so the next append landed on the last line.
+
+@constraint p/gf4a0deceb63d-1-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": "Two writers, one file, and only one of them thought about the ending." }
+~ Two writers, one file, and only one of them thought about the ending.
+
+@constraint p/gf4a0deceb63d-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON" }
+~ `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON
+
+@constraint p/gf4a0deceb63d-2-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": invariant, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else
+
+@constraint p/gf4a0deceb63d-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ The `facts` function needs to be able to filter facts based on files, names, or hops.
+
+@constraint p/gf4a0deceb63d-4-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "if around.files.is_empty() && rev.is_some() {" }
+~ The `facts` function should handle cases where no files or names are provided.
+
+@constraint p/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gf4a0deceb63d-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": prior-change, "ingest:quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:" }
+~ Minutes a commit of this size is likely to take, from what this project measured on a local 14B.
+
+@constraint p/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gf4a0deceb63d-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ A commit's files are the change; the working tree's are not.
+
+@constraint p/gf4a0deceb63d-6-3 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": invariant, "ingest:quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it." }
+~ The tool must work as an external cargo subcommand.
+
+@constraint p/gf4a0deceb63d-7-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": The `check` function already exists and handles checking for contradictions in the corpus. }
+~ The existing `check` function already exists and handles checking for contradictions in the corpus.
+
+@constraint p/gf4a0deceb63d-11-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": assumption, "ingest:quote": There is a need to provide more flexibility in how the check process is conducted. }
+~ There is a need to provide more flexibility in how the check process is conducted.
+
+@constraint p/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gf4a0deceb63d-12-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to …
+
+A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip.
+
+@constraint p/gf4a0deceb63d-14-5 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": prior-change, "ingest:quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:" }
+~ The tool estimates the time required for extraction based on commit size.
+
+@constraint p/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gf4a0deceb63d-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing." }
+~ A commit's files are the change; the working tree's are not.
+
+@constraint p/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gf4a0deceb63d-10-4 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ A range is recorded newest first and is resumable.
+
+@constraint p/gf4a0deceb63d-10-5 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The model proposes content only, and every quote it gives is checked against the commit.
+
+@constraint p/gf4a0deceb63d-10-6 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop." }
+~ A commit is extracted once per recipe.
+
+@constraint p/gf4a0deceb63d-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": The `check` function already exists and handles checking for contradictions in the corpus. }
+~ The `check` function already exists and handles checking for contradictions in the corpus.
+
+@constraint p/gf4a0deceb63d-11-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": assumption, "ingest:quote": There is a need to provide more flexibility in how the check process is conducted. }
+~ There is a need to provide more flexibility in how the check process is conducted.
+
+@constraint p/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gf4a0deceb63d-12-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to …
+
+A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip.
+
+@constraint p/gf4a0deceb63d-12-3 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": The tool's own commits are not work. Dropping them here is what makes the queue reach empty. }
+~ The tool's own commits are not work. Dropping them here is what makes the queue reach empty.
+
+@constraint p/gf4a0deceb63d-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "CI went red on a corpus that had grown enough for the case to arise: `stale\n--json` printed which decisions each moved item was behind — on stdout, before\nthe JSON — and anything reading the output got `Expecting value: line 1 column\n3`." }
+~ `stale --json` printed which decisions each moved item was behind on stdout before the JSON.
+
+@constraint p/gf4a0deceb63d-13-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": invariant, "ingest:quote": "`--json` must be JSON, and nothing else" }
+~ `--json` must be JSON, and nothing else.
+
+@constraint p/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gf4a0deceb63d-10-4 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ A range is recorded newest first and is resumable.
+
+@constraint p/gf4a0deceb63d-10-5 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The model proposes content only, and every quote it gives is checked against the commit.
+
+@constraint p/gf4a0deceb63d-10-6 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop." }
+~ A commit is extracted once per recipe.
+
+@constraint p/gf4a0deceb63d-14-5 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": prior-change, "ingest:quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:" }
+~ The tool estimates the time required for extraction based on commit size.
+
+@constraint p/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The tool reads git itself and assigns labels, sources and statuses.
+
+@constraint p/gf4a0deceb63d-10-4 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip. }
+~ A range is recorded newest first and is resumable.
+
+@constraint p/gf4a0deceb63d-10-5 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The model proposes content only, and every quote it gives is checked against the commit.
+
+@constraint p/gf4a0deceb63d-10-6 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop." }
+~ A commit is extracted once per recipe.
+
+@constraint p/gf4a0deceb63d-14-5 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": prior-change, "ingest:quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:" }
+~ The tool estimates the time required for extraction based on commit size.
+
+@constraint p/gf4a0deceb63d-16-1 { status: speculative, "code:kind": existing-behaviour }
+~ The `check` function already exists and handles checking for contradictions in the corpus.
+
+@constraint p/gf4a0deceb63d-16-2 { status: speculative, "code:kind": assumption }
+~ There is a need to provide more flexibility in how the check process is conducted.
+
+@constraint p/gf4a0deceb63d-16-1 { status: speculative, "code:kind": existing-behaviour }
+~ The `check` function already exists and handles checking for contradictions in the corpus.
+
+@constraint p/gf4a0deceb63d-16-2 { status: speculative, "code:kind": assumption }
+~ There is a need to provide more flexibility in how the check process is conducted.
+
+@constraint p/gf4a0deceb63d-1-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": `extract --queued` asked git for a 120-character revision: three shas welded together. }
+~ `extract --queued` asked git for a 120-character revision: three shas welded together.
+
+@constraint p/gf4a0deceb63d-1-2 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": "The hook appends with `>>`, this tool rewrote the file with `join(\"\\n\")` and no trailing newline, so the next append landed on the last line." }
+~ The hook appends with `>>`, this tool rewrote the file with `join("\n")` and no trailing newline, so the next …
+
+The hook appends with `>>`, this tool rewrote the file with `join("\n")` and no trailing newline, so the next append landed on the last line.
+
+@constraint p/gf4a0deceb63d-1-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": "Two writers, one file, and only one of them thought about the ending." }
+~ Two writers, one file, and only one of them thought about the ending.
+
+@constraint p/gf4a0deceb63d-19-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "The hook appends with `>>`, this tool rewrote the file with `join(\"\n\")` and no trailing newline, so the next append landed on the last line." }
+~ The hook appends with `>>`, this tool rewrote the file with `join("\n")` and no trailing newline
+
+@constraint p/gf4a0deceb63d-19-2 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": "Two writers, one file, and only one of them thought about the ending." }
+~ Two writers, one file, and only one of them thought about the ending
+
+@constraint p/gf4a0deceb63d-20-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": The queue and the hook must agree about the newline }
+~ The queue and the hook must agree about the newline
+
+@constraint p/gf4a0deceb63d-1-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": `extract --queued` asked git for a 120-character revision: three shas welded together. }
+~ `extract --queued` asked git for a 120-character revision: three shas welded together.
+
+@constraint p/gf4a0deceb63d-20-3 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "The hook appends with `>>`, this tool rewrote the file with `join(\"\n\")` and no trailing newline" }
+~ The hook appends with `>>`, this tool rewrote the file with `join("\n")` and no trailing newline
+
+@constraint p/gf4a0deceb63d-1-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": "Two writers, one file, and only one of them thought about the ending." }
+~ Two writers, one file, and only one of them thought about the ending.
+
+@constraint p/gf4a0deceb63d-21-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": existing-behaviour, "ingest:quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work." }
+~ `--json` flag's previous behavior
+
+@constraint p/gf4a0deceb63d-21-2 { status: speculative, "code:kind": invariant, "ingest:quote": "To provide clear and consistent output, the `--json` flag is updated to always produce JSON formatted data." }
+~ The need for clear and consistent output
+
+@constraint p/gf4a0deceb63d-22-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The Rust files to read: those a commit touched, or the working tree's." }
+~ The tool needs to determine which Rust files to read based on the context.
+
+@constraint p/gf4a0deceb63d-22-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "match rev { Some(rev) => { let commit = cargo_smysl_git::read_commit(root, rev).map_err(|e| e.to_string())?;" }
+~ A revision can be specified to focus on changes in that specific commit.
+
+@constraint p/gf4a0deceb63d-22-3 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "None if !only.is_empty() => only.iter().map(|rel| { std::fs::read_to_string(root.join(rel)).map(|text| (rel.clone(), text)).map_err(|e| format!(\"{rel}: {e}\")) }).collect()," }
+~ If no revision is specified and files are listed, the tool reads those specific files.
+
+@constraint p/gf4a0deceb63d-22-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "None => { let mut out = Vec::new(); walk(root, root, &mut out); Ok(out.into_iter().filter(|(p, _)| wanted(p)).collect()) }," }
+~ If no revision is specified and no files are listed, the tool reads all Rust files in the working tree.
+
+@constraint p/gf4a0deceb63d-23-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "A symlink can leave the workspace entirely, and one did — a scratch `HOME` under `eval/` pointed at the real home directory, so the walk left the repository and then failed on a directory it had no business reading." }
+~ Symlinks can lead to accessing directories outside the workspace
+
+@constraint p/gf4a0deceb63d-23-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts." }
+~ Unreadable directories should be skipped with a note
+
+@constraint p/gf4a0deceb63d-24-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts." }
+~ A directory that cannot be read should not halt the entire process
+
+@constraint p/gf4a0deceb63d-25-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5)" }
+~ The tool reads git itself and assigns labels, sources and statuses
+
+@constraint p/gf4a0deceb63d-25-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop." }
+~ A commit is extracted once per recipe
+
+@constraint p/gf4a0deceb63d-25-3 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The model proposes content only, and every quote it gives is checked against the commit
+
+@constraint p/gf4a0deceb63d-25-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "The tool reads git itself and assigns labels, sources and statuses (D5)" }
+~ The tool reads git itself and assigns labels, sources and statuses
+
+@constraint p/gf4a0deceb63d-25-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop." }
+~ A commit is extracted once per recipe
+
+@constraint p/gf4a0deceb63d-25-3 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)." }
+~ The model proposes content only, and every quote it gives is checked against the commit
+
+@constraint p/gf4a0deceb63d-27-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": assumption, "ingest:quote": The opt-in gate (S1): does a test that claims to verify this claim notice the code changing? }
+~ The opt-in gate (S1): does a test that claims to verify this claim notice the code changing?
+
+@constraint p/gf4a0deceb63d-28-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": existing-behaviour, "ingest:quote": A prerequisite the extraction marked normative reaches `ImplementedBy` at most (D12). }
+~ The extraction process marks certain prerequisites as normative.
+
+@constraint p/gf4a0deceb63d-28-2 { status: speculative, "code:kind": invariant, "ingest:quote": "To ensure accurate and relevant data, the tool restricts the retrieval of facts related to prerequisites that are marked as normative." }
+~ The tool restricts retrieval of facts related to prerequisites that are marked as normative.
+
+@claim r/gf4a0deceb63d-1-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the existing behaviour where rewrites do not always end with a newline.
+
+@claim r/gf4a0deceb63d-1-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Ensure that the hook also handles files without trailing newlines correctly.
+
+@claim r/gf4a0deceb63d-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ Rejected: Keep printing the `behind` information on stdout in addition to the JSON output.
+
+@claim r/gf4a0deceb63d-4-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include the `scope` parameter and always display all facts.
+
+@claim r/gf4a0deceb63d-4-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include a different filtering mechanism that does not use files, names, or hops.
+
+@claim r/gf4a0deceb63d-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Rejected: Do not estimate the time required for extraction.
+
+@claim r/gf4a0deceb63d-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Rejected: Estimate the time based on a different metric (e.g., number of files).
+
+@claim r/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not include a dry-run mode. }
+~ Rejected: Do not include a dry-run mode.
+
+@claim r/gf4a0deceb63d-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Include a dry-run mode that only simulates part of the extraction process. }
+~ Rejected: Include a dry-run mode that only simulates part of the extraction process.
+
+@claim r/gf4a0deceb63d-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Keep the existing `check` function without any changes. }
+~ Rejected: Keep the existing `check` function without any changes.
+
+@claim r/gf4a0deceb63d-7-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Add a different type of customization option instead of a prompt file. }
+~ Rejected: Add a different type of customization option instead of a prompt file.
+
+@claim r/gf4a0deceb63d-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Rejected: Do not estimate the time required for extraction.
+
+@claim r/gf4a0deceb63d-5-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Rejected: Estimate the time based on a different metric (e.g., number of files).
+
+@claim r/gf4a0deceb63d-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Do not include a dry-run mode. }
+~ Rejected: Do not include a dry-run mode.
+
+@claim r/gf4a0deceb63d-10-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Include a dry-run mode that only simulates part of the extraction process. }
+~ Rejected: Include a dry-run mode that only simulates part of the extraction process.
+
+@claim r/gf4a0deceb63d-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Keep the existing `check` function without any changes. }
+~ Rejected: Keep the existing `check` function without any changes.
+
+@claim r/gf4a0deceb63d-11-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Add a parameter to control corpus order but with different naming or functionality. }
+~ Rejected: Add a parameter to control corpus order but with different naming or functionality.
+
+@claim r/gf4a0deceb63d-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function." }
+~ Rejected: Continue to handle extraction of commits without a queued parameter.
+
+@claim r/gf4a0deceb63d-12-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function." }
+~ Rejected: Handle extraction of commits from a queue in a separate function.
+
+@claim r/gf4a0deceb63d-13-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ Rejected: Keep printing the `behind` information on stdout in addition to the JSON output.
+
+@claim r/gf4a0deceb63d-13-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not add a test for JSON validity
+
+@claim r/gf4a0deceb63d-13-3 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a test that only checks for specific content in the JSON output
+
+@claim r/gf4a0deceb63d-14-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not estimate the time required for extraction.
+
+@claim r/gf4a0deceb63d-14-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Estimate the time based on a different metric (e.g., number of files).
+
+@claim r/gf4a0deceb63d-14-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not estimate the time required for extraction.
+
+@claim r/gf4a0deceb63d-14-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Estimate the time based on a different metric (e.g., number of files).
+
+@claim r/gf4a0deceb63d-16-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the existing `check` function without any changes.
+
+@claim r/gf4a0deceb63d-16-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a different type of customization option instead of a `no_corpus_order` parameter.
+
+@claim r/gf4a0deceb63d-16-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the existing `check` function without any changes.
+
+@claim r/gf4a0deceb63d-17-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a different type of customization option instead of a prompt file.
+
+@claim r/gf4a0deceb63d-18-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": rejected-alternative, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there:" }
+~ Rejected: The tool could have left the newline handling as is, without ensuring a trailing newline.
+
+@claim r/gf4a0deceb63d-18-2 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": rejected-alternative, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there:" }
+~ Rejected: The tool could have appended lines without checking for existing content.
+
+@claim r/gf4a0deceb63d-19-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "code:kind": rejected-alternative, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Rejected: The tool could have appended without ensuring a trailing newline
+
+@claim r/gf4a0deceb63d-20-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool could have appended without ensuring a newline, leading to potential data corruption.
+
+@claim r/gf4a0deceb63d-20-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool could have overwritten the file instead of appending, potentially losing previous data.
+
+@claim r/gf4a0deceb63d-21-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: `--json` continues with its previous behavior
+
+@claim r/gf4a0deceb63d-21-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: `--json` produces a different format
+
+@claim r/gf4a0deceb63d-22-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool could read all Rust files in the repository regardless of the context.
+
+@claim r/gf4a0deceb63d-22-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The tool could only read files that are part of the current branch's history.
+
+@claim r/gf4a0deceb63d-23-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "Symlinks are not followed: a link can leave the workspace entirely, and one did — a scratch `HOME` under `eval/` pointed at the real home directory, so the walk left the repository and then failed on a directory it had no business reading." }
+~ Rejected: Follow symlinks and handle access errors
+
+@claim r/gf4a0deceb63d-24-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Fail the entire process if a directory cannot be read
+
+@claim r/gf4a0deceb63d-24-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Log an error and continue processing other directories
+
+@claim r/gf4a0deceb63d-25-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use user-provided description for the claim
+
+@claim r/gf4a0deceb63d-27-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "Nothing here concludes anything: the readings are measurements, and every edge waits for a person." }
+~ Rejected: Do not run the shortlisted tests, record what they did, and propose the edges
+
+@claim r/gf4a0deceb63d-27-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "code:kind": rejected-alternative, "ingest:quote": "It only ever refuses a test that noticed nothing, and it says what it did either way." }
+~ Rejected: Run the shortlisted tests without checking if they notice changes in the code
+
+@claim r/gf4a0deceb63d-28-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Retrieve all facts without restriction.
+
+@claim r/gf4a0deceb63d-28-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Allow retrieval of a limited number of facts for normative prerequisites.
+
+@claim q/gf4a0deceb63d-1-1 { status: inferred, grounds: [d/gf4a0deceb63d-1], "code:kind": anticipated, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Rewrites now always end with a newline, ensuring consistent file handling by both the queue and the hook.
+
+@claim q/gf4a0deceb63d-1-2 { status: inferred, grounds: [d/gf4a0deceb63d-1], "code:kind": anticipated, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Reading the file will repair lines that do not have trailing newlines, splitting them correctly.
+
+@claim q/gf4a0deceb63d-1-3 { status: inferred, grounds: [d/gf4a0deceb63d-1], "code:kind": anticipated, "ingest:quote": "A line that is not a plausible revision is reported and dropped, because guessing is worse." }
+~ Lines that are not plausible revisions will be reported and dropped.
+
+@evidence e/gf4a0deceb63d-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where …
+
+Check: It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.
+
+@finding q/gf4a0deceb63d-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "ingest:quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs." }
+~ `stale --json` now includes the `behind` field in JSON output instead of printing it on stdout
+
+@evidence e/gf4a0deceb63d-2-2 { status: cited, source: { kind: file, ref: .smysl/commits/b380a5ca16c9.smy@f4a0deceb63d }, "ingest:quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse." }
+~ Check: A test runs every `--json` command in this repository, which records its own commits, and requires the …
+
+Check: A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.
+
+@finding q/gf4a0deceb63d-2-2 { status: speculative, "ingest:quote": "To ensure that `--json` outputs only valid JSON, preventing parsing errors when consuming the JSON output." }
+~ `--json` outputs only valid JSON
+
+@claim q/gf4a0deceb63d-4-1 { status: inferred, grounds: [d/gf4a0deceb63d-4], "code:kind": anticipated, "ingest:quote": "To provide more granular control over which facts are displayed, the `facts` function was updated to accept a `scope` parameter that allows filtering by specific criteria." }
+~ Users can now filter which facts are displayed based on specific criteria such as files, names, or hops.
+
+@claim q/gf4a0deceb63d-5-1 { status: inferred, grounds: [d/gf4a0deceb63d-5], "code:kind": anticipated, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Users receive an estimate of how long the extraction process will take.
+
+@claim q/gf4a0deceb63d-5-2 { status: inferred, grounds: [d/gf4a0deceb63d-5], "code:kind": anticipated, "ingest:quote": nothing was run: --estimate only says what it would cost }
+~ The tool prints an estimate if `--estimate` is specified.
+
+@claim q/gf4a0deceb63d-6-1 { status: inferred, grounds: [d/gf4a0deceb63d-6], "code:kind": anticipated, "ingest:quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function." }
+~ Users can now preview what would be extracted without making any changes.
+
+@claim q/gf4a0deceb63d-7-1 { status: inferred, grounds: [d/gf4a0deceb63d-7], "code:kind": anticipated, "ingest:quote": The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system prompt file. }
+~ The `check` function now accepts an optional `prompt_file` parameter that allows specifying a custom system …
+
+The `check` function now accepts an optional `prompt_file` parameter that allows specifying a custom system prompt file.
+
+@claim q/gf4a0deceb63d-8-1 { status: inferred, grounds: [d/gf4a0deceb63d-8], "code:kind": anticipated, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Users receive an estimate of how long the extraction process will take.
+
+@claim q/gf4a0deceb63d-8-2 { status: inferred, grounds: [d/gf4a0deceb63d-8], "code:kind": anticipated, "ingest:quote": nothing was run: --estimate only says what it would cost }
+~ The tool prints an estimate if `--estimate` is specified.
+
+@claim q/gf4a0deceb63d-10-1 { status: inferred, grounds: [d/gf4a0deceb63d-10], "code:kind": anticipated, "ingest:quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract_command` function." }
+~ Users can now preview what would be extracted without making any changes.
+
+@claim q/gf4a0deceb63d-10-2 { status: inferred, grounds: [d/gf4a0deceb63d-10], "code:kind": anticipated, "ingest:quote": "let code = extract(args, Some(sha), r.force, r.dry_run, how);" }
+~ The `dry_run` parameter is used in the `extract` function to determine if recording should occur.
+
+@claim q/gf4a0deceb63d-11-1 { status: speculative, grounds: [d/gf4a0deceb63d-11], "code:kind": anticipated, "ingest:quote": The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order when checking for contradictions. }
+~ Users can now choose whether to disable corpus order during the check process, providing more flexibility.
+
+@claim q/gf4a0deceb63d-12-1 { status: inferred, grounds: [d/gf4a0deceb63d-12], "code:kind": anticipated, "ingest:quote": "To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function." }
+~ Users can now extract commits that have been queued, either by the post-commit hook or manually.
+
+@claim q/gf4a0deceb63d-14-1 { status: inferred, grounds: [d/gf4a0deceb63d-14], "code:kind": anticipated, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Users receive an estimate of how long the extraction process will take.
+
+@claim q/gf4a0deceb63d-14-2 { status: inferred, grounds: [d/gf4a0deceb63d-14], "code:kind": anticipated, "ingest:quote": nothing was run: --estimate only says what it would cost }
+~ The tool prints an estimate if `--estimate` is specified.
+
+@claim q/gf4a0deceb63d-15-1 { status: inferred, grounds: [d/gf4a0deceb63d-15], "code:kind": anticipated, "ingest:quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added." }
+~ Users receive an estimate of how long the extraction process will take.
+
+@claim q/gf4a0deceb63d-15-2 { status: inferred, grounds: [d/gf4a0deceb63d-15], "code:kind": anticipated, "ingest:quote": nothing was run: --estimate only says what it would cost }
+~ The tool prints an estimate if `--estimate` is specified.
+
+@claim q/gf4a0deceb63d-16-1 { status: inferred, grounds: [d/gf4a0deceb63d-16], "code:kind": anticipated }
+~ Users can now choose whether to disable corpus order during the check process, providing more flexibility.
+
+@claim q/gf4a0deceb63d-17-1 { status: inferred, grounds: [d/gf4a0deceb63d-17], "code:kind": anticipated, "ingest:quote": "To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function." }
+~ Users can now specify how many parts to split the change into during the checking process.
+
+@evidence e/gf4a0deceb63d-18-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there:" }
+~ Check: Rewrites now always end with a newline, and reading repairs what is already there:
+
+@finding q/gf4a0deceb63d-18-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there:" }
+~ Rewrites now always end with a newline.
+
+@evidence e/gf4a0deceb63d-18-2 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "A line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away. A line that is not a plausible revision is reported and dropped, because guessing is worse." }
+~ Check: A line of full-length revisions run together is split back into the shas somebody meant, rather than …
+
+Check: A line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away. A line that is not a plausible revision is reported and dropped, because guessing is worse.
+
+@finding q/gf4a0deceb63d-18-2 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there:" }
+~ Reading operations will repair or split lines as necessary to match the expected format.
+
+@evidence e/gf4a0deceb63d-18-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work." }
+~ Check: On this repository it recovered all three — two of which only wrote the corpus and were dropped as …
+
+Check: On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work.
+
+@finding q/gf4a0deceb63d-18-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work." }
+~ On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, …
+
+On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work.
+
+@evidence e/gf4a0deceb63d-18-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work." }
+~ Check: On this repository it recovered all three — two of which only wrote the corpus and were dropped as …
+
+Check: On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work.
+
+@finding q/gf4a0deceb63d-19-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Lines containing concatenated shas are correctly interpreted and processed
+
+@evidence e/gf4a0deceb63d-20-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": Rewrites now always end with a newline }
+~ Check: Rewrites now always end with a newline
+
+@finding q/gf4a0deceb63d-20-1 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": Rewrites now always end with a newline }
+~ Rewrites now always end with a newline
+
+@evidence e/gf4a0deceb63d-20-2 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "A line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Check: A line of full-length revisions run together is split back into the shas somebody meant, rather than …
+
+Check: A line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.
+
+@finding q/gf4a0deceb63d-20-2 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "Reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away." }
+~ Reading repairs what is already there: a line of full-length revisions run together is split back into the …
+
+Reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.
+
+@evidence e/gf4a0deceb63d-20-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": A line that is not a plausible revision is reported and dropped }
+~ Check: A line that is not a plausible revision is reported and dropped
+
+@finding q/gf4a0deceb63d-20-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": A line that is not a plausible revision is reported and dropped }
+~ A line that is not a plausible revision is reported and dropped
+
+@evidence e/gf4a0deceb63d-18-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work." }
+~ Check: On this repository it recovered all three — two of which only wrote the corpus and were dropped as …
+
+Check: On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work.
+
+@finding q/gf4a0deceb63d-18-3 { status: cited, source: { kind: doc, ref: git:f4a0deceb63d3ccc703aff259a2d102eada3c26f }, "ingest:quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work." }
+~ On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, …
+
+On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work.
+
+@claim q/gf4a0deceb63d-21-1 { status: inferred, grounds: [d/gf4a0deceb63d-21], "code:kind": anticipated, "ingest:quote": "To provide clear and consistent output, the `--json` flag is updated to always produce JSON formatted data." }
+~ The `--json` flag now consistently produces JSON formatted data
+
+@claim q/gf4a0deceb63d-22-1 { status: inferred, grounds: [d/gf4a0deceb63d-22], "code:kind": anticipated, "ingest:quote": "To accurately reflect changes, the tool reads either the files modified by a specific commit or all files in the working tree." }
+~ The tool accurately reflects changes by reading either the files modified by a specific commit or all files in …
+
+The tool accurately reflects changes by reading either the files modified by a specific commit or all files in the working tree.
+
+@claim q/gf4a0deceb63d-23-1 { status: inferred, grounds: [d/gf4a0deceb63d-23], "code:kind": anticipated, "ingest:quote": "Symlinks are not followed: a link can leave the workspace entirely, and one did — a scratch `HOME` under `eval/` pointed at the real home directory, so the walk left the repository and then failed on a directory it had no business reading." }
+~ Directories outside the workspace are not accessed
+
+@evidence e/gf4a0deceb63d-23-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "ingest:quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts." }
+~ Check: A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason …
+
+Check: A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts.
+
+@finding q/gf4a0deceb63d-23-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f4a0deceb63d }, "ingest:quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts." }
+~ Unreadable directories are skipped with a note
+
+@claim q/gf4a0deceb63d-24-1 { status: inferred, grounds: [d/gf4a0deceb63d-24], "code:kind": anticipated, "ingest:quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts." }
+~ The tool continues to process other directories even if one is unreadable
+
+@claim q/gf4a0deceb63d-25-1 { status: inferred, grounds: [d/gf4a0deceb63d-25], "code:kind": anticipated, "ingest:quote": "To maintain accuracy and consistency, the tool uses the exact text of the recorded claim rather than any user-provided description." }
+~ The tool uses the exact text of the recorded claim rather than any user-provided description
+
+@claim q/gf4a0deceb63d-27-1 { status: inferred, grounds: [d/gf4a0deceb63d-27], "code:kind": anticipated, "ingest:quote": The opt-in gate (S1): does a test that claims to verify this claim notice the code changing? }
+~ The tool will run the shortlisted tests and check if they notice changes in the code
+
+@claim q/gf4a0deceb63d-27-2 { status: inferred, grounds: [d/gf4a0deceb63d-27], "code:kind": anticipated, "ingest:quote": "It only ever refuses a test that noticed nothing, and it says what it did either way." }
+~ If a test notices changes, it will be considered relevant and its results will be recorded
+
+@claim q/gf4a0deceb63d-28-1 { status: inferred, grounds: [d/gf4a0deceb63d-28], "code:kind": anticipated, "ingest:quote": "To ensure accurate and relevant data, the tool restricts the retrieval of facts related to prerequisites that are marked as normative." }
+~ The tool ensures that only relevant and accurate data is retrieved by restricting the retrieval of facts …
+
+The tool ensures that only relevant and accurate data is retrieved by restricting the retrieval of facts related to normative prerequisites.
+
+@rel d/gf4a0deceb63d-22 --x.code/touches--> a/gf4a0deceb63d-1
+
+@rel d/gf4a0deceb63d-23 --x.code/touches--> a/gf4a0deceb63d-1
+
+@rel d/gf4a0deceb63d-24 --x.code/touches--> a/gf4a0deceb63d-1
+
+@rel d/gf4a0deceb63d-25 --x.code/touches--> a/gf4a0deceb63d-1
+
+@rel d/gf4a0deceb63d-26 --x.code/touches--> a/gf4a0deceb63d-1
+
+@rel d/gf4a0deceb63d-27 --x.code/touches--> a/gf4a0deceb63d-1
+
+@rel d/gf4a0deceb63d-28 --x.code/touches--> a/gf4a0deceb63d-1
+
+@rel d/gf4a0deceb63d-22 --x.code/touches--> a/gf4a0deceb63d-2
+
+@rel d/gf4a0deceb63d-23 --x.code/touches--> a/gf4a0deceb63d-2
+
+@rel d/gf4a0deceb63d-24 --x.code/touches--> a/gf4a0deceb63d-2
+
+@rel d/gf4a0deceb63d-25 --x.code/touches--> a/gf4a0deceb63d-2
+
+@rel d/gf4a0deceb63d-26 --x.code/touches--> a/gf4a0deceb63d-2
+
+@rel d/gf4a0deceb63d-27 --x.code/touches--> a/gf4a0deceb63d-2
+
+@rel d/gf4a0deceb63d-28 --x.code/touches--> a/gf4a0deceb63d-2
+
+@rel d/gf4a0deceb63d-22 --x.code/touches--> a/gf4a0deceb63d-3
+
+@rel d/gf4a0deceb63d-23 --x.code/touches--> a/gf4a0deceb63d-3
+
+@rel d/gf4a0deceb63d-24 --x.code/touches--> a/gf4a0deceb63d-3
+
+@rel d/gf4a0deceb63d-25 --x.code/touches--> a/gf4a0deceb63d-3
+
+@rel d/gf4a0deceb63d-26 --x.code/touches--> a/gf4a0deceb63d-3
+
+@rel d/gf4a0deceb63d-27 --x.code/touches--> a/gf4a0deceb63d-3
+
+@rel d/gf4a0deceb63d-28 --x.code/touches--> a/gf4a0deceb63d-3
+
+@rel d/gf4a0deceb63d-22 --x.code/touches--> a/gf4a0deceb63d-4
+
+@rel d/gf4a0deceb63d-23 --x.code/touches--> a/gf4a0deceb63d-4
+
+@rel d/gf4a0deceb63d-24 --x.code/touches--> a/gf4a0deceb63d-4
+
+@rel d/gf4a0deceb63d-25 --x.code/touches--> a/gf4a0deceb63d-4
+
+@rel d/gf4a0deceb63d-26 --x.code/touches--> a/gf4a0deceb63d-4
+
+@rel d/gf4a0deceb63d-27 --x.code/touches--> a/gf4a0deceb63d-4
+
+@rel d/gf4a0deceb63d-28 --x.code/touches--> a/gf4a0deceb63d-4
+
+@rel p/gf4a0deceb63d-1-1 --conditions--> d/gf4a0deceb63d-1
+
+@rel p/gf4a0deceb63d-1-2 --conditions--> d/gf4a0deceb63d-1
+
+@rel p/gf4a0deceb63d-1-3 --conditions--> d/gf4a0deceb63d-1
+
+@rel p/gf4a0deceb63d-2-1 --conditions--> d/gf4a0deceb63d-2
+
+@rel p/gf4a0deceb63d-2-2 --conditions--> d/gf4a0deceb63d-2
+
+@rel p/gf4a0deceb63d-4-1 --conditions--> d/gf4a0deceb63d-4
+
+@rel p/gf4a0deceb63d-4-2 --conditions--> d/gf4a0deceb63d-4
+
+@rel p/gf4a0deceb63d-10-1 --conditions--> d/gf4a0deceb63d-5
+
+@rel p/gf4a0deceb63d-5-2 --conditions--> d/gf4a0deceb63d-5
+
+@rel p/gf4a0deceb63d-10-1 --conditions--> d/gf4a0deceb63d-6
+
+@rel p/gf4a0deceb63d-10-2 --conditions--> d/gf4a0deceb63d-6
+
+@rel p/gf4a0deceb63d-6-3 --conditions--> d/gf4a0deceb63d-6
+
+@rel p/gf4a0deceb63d-7-1 --conditions--> d/gf4a0deceb63d-7
+
+@rel p/gf4a0deceb63d-11-2 --conditions--> d/gf4a0deceb63d-7
+
+@rel p/gf4a0deceb63d-10-1 --conditions--> d/gf4a0deceb63d-8
+
+@rel p/gf4a0deceb63d-12-2 --conditions--> d/gf4a0deceb63d-8
+
+@rel p/gf4a0deceb63d-14-5 --conditions--> d/gf4a0deceb63d-8
+
+@rel p/gf4a0deceb63d-10-1 --conditions--> d/gf4a0deceb63d-10
+
+@rel p/gf4a0deceb63d-10-2 --conditions--> d/gf4a0deceb63d-10
+
+@rel p/gf4a0deceb63d-10-1 --conditions--> d/gf4a0deceb63d-10
+
+@rel p/gf4a0deceb63d-10-4 --conditions--> d/gf4a0deceb63d-10
+
+@rel p/gf4a0deceb63d-10-5 --conditions--> d/gf4a0deceb63d-10
+
+@rel p/gf4a0deceb63d-10-6 --conditions--> d/gf4a0deceb63d-10
+
+@rel p/gf4a0deceb63d-11-1 --conditions--> d/gf4a0deceb63d-11
+
+@rel p/gf4a0deceb63d-11-2 --conditions--> d/gf4a0deceb63d-11
+
+@rel p/gf4a0deceb63d-10-1 --conditions--> d/gf4a0deceb63d-12
+
+@rel p/gf4a0deceb63d-12-2 --conditions--> d/gf4a0deceb63d-12
+
+@rel p/gf4a0deceb63d-12-3 --conditions--> d/gf4a0deceb63d-12
+
+@rel p/gf4a0deceb63d-13-1 --conditions--> d/gf4a0deceb63d-13
+
+@rel p/gf4a0deceb63d-13-2 --conditions--> d/gf4a0deceb63d-13
+
+@rel p/gf4a0deceb63d-10-1 --conditions--> d/gf4a0deceb63d-14
+
+@rel p/gf4a0deceb63d-10-4 --conditions--> d/gf4a0deceb63d-14
+
+@rel p/gf4a0deceb63d-10-5 --conditions--> d/gf4a0deceb63d-14
+
+@rel p/gf4a0deceb63d-10-6 --conditions--> d/gf4a0deceb63d-14
+
+@rel p/gf4a0deceb63d-14-5 --conditions--> d/gf4a0deceb63d-14
+
+@rel p/gf4a0deceb63d-10-1 --conditions--> d/gf4a0deceb63d-15
+
+@rel p/gf4a0deceb63d-10-4 --conditions--> d/gf4a0deceb63d-15
+
+@rel p/gf4a0deceb63d-10-5 --conditions--> d/gf4a0deceb63d-15
+
+@rel p/gf4a0deceb63d-10-6 --conditions--> d/gf4a0deceb63d-15
+
+@rel p/gf4a0deceb63d-14-5 --conditions--> d/gf4a0deceb63d-15
+
+@rel p/gf4a0deceb63d-16-1 --conditions--> d/gf4a0deceb63d-16
+
+@rel p/gf4a0deceb63d-16-2 --conditions--> d/gf4a0deceb63d-16
+
+@rel p/gf4a0deceb63d-16-1 --conditions--> d/gf4a0deceb63d-17
+
+@rel p/gf4a0deceb63d-16-2 --conditions--> d/gf4a0deceb63d-17
+
+@rel p/gf4a0deceb63d-1-1 --conditions--> d/gf4a0deceb63d-18
+
+@rel p/gf4a0deceb63d-1-2 --conditions--> d/gf4a0deceb63d-18
+
+@rel p/gf4a0deceb63d-1-3 --conditions--> d/gf4a0deceb63d-18
+
+@rel p/gf4a0deceb63d-19-1 --conditions--> d/gf4a0deceb63d-19
+
+@rel p/gf4a0deceb63d-19-2 --conditions--> d/gf4a0deceb63d-19
+
+@rel p/gf4a0deceb63d-20-1 --conditions--> d/gf4a0deceb63d-20
+
+@rel p/gf4a0deceb63d-1-1 --conditions--> d/gf4a0deceb63d-20
+
+@rel p/gf4a0deceb63d-20-3 --conditions--> d/gf4a0deceb63d-20
+
+@rel p/gf4a0deceb63d-1-3 --conditions--> d/gf4a0deceb63d-20
+
+@rel p/gf4a0deceb63d-21-1 --conditions--> d/gf4a0deceb63d-21
+
+@rel p/gf4a0deceb63d-21-2 --conditions--> d/gf4a0deceb63d-21
+
+@rel p/gf4a0deceb63d-22-1 --conditions--> d/gf4a0deceb63d-22
+
+@rel p/gf4a0deceb63d-22-2 --conditions--> d/gf4a0deceb63d-22
+
+@rel p/gf4a0deceb63d-22-3 --conditions--> d/gf4a0deceb63d-22
+
+@rel p/gf4a0deceb63d-22-4 --conditions--> d/gf4a0deceb63d-22
+
+@rel p/gf4a0deceb63d-23-1 --conditions--> d/gf4a0deceb63d-23
+
+@rel p/gf4a0deceb63d-23-2 --conditions--> d/gf4a0deceb63d-23
+
+@rel p/gf4a0deceb63d-24-1 --conditions--> d/gf4a0deceb63d-24
+
+@rel p/gf4a0deceb63d-25-1 --conditions--> d/gf4a0deceb63d-25
+
+@rel p/gf4a0deceb63d-25-2 --conditions--> d/gf4a0deceb63d-25
+
+@rel p/gf4a0deceb63d-25-3 --conditions--> d/gf4a0deceb63d-25
+
+@rel p/gf4a0deceb63d-25-1 --conditions--> d/gf4a0deceb63d-27
+
+@rel p/gf4a0deceb63d-25-2 --conditions--> d/gf4a0deceb63d-27
+
+@rel p/gf4a0deceb63d-25-3 --conditions--> d/gf4a0deceb63d-27
+
+@rel p/gf4a0deceb63d-27-4 --conditions--> d/gf4a0deceb63d-27
+
+@rel p/gf4a0deceb63d-28-1 --conditions--> d/gf4a0deceb63d-28
+
+@rel p/gf4a0deceb63d-28-2 --conditions--> d/gf4a0deceb63d-28
+
+@rel r/gf4a0deceb63d-1-1 --contrasts--> d/gf4a0deceb63d-1
+
+@rel r/gf4a0deceb63d-1-2 --contrasts--> d/gf4a0deceb63d-1
+
+@rel r/gf4a0deceb63d-13-1 --contrasts--> d/gf4a0deceb63d-2
+
+@rel r/gf4a0deceb63d-4-1 --contrasts--> d/gf4a0deceb63d-4
+
+@rel r/gf4a0deceb63d-4-2 --contrasts--> d/gf4a0deceb63d-4
+
+@rel r/gf4a0deceb63d-5-1 --contrasts--> d/gf4a0deceb63d-5
+
+@rel r/gf4a0deceb63d-5-2 --contrasts--> d/gf4a0deceb63d-5
+
+@rel r/gf4a0deceb63d-10-1 --contrasts--> d/gf4a0deceb63d-6
+
+@rel r/gf4a0deceb63d-10-2 --contrasts--> d/gf4a0deceb63d-6
+
+@rel r/gf4a0deceb63d-11-1 --contrasts--> d/gf4a0deceb63d-7
+
+@rel r/gf4a0deceb63d-7-2 --contrasts--> d/gf4a0deceb63d-7
+
+@rel r/gf4a0deceb63d-5-1 --contrasts--> d/gf4a0deceb63d-8
+
+@rel r/gf4a0deceb63d-5-2 --contrasts--> d/gf4a0deceb63d-8
+
+@rel r/gf4a0deceb63d-10-1 --contrasts--> d/gf4a0deceb63d-10
+
+@rel r/gf4a0deceb63d-10-2 --contrasts--> d/gf4a0deceb63d-10
+
+@rel r/gf4a0deceb63d-11-1 --contrasts--> d/gf4a0deceb63d-11
+
+@rel r/gf4a0deceb63d-11-2 --contrasts--> d/gf4a0deceb63d-11
+
+@rel r/gf4a0deceb63d-12-1 --contrasts--> d/gf4a0deceb63d-12
+
+@rel r/gf4a0deceb63d-12-2 --contrasts--> d/gf4a0deceb63d-12
+
+@rel r/gf4a0deceb63d-13-1 --contrasts--> d/gf4a0deceb63d-13
+
+@rel r/gf4a0deceb63d-13-2 --contrasts--> d/gf4a0deceb63d-13
+
+@rel r/gf4a0deceb63d-13-3 --contrasts--> d/gf4a0deceb63d-13
+
+@rel r/gf4a0deceb63d-14-1 --contrasts--> d/gf4a0deceb63d-14
+
+@rel r/gf4a0deceb63d-14-2 --contrasts--> d/gf4a0deceb63d-14
+
+@rel r/gf4a0deceb63d-14-1 --contrasts--> d/gf4a0deceb63d-15
+
+@rel r/gf4a0deceb63d-14-2 --contrasts--> d/gf4a0deceb63d-15
+
+@rel r/gf4a0deceb63d-16-1 --contrasts--> d/gf4a0deceb63d-16
+
+@rel r/gf4a0deceb63d-16-2 --contrasts--> d/gf4a0deceb63d-16
+
+@rel r/gf4a0deceb63d-16-1 --contrasts--> d/gf4a0deceb63d-17
+
+@rel r/gf4a0deceb63d-17-2 --contrasts--> d/gf4a0deceb63d-17
+
+@rel r/gf4a0deceb63d-18-1 --contrasts--> d/gf4a0deceb63d-18
+
+@rel r/gf4a0deceb63d-18-2 --contrasts--> d/gf4a0deceb63d-18
+
+@rel r/gf4a0deceb63d-19-1 --contrasts--> d/gf4a0deceb63d-19
+
+@rel r/gf4a0deceb63d-20-1 --contrasts--> d/gf4a0deceb63d-20
+
+@rel r/gf4a0deceb63d-20-2 --contrasts--> d/gf4a0deceb63d-20
+
+@rel r/gf4a0deceb63d-21-1 --contrasts--> d/gf4a0deceb63d-21
+
+@rel r/gf4a0deceb63d-21-2 --contrasts--> d/gf4a0deceb63d-21
+
+@rel r/gf4a0deceb63d-22-1 --contrasts--> d/gf4a0deceb63d-22
+
+@rel r/gf4a0deceb63d-22-2 --contrasts--> d/gf4a0deceb63d-22
+
+@rel r/gf4a0deceb63d-23-1 --contrasts--> d/gf4a0deceb63d-23
+
+@rel r/gf4a0deceb63d-24-1 --contrasts--> d/gf4a0deceb63d-24
+
+@rel r/gf4a0deceb63d-24-2 --contrasts--> d/gf4a0deceb63d-24
+
+@rel r/gf4a0deceb63d-25-1 --contrasts--> d/gf4a0deceb63d-25
+
+@rel r/gf4a0deceb63d-27-1 --contrasts--> d/gf4a0deceb63d-27
+
+@rel r/gf4a0deceb63d-27-2 --contrasts--> d/gf4a0deceb63d-27
+
+@rel r/gf4a0deceb63d-28-1 --contrasts--> d/gf4a0deceb63d-28
+
+@rel r/gf4a0deceb63d-28-2 --contrasts--> d/gf4a0deceb63d-28
+
+@rel d/gf4a0deceb63d-1 --causes--> q/gf4a0deceb63d-1-1
+
+@rel d/gf4a0deceb63d-1 --causes--> q/gf4a0deceb63d-1-2
+
+@rel d/gf4a0deceb63d-1 --causes--> q/gf4a0deceb63d-1-3
+
+@rel e/gf4a0deceb63d-2-1 --backs--> q/gf4a0deceb63d-2-1
+
+@rel d/gf4a0deceb63d-2 --causes--> q/gf4a0deceb63d-2-1
+
+@rel e/gf4a0deceb63d-2-2 --backs--> q/gf4a0deceb63d-2-2
+
+@rel d/gf4a0deceb63d-2 --causes--> q/gf4a0deceb63d-2-2
+
+@rel d/gf4a0deceb63d-4 --causes--> q/gf4a0deceb63d-4-1
+
+@rel d/gf4a0deceb63d-5 --causes--> q/gf4a0deceb63d-5-1
+
+@rel d/gf4a0deceb63d-5 --causes--> q/gf4a0deceb63d-5-2
+
+@rel d/gf4a0deceb63d-6 --causes--> q/gf4a0deceb63d-6-1
+
+@rel d/gf4a0deceb63d-7 --causes--> q/gf4a0deceb63d-7-1
+
+@rel d/gf4a0deceb63d-8 --causes--> q/gf4a0deceb63d-8-1
+
+@rel d/gf4a0deceb63d-8 --causes--> q/gf4a0deceb63d-8-2
+
+@rel d/gf4a0deceb63d-10 --causes--> q/gf4a0deceb63d-10-1
+
+@rel d/gf4a0deceb63d-10 --causes--> q/gf4a0deceb63d-10-2
+
+@rel d/gf4a0deceb63d-11 --causes--> q/gf4a0deceb63d-11-1
+
+@rel d/gf4a0deceb63d-12 --causes--> q/gf4a0deceb63d-12-1
+
+@rel d/gf4a0deceb63d-14 --causes--> q/gf4a0deceb63d-14-1
+
+@rel d/gf4a0deceb63d-14 --causes--> q/gf4a0deceb63d-14-2
+
+@rel d/gf4a0deceb63d-15 --causes--> q/gf4a0deceb63d-15-1
+
+@rel d/gf4a0deceb63d-15 --causes--> q/gf4a0deceb63d-15-2
+
+@rel d/gf4a0deceb63d-16 --causes--> q/gf4a0deceb63d-16-1
+
+@rel d/gf4a0deceb63d-17 --causes--> q/gf4a0deceb63d-17-1
+
+@rel e/gf4a0deceb63d-18-1 --backs--> q/gf4a0deceb63d-18-1
+
+@rel d/gf4a0deceb63d-18 --causes--> q/gf4a0deceb63d-18-1
+
+@rel e/gf4a0deceb63d-18-2 --backs--> q/gf4a0deceb63d-18-2
+
+@rel d/gf4a0deceb63d-18 --causes--> q/gf4a0deceb63d-18-2
+
+@rel e/gf4a0deceb63d-18-3 --backs--> q/gf4a0deceb63d-18-3
+
+@rel d/gf4a0deceb63d-18 --causes--> q/gf4a0deceb63d-18-3
+
+@rel e/gf4a0deceb63d-18-3 --backs--> q/gf4a0deceb63d-19-1
+
+@rel d/gf4a0deceb63d-19 --causes--> q/gf4a0deceb63d-19-1
+
+@rel e/gf4a0deceb63d-20-1 --backs--> q/gf4a0deceb63d-20-1
+
+@rel d/gf4a0deceb63d-20 --causes--> q/gf4a0deceb63d-20-1
+
+@rel e/gf4a0deceb63d-20-2 --backs--> q/gf4a0deceb63d-20-2
+
+@rel d/gf4a0deceb63d-20 --causes--> q/gf4a0deceb63d-20-2
+
+@rel e/gf4a0deceb63d-20-3 --backs--> q/gf4a0deceb63d-20-3
+
+@rel d/gf4a0deceb63d-20 --causes--> q/gf4a0deceb63d-20-3
+
+@rel e/gf4a0deceb63d-18-3 --backs--> q/gf4a0deceb63d-18-3
+
+@rel d/gf4a0deceb63d-20 --causes--> q/gf4a0deceb63d-18-3
+
+@rel d/gf4a0deceb63d-21 --causes--> q/gf4a0deceb63d-21-1
+
+@rel d/gf4a0deceb63d-22 --causes--> q/gf4a0deceb63d-22-1
+
+@rel d/gf4a0deceb63d-23 --causes--> q/gf4a0deceb63d-23-1
+
+@rel e/gf4a0deceb63d-23-2 --backs--> q/gf4a0deceb63d-23-2
+
+@rel d/gf4a0deceb63d-23 --causes--> q/gf4a0deceb63d-23-2
+
+@rel d/gf4a0deceb63d-24 --causes--> q/gf4a0deceb63d-24-1
+
+@rel d/gf4a0deceb63d-25 --causes--> q/gf4a0deceb63d-25-1
+
+@rel d/gf4a0deceb63d-27 --causes--> q/gf4a0deceb63d-27-1
+
+@rel d/gf4a0deceb63d-27 --causes--> q/gf4a0deceb63d-27-2
+
+@rel d/gf4a0deceb63d-28 --causes--> q/gf4a0deceb63d-28-1

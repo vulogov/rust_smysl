@@ -1,0 +1,1230 @@
+{
+  "decisions": [
+    {
+      "decision": "Rewrites now always end with a newline",
+      "kind": "act",
+      "rationale": "To ensure that the file is correctly handled by both the queue and the hook, which have different methods of appending to the file.",
+      "quote": "Rewrites now always end with a newline"
+    },
+    {
+      "decision": "`stale --json` now includes the `behind` field in JSON output instead of printing it on stdout",
+      "kind": "act",
+      "rationale": "To ensure that `--json` outputs only valid JSON, preventing parsing errors when consuming the JSON output.",
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs."
+    },
+    {
+      "decision": "A test is added to ensure that every `--json` command produces valid JSON output",
+      "kind": "act",
+      "rationale": "To catch future regressions where non-JSON content might be printed with `--json`, ensuring the output remains valid.",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": "The `facts` function now includes an optional `scope` parameter to filter facts based on files, names, or hops",
+      "kind": "act",
+      "rationale": "To provide more granular control over which facts are displayed.",
+      "quote": "if let Some(mut around) = scope {"
+    },
+    {
+      "decision": "The `extract_command` function now estimates the time required for extraction based on commit size and prints it",
+      "kind": "act",
+      "rationale": "To give users an idea of how long the extraction process will take, especially when processing multiple commits.",
+      "quote": "if r.estimate {"
+    },
+    {
+      "decision": "The `extract` function now includes a dry-run mode that simulates the extraction process without actually recording anything",
+      "kind": "act",
+      "rationale": "To allow users to preview what would be extracted without making any changes.",
+      "quote": "if dry_run {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system prompt file",
+      "kind": "act",
+      "rationale": "To provide more flexibility in how the check process is conducted.",
+      "quote": "if let Some(path) = c.prompt_file {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `max_commits` parameter to limit the number of commits processed",
+      "kind": "act",
+      "rationale": "To prevent processing an excessive number of commits at once, which could be resource-intensive.",
+      "quote": "let take = if r.max_commits == 0 {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `force` parameter to force re-extraction of already recorded commits",
+      "kind": "act",
+      "rationale": "To allow users to re-extract commits that have already been recorded.",
+      "quote": "let kept = if force {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `dry_run` parameter to simulate the extraction process without recording anything",
+      "kind": "act",
+      "rationale": "To allow users to preview what would be extracted without making any changes.",
+      "quote": "if r.dry_run {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order",
+      "kind": "act",
+      "rationale": "To provide more flexibility in how the check process is conducted.",
+      "quote": "if r.no_corpus_order {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `queued` parameter to handle extraction of commits from a queue",
+      "kind": "act",
+      "rationale": "To allow users to extract commits that have been queued, either by the post-commit hook or manually.",
+      "quote": "if r.queued {"
+    },
+    {
+      "decision": "`--json` must be JSON, and nothing else",
+      "kind": "act",
+      "rationale": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.",
+      "quote": "`--json` must be JSON, and nothing else."
+    },
+    {
+      "decision": "The `extract_command` function now estimates the time required for extraction based on commit size and prints an estimate if `--estimate` is specified.",
+      "kind": "act",
+      "rationale": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.",
+      "quote": "if r.estimate {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `max_commits` parameter to limit the number of commits processed in a range extraction.",
+      "kind": "act",
+      "rationale": "To prevent processing an excessive number of commits at once, which could be resource-intensive, a `max_commits` parameter was added to limit the number of commits processed.",
+      "quote": "let take = if r.max_commits == 0 {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order when checking for contradictions.",
+      "kind": "act",
+      "rationale": "To provide more flexibility in how the check process is conducted, the `check` function was updated to accept a `no_corpus_order` parameter for disabling corpus order.",
+      "quote": "let mut settings = Settings {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `parts` parameter to specify the maximum number of parts for splitting the change during checking.",
+      "kind": "act",
+      "rationale": "To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function.",
+      "quote": "let mut settings = Settings {"
+    },
+    {
+      "decision": "Reading repairs what is already there",
+      "kind": "act",
+      "rationale": "To handle existing content correctly, reading operations will repair or split lines as necessary to match the expected format.",
+      "quote": "reading repairs what is already there"
+    },
+    {
+      "decision": "A line of full-length revisions run together is split back into the shas somebody meant",
+      "kind": "act",
+      "rationale": "To correctly interpret and process revision data, lines containing concatenated shas are split back into individual components.",
+      "quote": "a line of full-length revisions run together is split back into the shas somebody meant"
+    },
+    {
+      "decision": "A line that is not a plausible revision is reported and dropped",
+      "kind": "act",
+      "rationale": "To maintain data integrity, lines that do not conform to expected revision formats are identified, reported, and discarded.",
+      "quote": "a line that is not a plausible revision is reported and dropped"
+    },
+    {
+      "decision": "`--json` now means JSON",
+      "kind": "act",
+      "rationale": "To provide clear and consistent output, the `--json` flag is updated to always produce JSON formatted data.",
+      "quote": "the commit that made `--json` mean JSON"
+    },
+    {
+      "decision": "The Rust files to read: those a commit touched, or the working tree's",
+      "kind": "act",
+      "rationale": "To accurately reflect changes, the tool reads either the files modified by a specific commit or all files in the working tree.",
+      "quote": "The Rust files to read: those a commit touched, or the working tree's"
+    },
+    {
+      "decision": "Symlinks are not followed",
+      "kind": "act",
+      "rationale": "To prevent unintended access outside the workspace, symlinks are ignored during file walks.",
+      "quote": "Symlinks are not followed: a link can leave the workspace entirely"
+    },
+    {
+      "decision": "A directory that cannot be read is skipped with a note",
+      "kind": "act",
+      "rationale": "To handle partial failures gracefully, unreadable directories are skipped and noted.",
+      "quote": "A directory that cannot be read is skipped with a note"
+    },
+    {
+      "decision": "The claim is the recorded unit's own words, not the caller's paraphrase",
+      "kind": "act",
+      "rationale": "To maintain accuracy and consistency, the tool uses the exact text of the recorded claim rather than any user-provided description.",
+      "quote": "The claim is the recorded unit's own words, not the caller's paraphrase"
+    },
+    {
+      "decision": "Nothing here concludes anything",
+      "kind": "act",
+      "rationale": "To ensure that evidence collection remains an advisory process, no conclusions are drawn or decisions made based on collected data.",
+      "quote": "Nothing here concludes anything: the readings are measurements, and every edge waits for a person"
+    },
+    {
+      "decision": "The opt-in gate (S1): does a test that claims to verify this claim notice the code changing?",
+      "kind": "act",
+      "rationale": "To validate the relevance of tests, an optional mutation gate is introduced to check if tests detect changes in the code.",
+      "quote": "The opt-in gate (S1): does a test that claims to verify this claim notice the code changing?"
+    },
+    {
+      "decision": "A prerequisite the extraction marked normative reaches `ImplementedBy` at most",
+      "kind": "act",
+      "rationale": "To ensure accurate and relevant data, the tool restricts the retrieval of facts related to prerequisites that are marked as normative.",
+      "quote": "A prerequisite the extraction marked normative reaches `ImplementedBy` at most"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`extract --queued` asked git for a 120-character revision: three shas welded together.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`extract --queued` asked git for a 120-character revision: three shas welded together."
+    },
+    {
+      "decision": 1,
+      "text": "The hook appends with `>>`, this tool rewrote the file with `join(\"\\n\")` and no trailing newline, so the next append landed on the last line.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The hook appends with `>>`, this tool rewrote the file with `join(\"\\n\")` and no trailing newline, so the next append landed on the last line."
+    },
+    {
+      "decision": 1,
+      "text": "Two writers, one file, and only one of them thought about the ending.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two writers, one file, and only one of them thought about the ending."
+    },
+    {
+      "decision": 2,
+      "text": "`stale --json` printed which decisions each moved item was behind — on stdout, before the JSON",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON"
+    },
+    {
+      "decision": 2,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 4,
+      "text": "The `facts` function needs to be able to filter facts based on files, names, or hops.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 4,
+      "text": "The `facts` function should handle cases where no files or names are provided.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "if around.files.is_empty() && rev.is_some() {"
+    },
+    {
+      "decision": 5,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 5,
+      "text": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:"
+    },
+    {
+      "decision": 6,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 6,
+      "text": "A commit's files are the change; the working tree's are not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 6,
+      "text": "The tool must work as an external cargo subcommand.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it."
+    },
+    {
+      "decision": 7,
+      "text": "The existing `check` function already exists and handles checking for contradictions in the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The `check` function already exists and handles checking for contradictions in the corpus."
+    },
+    {
+      "decision": 7,
+      "text": "There is a need to provide more flexibility in how the check process is conducted.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "There is a need to provide more flexibility in how the check process is conducted."
+    },
+    {
+      "decision": 8,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 8,
+      "text": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip."
+    },
+    {
+      "decision": 8,
+      "text": "The tool estimates the time required for extraction based on commit size.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:"
+    },
+    {
+      "decision": 10,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 10,
+      "text": "A commit's files are the change; the working tree's are not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 10,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 10,
+      "text": "A range is recorded newest first and is resumable.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip."
+    },
+    {
+      "decision": 10,
+      "text": "The model proposes content only, and every quote it gives is checked against the commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 10,
+      "text": "A commit is extracted once per recipe.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop."
+    },
+    {
+      "decision": 11,
+      "text": "The `check` function already exists and handles checking for contradictions in the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The `check` function already exists and handles checking for contradictions in the corpus."
+    },
+    {
+      "decision": 11,
+      "text": "There is a need to provide more flexibility in how the check process is conducted.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "There is a need to provide more flexibility in how the check process is conducted."
+    },
+    {
+      "decision": 12,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 12,
+      "text": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip."
+    },
+    {
+      "decision": 12,
+      "text": "The tool's own commits are not work. Dropping them here is what makes the queue reach empty.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool's own commits are not work. Dropping them here is what makes the queue reach empty."
+    },
+    {
+      "decision": 13,
+      "text": "`stale --json` printed which decisions each moved item was behind on stdout before the JSON.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale\n--json` printed which decisions each moved item was behind — on stdout, before\nthe JSON — and anything reading the output got `Expecting value: line 1 column\n3`."
+    },
+    {
+      "decision": 13,
+      "text": "`--json` must be JSON, and nothing else.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 14,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 14,
+      "text": "A range is recorded newest first and is resumable.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip."
+    },
+    {
+      "decision": 14,
+      "text": "The model proposes content only, and every quote it gives is checked against the commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 14,
+      "text": "A commit is extracted once per recipe.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop."
+    },
+    {
+      "decision": 14,
+      "text": "The tool estimates the time required for extraction based on commit size.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:"
+    },
+    {
+      "decision": 15,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 15,
+      "text": "A range is recorded newest first and is resumable.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip."
+    },
+    {
+      "decision": 15,
+      "text": "The model proposes content only, and every quote it gives is checked against the commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 15,
+      "text": "A commit is extracted once per recipe.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop."
+    },
+    {
+      "decision": 15,
+      "text": "The tool estimates the time required for extraction based on commit size.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:"
+    },
+    {
+      "decision": 16,
+      "text": "The `check` function already exists and handles checking for contradictions in the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "There is a need to provide more flexibility in how the check process is conducted.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "The `check` function already exists and handles checking for contradictions in the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "There is a need to provide more flexibility in how the check process is conducted.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "`extract --queued` asked git for a 120-character revision: three shas welded together.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`extract --queued` asked git for a 120-character revision: three shas welded together."
+    },
+    {
+      "decision": 18,
+      "text": "The hook appends with `>>`, this tool rewrote the file with `join(\"\\n\")` and no trailing newline, so the next append landed on the last line.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The hook appends with `>>`, this tool rewrote the file with `join(\"\\n\")` and no trailing newline, so the next append landed on the last line."
+    },
+    {
+      "decision": 18,
+      "text": "Two writers, one file, and only one of them thought about the ending.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two writers, one file, and only one of them thought about the ending."
+    },
+    {
+      "decision": 19,
+      "text": "The hook appends with `>>`, this tool rewrote the file with `join(\"\\n\")` and no trailing newline",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The hook appends with `>>`, this tool rewrote the file with `join(\"\n\")` and no trailing newline, so the next append landed on the last line."
+    },
+    {
+      "decision": 19,
+      "text": "Two writers, one file, and only one of them thought about the ending",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two writers, one file, and only one of them thought about the ending."
+    },
+    {
+      "decision": 20,
+      "text": "The queue and the hook must agree about the newline",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The queue and the hook must agree about the newline"
+    },
+    {
+      "decision": 20,
+      "text": "`extract --queued` asked git for a 120-character revision: three shas welded together.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`extract --queued` asked git for a 120-character revision: three shas welded together."
+    },
+    {
+      "decision": 20,
+      "text": "The hook appends with `>>`, this tool rewrote the file with `join(\"\\n\")` and no trailing newline",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The hook appends with `>>`, this tool rewrote the file with `join(\"\n\")` and no trailing newline"
+    },
+    {
+      "decision": 20,
+      "text": "Two writers, one file, and only one of them thought about the ending.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two writers, one file, and only one of them thought about the ending."
+    },
+    {
+      "decision": 21,
+      "text": "`--json` flag's previous behavior",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work."
+    },
+    {
+      "decision": 21,
+      "text": "The need for clear and consistent output",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "To provide clear and consistent output, the `--json` flag is updated to always produce JSON formatted data."
+    },
+    {
+      "decision": 22,
+      "text": "The tool needs to determine which Rust files to read based on the context.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The Rust files to read: those a commit touched, or the working tree's."
+    },
+    {
+      "decision": 22,
+      "text": "A revision can be specified to focus on changes in that specific commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "match rev { Some(rev) => { let commit = cargo_smysl_git::read_commit(root, rev).map_err(|e| e.to_string())?;"
+    },
+    {
+      "decision": 22,
+      "text": "If no revision is specified and files are listed, the tool reads those specific files.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "None if !only.is_empty() => only.iter().map(|rel| { std::fs::read_to_string(root.join(rel)).map(|text| (rel.clone(), text)).map_err(|e| format!(\"{rel}: {e}\")) }).collect(),"
+    },
+    {
+      "decision": 22,
+      "text": "If no revision is specified and no files are listed, the tool reads all Rust files in the working tree.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "None => { let mut out = Vec::new(); walk(root, root, &mut out); Ok(out.into_iter().filter(|(p, _)| wanted(p)).collect()) },"
+    },
+    {
+      "decision": 23,
+      "text": "Symlinks can lead to accessing directories outside the workspace",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A symlink can leave the workspace entirely, and one did — a scratch `HOME` under `eval/` pointed at the real home directory, so the walk left the repository and then failed on a directory it had no business reading."
+    },
+    {
+      "decision": 23,
+      "text": "Unreadable directories should be skipped with a note",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts."
+    },
+    {
+      "decision": 24,
+      "text": "A directory that cannot be read should not halt the entire process",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts."
+    },
+    {
+      "decision": 25,
+      "text": "The tool reads git itself and assigns labels, sources and statuses",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5)"
+    },
+    {
+      "decision": 25,
+      "text": "A commit is extracted once per recipe",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop."
+    },
+    {
+      "decision": 25,
+      "text": "The model proposes content only, and every quote it gives is checked against the commit",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 27,
+      "text": "The tool reads git itself and assigns labels, sources and statuses",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5)"
+    },
+    {
+      "decision": 27,
+      "text": "A commit is extracted once per recipe",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop."
+    },
+    {
+      "decision": 27,
+      "text": "The model proposes content only, and every quote it gives is checked against the commit",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 27,
+      "text": "The opt-in gate (S1): does a test that claims to verify this claim notice the code changing?",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "The opt-in gate (S1): does a test that claims to verify this claim notice the code changing?"
+    },
+    {
+      "decision": 28,
+      "text": "The extraction process marks certain prerequisites as normative.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A prerequisite the extraction marked normative reaches `ImplementedBy` at most (D12)."
+    },
+    {
+      "decision": 28,
+      "text": "The tool restricts retrieval of facts related to prerequisites that are marked as normative.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "To ensure accurate and relevant data, the tool restricts the retrieval of facts related to prerequisites that are marked as normative."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the existing behaviour where rewrites do not always end with a newline.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 1,
+      "alternative": "Ensure that the hook also handles files without trailing newlines correctly.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Keep printing the `behind` information on stdout in addition to the JSON output.",
+      "reason": "",
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs."
+    },
+    {
+      "decision": 4,
+      "alternative": "Do not include the `scope` parameter and always display all facts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Include a different filtering mechanism that does not use files, names, or hops.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Do not estimate the time required for extraction.",
+      "reason": "",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added."
+    },
+    {
+      "decision": 5,
+      "alternative": "Estimate the time based on a different metric (e.g., number of files).",
+      "reason": "",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added."
+    },
+    {
+      "decision": 6,
+      "alternative": "Do not include a dry-run mode.",
+      "reason": "",
+      "quote": "Rejected: Do not include a dry-run mode."
+    },
+    {
+      "decision": 6,
+      "alternative": "Include a dry-run mode that only simulates part of the extraction process.",
+      "reason": "",
+      "quote": "Rejected: Include a dry-run mode that only simulates part of the extraction process."
+    },
+    {
+      "decision": 7,
+      "alternative": "Keep the existing `check` function without any changes.",
+      "reason": "",
+      "quote": "Rejected: Keep the existing `check` function without any changes."
+    },
+    {
+      "decision": 7,
+      "alternative": "Add a different type of customization option instead of a prompt file.",
+      "reason": "",
+      "quote": "Rejected: Add a different type of customization option instead of a prompt file."
+    },
+    {
+      "decision": 8,
+      "alternative": "Do not estimate the time required for extraction.",
+      "reason": "",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added."
+    },
+    {
+      "decision": 8,
+      "alternative": "Estimate the time based on a different metric (e.g., number of files).",
+      "reason": "",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added."
+    },
+    {
+      "decision": 10,
+      "alternative": "Do not include a dry-run mode.",
+      "reason": "",
+      "quote": "Rejected: Do not include a dry-run mode."
+    },
+    {
+      "decision": 10,
+      "alternative": "Include a dry-run mode that only simulates part of the extraction process.",
+      "reason": "",
+      "quote": "Rejected: Include a dry-run mode that only simulates part of the extraction process."
+    },
+    {
+      "decision": 11,
+      "alternative": "Keep the existing `check` function without any changes.",
+      "reason": "",
+      "quote": "Rejected: Keep the existing `check` function without any changes."
+    },
+    {
+      "decision": 11,
+      "alternative": "Add a parameter to control corpus order but with different naming or functionality.",
+      "reason": "",
+      "quote": "Rejected: Add a parameter to control corpus order but with different naming or functionality."
+    },
+    {
+      "decision": 12,
+      "alternative": "Continue to handle extraction of commits without a queued parameter.",
+      "reason": "",
+      "quote": "To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function."
+    },
+    {
+      "decision": 12,
+      "alternative": "Handle extraction of commits from a queue in a separate function.",
+      "reason": "",
+      "quote": "To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function."
+    },
+    {
+      "decision": 13,
+      "alternative": "Keep printing the `behind` information on stdout in addition to the JSON output.",
+      "reason": "",
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs."
+    },
+    {
+      "decision": 13,
+      "alternative": "Do not add a test for JSON validity",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Add a test that only checks for specific content in the JSON output",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Do not estimate the time required for extraction.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Estimate the time based on a different metric (e.g., number of files).",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Do not estimate the time required for extraction.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Estimate the time based on a different metric (e.g., number of files).",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "Keep the existing `check` function without any changes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "Add a different type of customization option instead of a `no_corpus_order` parameter.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "Keep the existing `check` function without any changes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "Add a different type of customization option instead of a prompt file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 18,
+      "alternative": "The tool could have left the newline handling as is, without ensuring a trailing newline.",
+      "reason": "",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there:"
+    },
+    {
+      "decision": 18,
+      "alternative": "The tool could have appended lines without checking for existing content.",
+      "reason": "",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there:"
+    },
+    {
+      "decision": 19,
+      "alternative": "The tool could have appended without ensuring a trailing newline",
+      "reason": "",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away."
+    },
+    {
+      "decision": 20,
+      "alternative": "The tool could have appended without ensuring a newline, leading to potential data corruption.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "The tool could have overwritten the file instead of appending, potentially losing previous data.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "`--json` continues with its previous behavior",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "`--json` produces a different format",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 22,
+      "alternative": "The tool could read all Rust files in the repository regardless of the context.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 22,
+      "alternative": "The tool could only read files that are part of the current branch's history.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 23,
+      "alternative": "Follow symlinks and handle access errors",
+      "reason": "",
+      "quote": "Symlinks are not followed: a link can leave the workspace entirely, and one did — a scratch `HOME` under `eval/` pointed at the real home directory, so the walk left the repository and then failed on a directory it had no business reading."
+    },
+    {
+      "decision": 24,
+      "alternative": "Fail the entire process if a directory cannot be read",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 24,
+      "alternative": "Log an error and continue processing other directories",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 25,
+      "alternative": "Use user-provided description for the claim",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Do not run the shortlisted tests, record what they did, and propose the edges",
+      "reason": "",
+      "quote": "Nothing here concludes anything: the readings are measurements, and every edge waits for a person."
+    },
+    {
+      "decision": 27,
+      "alternative": "Run the shortlisted tests without checking if they notice changes in the code",
+      "reason": "",
+      "quote": "It only ever refuses a test that noticed nothing, and it says what it did either way."
+    },
+    {
+      "decision": 28,
+      "alternative": "Retrieve all facts without restriction.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "Allow retrieval of a limited number of facts for normative prerequisites.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "Rewrites now always end with a newline, ensuring consistent file handling by both the queue and the hook.",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Reading the file will repair lines that do not have trailing newlines, splitting them correctly.",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Lines that are not plausible revisions will be reported and dropped.",
+      "quote": "A line that is not a plausible revision is reported and dropped, because guessing is worse.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "`stale --json` now includes the `behind` field in JSON output instead of printing it on stdout",
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs.",
+      "verified": true,
+      "verification_quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs."
+    },
+    {
+      "decision": 2,
+      "text": "`--json` outputs only valid JSON",
+      "quote": "To ensure that `--json` outputs only valid JSON, preventing parsing errors when consuming the JSON output.",
+      "verified": true,
+      "verification_quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 4,
+      "text": "Users can now filter which facts are displayed based on specific criteria such as files, names, or hops.",
+      "quote": "To provide more granular control over which facts are displayed, the `facts` function was updated to accept a `scope` parameter that allows filtering by specific criteria.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Users receive an estimate of how long the extraction process will take.",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The tool prints an estimate if `--estimate` is specified.",
+      "quote": "nothing was run: --estimate only says what it would cost",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Users can now preview what would be extracted without making any changes.",
+      "quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The `check` function now accepts an optional `prompt_file` parameter that allows specifying a custom system prompt file.",
+      "quote": "The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system prompt file.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Users receive an estimate of how long the extraction process will take.",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The tool prints an estimate if `--estimate` is specified.",
+      "quote": "nothing was run: --estimate only says what it would cost",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Users can now preview what would be extracted without making any changes.",
+      "quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract_command` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "The `dry_run` parameter is used in the `extract` function to determine if recording should occur.",
+      "quote": "let code = extract(args, Some(sha), r.force, r.dry_run, how);",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "Users can now choose whether to disable corpus order during the check process, providing more flexibility.",
+      "quote": "The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order when checking for contradictions.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Users can now extract commits that have been queued, either by the post-commit hook or manually.",
+      "quote": "To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "Users receive an estimate of how long the extraction process will take.",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "The tool prints an estimate if `--estimate` is specified.",
+      "quote": "nothing was run: --estimate only says what it would cost",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "Users receive an estimate of how long the extraction process will take.",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The tool prints an estimate if `--estimate` is specified.",
+      "quote": "nothing was run: --estimate only says what it would cost",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "Users can now choose whether to disable corpus order during the check process, providing more flexibility.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "Users can now specify how many parts to split the change into during the checking process.",
+      "quote": "To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "Rewrites now always end with a newline.",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there:",
+      "verified": true,
+      "verification_quote": "Rewrites now always end with a newline, and reading repairs what is already there:"
+    },
+    {
+      "decision": 18,
+      "text": "Reading operations will repair or split lines as necessary to match the expected format.",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there:",
+      "verified": true,
+      "verification_quote": "A line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away. A line that is not a plausible revision is reported and dropped, because guessing is worse."
+    },
+    {
+      "decision": 18,
+      "text": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work.",
+      "quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work.",
+      "verified": true,
+      "verification_quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work."
+    },
+    {
+      "decision": 19,
+      "text": "Lines containing concatenated shas are correctly interpreted and processed",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.",
+      "verified": true,
+      "verification_quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work."
+    },
+    {
+      "decision": 20,
+      "text": "Rewrites now always end with a newline",
+      "quote": "Rewrites now always end with a newline",
+      "verified": true,
+      "verification_quote": "Rewrites now always end with a newline"
+    },
+    {
+      "decision": 20,
+      "text": "Reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.",
+      "quote": "Reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.",
+      "verified": true,
+      "verification_quote": "A line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away."
+    },
+    {
+      "decision": 20,
+      "text": "A line that is not a plausible revision is reported and dropped",
+      "quote": "A line that is not a plausible revision is reported and dropped",
+      "verified": true,
+      "verification_quote": "A line that is not a plausible revision is reported and dropped"
+    },
+    {
+      "decision": 20,
+      "text": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work.",
+      "quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work.",
+      "verified": true,
+      "verification_quote": "On this repository it recovered all three — two of which only wrote the corpus and were dropped as such, leaving the one commit that is real work."
+    },
+    {
+      "decision": 21,
+      "text": "The `--json` flag now consistently produces JSON formatted data",
+      "quote": "To provide clear and consistent output, the `--json` flag is updated to always produce JSON formatted data.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "The tool accurately reflects changes by reading either the files modified by a specific commit or all files in the working tree.",
+      "quote": "To accurately reflect changes, the tool reads either the files modified by a specific commit or all files in the working tree.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "Directories outside the workspace are not accessed",
+      "quote": "Symlinks are not followed: a link can leave the workspace entirely, and one did — a scratch `HOME` under `eval/` pointed at the real home directory, so the walk left the repository and then failed on a directory it had no business reading.",
+      "verified": true,
+      "verification_quote": "A symlink can leave the workspace entirely, and one did — a scratch `HOME` under `eval/` pointed at the real home directory, so the walk left the repository and then failed on a directory it had no business reading."
+    },
+    {
+      "decision": 23,
+      "text": "Unreadable directories are skipped with a note",
+      "quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts.",
+      "verified": true,
+      "verification_quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts."
+    },
+    {
+      "decision": 24,
+      "text": "The tool continues to process other directories even if one is unreadable",
+      "quote": "A directory that cannot be read is skipped with a note, since one unreadable corner is not a reason to report no facts.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "The tool uses the exact text of the recorded claim rather than any user-provided description",
+      "quote": "To maintain accuracy and consistency, the tool uses the exact text of the recorded claim rather than any user-provided description.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 27,
+      "text": "The tool will run the shortlisted tests and check if they notice changes in the code",
+      "quote": "The opt-in gate (S1): does a test that claims to verify this claim notice the code changing?",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 27,
+      "text": "If a test notices changes, it will be considered relevant and its results will be recorded",
+      "quote": "It only ever refuses a test that noticed nothing, and it says what it did either way.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 28,
+      "text": "The tool ensures that only relevant and accurate data is retrieved by restricting the retrieval of facts related to normative prerequisites.",
+      "quote": "To ensure accurate and relevant data, the tool restricts the retrieval of facts related to prerequisites that are marked as normative.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

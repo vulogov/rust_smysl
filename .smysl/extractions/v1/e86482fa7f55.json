@@ -1,0 +1,685 @@
+{
+  "decisions": [
+    {
+      "decision": "Take the home directory out of the published results and the docs",
+      "kind": "act",
+      "rationale": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout.",
+      "quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": "Set MSRV to Rust 1.86",
+      "kind": "act",
+      "rationale": "To ensure compatibility with dependencies that require newer versions of Rust.",
+      "quote": "rust-version = \"1.86\""
+    },
+    {
+      "decision": "Add homepage, keywords, categories, and README to each crate",
+      "kind": "act",
+      "rationale": "To provide necessary metadata for crates.io listing and discovery.",
+      "quote": "homepage     = \"https://github.com/vulogov/rust_smysl\"\nkeywords     = [\"cargo-subcommand\", \"rationale\", \"provenance\", \"smysl\", \"decisions\"]\ncategories   = [\"development-tools::cargo-plugins\", \"development-tools\"]"
+    },
+    {
+      "decision": "Publish eight crates in a specific order",
+      "kind": "act",
+      "rationale": "To ensure path dependencies are resolved correctly by crates.io.",
+      "quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand."
+    },
+    {
+      "decision": "Keep `cargo-smysl` keywords separate from the workspace",
+      "kind": "act",
+      "rationale": "`cargo-smysl` is the crate people install, and they find it by searching for a cargo subcommand.",
+      "quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand."
+    },
+    {
+      "decision": "Document the release process in `docs/releasing.md`",
+      "kind": "act",
+      "rationale": "To provide clear instructions for maintaining and publishing the project.",
+      "quote": "It also records what to be sure of before publishing, since a version can be yanked but never removed, and a crate name is claimed on first publish."
+    },
+    {
+      "decision": "Exclude `cargo-smysl-eval` from publication",
+      "kind": "act",
+      "rationale": "`cargo-smysl-eval` is evaluation tooling that reads files outside its own package.",
+      "quote": "Eight crates publish; the evaluation tooling does not, and says so."
+    },
+    {
+      "decision": "Use `gix` for reading git objects instead of running `git`",
+      "kind": "act",
+      "rationale": "To ensure self-contained operation without relying on external binaries.",
+      "quote": "# Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`."
+    },
+    {
+      "decision": "Pin dependencies to specific versions in the workspace",
+      "kind": "act",
+      "rationale": "To maintain consistency across all crates in the workspace.",
+      "quote": "# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON."
+    },
+    {
+      "decision": "Add `hosted` feature to some crates for optional TLS support",
+      "kind": "act",
+      "rationale": "To provide flexibility in network requirements.",
+      "quote": "# Hosted providers need TLS; the default build has no network stack at all (D18)."
+    },
+    {
+      "decision": "Use `serde_json` and `toml` for configuration files",
+      "kind": "act",
+      "rationale": "To support human-editable configuration files.",
+      "quote": "# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON."
+    },
+    {
+      "decision": "Include `README.md` in each crate for crates.io listing",
+      "kind": "act",
+      "rationale": "To provide brief descriptions for each crate on crates.io.",
+      "quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository."
+    },
+    {
+      "decision": "Do not lose a commit's extraction to a blank line in a quote",
+      "kind": "act",
+      "rationale": "Refusing the whole commit for a blank line throws away work that has already been paid for.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site"
+    },
+    {
+      "decision": "Drop the claim of answering 'why is this like this?' as a product feature",
+      "kind": "decline",
+      "rationale": "To focus on the tool's actual capabilities rather than unmet claims.",
+      "quote": "Answering \"why is this like this?\" was dropped as a product claim."
+    },
+    {
+      "decision": "Assign labels, sources and statuses; the model proposes wording only",
+      "kind": "act",
+      "rationale": "To maintain control over the integrity of recorded information.",
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": "Detect staleness by item body hash rather than line ranges",
+      "kind": "act",
+      "rationale": "To accurately track changes in code identity rather than just line positions.",
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": "Record review as confirmations, withdrawals with reasons, and closures with notes",
+      "kind": "act",
+      "rationale": "To keep a comprehensive log of all reviews and decisions made.",
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution."
+    },
+    {
+      "decision": "Ship its own instrument for benchmarking the model",
+      "kind": "act",
+      "rationale": "To provide users with the ability to measure the performance of their chosen models on their own commits.",
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from."
+    },
+    {
+      "decision": "Focus on deterministic commands over model-dependent ones",
+      "kind": "act",
+      "rationale": "To prioritize commands that are reliable, tested, and cost-effective to run.",
+      "quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run."
+    },
+    {
+      "decision": "Publish figures naming the model each came from, including failed experiments",
+      "kind": "act",
+      "rationale": "To provide transparency about which models were tested and their results, including any failures.",
+      "quote": "The figures are published, naming the model each came from, including the experiments that failed."
+    },
+    {
+      "decision": "Highlight over-production as the failure mode that matters",
+      "kind": "act",
+      "rationale": "To emphasize the importance of avoiding unnecessary or excessive output in the tool's operations.",
+      "quote": "Over-production is the failure mode that matters."
+    },
+    {
+      "decision": "Meaningfully price extraction runs before starting them",
+      "kind": "act",
+      "rationale": "To inform users about the cost of extraction runs before they start, allowing them to make informed decisions.",
+      "quote": "The hook only queues and `--estimate` prices a run before it starts."
+    },
+    {
+      "decision": "Label cloned corpora as someone else's claims",
+      "kind": "act",
+      "rationale": "To clarify the status of units in cloned corpora, indicating that they are not the tool's own claims.",
+      "quote": "A cloned corpus is someone else's claim."
+    },
+    {
+      "decision": "Research the truncated-change problem before building for it",
+      "kind": "act",
+      "rationale": "The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.",
+      "quote": "Research the truncated-change problem before building for it"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The command is the result; where the machine kept its files is not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 1,
+      "text": "A public repository should not carry either the username or the layout.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 2,
+      "text": "Dependencies require at least Rust version 1.86.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "# cargo_metadata 0.23 requires 1.86; smysl 1.3 requires 1.79; syn 3 requires 1.71."
+    },
+    {
+      "decision": 2,
+      "text": "The project aims to maintain compatibility with the latest dependencies.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "crates.io requires metadata for listing and discovery",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "To provide necessary metadata for crates.io listing and discovery."
+    },
+    {
+      "decision": 4,
+      "text": "crates.io resolves path dependencies by version",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand."
+    },
+    {
+      "decision": 5,
+      "text": "`cargo-smysl` is the crate people install, and they find it by searching for a cargo subcommand.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand."
+    },
+    {
+      "decision": 6,
+      "text": "The project aims to maintain clear instructions for maintaining and publishing.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "`cargo-smysl-eval` is evaluation tooling that reads files outside its own package.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo-smysl-eval` is evaluation tooling that reads files outside its own package."
+    },
+    {
+      "decision": 8,
+      "text": "The tool must never run the `git` binary.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`."
+    },
+    {
+      "decision": 9,
+      "text": "To maintain consistency across all crates in the workspace.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "To maintain consistency across all crates in the workspace."
+    },
+    {
+      "decision": 10,
+      "text": "Some crates require TLS support for hosted providers.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Hosted providers need TLS; the default build has no network stack at all (D18)."
+    },
+    {
+      "decision": 11,
+      "text": "The project needs to support human-editable configuration files.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "To support human-editable configuration files."
+    },
+    {
+      "decision": 12,
+      "text": "crates.io requires metadata for listing and discovery",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "To provide necessary metadata for crates.io listing and discovery."
+    },
+    {
+      "decision": 13,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 13,
+      "text": "The body of the verification quote contained a markdown heading, a blank line, and a paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph"
+    },
+    {
+      "decision": 13,
+      "text": "smysl's `fine` profile admits one assertion per unit, and quite right.",
+      "kind": "tool-setting",
+      "normative": false,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 14,
+      "text": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was."
+    },
+    {
+      "decision": 14,
+      "text": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved."
+    },
+    {
+      "decision": 15,
+      "text": "The tool assigns labels, sources and statuses; the model proposes wording only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": 16,
+      "text": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": 17,
+      "text": "The tool needs to maintain a record of all reviews and decisions for transparency and accountability.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution."
+    },
+    {
+      "decision": 18,
+      "text": "The tool needs to measure the performance of different models.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from."
+    },
+    {
+      "decision": 19,
+      "text": "Two thirds of the commands never call a model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run."
+    },
+    {
+      "decision": 20,
+      "text": "The tool needs to measure the performance of different models.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 20,
+      "text": "The figures are published.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The figures are published, naming the model each came from, including the experiments that failed."
+    },
+    {
+      "decision": 21,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 21,
+      "text": "The body of the verification quote contained a markdown heading, a blank line, and a paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph"
+    },
+    {
+      "decision": 21,
+      "text": "smysl's `fine` profile admits one assertion per unit, and quite right.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 22,
+      "text": "The hook only queues and `--estimate` prices a run before it starts.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "The hook only queues and `--estimate` prices a run before it starts."
+    },
+    {
+      "decision": 23,
+      "text": "A cloned corpus is someone else's claim.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A cloned corpus is someone else's claim."
+    },
+    {
+      "decision": 24,
+      "text": "The truncated-change problem affects 59% of held-out changes.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the home directory in the published results and the docs.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Set MSRV to a lower version that is compatible with all dependencies.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Do not set an explicit MSRV and let users manage their Rust versions independently.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Do not add homepage, keywords, categories, and README to each crate",
+      "reason": "",
+      "quote": "Rejected: Do not add homepage, keywords, categories, and README to each crate"
+    },
+    {
+      "decision": 4,
+      "alternative": "Publish all crates simultaneously",
+      "reason": "",
+      "quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on."
+    },
+    {
+      "decision": 4,
+      "alternative": "Publish crates in any order",
+      "reason": "",
+      "quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on."
+    },
+    {
+      "decision": 5,
+      "alternative": "Use the same keywords as the workspace.",
+      "reason": "",
+      "quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand."
+    },
+    {
+      "decision": 7,
+      "alternative": "Include `cargo-smysl-eval` in publication",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Running the `git` binary to read commit messages and changed files.",
+      "reason": "",
+      "quote": "Rejected: Running the `git` binary to read commit messages and changed files."
+    },
+    {
+      "decision": 10,
+      "alternative": "Do not add a `hosted` feature and require TLS support in all builds.",
+      "reason": "",
+      "quote": "Rejected: Do not add a `hosted` feature and require TLS support in all builds."
+    },
+    {
+      "decision": 10,
+      "alternative": "Add a different feature name for optional TLS support.",
+      "reason": "",
+      "quote": "Rejected: Add a different feature name for optional TLS support."
+    },
+    {
+      "decision": 11,
+      "alternative": "Use a different serialization format for configuration files.",
+      "reason": "",
+      "quote": "Rejected: Use a different serialization format for configuration files."
+    },
+    {
+      "decision": 13,
+      "alternative": "Refuse the whole commit for a blank line.",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site."
+    },
+    {
+      "decision": 14,
+      "alternative": "Describing what the tool does.",
+      "reason": "",
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet."
+    },
+    {
+      "decision": 15,
+      "alternative": "Most tooling in this area stores what the model said as though it were established.",
+      "reason": "",
+      "quote": "Rejected: The model assigns labels, sources and statuses."
+    },
+    {
+      "decision": 16,
+      "alternative": "Detect staleness by line ranges.",
+      "reason": "",
+      "quote": "Tried and rejected: Detect staleness by line ranges."
+    },
+    {
+      "decision": 17,
+      "alternative": "Do not record reviews and decisions.",
+      "reason": "",
+      "quote": "Rejected: Do not record reviews and decisions."
+    },
+    {
+      "decision": 17,
+      "alternative": "Record only confirmations without reasons or notes.",
+      "reason": "",
+      "quote": "Rejected: Record only confirmations without reasons or notes."
+    },
+    {
+      "decision": 17,
+      "alternative": "Record only withdrawals without reasons or notes.",
+      "reason": "",
+      "quote": "Rejected: Record only withdrawals without reasons or notes."
+    },
+    {
+      "decision": 17,
+      "alternative": "Record only closures without notes.",
+      "reason": "",
+      "quote": "Rejected: Record only closures without notes."
+    },
+    {
+      "decision": 18,
+      "alternative": "Use an external benchmarking tool.",
+      "reason": "",
+      "quote": "Rejected: Use an external benchmarking tool."
+    },
+    {
+      "decision": 18,
+      "alternative": "Do not include any benchmarking functionality.",
+      "reason": "",
+      "quote": "Rejected: Do not include any benchmarking functionality."
+    },
+    {
+      "decision": 19,
+      "alternative": "Focus on model-dependent commands",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "Not publishing figures naming the model each came from",
+      "reason": "",
+      "quote": "Rejected: Not publishing figures naming the model each came from"
+    },
+    {
+      "decision": 20,
+      "alternative": "Publishing figures without naming the model",
+      "reason": "",
+      "quote": "Rejected: Publishing figures without naming the model."
+    },
+    {
+      "decision": 21,
+      "alternative": "Refuse the whole commit for a blank line.",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site."
+    },
+    {
+      "decision": 21,
+      "alternative": "Keeping the body as separate paragraphs.",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph"
+    },
+    {
+      "decision": 22,
+      "alternative": "Start extraction runs without pricing them first.",
+      "reason": "",
+      "quote": "Rejected: Start extraction runs without pricing them first."
+    },
+    {
+      "decision": 24,
+      "alternative": "Not researching the truncated-change problem before building for it",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Developers must use at least Rust version 1.86 to work on the project.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The CI checks will enforce the MSRV requirement.",
+      "quote": "# The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Path dependencies are resolved correctly by crates.io",
+      "quote": "To ensure path dependencies are resolved correctly by crates.io.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Clear instructions for maintaining and publishing the project are provided.",
+      "quote": "To provide clear instructions for maintaining and publishing the project.",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The tool can operate without relying on external binaries, ensuring self-contained operation.",
+      "quote": "To ensure self-contained operation without relying on external binaries.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Crates that need TLS support can enable it via the `hosted` feature.",
+      "quote": "Crates that need TLS support can enable it via the `hosted` feature.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Crates that do not require TLS support can use the default build without it.",
+      "quote": "Crates that do not require TLS support can use the default build without it.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Each crate now carries its own README.md",
+      "quote": "Each crate now carries its own README.md",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Each crate has a short README.md for crates.io listing",
+      "quote": "To provide brief descriptions for each crate on crates.io.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "The commit that hit it is recorded from cache",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site.",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache."
+    },
+    {
+      "decision": 14,
+      "text": "To focus on the tool's actual capabilities rather than unmet claims.",
+      "quote": "~ Drop the claim of answering 'why is this like this?' as a product feature",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "The tool maintains a comprehensive log of all reviews and decisions made, enhancing transparency and accountability.",
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "Users can measure the performance of their chosen models on their own commits.",
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "Prioritizes commands that are reliable, tested, and cost-effective to run.",
+      "quote": "To prioritize commands that are reliable, tested, and cost-effective to run.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "Transparency about which models were tested and their results, including any failures, is provided.",
+      "quote": "To provide transparency about which models were tested and their results, including any failures.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 21,
+      "text": "Refusing the whole commit for a blank line throws away work that has already been paid for.",
+      "quote": "Refusing the whole commit for a blank line throws away work that has already been paid for.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "Users are informed about the cost of extraction runs before they start, allowing them to make informed decisions.",
+      "quote": "To inform users about the cost of extraction runs before they start, allowing them to make informed decisions.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

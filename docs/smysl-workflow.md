@@ -36,13 +36,13 @@ cargo smysl doctor
 ```
 
 ```
-cargo-smysl: 0.1.0
+cargo-smysl: 0.2.0
 smysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)
 code schema: x.code/v1
-invoked by cargo: /Users/you/.rustup/toolchains/1.94.1-aarch64-apple-darwin/bin/cargo
-workspace: /Users/you/Src/rust_smysl
+invoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo
+workspace: <your repository>
 members: 9
-corpus: /Users/you/Src/rust_smysl/.smysl (present)
+corpus: <your repository>/.smysl (present)
 facts: 50 Rust file(s), 485 function(s), 0 parse failure(s)
 ```
 
@@ -320,6 +320,20 @@ and decides nothing. Precision appears as soon as anything is paired; recall wai
 pending, because recall over half an adjudication flatters whatever was easy to pair.
 
 ---
+
+## The corpus commits are not work
+
+Recording a commit writes files, and those files are a commit. If the tool recorded *that*, you would
+extract, commit, and find one commit left to extract — for ever.
+
+A commit that touches nothing but `.smysl/` is the tool's own output and is skipped: by
+`extract --since`, by `extract --queued`, and by the backlog `doctor` reports. A commit that touches
+`.smysl/` *and* source is a real change and is recorded like any other.
+
+```
+$ cargo smysl extract --since HEAD~4 --estimate
+4 commit(s) since HEAD~4, 3 already recorded, 1 that only write the corpus, 0 to do
+```
 
 ## A week of using it
 

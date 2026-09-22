@@ -1,0 +1,1088 @@
+{
+  "decisions": [
+    {
+      "decision": "`stale --json` now includes the `behind` field in JSON output instead of printing it on stdout.",
+      "kind": "act",
+      "rationale": "To ensure that `--json` outputs only valid JSON, the `behind` information was moved from stdout to the JSON object. This prevents parsing errors when consuming the JSON output.",
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs."
+    },
+    {
+      "decision": "A test is added to ensure that every `--json` command produces valid JSON output.",
+      "kind": "act",
+      "rationale": "To catch future regressions where non-JSON content might be printed with `--json`, a test was added that checks the validity of the JSON output.",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": "The `facts` function now includes an optional `scope` parameter to filter facts based on files, names, or hops.",
+      "kind": "act",
+      "rationale": "To provide more granular control over which facts are displayed, the `facts` function was updated to accept a `scope` parameter that allows filtering by specific criteria.",
+      "quote": "if let Some(mut around) = scope {"
+    },
+    {
+      "decision": "The `extract_command` function now estimates the time required for extraction based on commit size and prints an estimate if `--estimate` is specified.",
+      "kind": "act",
+      "rationale": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.",
+      "quote": "if r.estimate {"
+    },
+    {
+      "decision": "The `extract` function now includes a dry-run mode that simulates the extraction process without actually recording anything.",
+      "kind": "act",
+      "rationale": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function.",
+      "quote": "if dry_run {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system prompt file.",
+      "kind": "act",
+      "rationale": "To provide more flexibility in how the check process is conducted, the `check` function was updated to accept a `prompt_file` parameter for customizing the system prompt.",
+      "quote": "if let Some(path) = c.prompt_file {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `max_commits` parameter to limit the number of commits processed in a range extraction.",
+      "kind": "act",
+      "rationale": "To prevent processing an excessive number of commits at once, which could be resource-intensive, a `max_commits` parameter was added to limit the number of commits processed.",
+      "quote": "let take = if r.max_commits == 0 {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `force` parameter to force re-extraction of already recorded commits.",
+      "kind": "act",
+      "rationale": "To allow users to re-extract commits that have already been recorded, a `force` parameter was added to the `extract_command` function.",
+      "quote": "let kept = if force {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `dry_run` parameter to simulate the extraction process without actually recording anything.",
+      "kind": "act",
+      "rationale": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract_command` function.",
+      "quote": "if r.dry_run {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order when checking for contradictions.",
+      "kind": "act",
+      "rationale": "To provide more flexibility in how the check process is conducted, the `check` function was updated to accept a `no_corpus_order` parameter for disabling corpus order.",
+      "quote": "let mut settings = Settings {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `queued` parameter to handle extraction of commits from a queue.",
+      "kind": "act",
+      "rationale": "To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function.",
+      "quote": "if r.queued {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `parts` parameter to specify the maximum number of parts for splitting the change during checking.",
+      "kind": "act",
+      "rationale": "To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function.",
+      "quote": "let mut settings = Settings {"
+    },
+    {
+      "decision": "`--json` must be JSON, and nothing else",
+      "kind": "act",
+      "rationale": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.",
+      "quote": "`--json` puts JSON on stdout and nothing else."
+    },
+    {
+      "decision": "It now goes in the JSON as a `behind` field",
+      "kind": "act",
+      "rationale": "That line came in with the anchors and was never run with `--json` on a corpus that had any. It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.",
+      "quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error."
+    },
+    {
+      "decision": "On stdout only in the human-readable mode",
+      "kind": "act",
+      "rationale": "That line came in with the anchors and was never run with `--json` on a corpus that had any. It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.",
+      "quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error."
+    },
+    {
+      "decision": "A test runs every `--json` command in this repository",
+      "kind": "act",
+      "rationale": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse. It would have caught this one, and it is the only thing that would: the human output was correct throughout.",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": "`cargo_finds_and_runs_the_subcommand`",
+      "kind": "act",
+      "rationale": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.",
+      "quote": "`cargo_finds_and_runs_the_subcommand`"
+    },
+    {
+      "decision": "`cargo_help_reaches_the_subcommand`",
+      "kind": "act",
+      "rationale": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.",
+      "quote": "`cargo_help_reaches_the_subcommand`"
+    },
+    {
+      "decision": "`the_binary_also_runs_directly`",
+      "kind": "act",
+      "rationale": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.",
+      "quote": "`the_binary_also_runs_directly`"
+    },
+    {
+      "decision": "`every_command_the_help_lists_is_implemented`",
+      "kind": "act",
+      "rationale": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.",
+      "quote": "`every_command_the_help_lists_is_implemented`"
+    },
+    {
+      "decision": "`why_reports_what_rests_on_a_prerequisite`",
+      "kind": "act",
+      "rationale": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.",
+      "quote": "`why_reports_what_rests_on_a_prerequisite`"
+    },
+    {
+      "decision": "`two_corpus_documents_merge_without_a_conflict`",
+      "kind": "act",
+      "rationale": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.",
+      "quote": "`two_corpus_documents_merge_without_a_conflict`"
+    },
+    {
+      "decision": "`a_document_that_does_not_parse_is_left_alone`",
+      "kind": "act",
+      "rationale": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.",
+      "quote": "`a_document_that_does_not_parse_is_left_alone`"
+    },
+    {
+      "decision": "`a_panic_is_reported_as_something_to_send_back`",
+      "kind": "act",
+      "rationale": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.",
+      "quote": "`a_panic_is_reported_as_something_to_send_back`"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "`stale --json` printed which decisions each moved item was behind on stdout before the JSON.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale\n--json` printed which decisions each moved item was behind — on stdout, before\nthe JSON — and anything reading the output got `Expecting value: line 1 column\n3`."
+    },
+    {
+      "decision": 1,
+      "text": "`--json` must be JSON, and nothing else.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 2,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 2,
+      "text": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`"
+    },
+    {
+      "decision": 2,
+      "text": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse"
+    },
+    {
+      "decision": 3,
+      "text": "The `facts` function needs to be able to filter facts based on files, names, or hops.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 3,
+      "text": "The `facts` function should handle cases where no files or names are provided.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "if around.files.is_empty() && rev.is_some() {"
+    },
+    {
+      "decision": 4,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 4,
+      "text": "A range is recorded newest first and is resumable.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip."
+    },
+    {
+      "decision": 4,
+      "text": "The model proposes content only, and every quote it gives is checked against the commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 4,
+      "text": "A commit is extracted once per recipe.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop."
+    },
+    {
+      "decision": 4,
+      "text": "The tool estimates the time required for extraction based on commit size.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:"
+    },
+    {
+      "decision": 5,
+      "text": "The `extract` function must simulate the extraction process without actually recording anything in dry-run mode.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function."
+    },
+    {
+      "decision": 6,
+      "text": "The `check` function needs to be flexible enough to accommodate different system prompts.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To provide more flexibility in how the check process is conducted, the `check` function was updated to accept a `prompt_file` parameter for customizing the system prompt."
+    },
+    {
+      "decision": 7,
+      "text": "The function reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 7,
+      "text": "A range is recorded newest first and is resumable.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip."
+    },
+    {
+      "decision": 7,
+      "text": "The tool expects to cost before starting extraction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Before anything is spent, the run says what it expects to cost — extraction is the slowest thing this tool does, and a person deserves to know that before it starts rather than after."
+    },
+    {
+      "decision": 8,
+      "text": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8). A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop."
+    },
+    {
+      "decision": 9,
+      "text": "The `extract_command` function needs to simulate extraction without recording",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract_command` function."
+    },
+    {
+      "decision": 9,
+      "text": "The `Recording` struct has a `dry_run` field to indicate if it's a dry run",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "let mut done = 0;\nfor (n, sha) in todo.iter().enumerate() {\n    println!(\n        \"\\n[{}/{}] {}\",\n        n + 1,\n        todo.len(),\n        short(sha)\n    );\n    let code = extract(args, Some(sha), r.force, r.dry_run, how);\n    if code != exit::OK {\n        // One commit failing is not the run failing: the rest are still worth recording.\n        eprintln!(\"cargo smysl extract: {} failed; carrying on\", short(sha));\n        continue;\n    }\n    done += 1;\n}"
+    },
+    {
+      "decision": 10,
+      "text": "The `check` function already exists and handles checking for contradictions in the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "There is a need to provide more flexibility in how the check process is conducted.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 11,
+      "text": "A range is recorded newest first and is resumable.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip."
+    },
+    {
+      "decision": 11,
+      "text": "The model proposes content only, and every quote it gives is checked against the commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 11,
+      "text": "A commit is extracted once per recipe.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop."
+    },
+    {
+      "decision": 11,
+      "text": "The tool's own commits are not work.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool's own commits are not work. Dropping them here is what makes the queue reach empty."
+    },
+    {
+      "decision": 12,
+      "text": "The `check` function needs an optional parameter to specify the maximum number of parts for splitting the change.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function."
+    },
+    {
+      "decision": 13,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "`--json` puts JSON on stdout and nothing else."
+    },
+    {
+      "decision": 13,
+      "text": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`."
+    },
+    {
+      "decision": 13,
+      "text": "anything reading the output got `Expecting value: line 1 column 3`",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`."
+    },
+    {
+      "decision": 13,
+      "text": "That line came in with the anchors and was never run with `--json` on a corpus that had any",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any."
+    },
+    {
+      "decision": 14,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 14,
+      "text": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON"
+    },
+    {
+      "decision": 14,
+      "text": "That line came in with the anchors and was never run with `--json` on a corpus that had any",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any"
+    },
+    {
+      "decision": 15,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 15,
+      "text": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON"
+    },
+    {
+      "decision": 15,
+      "text": "That line came in with the anchors and was never run with `--json` on a corpus that had any",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any"
+    },
+    {
+      "decision": 16,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 16,
+      "text": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`."
+    },
+    {
+      "decision": 16,
+      "text": "A test runs every `--json` command in this repository",
+      "kind": "prior-change",
+      "normative": true,
+      "quote": "A test runs every `--json` command in this repository"
+    },
+    {
+      "decision": 18,
+      "text": "The tool must work as an external cargo subcommand",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it."
+    },
+    {
+      "decision": 19,
+      "text": "The tool must work as an external cargo subcommand",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it."
+    },
+    {
+      "decision": 20,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 20,
+      "text": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`."
+    },
+    {
+      "decision": 20,
+      "text": "That line came in with the anchors and was never run with `--json` on a corpus that had any.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any."
+    },
+    {
+      "decision": 20,
+      "text": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs."
+    },
+    {
+      "decision": 20,
+      "text": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 20,
+      "text": "It would have caught this one, and it is the only thing that would: the human output was correct throughout.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "It would have caught this one, and it is the only thing that would: the human output was correct throughout."
+    },
+    {
+      "decision": 21,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 21,
+      "text": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`."
+    },
+    {
+      "decision": 21,
+      "text": "That line came in with the anchors and was never run with `--json` on a corpus that had any.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any."
+    },
+    {
+      "decision": 21,
+      "text": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 22,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 22,
+      "text": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`."
+    },
+    {
+      "decision": 22,
+      "text": "That line came in with the anchors and was never run with `--json` on a corpus that had any.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any."
+    },
+    {
+      "decision": 22,
+      "text": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 23,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 23,
+      "text": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`."
+    },
+    {
+      "decision": 23,
+      "text": "That line came in with the anchors and was never run with `--json` on a corpus that had any.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any."
+    },
+    {
+      "decision": 23,
+      "text": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs."
+    },
+    {
+      "decision": 23,
+      "text": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 23,
+      "text": "It would have caught this one, and it is the only thing that would: the human output was correct throughout.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "It would have caught this one, and it is the only thing that would: the human output was correct throughout."
+    },
+    {
+      "decision": 24,
+      "text": "`human_panic` stands aside when `RUST_BACKTRACE` is set or the build has debug assertions",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`human_panic` stands aside when `RUST_BACKTRACE` is set or the build has debug assertions, which is what a developer wants; this checks the other case, which is what an installed binary does."
+    },
+    {
+      "decision": 24,
+      "text": "The tool must work as an external cargo subcommand",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep printing the `behind` information on stdout in addition to the JSON output.",
+      "reason": "",
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs."
+    },
+    {
+      "decision": 2,
+      "alternative": "Do not add a test for JSON validity",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Add a test that only checks for specific content in the JSON output",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Do not include the `scope` parameter and always display all facts.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Include a different filtering mechanism that does not use files, names, or hops.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Do not estimate the time required for extraction.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "Estimate the time based on a different metric (e.g., number of files).",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Do not include a dry-run mode.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "Include a dry-run mode that only simulates part of the extraction process.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Keep the existing `check` function without any changes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "Add a different type of customization option instead of a prompt file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "No limit on the number of commits processed.",
+      "reason": "",
+      "quote": "To prevent processing an excessive number of commits at once, which could be resource-intensive, a `max_commits` parameter was added to limit the number of commits processed."
+    },
+    {
+      "decision": 8,
+      "alternative": "Do not allow re-extraction of already recorded commits.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Allow re-extraction but without a specific flag.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "No dry-run mode, users have to manually check the output",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "A different approach to preview extraction, such as logging only",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Keep the existing `check` function without any changes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Add a parameter to control corpus order but with different naming or functionality.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Continue to handle extraction of commits without a queued parameter.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Handle extraction of commits from a queue in a separate function.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Keep the existing implementation without adding a `parts` parameter.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Add a different parameter or configuration option for controlling the splitting of changes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "keep printing which decisions each moved item was behind on stdout before the JSON",
+      "reason": "",
+      "quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error."
+    },
+    {
+      "decision": 14,
+      "alternative": "Keep printing which decisions each moved item was behind on stdout before the JSON",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 14,
+      "alternative": "Print which decisions each moved item was behind only in the human-readable mode",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Keep printing which decisions each moved item was behind on stdout before the JSON",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Print which decisions each moved item was behind in the JSON output",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "Do not run a test for every `--json` command",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "Allow non-JSON output with `--json`",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "Keep printing which decisions each moved item was behind on stdout before the JSON.",
+      "reason": "",
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any."
+    },
+    {
+      "decision": 20,
+      "alternative": "Do not require the output to parse in the test.",
+      "reason": "",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 21,
+      "alternative": "Keep printing which decisions each moved item was behind on stdout before the JSON.",
+      "reason": "",
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any."
+    },
+    {
+      "decision": 21,
+      "alternative": "Do not require the output to parse in the test.",
+      "reason": "",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 22,
+      "alternative": "Keep printing which decisions each moved item was behind on stdout before the JSON.",
+      "reason": "",
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any."
+    },
+    {
+      "decision": 22,
+      "alternative": "Do not require the output to parse in the test.",
+      "reason": "",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 23,
+      "alternative": "Keep printing which decisions each moved item was behind on stdout before the JSON.",
+      "reason": "",
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any."
+    },
+    {
+      "decision": 23,
+      "alternative": "Do not require the output to parse in the test for `--json` commands.",
+      "reason": "",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 24,
+      "alternative": "Show a raw panic backtrace",
+      "reason": "",
+      "quote": "In a test build, debug assertions are on, so the raw panic is what a developer sees and should."
+    },
+    {
+      "decision": 24,
+      "alternative": "Do not handle panics specially",
+      "reason": "",
+      "quote": "A panic is reported as a bug in this tool, with somewhere to send it — not as a backtrace."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The JSON output of `stale --json` now includes a `behind` field.",
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs.",
+      "verified": true,
+      "verification_quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs."
+    },
+    {
+      "decision": 1,
+      "text": "The human-readable output of `stale --json` no longer includes the `behind` information.",
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs.",
+      "verified": true,
+      "verification_quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs."
+    },
+    {
+      "decision": 2,
+      "text": "A new test is added to ensure every `--json` command produces valid JSON output",
+      "quote": "To catch future regressions where non-JSON content might be printed with `--json`, a test was added that checks the validity of the JSON output.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "The `facts` function can now filter facts based on the provided scope criteria.",
+      "quote": "if let Some(mut around) = scope {",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "If no files or names are provided, the function will display an error message and return a failure status.",
+      "quote": "if around.files.is_empty() && around.names.is_empty() {",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Users receive an estimate of how long the extraction process will take.",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The tool prints an estimate if `--estimate` is specified.",
+      "quote": "nothing was run: --estimate only says what it would cost",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Users can now preview what would be extracted without making any changes.",
+      "quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "The `check` function now accepts an optional `prompt_file` parameter that allows specifying a custom system prompt file.",
+      "quote": "The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system prompt file.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The function now includes a `max_commits` parameter to limit the number of commits processed in a range extraction.",
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Users can now force the re-extraction of already recorded commits using the `force` parameter.",
+      "quote": "To allow users to re-extract commits that have already been recorded, a `force` parameter was added to the `extract_command` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Users can now preview extraction without making any changes",
+      "quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract_command` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The `dry_run` parameter is used in the `extract` function to determine if recording should occur",
+      "quote": "let code = extract(args, Some(sha), r.force, r.dry_run, how);",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order when checking for contradictions.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Users can now choose whether to disable corpus order during the check process, providing more flexibility.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The `extract_command` function now includes a `queued` parameter to handle extraction of commits from a queue.",
+      "quote": "To allow users to extract commits that have been queued, either by the post-commit hook or manually, a `queued` parameter was added to the `extract_command` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Users can now specify how many parts to split the change into during the checking process.",
+      "quote": "To allow users to control how the change is split into parts during the checking process, a `parts` parameter was added to the `check` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "the JSON is now correctly formatted and does not include extraneous information",
+      "quote": "`--json` must be JSON, and nothing else.",
+      "verified": true,
+      "verification_quote": "let parsed: Result<serde_json::Value, _> = serde_json::from_str(&stdout); assert!(parsed.is_ok(), \"{args:?} put something other than JSON on stdout:\n{}\", stdout.chars().take(200).collect::<String>());"
+    },
+    {
+      "decision": 13,
+      "text": "CI will no longer fail due to the incorrect JSON output",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "`--json` now includes a `behind` field in the JSON output",
+      "quote": "It now goes in the JSON as a `behind` field",
+      "verified": true,
+      "verification_quote": "It now goes in the JSON as a `behind` field"
+    },
+    {
+      "decision": 14,
+      "text": "Which decisions each moved item was behind is printed only in the human-readable mode",
+      "quote": "and on stdout only in the human-readable mode where it belongs.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The `behind` field is added to the JSON output",
+      "quote": "It now goes in the JSON as a `behind` field",
+      "verified": true,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "Which decisions each moved item was behind is printed only in the human-readable mode",
+      "quote": "and on stdout only in the human-readable mode where it belongs",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 16,
+      "text": "The test ensures that the JSON output is valid and only contains JSON.",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse. It would have caught this one, and it is the only thing that would: the human output was correct throughout.",
+      "verified": true,
+      "verification_quote": "let parsed: Result<serde_json::Value, _> = serde_json::from_str(&stdout); assert!(parsed.is_ok(), \"{args:?} put something other than JSON on stdout:\n{}\", stdout.chars().take(200).collect::<String>());"
+    },
+    {
+      "decision": 18,
+      "text": "The test ensures that the subcommand is reachable and lists all expected commands",
+      "quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it.",
+      "verified": true,
+      "verification_quote": "assert!(out.status.success(), \"{all}\");\nfor command in [\n    \"doctor\", \"facts\", \"extract\", \"why\", \"check\", \"evidence\", \"stale\", \"review\",\n] {\n    assert!(\n        all.contains(command),\n        \"help does not list `{command}`:\n{all}\"\n    );\n}"
+    },
+    {
+      "decision": 19,
+      "text": "The binary can be run directly and also as a cargo subcommand",
+      "quote": "let direct = Command::new(BIN).arg(\"--version\").output().unwrap();\nlet as_cargo = Command::new(BIN)\n    .args([\"smysl\", \"--version\"])\n    .output()\n    .unwrap();\nassert!(direct.status.success() && as_cargo.status.success());\nassert_eq!(direct.stdout, as_cargo.stdout);",
+      "verified": true,
+      "verification_quote": "assert!(direct.status.success() && as_cargo.status.success());\nassert_eq!(direct.stdout, as_cargo.stdout);"
+    },
+    {
+      "decision": 20,
+      "text": "`stale --json` now prints which decisions each moved item was behind as a `behind` field in the JSON.",
+      "quote": "`stale --json` now prints which decisions each moved item was behind as a `behind` field in the JSON.",
+      "verified": true,
+      "verification_quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs."
+    },
+    {
+      "decision": 20,
+      "text": "The test that runs every `--json` command in this repository will catch any similar issues in the future.",
+      "quote": "The test that runs every `--json` command in this repository will catch any similar issues in the future.",
+      "verified": true,
+      "verification_quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 21,
+      "text": "The JSON output is now correctly formatted and contains a `behind` field.",
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any.",
+      "verified": true,
+      "verification_quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error. CI caught it; nothing else would have."
+    },
+    {
+      "decision": 21,
+      "text": "The test now correctly verifies that the JSON output is valid JSON.",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.",
+      "verified": true,
+      "verification_quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 22,
+      "text": "The JSON output is now correctly formatted and contains a `behind` field.",
+      "quote": "That line came in with the anchors and was never run with `--json` on a corpus that had any.",
+      "verified": true,
+      "verification_quote": "It did not: a later change printed which decisions each moved item was behind, on stdout, before the JSON — so anything reading the output got a parse error. CI caught it; nothing else would have."
+    },
+    {
+      "decision": 22,
+      "text": "The test now correctly verifies that the JSON output is valid JSON.",
+      "quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.",
+      "verified": true,
+      "verification_quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 23,
+      "text": "`stale --json` now prints which decisions each moved item was behind as a `behind` field in the JSON.",
+      "quote": "`stale --json` now prints which decisions each moved item was behind as a `behind` field in the JSON.",
+      "verified": true,
+      "verification_quote": "It now goes in the JSON as a `behind` field, and on stdout only in the human-readable mode where it belongs."
+    },
+    {
+      "decision": 23,
+      "text": "The test for `--json` commands will catch any future issues with non-JSON output on stdout.",
+      "quote": "The test for `--json` commands will catch any future issues with non-JSON output on stdout.",
+      "verified": true,
+      "verification_quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 24,
+      "text": "A panic is reported as a crash report with instructions on where to send it",
+      "quote": "A panic is reported as a bug in this tool, with somewhere to send it — not as a backtrace.",
+      "verified": true,
+      "verification_quote": "assert!(said.contains(\"crash report\") && said.contains(\"rust_smysl\"), \"an installed binary points the person at where to send it: {said}\");"
+    }
+  ]
+}

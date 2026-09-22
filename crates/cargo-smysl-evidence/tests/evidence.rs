@@ -669,3 +669,61 @@ fn the_gate_runs_the_test_against_a_mutant_and_puts_the_file_back() {
     );
     std::fs::remove_dir_all(&root).ok();
 }
+
+/// A backup whose name points outside the workspace is refused, not obeyed.
+///
+/// `.smysl/` travels with a repository, so a crafted file under `mutation-backup/` is something a
+/// person can receive by cloning. Restoring it by name would be an arbitrary write.
+#[test]
+fn a_backup_naming_a_path_outside_the_workspace_is_refused() {
+    let root = std::env::temp_dir().join(format!("smysl-escape-{}", std::process::id()));
+    let outside = std::env::temp_dir().join(format!("smysl-escape-target-{}", std::process::id()));
+    std::fs::create_dir_all(root.join(".smysl/mutation-backup")).unwrap();
+    std::fs::write(&outside, "the file as it was").unwrap();
+
+    // `..%<name>` decodes to `../<name>`: one step out of the workspace.
+    let escaping = format!("..%{}.orig", outside.file_name().unwrap().to_string_lossy());
+    std::fs::write(
+        root.join(".smysl/mutation-backup").join(&escaping),
+        "what an attacker would rather you had",
+    )
+    .unwrap();
+    // And an absolute one, spelled the same way.
+    std::fs::write(
+        root.join(".smysl/mutation-backup").join(format!(
+            "%{}.orig",
+            outside.display().to_string().replace('/', "%")
+        )),
+        "likewise",
+    )
+    .unwrap();
+
+    let said = cargo_smysl_evidence::recover(&root);
+    assert_eq!(
+        std::fs::read_to_string(&outside).unwrap(),
+        "the file as it was",
+        "nothing outside the workspace is written"
+    );
+    assert_eq!(said.len(), 2, "and both are reported: {said:?}");
+    assert!(
+        said.iter().all(|s| s.contains("outside this workspace")),
+        "{said:?}"
+    );
+
+    // A well-formed backup still restores.
+    std::fs::create_dir_all(root.join("src")).unwrap();
+    std::fs::write(root.join("src/lib.rs"), "mutated").unwrap();
+    std::fs::write(
+        root.join(".smysl/mutation-backup/src%lib.rs.orig"),
+        "original",
+    )
+    .unwrap();
+    cargo_smysl_evidence::recover(&root);
+    assert_eq!(
+        std::fs::read_to_string(root.join("src/lib.rs")).unwrap(),
+        "original"
+    );
+
+    std::fs::remove_dir_all(&root).ok();
+    std::fs::remove_file(&outside).ok();
+}

@@ -1,0 +1,1237 @@
+{
+  "decisions": [
+    {
+      "decision": "Take the home directory out of the published results and the docs",
+      "kind": "act",
+      "rationale": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout.",
+      "quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran. The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": "Set MSRV to Rust 1.86",
+      "kind": "act",
+      "rationale": "To ensure compatibility with dependencies that require newer versions of Rust.",
+      "quote": "rust-version = \"1.86\""
+    },
+    {
+      "decision": "Add homepage, keywords, categories, and README to each crate",
+      "kind": "act",
+      "rationale": "To provide necessary metadata for crates.io listing and discovery.",
+      "quote": "homepage     = \"https://github.com/vulogov/rust_smysl\"\nkeywords     = [\"cargo-subcommand\", \"rationale\", \"provenance\", \"smysl\", \"decisions\"]\ncategories   = [\"development-tools::cargo-plugins\", \"development-tools\"]"
+    },
+    {
+      "decision": "Publish eight crates in a specific order",
+      "kind": "act",
+      "rationale": "To ensure path dependencies are resolved correctly by crates.io.",
+      "quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand."
+    },
+    {
+      "decision": "Keep `cargo-smysl` keywords separate from the workspace",
+      "kind": "act",
+      "rationale": "`cargo-smysl` is the crate people install, and they find it by searching for a cargo subcommand.",
+      "quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand."
+    },
+    {
+      "decision": "Document the release process in `docs/releasing.md`",
+      "kind": "act",
+      "rationale": "To provide clear instructions for maintaining and publishing the project.",
+      "quote": "It also records what to be sure of before publishing, since a version can be yanked but never removed, and a crate name is claimed on first publish."
+    },
+    {
+      "decision": "Exclude `cargo-smysl-eval` from publication",
+      "kind": "act",
+      "rationale": "`cargo-smysl-eval` is evaluation tooling that reads files outside its own package.",
+      "quote": "Eight crates publish; the evaluation tooling does not, and says so."
+    },
+    {
+      "decision": "Use `gix` for reading git objects instead of running `git`",
+      "kind": "act",
+      "rationale": "To ensure self-contained operation without relying on external binaries.",
+      "quote": "# Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`."
+    },
+    {
+      "decision": "Pin dependencies to specific versions in the workspace",
+      "kind": "act",
+      "rationale": "To maintain consistency across all crates in the workspace.",
+      "quote": "# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON."
+    },
+    {
+      "decision": "Add `hosted` feature to some crates for optional TLS support",
+      "kind": "act",
+      "rationale": "To provide flexibility in network requirements.",
+      "quote": "# Hosted providers need TLS; the default build has no network stack at all (D18)."
+    },
+    {
+      "decision": "Use `serde_json` and `toml` for configuration files",
+      "kind": "act",
+      "rationale": "To support human-editable configuration files.",
+      "quote": "# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON."
+    },
+    {
+      "decision": "Include `README.md` in each crate for crates.io listing",
+      "kind": "act",
+      "rationale": "To provide brief descriptions for each crate on crates.io.",
+      "quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository."
+    },
+    {
+      "decision": "Remove home directory paths from published results and documentation.",
+      "kind": "act",
+      "rationale": "A public repository should not carry either the username or the layout, and the results themselves are worth keeping.",
+      "quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": "Rewrite paths to `<repo>` and `~` in published results.",
+      "kind": "act",
+      "rationale": "Paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": "Redact home directory paths as the harness writes.",
+      "kind": "act",
+      "rationale": "The harness now redacts as it writes, so a later run does not put them back.",
+      "quote": "The harness now redacts as it writes, so a later run does not put them back."
+    },
+    {
+      "decision": "Update documentation to use `<your repository>` instead of `/Users/you/...`.",
+      "kind": "act",
+      "rationale": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now.",
+      "quote": "They say `<your repository>` and `~/.rustup/...` now."
+    },
+    {
+      "decision": "Update documentation to quote version 0.2.0 instead of a version that has moved on.",
+      "kind": "act",
+      "rationale": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on.",
+      "quote": "and quote 0.2.0 rather than a version that has moved on."
+    },
+    {
+      "decision": "Do not include the username in the published results.",
+      "kind": "act",
+      "rationale": "A public repository should not carry either the username or the layout.",
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": "Keep the remaining `/home/...` in the S3 patches as placeholders.",
+      "kind": "act",
+      "rationale": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.",
+      "quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path."
+    },
+    {
+      "decision": "Ensure deterministic commands do not involve a model.",
+      "kind": "act",
+      "rationale": "Deterministic commands are safe to gate on today, because they involve no model at all.",
+      "quote": "Deterministic commands are safe to gate on today, because they involve no model at all."
+    },
+    {
+      "decision": "Use a local provider by default for `extract`, `check`, and `evidence` commands.",
+      "kind": "act",
+      "rationale": "A local provider is free and the corpus shows it.",
+      "quote": "The default, and the one to use. Every figure in the README comes from it."
+    },
+    {
+      "decision": "Use a hosted provider for `check` when precision matters.",
+      "kind": "act",
+      "rationale": "A hosted provider like DeepSeek is twice the recall of the 14B and far less noise, about $2 per pass over 93 changes. Worth it when a judgement matters.",
+      "quote": "Twice the recall of the 14B and far less noise, about $2 per pass over 93 changes. Worth it when a judgement matters."
+    },
+    {
+      "decision": "Use a hosted provider for `evidence` when the corpus must stay clean.",
+      "kind": "act",
+      "rationale": "A hosted pro-class model is recommended for `evidence` when the corpus must stay clean.",
+      "quote": "When the corpus must stay clean, use a hosted pro-class model."
+    },
+    {
+      "decision": "Do not use 7B and below models for `check`, as they over-produce decisions.",
+      "kind": "act",
+      "rationale": "A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B.",
+      "quote": "A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B."
+    },
+    {
+      "decision": "Remove the home directory from published results and documentation.",
+      "kind": "act",
+      "rationale": "The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping. The harness now redacts as it writes, so a later run does not put them back.",
+      "quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran. The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": "Update sample output in documentation to use `<your repository>` instead of `/Users/you/...`.",
+      "kind": "act",
+      "rationale": "The commit message states that two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now.",
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now."
+    },
+    {
+      "decision": "Update version references in documentation from 0.2.0 to a more current version.",
+      "kind": "act",
+      "rationale": "The commit message states that the remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.",
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on."
+    },
+    {
+      "decision": "Rewrite paths in S3 score logs to `<repo>` and `~` byte for byte.",
+      "kind": "act",
+      "rationale": "The commit message states that the harness now redacts as it writes, so a later run does not put them back.",
+      "quote": "The harness now redacts as it writes, so a later run does not put them back."
+    },
+    {
+      "decision": "Remove `/home/...` placeholders from S3 patches in test code.",
+      "kind": "act",
+      "rationale": "The commit message states that the remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.",
+      "quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path."
+    },
+    {
+      "decision": "Update `doctor` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "kind": "act",
+      "rationale": "The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "```\ncargo-smysl: 0.1.0\nsmysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)\ncode schema: x.code/v1\ninvoked by cargo: /Users/you/.rustup/toolchains/1.94.1-aarch64-apple-darwin/bin/cargo\nworkspace: /Users/you/Src/rust_smysl\nmembers: 9\ncorpus: /Users/you/Src/rust_smysl/.smysl (present)\nfacts: 50 Rust file(s), 485 function(s), 0 parse failure(s)\n```"
+    },
+    {
+      "decision": "Update `facts` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "kind": "act",
+      "rationale": "The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "```\ncargo smysl facts                       # the working tree\ncargo smysl facts HEAD --json           # one commit, machine-readable\ncargo smysl facts --file crates/cargo-smysl-verdict/src/matching.rs\n```"
+    },
+    {
+      "decision": "Update `extract` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "kind": "act",
+      "rationale": "The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "```\ncargo smysl extract HEAD\ncargo smysl extract b2dbe48 --dry-run      # see what it would record, record nothing\ncargo smysl extract b2dbe48 --force        # redo a commit already recorded\n```"
+    },
+    {
+      "decision": "Update `why` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "kind": "act",
+      "rationale": "The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "```\ncargo smysl why p/gb2dbe4820872-2-1\n```"
+    },
+    {
+      "decision": "Update `check` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "kind": "act",
+      "rationale": "The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "```\ncargo smysl check                       # HEAD against the corpus\ncargo smysl check --patch changes.diff  # a patch, or `-` for stdin\ncargo smysl check --json\ncargo smysl check --strict              # exit 5 on findings, for a hook or CI\ncargo smysl check --passes 1            # faster, noisier\n```"
+    },
+    {
+      "decision": "Update `evidence` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "kind": "act",
+      "rationale": "The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "```\ncargo smysl evidence p/gb2dbe4820872-2-1                   # retrieve facts, judge, say what follows\ncargo smysl evidence p/gb2dbe4820872-2-1 --tests           # also shortlist tests that might bear on it\ncargo smysl evidence p/gb2dbe4820872-2-1 --tests --link    # run them, record readings, propose edges\ncargo smysl evidence p/gb2dbe4820872-2-1 --tests --link --mutate 3   # and check the tests notice\n```"
+    },
+    {
+      "decision": "Update `review` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "kind": "act",
+      "rationale": "The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "```\ncargo smysl review\n```"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The command is the result; where the machine kept its files is not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 1,
+      "text": "A public repository should not carry either the username or the layout.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 2,
+      "text": "Dependencies require at least Rust version 1.86.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "# cargo_metadata 0.23 requires 1.86; smysl 1.3 requires 1.79; syn 3 requires 1.71."
+    },
+    {
+      "decision": 2,
+      "text": "The project aims to maintain compatibility with the latest dependencies.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "crates.io requires metadata for listing and discovery",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "To provide necessary metadata for crates.io listing and discovery."
+    },
+    {
+      "decision": 4,
+      "text": "crates.io resolves path dependencies by version",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand."
+    },
+    {
+      "decision": 5,
+      "text": "`cargo-smysl` is the crate people install via search for a cargo subcommand.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand."
+    },
+    {
+      "decision": 6,
+      "text": "The project aims to maintain compatibility with the latest dependencies.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "crates.io requires metadata for listing and discovery.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "To provide necessary metadata for crates.io listing and discovery."
+    },
+    {
+      "decision": 7,
+      "text": "`cargo-smysl-eval` is evaluation tooling that reads files outside its own package.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`cargo-smysl-eval` is evaluation tooling that reads files outside its own package."
+    },
+    {
+      "decision": 8,
+      "text": "The tool must never run the `git` binary.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`."
+    },
+    {
+      "decision": 9,
+      "text": "The project has a modular structure with multiple crates.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Eight crates publish; the evaluation tooling does not, and says so."
+    },
+    {
+      "decision": 9,
+      "text": "Dependencies require at least Rust version 1.86.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "# cargo_metadata 0.23 requires 1.86; smysl 1.3 requires 1.79; syn 3 requires 1.71."
+    },
+    {
+      "decision": 10,
+      "text": "Some crates require TLS support for hosted providers.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Hosted providers need TLS; the default build has no network stack at all (D18)."
+    },
+    {
+      "decision": 11,
+      "text": "The project needs to support human-editable configuration files.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "To support human-editable configuration files."
+    },
+    {
+      "decision": 12,
+      "text": "A published package cannot reach outside itself",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository."
+    },
+    {
+      "decision": 13,
+      "text": "The harness now redacts as it writes",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The harness now redacts as it writes, so a later run does not put them back."
+    },
+    {
+      "decision": 13,
+      "text": "S3 score logs record the command each oracle ran",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran."
+    },
+    {
+      "decision": 13,
+      "text": "A public repository should not carry either the username or the layout",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 14,
+      "text": "The home directory should not be included in the published results.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 14,
+      "text": "Paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 15,
+      "text": "The command each oracle ran is recorded in S3 score logs.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran."
+    },
+    {
+      "decision": 15,
+      "text": "A public repository should not carry either the username or the layout.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 15,
+      "text": "Two documents showed sample output with `/Users/you/...` in it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format."
+    },
+    {
+      "decision": 16,
+      "text": "Two documents showed sample output with `/Users/you/...` in it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format;"
+    },
+    {
+      "decision": 17,
+      "text": "Two documents showed sample output with `/Users/you/...` in it",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format;"
+    },
+    {
+      "decision": 17,
+      "text": "The project's version has moved on from 0.2.0",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on."
+    },
+    {
+      "decision": 18,
+      "text": "A public repository should not carry either the username or the layout.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 19,
+      "text": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path."
+    },
+    {
+      "decision": 20,
+      "text": "Deterministic commands must behave identically whether cargo invoked them or you did.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Cargo treats any executable named `cargo-<name>` on your `PATH` as the subcommand `cargo <name>`. So with\n`cargo-smysl` installed:"
+    },
+    {
+      "decision": 20,
+      "text": "Deterministic commands are safe to gate on today, because they involve no model at all.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "Deterministic commands are safe to gate on today, because they involve no model at all:"
+    },
+    {
+      "decision": 21,
+      "text": "A local provider is free",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A local provider, start to finish:"
+    },
+    {
+      "decision": 21,
+      "text": "The corpus shows it",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every model below was actually run against `rust_smysl`'s evaluation set by this project."
+    },
+    {
+      "decision": 22,
+      "text": "A hosted provider like DeepSeek offers higher recall and lower noise compared to local models.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "hosted | **`deepseek-v4-pro`** | — | 35 | **1.0** | Twice the recall of the 14B and far less noise, about $2 per pass over 93 changes. Worth it when a judgement matters"
+    },
+    {
+      "decision": 22,
+      "text": "The cost of using a hosted provider is acceptable for higher precision.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The same `check` on a hosted `deepseek-v4-pro` cost about $2 per pass over 93 changes, and found twice as many contradictions."
+    },
+    {
+      "decision": 23,
+      "text": "A hosted provider is needed for `evidence` when the corpus must stay clean.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "When the corpus must stay clean, Gemini flash-class: 100% / 88% precision on decisions and prerequisites, at a fifth to a third of the recall."
+    },
+    {
+      "decision": 23,
+      "text": "The hosted provider should be pro-class for `evidence`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "When the corpus must stay clean, Gemini flash-class: 100% / 88% precision on decisions and prerequisites, at a fifth to a third of the recall."
+    },
+    {
+      "decision": 24,
+      "text": "A 7B model on this task produces about ten findings per change.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B."
+    },
+    {
+      "decision": 24,
+      "text": "`check` is already advisory at one-in-ten precision on the 14B.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B."
+    },
+    {
+      "decision": 25,
+      "text": "The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout. The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 25,
+      "text": "The harness now redacts as it writes, so a later run does not put them back.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The harness now redacts as it writes, so a later run does not put them back."
+    },
+    {
+      "decision": 26,
+      "text": "Two documents showed sample output with `/Users/you/...` in it.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The commit message states that two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format;"
+    },
+    {
+      "decision": 27,
+      "text": "The commit message states that the remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path."
+    },
+    {
+      "decision": 28,
+      "text": "The harness now redacts as it writes",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The harness now redacts as it writes, so a later run does not put them back."
+    },
+    {
+      "decision": 28,
+      "text": "A public repository should not carry either the username or the layout",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 29,
+      "text": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path."
+    },
+    {
+      "decision": 30,
+      "text": "The paths in the published results and docs should not carry either the username or the layout.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 30,
+      "text": "Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 31,
+      "text": "The paths in the output of the `facts` command were previously using `/Users/you/Src/rust_smysl`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Installation and model setup: [`cargo-smysl-install.md`](cargo-smysl-install.md).\nWhat has been measured, and on which model: the [README](../README.md)."
+    },
+    {
+      "decision": 31,
+      "text": "The commit message states that paths should be rewritten to `<repo>` and `~` byte for byte otherwise.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the\ncommand each oracle ran. The command is the result; where the machine kept its\nfiles is not, and a public repository should not carry either the username or\nthe layout."
+    },
+    {
+      "decision": 32,
+      "text": "The paths in the published results and docs should not carry either the username or the layout.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 32,
+      "text": "Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 33,
+      "text": "The paths in the published results and docs should not carry either the username or the layout.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 33,
+      "text": "Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 34,
+      "text": "The paths in the published results and docs should not carry either the username or the layout.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 34,
+      "text": "Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 35,
+      "text": "The paths in the published results and docs should not carry either the username or the layout.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 35,
+      "text": "Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 36,
+      "text": "The tool reads git itself.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself."
+    },
+    {
+      "decision": 36,
+      "text": "Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the home directory in the published results and the docs.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Set MSRV to a lower version that is compatible with all dependencies.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 2,
+      "alternative": "Do not set an explicit MSRV and let users manage their Rust versions independently.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Do not add homepage, keywords, categories, and README to each crate",
+      "reason": "",
+      "quote": "To provide necessary metadata for crates.io listing and discovery."
+    },
+    {
+      "decision": 4,
+      "alternative": "Publish all crates simultaneously",
+      "reason": "",
+      "quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on."
+    },
+    {
+      "decision": 4,
+      "alternative": "Publish crates in any order",
+      "reason": "",
+      "quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on."
+    },
+    {
+      "decision": 5,
+      "alternative": "Use the same keywords as the workspace.",
+      "reason": "",
+      "quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand."
+    },
+    {
+      "decision": 6,
+      "alternative": "Do not document the release process.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "Include `cargo-smysl-eval` in publication",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Running the `git` binary to read commit messages and changed files.",
+      "reason": "",
+      "quote": "Rejected: Running the `git` binary to read commit messages and changed files."
+    },
+    {
+      "decision": 9,
+      "alternative": "Do not pin dependencies to specific versions in the workspace.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Pin dependencies to different versions across crates.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Do not add a `hosted` feature and require TLS support in all builds.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 10,
+      "alternative": "Add a different feature name for optional TLS support.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 11,
+      "alternative": "Use a different serialization format for configuration files.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Keep all documentation in a single place",
+      "reason": "",
+      "quote": "Rejected: Keep all documentation in a single place"
+    },
+    {
+      "decision": 12,
+      "alternative": "Use external links for additional documentation",
+      "reason": "",
+      "quote": "Rejected: Use external links for additional documentation"
+    },
+    {
+      "decision": 13,
+      "alternative": "Keep home directory paths in published results and documentation",
+      "reason": "",
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 14,
+      "alternative": "Keep the home directory in the published results.",
+      "reason": "",
+      "quote": "A public repository should not carry either the username or the layout."
+    },
+    {
+      "decision": 14,
+      "alternative": "Rewrite paths to a different placeholder.",
+      "reason": "",
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 15,
+      "alternative": "Do not redact home directory paths as the harness writes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 15,
+      "alternative": "Redact home directory paths after the harness has written them.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "Keep using `/Users/you/...` in the documentation.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 16,
+      "alternative": "Use a different placeholder that could still be misleading.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "Continue using the outdated version number",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 17,
+      "alternative": "Use a placeholder version number instead of a specific one",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "alternative": "Remove or replace the `/home/...` placeholders.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 20,
+      "alternative": "Include model involvement in deterministic commands.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "Use a hosted provider by default",
+      "reason": "",
+      "quote": "A hosted provider, with the `hosted` feature installed:"
+    },
+    {
+      "decision": 22,
+      "alternative": "Use a local model for `check`.",
+      "reason": "",
+      "quote": "ollama | **`qwen2.5-coder:14b`** | 9.0 GB | 35 | **3.9** | **The default, and the one to use.** Every figure in the README comes from it."
+    },
+    {
+      "decision": 23,
+      "alternative": "Use a local provider for `evidence`.",
+      "reason": "",
+      "quote": "When the corpus must stay clean, Gemini flash-class: 100% / 88% precision on decisions and prerequisites, at a fifth to a third of the recall."
+    },
+    {
+      "decision": 24,
+      "alternative": "Use 7B and below models for `check`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 25,
+      "alternative": "Keep the home directory in published results and documentation.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "Keep using `/Users/you/...` in the documentation.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "Use a different placeholder than `<your repository>` and `~/.rustup/...`.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Keep version references as 0.2.0",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Update version references to a specific version other than the current one",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "Keep the original paths in S3 score logs",
+      "reason": "",
+      "quote": "The commit message states that the harness now redacts as it writes, so a later run does not put them back."
+    },
+    {
+      "decision": 29,
+      "alternative": "Keep the `/home/...` placeholders in S3 patches.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 30,
+      "alternative": "Keep the original paths with usernames and layouts.",
+      "reason": "",
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now."
+    },
+    {
+      "decision": 31,
+      "alternative": "Keep using `/Users/you/Src/rust_smysl` in the output of the `facts` command.",
+      "reason": "",
+      "quote": "The commit message states that paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 32,
+      "alternative": "Keep the original paths with usernames.",
+      "reason": "",
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now."
+    },
+    {
+      "decision": 33,
+      "alternative": "Keep the original paths with usernames.",
+      "reason": "",
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now."
+    },
+    {
+      "decision": 34,
+      "alternative": "Keep the original paths with usernames.",
+      "reason": "",
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now."
+    },
+    {
+      "decision": 35,
+      "alternative": "Keep the original paths with usernames.",
+      "reason": "",
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now."
+    },
+    {
+      "decision": 36,
+      "alternative": "Keep using `/Users/you/Src/rust_smysl` in the output.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "The harness now redacts as it writes, so a later run does not put them back.",
+      "quote": "The harness now redacts as it writes, so a later run does not put them back.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 1,
+      "text": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on.",
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "Developers must use at least Rust version 1.86 to work on the project.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The CI checks will enforce the MSRV requirement.",
+      "quote": "# The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Each crate now carries its own README.md",
+      "quote": "Each crate now carries its own README.md",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Each crate now has keywords and categories from the workspace",
+      "quote": "Each crate now has keywords and categories from the workspace",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Eight crates publish; the evaluation tooling does not",
+      "quote": "Eight crates publish; the evaluation tooling does not, and says so.",
+      "verified": true,
+      "verification_quote": "Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package)."
+    },
+    {
+      "decision": 6,
+      "text": "Clear instructions for maintaining and publishing the project are provided.",
+      "quote": "To provide clear instructions for maintaining and publishing the project.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "`cargo-smysl-eval` will not be published to crates.io.",
+      "quote": "`cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package).",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The tool can operate without relying on external binaries, ensuring self-contained operation.",
+      "quote": "To ensure self-contained operation without relying on external binaries.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Maintains consistency across all crates in the workspace.",
+      "quote": "To maintain consistency across all crates in the workspace.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Ensures that all crates use compatible versions of their dependencies.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Crates that need TLS support can enable it via the `hosted` feature.",
+      "quote": "Hosted providers need TLS; the default build has no network stack at all (D18).",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Crates that do not require TLS support can use the default build without it.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 11,
+      "text": "The project will use `serde_json` and `toml` for configuration files, making them human-editable.",
+      "quote": "Use `serde_json` and `toml` for configuration files",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "Each crate has a short README.md for crates.io listing",
+      "quote": "To provide brief descriptions for each crate on crates.io.",
+      "verified": true,
+      "verification_quote": "Each crate now carries its own README.md"
+    },
+    {
+      "decision": 13,
+      "text": "Paths are rewritten to `<repo>` and `~` in published results and documentation",
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "verified": true,
+      "verification_quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 14,
+      "text": "Paths in published results will be rewritten to `<repo>` and `~`.",
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "verified": true,
+      "verification_quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 15,
+      "text": "The S3 score logs will no longer contain `/Users/<name>/...` paths.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran."
+    },
+    {
+      "decision": 15,
+      "text": "The sample output in the documents will no longer contain `/Users/you/...` paths.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format."
+    },
+    {
+      "decision": 16,
+      "text": "The updated documentation uses `<your repository>` and `~/.rustup/...` instead of `/Users/you/...`.",
+      "quote": "they say `<your repository>` and `~/.rustup/...` now",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "Documentation now uses `<your repository>` and `~/.rustup/...` instead of `/Users/you/...`",
+      "quote": "they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 17,
+      "text": "Documentation quotes version 0.2.0 instead of a version that has moved on",
+      "quote": "they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "The harness now redacts as it writes, so a later run does not put them back.",
+      "quote": "The harness now redacts as it writes, so a later run does not put them back.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "Deterministic commands can be safely used in CI pipelines without worrying about model accuracy or availability.",
+      "quote": "Deterministic commands are safe to gate on today, because they involve no model at all:",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 21,
+      "text": "The tool will use a local provider for `extract`, `check`, and `evidence` commands by default",
+      "quote": "Use a local provider by default for `extract`, `check`, and `evidence` commands.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "Higher precision in `check` results.",
+      "quote": "Twice the recall of the 14B and far less noise, about $2 per pass over 93 changes. Worth it when a judgement matters.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "Increased cost for using a hosted provider.",
+      "quote": "The same `check` on a hosted `deepseek-v4-pro` cost about $2 per pass over 93 changes, and found twice as many contradictions.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "The hosted provider will be used for `evidence` when the corpus must stay clean.",
+      "quote": "When the corpus must stay clean, Gemini flash-class: 100% / 88% precision on decisions and prerequisites, at a fifth to a third of the recall.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "The use of 7B and below models for `check` is discouraged due to their tendency to over-produce decisions.",
+      "quote": "A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "The paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout. The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 25,
+      "text": "The harness now redacts as it writes, so a later run does not put them back.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "The harness now redacts as it writes, so a later run does not put them back."
+    },
+    {
+      "decision": 26,
+      "text": "The sample output in the documentation now uses `<your repository>` instead of `/Users/you/...`.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "they say `<your repository>` and `~/.rustup/...` now"
+    },
+    {
+      "decision": 27,
+      "text": "Version references in documentation are updated from 0.2.0 to a more current version.",
+      "quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 28,
+      "text": "Paths are rewritten to `<repo>` and `~` byte for byte in S3 score logs",
+      "quote": "Take the home directory out of the published results and the docs",
+      "verified": true,
+      "verification_quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping."
+    },
+    {
+      "decision": 29,
+      "text": "The harness now redacts as it writes, so a later run does not put them back.",
+      "quote": "The harness now redacts as it writes, so a later run does not put them back.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 30,
+      "text": "The `doctor` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "quote": "DECISION 30: Update `doctor` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "verified": true,
+      "verification_quote": "cargo-smysl: 0.2.0\nsmysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)\ncode schema: x.code/v1\ninvoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo\nworkspace: <your repository>\nmembers: 9\ncorpus: <your repository>/.smysl (present)"
+    },
+    {
+      "decision": 31,
+      "text": "The output of the `facts` command now uses `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "quote": "DECISION 31: Update `facts` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "verified": true,
+      "verification_quote": "cargo-smysl: 0.2.0\nsmysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)\ncode schema: x.code/v1\ninvoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo\nworkspace: <your repository>\nmembers: 9\ncorpus: <your repository>/.smysl (present)"
+    },
+    {
+      "decision": 32,
+      "text": "The `extract` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "quote": "DECISION 32: Update `extract` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "verified": true,
+      "verification_quote": "Installation and model setup: [`cargo-smysl-install.md`](cargo-smysl-install.md). What has been measured, and on which model: the [README](../README.md)."
+    },
+    {
+      "decision": 33,
+      "text": "The `why` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "quote": "DECISION 33: Update `why` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 34,
+      "text": "The `check` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "quote": "DECISION 34: Update `check` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "verified": true,
+      "verification_quote": "cargo-smysl: 0.2.0\nsmysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)\ncode schema: x.code/v1\ninvoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo\nworkspace: <your repository>\nmembers: 9\ncorpus: <your repository>/.smysl (present)"
+    },
+    {
+      "decision": 35,
+      "text": "The `evidence` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "quote": "DECISION 35: Update `evidence` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 36,
+      "text": "The `review` command output now uses `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "quote": "Update `review` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.",
+      "verified": true,
+      "verification_quote": "cargo smysl review --as-person you     # answer what is waiting"
+    }
+  ]
+}

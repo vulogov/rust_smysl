@@ -73,30 +73,31 @@ pub fn commit_record(store: &Store, labels: &BTreeMap<Uid, Vec<Label>>, sha: &st
     // Label -> item, for everything this commit recorded.
     let mut items: BTreeMap<String, Item> = BTreeMap::new();
     let mut anchors: BTreeMap<String, Uid> = BTreeMap::new();
+    // Every label of every unit, not the first: identical reasoning recorded by two commits is one
+    // unit with two labels, and reading only the first attributes it to whichever commit came first.
     for (uid, unit) in store.units() {
-        let Some(label) = labels.get(uid).and_then(|l| l.first()) else {
-            continue;
-        };
-        let label = label.as_str().to_string();
-        if !label.contains(&format!("g{short}")) {
-            continue;
+        for label in labels.get(uid).into_iter().flatten() {
+            let label = label.as_str().to_string();
+            if !label.contains(&format!("g{short}")) {
+                continue;
+            }
+            let item = Item {
+                label: label.clone(),
+                gist: unit.core.gist.clone(),
+                body: unit.core.body.clone().unwrap_or_default(),
+                status: unit.core.status.to_string(),
+                source: unit
+                    .core
+                    .source
+                    .as_ref()
+                    .map(|s| s.reference.clone())
+                    .unwrap_or_default(),
+            };
+            if label.starts_with("a/") {
+                anchors.insert(item.gist.clone(), *uid);
+            }
+            items.insert(label, item);
         }
-        let item = Item {
-            label: label.clone(),
-            gist: unit.core.gist.clone(),
-            body: unit.core.body.clone().unwrap_or_default(),
-            status: unit.core.status.to_string(),
-            source: unit
-                .core
-                .source
-                .as_ref()
-                .map(|s| s.reference.clone())
-                .unwrap_or_default(),
-        };
-        if label.starts_with("a/") {
-            anchors.insert(item.gist.clone(), *uid);
-        }
-        items.insert(label, item);
     }
 
     // The label scheme is the grouping: `d/…-2` owns `p/…-2-1`, `r/…-2-1`, `q/…-2-1`.

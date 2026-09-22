@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "decision": "Take clippy's note on the extraction pass sort",
+      "kind": "act",
+      "rationale": "The comparator was reversing an ordering that `sort_by_key` with `Reverse` states directly. It failed CI on main and on the v0.1.0 tag, and a local run had called it clean — the CI command is the one to trust.",
+      "quote": "`unnecessary_sort_by`: the comparator was reversing an ordering that\n`sort_by_key` with `Reverse` states directly."
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The comparator was reversing an ordering that `sort_by_key` with `Reverse` states directly.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the comparator was reversing an ordering that `sort_by_key` with `Reverse` states directly."
+    },
+    {
+      "decision": 1,
+      "text": "It failed CI on main and on the v0.1.0 tag.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It failed CI on main and on the v0.1.0 tag,"
+    },
+    {
+      "decision": 1,
+      "text": "A local run had called it clean — the CI command is the one to trust.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "a local run had called it clean — the CI command is the one to trust."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Keep the original sorting method.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 1,
+      "alternative": "Use a different sorting method that does not involve reversing an ordering.",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The code now uses `sort_by_key` with `Reverse` as suggested by clippy, which aligns with the CI command's expectations.",
+      "quote": "Take clippy's note on the extraction pass sort",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

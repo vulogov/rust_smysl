@@ -1,0 +1,1200 @@
+{
+  "decisions": [
+    {
+      "decision": "A null in a model's answer costs that field, not the answer",
+      "kind": "act",
+      "rationale": "To handle cases where the model writes `null` where a string was asked for and serde refuses the whole reply.",
+      "quote": "Every field of every answer now reads a null as the absent value it is"
+    },
+    {
+      "decision": "The README now leads with the seven deterministic commands rather than with extraction",
+      "kind": "act",
+      "rationale": "To focus on the part that needs no model and is worth someone's time today.",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction"
+    },
+    {
+      "decision": "It also no longer implies `stale` works on a fresh clone",
+      "kind": "act",
+      "rationale": "To clarify that `stale` reads a corpus, which is written by extraction.",
+      "quote": "It also no longer implies `stale` works on a fresh clone"
+    },
+    {
+      "decision": "The model-dependent third is listed with what it was measured at, model named, in the same table",
+      "kind": "act",
+      "rationale": "To provide transparency about the performance of model-dependent commands.",
+      "quote": "The model-dependent third is listed with what it was measured at, model named, in the same table"
+    },
+    {
+      "decision": "`check` ships advisory: it prints findings and exits 0 unless `--strict`",
+      "kind": "act",
+      "rationale": "To acknowledge the limitations of the model's precision and advise caution.",
+      "quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`"
+    },
+    {
+      "decision": "`extract` is honest about being weak",
+      "kind": "act",
+      "rationale": "To disclose the limitations of the extraction process based on measured performance.",
+      "quote": "`extract` is honest about being weak"
+    },
+    {
+      "decision": "Two-pass agreement is used by default for `check` to remove false flags",
+      "kind": "act",
+      "rationale": "To improve the precision of findings by ensuring two independent runs agree.",
+      "quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default"
+    },
+    {
+      "decision": "The tool assigns labels, sources and statuses; a model proposes content only",
+      "kind": "act",
+      "rationale": "To ensure that the tool maintains control over the integrity of the corpus.",
+      "quote": "The tool assigns labels, sources and statuses; a model proposes wording only"
+    },
+    {
+      "decision": "Staleness is detected by item body hash rather than line ranges",
+      "kind": "act",
+      "rationale": "To prevent false positives for functions that have merely moved.",
+      "quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is"
+    },
+    {
+      "decision": "Review is recorded as confirmations, withdrawals with reasons, or closures with notes",
+      "kind": "act",
+      "rationale": "To maintain a transparent and immutable record of review actions.",
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution"
+    },
+    {
+      "decision": "`bench` measures the model you chose on your own commits",
+      "kind": "act",
+      "rationale": "To allow users to measure and verify the performance of their chosen models.",
+      "quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from"
+    },
+    {
+      "decision": "The tool does not trust a cloned corpus as an established fact",
+      "kind": "act",
+      "rationale": "To encourage users to verify claims in the corpus independently.",
+      "quote": "A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says"
+    },
+    {
+      "decision": "Every field of every answer now reads a null as the absent value it is",
+      "kind": "act",
+      "rationale": "To handle cases where the model writes `null` where a string was asked for, and serde refuses the whole reply.",
+      "quote": "Every field of every answer now reads a null as the absent value it is"
+    },
+    {
+      "decision": "Rewrites now always end with a newline",
+      "kind": "act",
+      "rationale": "To ensure that the file is correctly handled by both the queue and the hook, which have different methods of appending to the file.",
+      "quote": "Rewrites now always end with a newline"
+    },
+    {
+      "decision": "`stale --json` now includes the `behind` field in JSON output instead of printing it on stdout",
+      "kind": "act",
+      "rationale": "To ensure that `--json` outputs only valid JSON, preventing parsing errors when consuming the JSON output.",
+      "quote": "`stale --json` now includes the `behind` field in JSON output instead of printing it on stdout"
+    },
+    {
+      "decision": "A test is added to ensure that every `--json` command produces valid JSON output",
+      "kind": "act",
+      "rationale": "To catch future regressions where non-JSON content might be printed with `--json`, ensuring the output remains valid.",
+      "quote": "A test is added to ensure that every `--json` command produces valid JSON output"
+    },
+    {
+      "decision": "The `facts` function now includes an optional `scope` parameter to filter facts based on files, names, or hops",
+      "kind": "act",
+      "rationale": "To provide more granular control over which facts are displayed.",
+      "quote": "if let Some(mut around) = scope {"
+    },
+    {
+      "decision": "The `extract_command` function now estimates the time required for extraction based on commit size and prints …",
+      "kind": "act",
+      "rationale": "To give users an idea of how long the extraction process will take, especially when processing multiple commits.",
+      "quote": "if r.estimate {"
+    },
+    {
+      "decision": "The `extract` function now includes a dry-run mode that simulates the extraction process without actually …",
+      "kind": "act",
+      "rationale": "To allow users to preview what would be extracted without making any changes.",
+      "quote": "if dry_run {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system …",
+      "kind": "act",
+      "rationale": "To provide more flexibility in how the check process is conducted.",
+      "quote": "if let Some(path) = c.prompt_file {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `max_commits` parameter to limit the number of commits processed",
+      "kind": "act",
+      "rationale": "To prevent processing an excessive number of commits at once, which could be resource-intensive.",
+      "quote": "let take = if r.max_commits == 0 {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `force` parameter to force re-extraction of already recorded …",
+      "kind": "act",
+      "rationale": "To allow users to re-extract commits that have already been recorded.",
+      "quote": "let kept = if force {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `dry_run` parameter to simulate the extraction process without …",
+      "kind": "act",
+      "rationale": "To allow users to preview what would be extracted without making any changes.",
+      "quote": "if r.dry_run {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order",
+      "kind": "act",
+      "rationale": "To provide more flexibility in how the check process is conducted.",
+      "quote": "if r.no_corpus_order {"
+    },
+    {
+      "decision": "`--json` must be JSON, and nothing else",
+      "kind": "act",
+      "rationale": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON — and anything reading the output got `Expecting value: line 1 column 3`.",
+      "quote": "`--json` must be JSON, and nothing else."
+    },
+    {
+      "decision": "The `extract` function now includes a dry-run mode that simulates the extraction process without actually recording anything",
+      "kind": "act",
+      "rationale": "To allow users to preview what would be extracted without making any changes.",
+      "quote": "if dry_run {"
+    },
+    {
+      "decision": "The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system prompt file",
+      "kind": "act",
+      "rationale": "To provide more flexibility in how the check process is conducted.",
+      "quote": "if let Some(path) = c.prompt_file {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `force` parameter to force re-extraction of already recorded commits",
+      "kind": "act",
+      "rationale": "To allow users to re-extract commits that have already been recorded.",
+      "quote": "let kept = if force {"
+    },
+    {
+      "decision": "The `extract_command` function now includes a `dry_run` parameter to simulate the extraction process without recording anything",
+      "kind": "act",
+      "rationale": "To allow users to preview what would be extracted without making any changes.",
+      "quote": "if r.dry_run {"
+    },
+    {
+      "decision": "A `null` where a string was asked for costs that field, not the whole answer",
+      "kind": "act",
+      "rationale": "a model wrote `\"quote\": null` for one item, serde refused the answer, and the decision it belonged to lost every prerequisite, alternative and consequence — about a minute of a model, thrown away over one field",
+      "quote": "A `null` where a string was asked for costs that field, not the whole answer"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "The model wrote `null` where a string was asked for",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two decisions of twenty-eight lost every prerequisite, alternative and consequence they had, because the model wrote `null` where a string was asked for and serde refused the whole reply:"
+    },
+    {
+      "decision": 1,
+      "text": "serde refuses the whole reply when encountering a null in a field that expects a string",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two decisions of twenty-eight lost every prerequisite, alternative and consequence they had, because the model wrote `null` where a string was asked for and serde refused the whole reply:"
+    },
+    {
+      "decision": 2,
+      "text": "Two thirds of the commands never call a model.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Two thirds of this tool never calls a model."
+    },
+    {
+      "decision": 2,
+      "text": "The part that needs no model is worth someone's time today.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "It focuses on the part that needs no model and is worth someone's time today."
+    },
+    {
+      "decision": 3,
+      "text": "`stale` reads a corpus",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 3,
+      "text": "A corpus is written by extraction",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A corpus is written by extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 4,
+      "text": "The project has measured the performance of the 'extract' command.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six commits labelled blind by the repository owner (73 decisions, 68 prerequisites, 29 alternatives), three systems adjudicated item by item. Precision / recall:"
+    },
+    {
+      "decision": 4,
+      "text": "The 'extract' command relies on a model to propose content.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "| Command | What it does | Needs a model |\n|---|---|---|\n| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |"
+    },
+    {
+      "decision": 5,
+      "text": "`check` was right about one flag in ten on a free local model and about nine in ten on a hosted one.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "On a free local model about one flag in ten was correct."
+    },
+    {
+      "decision": 5,
+      "text": "`check` is meant to be advisory, not a gate.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "`check` ships advisory: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": 6,
+      "text": "The 'extract' command relies on a model to propose content.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "| Command | What it does | Needs a model |\n|---|---|---|\n| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |"
+    },
+    {
+      "decision": 6,
+      "text": "The project has measured the performance of the 'extract' command.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six commits labelled blind by the repository owner (73 decisions, 68 prerequisites, 29 alternatives), three systems adjudicated item by item. Precision / recall:"
+    },
+    {
+      "decision": 7,
+      "text": "The tool assigns labels, sources and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool assigns labels, sources and statuses; a model proposes content only."
+    },
+    {
+      "decision": 7,
+      "text": "A single run never raises a status.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A single run never raises a status."
+    },
+    {
+      "decision": 8,
+      "text": "The tool assigns labels, sources and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool assigns labels, sources and statuses; a model proposes content only."
+    },
+    {
+      "decision": 8,
+      "text": "Ensures that the tool maintains control over the integrity of the corpus.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Ensures that the tool maintains control over the integrity of the corpus."
+    },
+    {
+      "decision": 9,
+      "text": "Staleness detection needs to be accurate to avoid false positives.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Staleness detection is needed for reasoning that becomes unexamined because the code under it changed."
+    },
+    {
+      "decision": 9,
+      "text": "Functions that have moved should not be flagged as stale.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "a function that merely moved is not flagged"
+    },
+    {
+      "decision": 10,
+      "text": "The tool assigns labels, sources, and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool assigns labels, sources and statuses; a model proposes content only."
+    },
+    {
+      "decision": 10,
+      "text": "Maintains a transparent and immutable record of review actions.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Ensures that the tool maintains control over the integrity of the corpus."
+    },
+    {
+      "decision": 12,
+      "text": "The README now leads with the seven deterministic commands rather than with extraction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction."
+    },
+    {
+      "decision": 12,
+      "text": "`stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 12,
+      "text": "A corpus is written by extraction, which asks a model once per commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A corpus is written by extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 13,
+      "text": "The model wrote `null` where a string was asked for",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two decisions of twenty-eight lost every prerequisite, alternative and consequence they had, because the model wrote `null` where a string was asked for and serde refused the whole reply:"
+    },
+    {
+      "decision": 13,
+      "text": "serde refuses the whole reply when encountering a null in a field that expects a string",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two decisions of twenty-eight lost every prerequisite, alternative and consequence they had, because the model wrote `null` where a string was asked for and serde refused the whole reply:"
+    },
+    {
+      "decision": 14,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 14,
+      "text": "A line of full-length revisions run together is split back into the shas somebody meant.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A line of full-length revisions run together is split back into the shas somebody meant."
+    },
+    {
+      "decision": 14,
+      "text": "A line that is not a plausible revision is reported and dropped.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A line that is not a plausible revision is reported and dropped."
+    },
+    {
+      "decision": 15,
+      "text": "`stale --json` printed which decisions each moved item was behind — on stdout, before the JSON",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`stale --json` printed which decisions each moved item was behind — on stdout, before the JSON"
+    },
+    {
+      "decision": 15,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 16,
+      "text": "`stale --json` printed which decisions each moved item was behind — on stdout, before the JSON",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`stale --json` printed which decisions each moved item was behind — on stdout, before the JSON"
+    },
+    {
+      "decision": 16,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 17,
+      "text": "The `facts` function already exists and handles checking for contradictions in the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The existing `check` function already exists and handles checking for contradictions in the corpus."
+    },
+    {
+      "decision": 17,
+      "text": "There is a need to provide more flexibility in how the check process is conducted.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "There is a need to provide more flexibility in how the check process is conducted."
+    },
+    {
+      "decision": 18,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 18,
+      "text": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:"
+    },
+    {
+      "decision": 19,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 19,
+      "text": "A commit's files are the change; the working tree's are not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 19,
+      "text": "`--json` must be JSON, and nothing else.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else"
+    },
+    {
+      "decision": 20,
+      "text": "The existing `check` function already exists and handles checking for contradictions in the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The existing `check` function already exists and handles checking for contradictions in the corpus."
+    },
+    {
+      "decision": 20,
+      "text": "There is a need to provide more flexibility in how the check process is conducted.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "There is a need to provide more flexibility in how the check process is conducted."
+    },
+    {
+      "decision": 21,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 21,
+      "text": "A commit's files are the change; the working tree's are not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 21,
+      "text": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B.",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Minutes a commit of this size is likely to take, from what this project measured on a local 14B:"
+    },
+    {
+      "decision": 22,
+      "text": "A commit's files are the change; the working tree's are not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not."
+    },
+    {
+      "decision": 22,
+      "text": "Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 23,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 23,
+      "text": "`--json` must be JSON, and nothing else.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else."
+    },
+    {
+      "decision": 24,
+      "text": "The existing `check` function already exists and handles checking for contradictions in the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The existing `check` function already exists and handles checking for contradictions in the corpus."
+    },
+    {
+      "decision": 24,
+      "text": "There is a need to provide more flexibility in how the check process is conducted.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "There is a need to provide more flexibility in how the check process is conducted."
+    },
+    {
+      "decision": 25,
+      "text": "`stale --json` printed which decisions each moved item was behind — on stdout, before the JSON",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "CI went red on a corpus that had grown enough for the case to arise: `stale --json` printed which decisions each moved item was behind — on stdout, before the JSON"
+    },
+    {
+      "decision": 25,
+      "text": "`--json` must be JSON, and nothing else",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "`--json` must be JSON, and nothing else."
+    },
+    {
+      "decision": 26,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 26,
+      "text": "A commit's files are the change; the working tree's are not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 26,
+      "text": "The tool must work as an external cargo subcommand.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it."
+    },
+    {
+      "decision": 27,
+      "text": "The existing `check` function already exists and handles checking for contradictions in the corpus.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The `check` function already exists and handles checking for contradictions in the corpus."
+    },
+    {
+      "decision": 27,
+      "text": "There is a need to provide more flexibility in how the check process is conducted.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "There is a need to provide more flexibility in how the check process is conducted."
+    },
+    {
+      "decision": 28,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 28,
+      "text": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A range is recorded newest first and is resumable: a commit already recorded for this recipe costs nothing to skip."
+    },
+    {
+      "decision": 28,
+      "text": "The model proposes content only, and every quote it gives is checked against the commit.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 28,
+      "text": "A commit is extracted once per recipe.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit is extracted once per recipe (D7) — `--force` is for a deliberate redo, not for a retry loop."
+    },
+    {
+      "decision": 29,
+      "text": "The tool reads git itself and assigns labels, sources and statuses.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool reads git itself and assigns labels, sources and statuses (D5); the model proposes content only, and every quote it gives is checked against the commit (D8)."
+    },
+    {
+      "decision": 29,
+      "text": "A commit's files are the change; the working tree's are not.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit's files are the change; the working tree's are not. Without a revision and without `--file`, the scope is what the names reach — otherwise every file counts as touched and the selection says nothing."
+    },
+    {
+      "decision": 29,
+      "text": "The tool must work as an external cargo subcommand.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "The tool must work as an external cargo subcommand, so these tests go through real `cargo`, with the directory of the built `cargo-smysl` first on PATH, as `cargo install` would leave it."
+    },
+    {
+      "decision": 30,
+      "text": "a model wrote `null` where a string was asked for",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "a model wrote \"quote\": null for one item"
+    },
+    {
+      "decision": 30,
+      "text": "serde refused the whole reply when encountering a null field",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "serde refused the answer"
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "The entire answer is discarded when a null is encountered",
+      "reason": "",
+      "quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands."
+    },
+    {
+      "decision": 2,
+      "alternative": "Leading with extraction, which asks a model once per commit.",
+      "reason": "",
+      "quote": "Rejected: Leading with extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 3,
+      "alternative": "`stale` could imply it works on a fresh clone without a corpus",
+      "reason": "",
+      "quote": "It also no longer implies `stale` works on a fresh clone. It reads a corpus, and a corpus is written by extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 4,
+      "alternative": "Not listing the model-dependent commands with their performance metrics.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "`check` could exit with an error code if any flags are found.",
+      "reason": "",
+      "quote": "Rejected: `check` could exit with an error code if any flags are found."
+    },
+    {
+      "decision": 5,
+      "alternative": "`check` could be more strict by default, requiring manual confirmation of findings.",
+      "reason": "",
+      "quote": "Rejected: `check` could be more strict by default, requiring manual confirmation of findings."
+    },
+    {
+      "decision": 6,
+      "alternative": "The project could downplay the limitations of the 'extract' command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "The project could not disclose the measured performance of the 'extract' command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 7,
+      "alternative": "One-pass agreement for `check`.",
+      "reason": "",
+      "quote": "Rejected: One-pass agreement for `check`."
+    },
+    {
+      "decision": 8,
+      "alternative": "The model assigns labels, sources and statuses; the tool proposes content only.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 8,
+      "alternative": "Both the tool and the model assign labels, sources and statuses.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 9,
+      "alternative": "Detect staleness by line ranges.",
+      "reason": "",
+      "quote": "Rejected: Detect staleness by line ranges."
+    },
+    {
+      "decision": 10,
+      "alternative": "Not recording reviews as confirmations, withdrawals with reasons, or closures with notes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 12,
+      "alternative": "Leading with extraction, which asks a model once per commit.",
+      "reason": "",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction."
+    },
+    {
+      "decision": 12,
+      "alternative": "`stale` could imply it works on a fresh clone without a corpus",
+      "reason": "",
+      "quote": "It also no longer implies `stale` works on a fresh clone."
+    },
+    {
+      "decision": 13,
+      "alternative": "Handle null values differently in serde",
+      "reason": "",
+      "quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands."
+    },
+    {
+      "decision": 14,
+      "alternative": "Keep the existing behaviour where rewrites do not always end with a newline.",
+      "reason": "",
+      "quote": "Rejected: Keep the existing behaviour where rewrites do not always end with a newline."
+    },
+    {
+      "decision": 14,
+      "alternative": "Ensure that the hook also handles files without trailing newlines correctly.",
+      "reason": "",
+      "quote": "Rejected: Ensure that the hook also handles files without trailing newlines correctly."
+    },
+    {
+      "decision": 15,
+      "alternative": "Keep printing the `behind` information on stdout in addition to the JSON output.",
+      "reason": "",
+      "quote": "Rejected: Keep printing the `behind` information on stdout in addition to the JSON output."
+    },
+    {
+      "decision": 16,
+      "alternative": "Do not add a test for JSON validity",
+      "reason": "",
+      "quote": "Rejected: Do not add a test for JSON validity"
+    },
+    {
+      "decision": 16,
+      "alternative": "Add a test that only checks for specific content in the JSON output",
+      "reason": "",
+      "quote": "Rejected: Add a test that only checks for specific content in the JSON output"
+    },
+    {
+      "decision": 17,
+      "alternative": "Do not include the `scope` parameter and always display all facts.",
+      "reason": "",
+      "quote": "Rejected: Do not include the `scope` parameter and always display all facts."
+    },
+    {
+      "decision": 17,
+      "alternative": "Include a different filtering mechanism that does not use files, names, or hops.",
+      "reason": "",
+      "quote": "Rejected: Include a different filtering mechanism that does not use files, names, or hops."
+    },
+    {
+      "decision": 18,
+      "alternative": "Do not estimate the time required for extraction.",
+      "reason": "",
+      "quote": "Rejected: Do not estimate the time required for extraction."
+    },
+    {
+      "decision": 18,
+      "alternative": "Estimate the time based on a different metric (e.g., number of files).",
+      "reason": "",
+      "quote": "Rejected: Estimate the time based on a different metric (e.g., number of files)."
+    },
+    {
+      "decision": 19,
+      "alternative": "Do not include a dry-run mode.",
+      "reason": "",
+      "quote": "Rejected: Do not include a dry-run mode."
+    },
+    {
+      "decision": 19,
+      "alternative": "Include a dry-run mode that only simulates part of the extraction process.",
+      "reason": "",
+      "quote": "Rejected: Include a dry-run mode that only simulates part of the extraction process."
+    },
+    {
+      "decision": 20,
+      "alternative": "Keep the existing `check` function without any changes.",
+      "reason": "",
+      "quote": "Rejected: Keep the existing `check` function without any changes."
+    },
+    {
+      "decision": 20,
+      "alternative": "Add a different type of customization option instead of a prompt file.",
+      "reason": "",
+      "quote": "Rejected: Add a different type of customization option instead of a prompt file."
+    },
+    {
+      "decision": 21,
+      "alternative": "Do not include the `max_commits` parameter and allow processing any number of commits.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "Set a different default value for the `max_commits` parameter.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 22,
+      "alternative": "Do not include the `force` parameter.",
+      "reason": "",
+      "quote": "To allow users to re-extract commits that have already been recorded."
+    },
+    {
+      "decision": 22,
+      "alternative": "Include a different mechanism for re-extraction.",
+      "reason": "",
+      "quote": "To allow users to re-extract commits that have already been recorded."
+    },
+    {
+      "decision": 23,
+      "alternative": "Keep the existing behaviour where rewrites do not always end with a newline.",
+      "reason": "",
+      "quote": "Rejected: Keep the existing behaviour where rewrites do not always end with a newline."
+    },
+    {
+      "decision": 23,
+      "alternative": "Ensure that the hook also handles files without trailing newlines correctly.",
+      "reason": "",
+      "quote": "Rejected: Ensure that the hook also handles files without trailing newlines correctly."
+    },
+    {
+      "decision": 24,
+      "alternative": "Keep the existing `check` function without any changes.",
+      "reason": "",
+      "quote": "Rejected: Keep the existing `check` function without any changes."
+    },
+    {
+      "decision": 24,
+      "alternative": "Add a different type of customization option instead of a prompt file.",
+      "reason": "",
+      "quote": "Rejected: Add a different type of customization option instead of a prompt file."
+    },
+    {
+      "decision": 25,
+      "alternative": "Keep printing the `behind` information on stdout in addition to the JSON output.",
+      "reason": "",
+      "quote": "It now goes in the JSON as a `behind` field, and on stdout only in\nthe human-readable mode where it belongs."
+    },
+    {
+      "decision": 26,
+      "alternative": "Do not include a dry-run mode.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 26,
+      "alternative": "Include a dry-run mode that only simulates part of the extraction process.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Keep the existing `check` function without any changes.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 27,
+      "alternative": "Add a different type of customization option instead of a prompt file.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "Continue to handle extraction of commits without a force parameter.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 28,
+      "alternative": "Handle re-extraction of already recorded commits in a separate function.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "Do not include a dry-run mode.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 29,
+      "alternative": "Include a dry-run mode that only simulates part of the extraction process.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 30,
+      "alternative": "the whole answer is discarded when a null field is encountered",
+      "reason": "",
+      "quote": ""
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "A model that gives a null in a field loses only that field, not the entire answer",
+      "quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "README.md is updated to lead with the seven deterministic commands.",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction.",
+      "verified": true,
+      "verification_quote": "The README now leads with the seven deterministic commands rather than with extraction."
+    },
+    {
+      "decision": 3,
+      "text": "Clarifies that `stale` requires a pre-existing corpus",
+      "quote": "It also no longer implies `stale` works on a fresh clone. It reads a corpus, and a corpus is written by extraction, which asks a model once per commit.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Provides transparency about the performance of model-dependent commands.",
+      "quote": "The model-dependent third is listed with what it was measured at, model named, in the same table.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Users are advised to manually review the findings printed by `check`.",
+      "quote": "`check` ships advisory: it prints findings and exits 0 unless `--strict`.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The tool does not enforce any action based on the findings of `check`.",
+      "quote": "`check` ships advisory: it prints findings and exits 0 unless `--strict`.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Users are informed about the limitations of the 'extract' command, which helps them understand its reliability and decide whether to use it.",
+      "quote": "Decisions are the reliable kind; the systems differ in recall, not correctness. **Prerequisites are the weak kind** — the system that finds most of them is right 41% of the time, and the one that is right 88% of the time finds a fifth. Alternatives have the worst precision of the three.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "The precision of findings is improved by ensuring two independent runs agree.",
+      "quote": "To improve the precision of findings by ensuring two independent runs agree.",
+      "verified": true,
+      "verification_quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default."
+    },
+    {
+      "decision": 8,
+      "text": "The integrity of the corpus is maintained by the tool.",
+      "quote": "Ensures that the tool maintains control over the integrity of the corpus.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "The model's proposals are limited to content only, without affecting labels, sources, or statuses.",
+      "quote": "The tool assigns labels, sources and statuses; a model proposes content only.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Functions that have merely moved are not flagged as stale.",
+      "quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.",
+      "verified": true,
+      "verification_quote": "a function that merely moved is not flagged"
+    },
+    {
+      "decision": 10,
+      "text": "The tool maintains a transparent and immutable record of review actions.",
+      "quote": "Maintains a transparent and immutable record of review actions.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The tool does not trust a cloned corpus as an established fact.",
+      "quote": "A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 13,
+      "text": "A model that gives a bad field loses that field",
+      "quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands.",
+      "verified": true,
+      "verification_quote": "Every field of every answer now reads a null as the absent value it is — which each of them already had a default for. A model that gives a bad field loses that field, and the rest of the call it took a minute to produce stands."
+    },
+    {
+      "decision": 14,
+      "text": "Rewrites now always end with a newline, ensuring consistent file handling by both the queue and the hook.",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "Reading the file will repair lines that do not have trailing newlines, splitting them correctly.",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 14,
+      "text": "Lines that are not plausible revisions will be reported and dropped.",
+      "quote": "A line that is not a plausible revision is reported and dropped, because guessing is worse.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "`stale --json` now includes the `behind` field in JSON output instead of printing it on stdout",
+      "quote": "`stale --json` now includes the `behind` field in JSON output instead of printing it on stdout",
+      "verified": true,
+      "verification_quote": "`stale --json` now includes the `behind` field in JSON output instead of printing it on stdout"
+    },
+    {
+      "decision": 16,
+      "text": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse.",
+      "quote": "A test is added to ensure that every `--json` command produces valid JSON output",
+      "verified": true,
+      "verification_quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 17,
+      "text": "Users can now filter which facts are displayed based on specific criteria such as files, names, or hops.",
+      "quote": "To provide more granular control over which facts are displayed, the `facts` function was updated to accept a `scope` parameter that allows filtering by specific criteria.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 18,
+      "text": "Users receive an estimate of how long the extraction process will take.",
+      "quote": "To give users an idea of how long the extraction process will take, especially when processing multiple commits, an estimation feature was added.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 19,
+      "text": "Users can now preview what would be extracted without making any changes.",
+      "quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 20,
+      "text": "Users can now specify a custom system prompt file when using the `check` function, providing more flexibility in how the check process is conducted.",
+      "quote": "The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system …",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 21,
+      "text": "Users can now limit the number of commits processed at once, which helps manage resource usage.",
+      "quote": "To prevent processing an excessive number of commits at once, which could be resource-intensive.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "Users can now force the re-extraction of already recorded commits.",
+      "quote": "To allow users to re-extract commits that have already been recorded.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 22,
+      "text": "The `extract_command` function's behavior is extended to include a `force` parameter.",
+      "quote": "To allow users to re-extract commits that have already been recorded.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "Rewrites now always end with a newline, ensuring consistent file handling by both the queue and the hook.",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "Reading the file will repair lines that do not have trailing newlines, splitting them correctly.",
+      "quote": "Rewrites now always end with a newline, and reading repairs what is already there: a line of full-length revisions run together is split back into the shas somebody meant, rather than thrown away.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "Lines that are not plausible revisions will be reported and dropped.",
+      "quote": "A line that is not a plausible revision is reported and dropped, because guessing is worse.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "Users can now choose whether to disable corpus order during the check process, providing more flexibility.",
+      "quote": "The `check` function now includes an optional `no_corpus_order` parameter that allows disabling corpus order when checking for contradictions.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 25,
+      "text": "`--json` outputs only valid JSON",
+      "quote": "`--json` must be JSON, and nothing else.",
+      "verified": true,
+      "verification_quote": "A test runs every `--json` command in this repository, which records its own commits, and requires the output to parse."
+    },
+    {
+      "decision": 26,
+      "text": "Users can now preview what would be extracted without making any changes.",
+      "quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 26,
+      "text": "The `dry_run` parameter is used in the `extract` function to determine if recording should occur.",
+      "quote": "let code = extract(args, Some(sha), r.force, r.dry_run, how);",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 27,
+      "text": "The `check` function now accepts an optional `prompt_file` parameter that allows specifying a custom system prompt file.",
+      "quote": "The `check` function now includes an optional `prompt_file` parameter that allows specifying a custom system prompt file.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 28,
+      "text": "Users can now force re-extraction of already recorded commits.",
+      "quote": "To allow users to re-extract commits that have already been recorded, a `force` parameter was added to the `extract_command` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 29,
+      "text": "Users can now preview what would be extracted without making any changes.",
+      "quote": "To allow users to preview what would be extracted without making any changes, a dry-run mode was added to the `extract` function.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 29,
+      "text": "The `dry_run` parameter is used in the `extract` function to determine if recording should occur.",
+      "quote": "let code = extract(args, Some(sha), r.force, r.dry_run, how);",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 30,
+      "text": "every prerequisite, alternative and consequence of the decision are lost",
+      "quote": "the decision it belonged to lost every prerequisite, alternative and consequence",
+      "verified": true,
+      "verification_quote": "lost every prerequisite, alternative and consequence"
+    }
+  ]
+}

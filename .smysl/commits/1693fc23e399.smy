@@ -1,0 +1,312 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g1693fc23e399-1 { status: cited, source: { kind: file, ref: Cargo.toml@1693fc23e399 }, "code:kind": act, "ingest:quote": "rust-version = \"1.86\"" }
+~ Set MSRV to Rust 1.86
+
+To ensure compatibility with dependencies that require newer versions of Rust.
+
+@decision d/g1693fc23e399-2 { status: cited, source: { kind: file, ref: Cargo.toml@1693fc23e399 }, "code:kind": act, "ingest:quote": "homepage     = \"https://github.com/vulogov/rust_smysl\"\nkeywords     = [\"cargo-subcommand\", \"rationale\", \"provenance\", \"smysl\", \"decisions\"]\ncategories   = [\"development-tools::cargo-plugins\", \"development-tools\"]" }
+~ Add homepage, keywords, categories, and README to each crate
+
+To provide necessary metadata for crates.io listing and discovery.
+
+@decision d/g1693fc23e399-3 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": act, "ingest:quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand." }
+~ Publish eight crates in a specific order
+
+To ensure path dependencies are resolved correctly by crates.io.
+
+@decision d/g1693fc23e399-4 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": act, "ingest:quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand." }
+~ Keep `cargo-smysl` keywords separate from the workspace
+
+`cargo-smysl` is the crate people install via search for a cargo subcommand.
+
+@decision d/g1693fc23e399-5 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": act, "ingest:quote": "It also records what to be sure of before publishing, since a version can be yanked but never removed, and a crate name is claimed on first publish." }
+~ Document the release process in `docs/releasing.md`
+
+To provide clear instructions for maintaining and publishing the project.
+
+@decision d/g1693fc23e399-6 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": act, "ingest:quote": "Eight crates publish; the evaluation tooling does not, and says so." }
+~ Exclude `cargo-smysl-eval` from publication
+
+`cargo-smysl-eval` is evaluation tooling that reads files outside its own package.
+
+@decision d/g1693fc23e399-7 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/Cargo.toml@1693fc23e399 }, "code:kind": act, "ingest:quote": "# Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`." }
+~ Use `gix` for reading git objects instead of running `git`
+
+To ensure self-contained operation without relying on external binaries.
+
+@decision d/g1693fc23e399-8 { status: cited, source: { kind: file, ref: Cargo.toml@1693fc23e399 }, "code:kind": act, "ingest:quote": "cargo-smysl-corpus   = { path = \"crates/cargo-smysl-corpus\",   version = \"0.2.0-dev\" }" }
+~ Pin dependencies to specific versions in the workspace
+
+To maintain consistency across all crates in the workspace.
+
+@decision d/g1693fc23e399-9 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/Cargo.toml@1693fc23e399 }, "code:kind": act, "ingest:quote": "# Hosted providers need TLS; the default build has no network stack at all (D18)." }
+~ Add `hosted` feature to some crates for optional TLS support
+
+To provide flexibility in network requirements.
+
+@decision d/g1693fc23e399-10 { status: cited, source: { kind: file, ref: crates/cargo-smysl/Cargo.toml@1693fc23e399 }, "code:kind": act, "ingest:quote": "# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON." }
+~ Use `serde_json` and `toml` for configuration files
+
+To support human-editable configuration files.
+
+@decision d/g1693fc23e399-11 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": act, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ Include `README.md` in each crate for crates.io listing
+
+To provide brief descriptions for each crate on crates.io.
+
+@decision d/g1693fc23e399-12 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": act, "ingest:quote": "`cargo package` fails for everything past wave one until wave one is on crates.io — expected, and written down so it is not mistaken for a fault." }
+~ Document the expected behavior of `cargo package` before first publish
+
+To clarify expectations for developers during the release process.
+
+@constraint p/g1693fc23e399-1-1 { status: cited, source: { kind: file, ref: Cargo.toml@1693fc23e399 }, "code:kind": existing-behaviour, "ingest:quote": "# cargo_metadata 0.23 requires 1.86; smysl 1.3 requires 1.79; syn 3 requires 1.71." }
+~ Dependencies require at least Rust version 1.86.
+
+@constraint p/g1693fc23e399-1-2 { status: speculative, "code:kind": assumption }
+~ The project aims to maintain compatibility with the latest dependencies.
+
+@constraint p/g1693fc23e399-11-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": existing-behaviour, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ A published package cannot reach outside itself
+
+@constraint p/g1693fc23e399-2-2 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": To provide necessary metadata for crates.io listing and discovery. }
+~ crates.io requires metadata for listing and discovery
+
+@constraint p/g1693fc23e399-3-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": existing-behaviour, "ingest:quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand." }
+~ crates.io resolves path dependencies by version
+
+@constraint p/g1693fc23e399-3-2 { status: cited, source: { kind: file, ref: docs/releasing.md@1693fc23e399 }, "code:kind": existing-behaviour, "ingest:quote": Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ Eight crates publish; the evaluation tooling does not
+
+@constraint p/g1693fc23e399-4-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": assumption, "ingest:quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand." }
+~ `cargo-smysl` is the crate people install, and they find it by searching for a cargo subcommand.
+
+@constraint p/g1693fc23e399-5-1 { status: cited, source: { kind: file, ref: docs/releasing.md@1693fc23e399 }, "code:kind": existing-behaviour, "ingest:quote": Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ Eight crates publish; the evaluation tooling does not.
+
+@constraint p/g1693fc23e399-12-2 { status: cited, source: { kind: file, ref: docs/releasing.md@1693fc23e399 }, "code:kind": existing-behaviour, "ingest:quote": "crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ crates.io resolves path dependencies by version.
+
+@constraint p/g1693fc23e399-6-1 { status: cited, source: { kind: file, ref: docs/releasing.md@1693fc23e399 }, "code:kind": existing-behaviour, "ingest:quote": `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ `cargo-smysl-eval` is the evaluation tooling and reads files outside its own package.
+
+@constraint p/g1693fc23e399-7-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-git/Cargo.toml@1693fc23e399 }, "code:kind": invariant, "ingest:quote": "Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`." }
+~ The tool must never run the `git` binary.
+
+@constraint p/g1693fc23e399-8-1 { status: speculative, "code:kind": normative, "ingest:quote": RATIONALE: To maintain consistency across all crates in the workspace. }
+~ To maintain consistency across all crates in the workspace.
+
+@constraint p/g1693fc23e399-9-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": existing-behaviour, "ingest:quote": "Eight crates publish; the evaluation tooling does not, and says so." }
+~ The project has a modular structure with multiple crates.
+
+@constraint p/g1693fc23e399-9-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/Cargo.toml@1693fc23e399 }, "code:kind": existing-behaviour, "ingest:quote": Hosted providers need TLS; the default build has no network stack at all (D18). }
+~ Some crates require TLS support for hosted providers.
+
+@constraint p/g1693fc23e399-10-1 { status: speculative, "code:kind": assumption, "ingest:quote": To support human-editable configuration files. }
+~ The project needs to support human-editable configuration files.
+
+@constraint p/g1693fc23e399-11-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": existing-behaviour, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ A published package cannot reach outside itself
+
+@constraint p/g1693fc23e399-12-1 { status: cited, source: { kind: file, ref: docs/releasing.md@1693fc23e399 }, "code:kind": existing-behaviour, "ingest:quote": Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ Eight crates publish; the evaluation tooling does not, and says so.
+
+@constraint p/g1693fc23e399-12-2 { status: cited, source: { kind: file, ref: docs/releasing.md@1693fc23e399 }, "code:kind": existing-behaviour, "ingest:quote": "crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ crates.io resolves path dependencies by version.
+
+@claim r/g1693fc23e399-1-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Set MSRV to a lower version that is compatible with all dependencies.
+
+@claim r/g1693fc23e399-1-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not set an explicit MSRV and let users manage their Rust versions independently.
+
+@claim r/g1693fc23e399-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not add homepage, keywords, categories, and README to each crate
+
+@claim r/g1693fc23e399-3-1 { status: cited, source: { kind: file, ref: docs/releasing.md@1693fc23e399 }, "code:kind": rejected-alternative, "ingest:quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Rejected: Publish all crates simultaneously
+
+@claim r/g1693fc23e399-3-2 { status: cited, source: { kind: file, ref: docs/releasing.md@1693fc23e399 }, "code:kind": rejected-alternative, "ingest:quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Rejected: Publish crates in any order
+
+@claim r/g1693fc23e399-4-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use the same keywords as the workspace.
+
+@claim r/g1693fc23e399-5-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not documenting the release process.
+
+@claim r/g1693fc23e399-6-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include `cargo-smysl-eval` in publication
+
+@claim r/g1693fc23e399-7-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Running the `git` binary to read commit messages and changed files.
+
+@claim r/g1693fc23e399-9-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not add a `hosted` feature and require TLS support in all builds.
+
+@claim r/g1693fc23e399-9-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a different feature name for optional TLS support.
+
+@claim r/g1693fc23e399-11-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": rejected-alternative, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ Rejected: Keep all documentation in a single place
+
+@claim r/g1693fc23e399-11-2 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "code:kind": rejected-alternative, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ Rejected: Use external links for additional documentation
+
+@claim r/g1693fc23e399-12-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not document the expected behavior of `cargo package` before first publish.
+
+@claim q/g1693fc23e399-1-1 { status: inferred, grounds: [d/g1693fc23e399-1], "code:kind": anticipated, "ingest:quote": "rust-version = \"1.86\"" }
+~ Developers must use at least Rust version 1.86 to work on the project.
+
+@claim q/g1693fc23e399-1-2 { status: inferred, grounds: [d/g1693fc23e399-1], "code:kind": anticipated, "ingest:quote": "# The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag." }
+~ The CI checks will enforce the MSRV requirement.
+
+@evidence e/g1693fc23e399-11-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ Check: A published package cannot reach outside itself, so the crate-level README is short and the full …
+
+Check: A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository.
+
+@finding q/g1693fc23e399-2-1 { status: speculative }
+~ Each crate now carries its own README.md
+
+@claim q/g1693fc23e399-2-2 { status: inferred, grounds: [d/g1693fc23e399-2], "code:kind": anticipated }
+~ Each crate now has keywords and categories from the workspace
+
+@evidence e/g1693fc23e399-3-1 { status: cited, source: { kind: file, ref: docs/releasing.md@1693fc23e399 }, "ingest:quote": "**`cargo package` fails before the first publish, and that is expected.** Until `cargo-smysl-git` exists on crates.io, any crate depending on it reports `no matching package named cargo-smysl-git found`. Only wave 1 can be packaged or verified locally; the rest can be checked only as the waves land." }
+~ Check: **`cargo package` fails before the first publish, and that is expected.** Until `cargo-smysl-git` …
+
+Check: **`cargo package` fails before the first publish, and that is expected.** Until `cargo-smysl-git` exists on crates.io, any crate depending on it reports `no matching package named cargo-smysl-git found`. Only wave 1 can be packaged or verified locally; the rest can be checked only as the waves land.
+
+@finding q/g1693fc23e399-3-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "ingest:quote": "`cargo package` fails for everything past wave one until wave one is on crates.io — expected, and written down so it is not mistaken for a fault." }
+~ `cargo package` fails for everything past wave one until wave one is on crates.io
+
+@claim q/g1693fc23e399-4-1 { status: inferred, grounds: [d/g1693fc23e399-4], "code:kind": anticipated, "ingest:quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand." }
+~ `cargo-smysl` has its own set of keywords, which are different from those in the workspace.
+
+@claim q/g1693fc23e399-5-1 { status: inferred, grounds: [d/g1693fc23e399-5], "code:kind": anticipated, "ingest:quote": To provide clear instructions for maintaining and publishing the project. }
+~ Clear instructions for maintaining and publishing the project are provided.
+
+@claim q/g1693fc23e399-6-1 { status: inferred, grounds: [d/g1693fc23e399-6], "code:kind": anticipated, "ingest:quote": `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ `cargo-smysl-eval` will not be published to crates.io.
+
+@claim q/g1693fc23e399-7-1 { status: inferred, grounds: [d/g1693fc23e399-7], "code:kind": anticipated, "ingest:quote": "Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`." }
+~ The tool can operate without relying on external binaries, ensuring self-contained operation.
+
+@claim q/g1693fc23e399-9-1 { status: inferred, grounds: [d/g1693fc23e399-9], "code:kind": anticipated, "ingest:quote": Hosted providers need TLS; the default build has no network stack at all (D18). }
+~ Crates that need TLS support can enable it via the `hosted` feature.
+
+@claim q/g1693fc23e399-9-2 { status: inferred, grounds: [d/g1693fc23e399-9], "code:kind": anticipated }
+~ Crates that do not require TLS support can use the default build without it.
+
+@evidence e/g1693fc23e399-11-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ Check: A published package cannot reach outside itself, so the crate-level README is short and the full …
+
+Check: A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository.
+
+@finding q/g1693fc23e399-11-1 { status: cited, source: { kind: doc, ref: git:1693fc23e3997eb01b88315032c1d3ccda675b7f }, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ Each crate has a short README.md for crates.io listing
+
+@claim q/g1693fc23e399-12-1 { status: inferred, grounds: [d/g1693fc23e399-12], "code:kind": anticipated, "ingest:quote": Publishing is outward-facing and permanent. }
+~ Publishing is outward-facing and permanent.
+
+@claim q/g1693fc23e399-12-2 { status: inferred, grounds: [d/g1693fc23e399-12], "code:kind": anticipated, "ingest:quote": The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag. }
+~ The version in the manifest is the version that publishes.
+
+@rel p/g1693fc23e399-1-1 --conditions--> d/g1693fc23e399-1
+
+@rel p/g1693fc23e399-1-2 --conditions--> d/g1693fc23e399-1
+
+@rel p/g1693fc23e399-11-1 --conditions--> d/g1693fc23e399-2
+
+@rel p/g1693fc23e399-2-2 --conditions--> d/g1693fc23e399-2
+
+@rel p/g1693fc23e399-3-1 --conditions--> d/g1693fc23e399-3
+
+@rel p/g1693fc23e399-3-2 --conditions--> d/g1693fc23e399-3
+
+@rel p/g1693fc23e399-4-1 --conditions--> d/g1693fc23e399-4
+
+@rel p/g1693fc23e399-5-1 --conditions--> d/g1693fc23e399-5
+
+@rel p/g1693fc23e399-12-2 --conditions--> d/g1693fc23e399-5
+
+@rel p/g1693fc23e399-6-1 --conditions--> d/g1693fc23e399-6
+
+@rel p/g1693fc23e399-7-1 --conditions--> d/g1693fc23e399-7
+
+@rel p/g1693fc23e399-8-1 --conditions--> d/g1693fc23e399-8
+
+@rel p/g1693fc23e399-9-1 --conditions--> d/g1693fc23e399-9
+
+@rel p/g1693fc23e399-9-2 --conditions--> d/g1693fc23e399-9
+
+@rel p/g1693fc23e399-10-1 --conditions--> d/g1693fc23e399-10
+
+@rel p/g1693fc23e399-11-1 --conditions--> d/g1693fc23e399-11
+
+@rel p/g1693fc23e399-12-1 --conditions--> d/g1693fc23e399-12
+
+@rel p/g1693fc23e399-12-2 --conditions--> d/g1693fc23e399-12
+
+@rel r/g1693fc23e399-1-1 --contrasts--> d/g1693fc23e399-1
+
+@rel r/g1693fc23e399-1-2 --contrasts--> d/g1693fc23e399-1
+
+@rel r/g1693fc23e399-2-1 --contrasts--> d/g1693fc23e399-2
+
+@rel r/g1693fc23e399-3-1 --contrasts--> d/g1693fc23e399-3
+
+@rel r/g1693fc23e399-3-2 --contrasts--> d/g1693fc23e399-3
+
+@rel r/g1693fc23e399-4-1 --contrasts--> d/g1693fc23e399-4
+
+@rel r/g1693fc23e399-5-1 --contrasts--> d/g1693fc23e399-5
+
+@rel r/g1693fc23e399-6-1 --contrasts--> d/g1693fc23e399-6
+
+@rel r/g1693fc23e399-7-1 --contrasts--> d/g1693fc23e399-7
+
+@rel r/g1693fc23e399-9-1 --contrasts--> d/g1693fc23e399-9
+
+@rel r/g1693fc23e399-9-2 --contrasts--> d/g1693fc23e399-9
+
+@rel r/g1693fc23e399-11-1 --contrasts--> d/g1693fc23e399-11
+
+@rel r/g1693fc23e399-11-2 --contrasts--> d/g1693fc23e399-11
+
+@rel r/g1693fc23e399-12-1 --contrasts--> d/g1693fc23e399-12
+
+@rel d/g1693fc23e399-1 --causes--> q/g1693fc23e399-1-1
+
+@rel d/g1693fc23e399-1 --causes--> q/g1693fc23e399-1-2
+
+@rel e/g1693fc23e399-11-1 --backs--> q/g1693fc23e399-2-1
+
+@rel d/g1693fc23e399-2 --causes--> q/g1693fc23e399-2-1
+
+@rel d/g1693fc23e399-2 --causes--> q/g1693fc23e399-2-2
+
+@rel e/g1693fc23e399-3-1 --backs--> q/g1693fc23e399-3-1
+
+@rel d/g1693fc23e399-3 --causes--> q/g1693fc23e399-3-1
+
+@rel d/g1693fc23e399-4 --causes--> q/g1693fc23e399-4-1
+
+@rel d/g1693fc23e399-5 --causes--> q/g1693fc23e399-5-1
+
+@rel d/g1693fc23e399-6 --causes--> q/g1693fc23e399-6-1
+
+@rel d/g1693fc23e399-7 --causes--> q/g1693fc23e399-7-1
+
+@rel d/g1693fc23e399-9 --causes--> q/g1693fc23e399-9-1
+
+@rel d/g1693fc23e399-9 --causes--> q/g1693fc23e399-9-2
+
+@rel e/g1693fc23e399-11-1 --backs--> q/g1693fc23e399-11-1
+
+@rel d/g1693fc23e399-11 --causes--> q/g1693fc23e399-11-1
+
+@rel d/g1693fc23e399-12 --causes--> q/g1693fc23e399-12-1
+
+@rel d/g1693fc23e399-12 --causes--> q/g1693fc23e399-12-2

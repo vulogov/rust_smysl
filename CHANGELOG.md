@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.2.0 — 2026-09-21
+
+**Packaging only. No behaviour differs from 0.1.0**, which was a git-install release; this is the first
+version published to crates.io.
+
+- Eight crates carry `homepage`, `keywords`, `categories` and a README of their own, because a published
+  package cannot reach outside itself. `cargo-smysl` keeps its own keywords: it is the crate people
+  install. `cargo-smysl-eval` does not publish — it is evaluation tooling and reads files outside its
+  package.
+- [`docs/releasing.md`](docs/releasing.md) records the publish order, which is a constraint rather than a
+  preference: crates.io resolves path dependencies by version, so `git`, `facts` and `corpus` go first,
+  then `bench` and `extract`, then `verdict` and `evidence`, then the subcommand.
+
+```sh
+cargo install cargo-smysl
+```
+
+### Known, and not fixed in this version
+
+These are what 0.1.0 measured and left undone. They are the work of the next release, and they are here
+so that anyone installing this knows what they are getting:
+
+- **Anchors for every decision, not only the file-quoted ones.** A decision quoted from the commit
+  message anchors to nothing today, and most decisions quote the message — so `stale` reports at commit
+  level for most of a corpus.
+- **Over-production is the dominant extraction error** on a local model: on one commit labelled with 4
+  decisions it reported 54. Prompt wording was measured twice and is not the lever. The untried levers are
+  deterministic ones and a second opinion between two cheap models.
+- **The recipe caps shape the answer.** Four of six commits stopped at exactly `max_decisions_total`, and
+  every part of the largest returned its per-part cap, so those counts are the recipe rather than the
+  commit.
+- **`bench` has never been run by anyone but its author.** The first real use will say more about it than
+  any test here.
+
 ## 0.1.0 — 2026-09-21
 
 First release. A cargo subcommand that records why Rust code changed and keeps the record honest.

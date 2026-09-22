@@ -124,6 +124,8 @@ pub struct Batch {
     pub quotes: QuoteTally,
     /// Items that could not be placed (e.g. naming a decision that does not exist).
     pub dropped: Vec<String>,
+    /// Bodies joined into one paragraph, because `fine` granularity admits one assertion per unit.
+    pub reflowed: usize,
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
@@ -273,13 +275,41 @@ impl<'a> Builder<'a> {
         }
     }
 
+    /// A body as smysl's `fine` profile will take it: one paragraph.
+    ///
+    /// A model's rationale arrives as prose, sometimes with a blank line in it, and smysl refuses a unit
+    /// whose body holds more than one assertion (SMY-E040). Refusing the whole commit for a blank line
+    /// would throw away every call that produced it, so the paragraphs are joined — the words are the
+    /// model's and all of them are kept — and the run says how many.
+    fn one_paragraph(&mut self, text: &str) -> String {
+        let paragraphs: Vec<&str> = text
+            .split("\n\n")
+            .map(str::trim)
+            .filter(|p| !p.is_empty())
+            .collect();
+        if paragraphs.len() > 1 {
+            self.batch.reflowed += 1;
+        }
+        paragraphs.join(" ").replace('\n', " ")
+    }
+
     fn unit(&mut self, spec: Spec<'_>) -> Result<Uid, BuildError> {
         let (gist, overflow) = gist_and_body(spec.text);
+        let chosen = match (spec.body.filter(|b| !b.trim().is_empty()), overflow) {
+            (Some(body), _) => Some(body.trim().to_string()),
+            (None, Some(full)) => Some(full.to_string()),
+            (None, None) => None,
+        };
+        // Whatever becomes a body becomes one paragraph, wherever it came from — a model's rationale, or
+        // the overflow of a text too long to be a gist. `fine` granularity admits one assertion per
+        // unit, and a blank line in a quoted markdown table would otherwise refuse the whole commit
+        // after every call that produced it had already been paid for.
+        let chosen = chosen.map(|text| self.one_paragraph(&text));
         let mut b = UnitCoreBuilder::new(spec.kind, gist, spec.status);
-        match (spec.body.filter(|b| !b.trim().is_empty()), overflow) {
-            (Some(body), _) => b = b.body(body.trim()),
-            (None, Some(full)) => b = b.body(full),
-            (None, None) => {}
+        if let Some(body) = &chosen {
+            if !body.trim().is_empty() {
+                b = b.body(body.as_str());
+            }
         }
         if let Some(s) = spec.source {
             b = b.source(s);

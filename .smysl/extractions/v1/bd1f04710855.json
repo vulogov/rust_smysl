@@ -1,0 +1,1520 @@
+{
+  "decisions": [
+    {
+      "decision": "Do not lose a commit's extraction to a blank line in a quote",
+      "kind": "act",
+      "rationale": "Refusing the whole commit for a blank line throws away work that has already been paid for.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site"
+    },
+    {
+      "decision": "Drop the claim of answering 'why is this like this?' as a product feature",
+      "kind": "decline",
+      "rationale": "To focus on the tool's actual capabilities rather than unmet claims.",
+      "quote": "Answering \"why is this like this?\" was dropped as a product claim."
+    },
+    {
+      "decision": "Assign labels, sources and statuses; the model proposes wording only",
+      "kind": "act",
+      "rationale": "To maintain control over the integrity of recorded information.",
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": "Detect staleness by item body hash rather than line ranges",
+      "kind": "act",
+      "rationale": "To accurately track changes in code identity rather than just line positions.",
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": "Record review as confirmations, withdrawals with reasons, and closures with notes",
+      "kind": "act",
+      "rationale": "To keep a comprehensive log of all reviews and decisions made.",
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution."
+    },
+    {
+      "decision": "Ship its own instrument for benchmarking the model",
+      "kind": "act",
+      "rationale": "To provide users with the ability to measure the performance of their chosen models on their own commits.",
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from."
+    },
+    {
+      "decision": "Focus on deterministic commands over model-dependent ones",
+      "kind": "act",
+      "rationale": "To prioritize commands that are reliable, tested, and cost-effective to run.",
+      "quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run."
+    },
+    {
+      "decision": "Publish figures naming the model each came from, including failed experiments",
+      "kind": "act",
+      "rationale": "To provide transparency about which models were tested and their results, including any failures.",
+      "quote": "The figures are published, naming the model each came from, including the experiments that failed."
+    },
+    {
+      "decision": "Highlight over-production as the failure mode that matters",
+      "kind": "act",
+      "rationale": "To emphasize the importance of avoiding unnecessary or excessive output in the tool's operations.",
+      "quote": "Over-production is the failure mode that matters."
+    },
+    {
+      "decision": "Meaningfully price extraction runs before starting them",
+      "kind": "act",
+      "rationale": "To inform users about the cost of extraction runs before they start, allowing them to make informed decisions.",
+      "quote": "The hook only queues and `--estimate` prices a run before it starts."
+    },
+    {
+      "decision": "Label cloned corpora as someone else's claims",
+      "kind": "act",
+      "rationale": "To clarify the status of units in cloned corpora, indicating that they are not the tool's own claims.",
+      "quote": "A cloned corpus is someone else's claim."
+    },
+    {
+      "decision": "Research the truncated-change problem before building for it",
+      "kind": "act",
+      "rationale": "The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.",
+      "quote": "Research the truncated-change problem before building for it"
+    },
+    {
+      "decision": "Open with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across await, a test that builds its own fixture.",
+      "kind": "act",
+      "rationale": "To make the documentation relatable and understandable for Rust developers.",
+      "quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture."
+    },
+    {
+      "decision": "Show what the tool does rather than describe it.",
+      "kind": "act",
+      "rationale": "To provide clear and practical information about the tool's functionality.",
+      "quote": "Then what the tool does, shown rather than described, with real output from this repository:"
+    },
+    {
+      "decision": "The model is the operator's choice, never the tool's",
+      "kind": "act",
+      "rationale": "To leave the selection of the model to the user.",
+      "quote": "The model is the operator's choice, never the tool's"
+    },
+    {
+      "decision": "Whatever becomes a body is now joined into one paragraph",
+      "kind": "act",
+      "rationale": "to keep every word the model wrote and avoid refusing the whole commit for a blank line",
+      "quote": "Whatever becomes a body becomes one paragraph, wherever it came from — a model's rationale, or the overflow of a text too long to be a gist."
+    },
+    {
+      "decision": "A body as smysl's `fine` profile will take it: one paragraph",
+      "kind": "act",
+      "rationale": "to ensure that the body is one paragraph and avoid refusal due to multiple assertions",
+      "quote": "A model's rationale arrives as prose, sometimes with a blank line in it, and smysl refuses a unit whose body holds more than one assertion (SMY-E040). Refusing the whole commit for a blank line would throw away every call that produced it had already been paid for."
+    },
+    {
+      "decision": "The error named a `b3:` uid and nothing else",
+      "kind": "decline",
+      "rationale": "to improve error identification by showing more information",
+      "quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing."
+    },
+    {
+      "decision": "It did not say that the model's answers were already cached",
+      "kind": "decline",
+      "rationale": "to provide more accurate information about the caching status",
+      "quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here. The failure now says so, with the path."
+    },
+    {
+      "decision": "The commit that hit it is recorded, from cache",
+      "kind": "act",
+      "rationale": "to ensure that the commit is recorded even if it was already cached",
+      "quote": "The commit that hit it is recorded, from cache, and a test holds the case."
+    },
+    {
+      "decision": "A test holds the case",
+      "kind": "act",
+      "rationale": "to verify that the fix works as expected",
+      "quote": "The commit that hit it is recorded, from cache, and a test holds the case."
+    },
+    {
+      "decision": "Join bodies into one paragraph if they contain a blank line",
+      "kind": "act",
+      "rationale": "Refusing the whole commit for a blank line throws away work that has already been paid for.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site"
+    },
+    {
+      "decision": "Show the unit's gist and the first lines of its body in error messages",
+      "kind": "act",
+      "rationale": "It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.",
+      "quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body"
+    },
+    {
+      "decision": "Indicate that cached answers are used in failure messages",
+      "kind": "act",
+      "rationale": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls.",
+      "quote": "it did not say that the model's answers were already cached. They were"
+    },
+    {
+      "decision": "Add a test that runs every command",
+      "kind": "act",
+      "rationale": "Seven commands had no test.",
+      "quote": "seven commands could have stopped working"
+    },
+    {
+      "decision": "Hardcode the command list",
+      "kind": "act",
+      "rationale": "",
+      "quote": "not in the text at all"
+    },
+    {
+      "decision": "Derive the list from the binary",
+      "kind": "decline",
+      "rationale": "It shrinks silently.",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": "Every command dispatches",
+      "kind": "act",
+      "rationale": "",
+      "quote": "seven commands could have stopped working"
+    },
+    {
+      "decision": "The list cannot shrink unnoticed",
+      "kind": "decline",
+      "rationale": "",
+      "quote": ""
+    },
+    {
+      "decision": "Give each test its own scratch directory",
+      "kind": "act",
+      "rationale": "",
+      "quote": "std::env::temp_dir().join(name)"
+    },
+    {
+      "decision": "Document the commands",
+      "kind": "act",
+      "rationale": "Readers need it.\n\nAnd it was missing.",
+      "quote": ""
+    },
+    {
+      "decision": "The commands are documented",
+      "kind": "act",
+      "rationale": "",
+      "quote": ""
+    },
+    {
+      "decision": "The error message now shows the unit's gist and the first lines of its body",
+      "kind": "act",
+      "rationale": "to help identify bugs more quickly",
+      "quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body"
+    },
+    {
+      "decision": "The failure message now indicates that the model's answers were already cached",
+      "kind": "act",
+      "rationale": "to inform users about the caching mechanism and reduce confusion",
+      "quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls"
+    },
+    {
+      "decision": "The commit that hit the failure is recorded from cache",
+      "kind": "act",
+      "rationale": "to ensure that the work done is not lost and to maintain consistency",
+      "quote": "The commit that hit it is recorded, from cache"
+    },
+    {
+      "decision": "A test holds the case of the failure",
+      "kind": "act",
+      "rationale": "to prevent regressions and ensure the fix works as expected in the future",
+      "quote": "a test holds the case"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 1,
+      "text": "The body of the verification quote contained a markdown heading, a blank line, and a paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph"
+    },
+    {
+      "decision": 1,
+      "text": "smysl's `fine` profile admits one assertion per unit.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 2,
+      "text": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was."
+    },
+    {
+      "decision": 2,
+      "text": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved."
+    },
+    {
+      "decision": 3,
+      "text": "The tool assigns labels, sources and statuses; the model proposes wording only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": 4,
+      "text": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": 5,
+      "text": "The tool assigns labels, sources and statuses; the model proposes wording only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": 5,
+      "text": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`."
+    },
+    {
+      "decision": 5,
+      "text": "Staleness detection should be based on code identity rather than line ranges.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": 5,
+      "text": "The tool needs to maintain a record of all reviews and decisions for transparency and accountability.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution."
+    },
+    {
+      "decision": 6,
+      "text": "The tool needs to measure the performance of different models.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 7,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 7,
+      "text": "The body of the verification quote contained a markdown heading, a blank line, and a paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph"
+    },
+    {
+      "decision": 7,
+      "text": "smysl's `fine` profile admits one assertion per unit.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 8,
+      "text": "The tool assigns labels, sources and statuses; the model proposes wording only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": 8,
+      "text": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`."
+    },
+    {
+      "decision": 8,
+      "text": "Staleness detection should be based on code identity rather than line ranges.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": 8,
+      "text": "The tool needs to maintain a record of all reviews and decisions for transparency and accountability.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution."
+    },
+    {
+      "decision": 8,
+      "text": "The tool needs to measure the performance of different models.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 8,
+      "text": "Two thirds of the commands never call a model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run."
+    },
+    {
+      "decision": 8,
+      "text": "The figures are published.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The figures are published, naming the model each came from, including the experiments that failed."
+    },
+    {
+      "decision": 9,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 9,
+      "text": "The body of the verification quote contained a markdown heading, a blank line, and a paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph"
+    },
+    {
+      "decision": 9,
+      "text": "smysl's `fine` profile admits one assertion per unit.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 10,
+      "text": "The hook only queues and `--estimate` prices a run before it starts.",
+      "kind": "tool-setting",
+      "normative": false,
+      "quote": "The hook only queues and `--estimate` prices a run before it starts."
+    },
+    {
+      "decision": 11,
+      "text": "A cloned corpus is someone else's claim.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "A cloned corpus is someone else's claim."
+    },
+    {
+      "decision": 12,
+      "text": "The commit message states that research was done to understand the truncated-change problem, which is a significant issue affecting 59% of held-out changes.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Research the truncated-change problem before building for it"
+    },
+    {
+      "decision": 13,
+      "text": "A Rust developer recognizes common patterns in code such as dependencies pinned to exact versions, locks held across awaits, and tests building their own fixtures.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture."
+    },
+    {
+      "decision": 14,
+      "text": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was."
+    },
+    {
+      "decision": 14,
+      "text": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved."
+    },
+    {
+      "decision": 15,
+      "text": "The model selection should be left to the user.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "The model is the operator's choice, never the tool's"
+    },
+    {
+      "decision": 16,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 16,
+      "text": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist."
+    },
+    {
+      "decision": 16,
+      "text": "smysl's `fine` profile admits one assertion per unit.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 17,
+      "text": "A model's rationale arrives as prose, sometimes with a blank line in it",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A model's rationale arrives as prose, sometimes with a blank line in it"
+    },
+    {
+      "decision": 17,
+      "text": "smysl refuses a unit whose body holds more than one assertion (SMY-E040)",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "smysl refuses a unit whose body holds more than one assertion (SMY-E040)"
+    },
+    {
+      "decision": 17,
+      "text": "refusing the whole commit for a blank line would throw away every call that produced it had already been paid for",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "refusing the whole commit for a blank line would throw away every call that produced it had already been paid for"
+    },
+    {
+      "decision": 18,
+      "text": "The commit's extraction proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The model's extraction proposes content only."
+    },
+    {
+      "decision": 18,
+      "text": "Here the tool assigns everything else: labels per commit and run, sources pointing at the commit or a file at the commit, statuses from checking each quote against the commit's own text, and the edges of the data model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Here the tool assigns everything else: labels per commit and run, sources pointing at the commit or a file at the commit, statuses from checking each quote against the commit's own text, and the edges of the data model."
+    },
+    {
+      "decision": 18,
+      "text": "The error named a `b3:` uid and nothing else.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the error named a `b3:` uid and nothing else."
+    },
+    {
+      "decision": 19,
+      "text": "The commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 19,
+      "text": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist."
+    },
+    {
+      "decision": 19,
+      "text": "smysl's `fine` profile admits one assertion per unit.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 20,
+      "text": "the error named a `b3:` uid and nothing else",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing."
+    },
+    {
+      "decision": 20,
+      "text": "it did not say that the model's answers were already cached",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here."
+    },
+    {
+      "decision": 20,
+      "text": "the commit's message and diff text",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The commit's own text, which every quote is checked against."
+    },
+    {
+      "decision": 21,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded due to a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 21,
+      "text": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist."
+    },
+    {
+      "decision": 21,
+      "text": "smysl's `fine` profile admits one assertion per unit.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 22,
+      "text": "smysl's `fine` profile admits one assertion per unit",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 22,
+      "text": "A verification quote containing a blank line overflows into the unit's body",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist."
+    },
+    {
+      "decision": 22,
+      "text": "Refusing the whole commit for a blank line throws away work that has already been paid for",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 23,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 23,
+      "text": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist."
+    },
+    {
+      "decision": 23,
+      "text": "smysl's `fine` profile admits one assertion per unit.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 24,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded due to SMY-E040, a body with more than one paragraph.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 24,
+      "text": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist."
+    },
+    {
+      "decision": 24,
+      "text": "smysl's `fine` profile admits one assertion per unit.",
+      "kind": "tool-setting",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 25,
+      "text": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 25,
+      "text": "Each test gets its own scratch directory.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "std::env::temp_dir().join(name)"
+    },
+    {
+      "decision": 26,
+      "text": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 26,
+      "text": "Each test gets its own scratch directory.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "std::env::temp_dir().join(name)"
+    },
+    {
+      "decision": 27,
+      "text": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 27,
+      "text": "Each test gets its own scratch directory.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "std::env::temp_dir().join(name)"
+    },
+    {
+      "decision": 28,
+      "text": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 28,
+      "text": "Each test gets its own scratch directory.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "std::env::temp_dir().join(name)"
+    },
+    {
+      "decision": 29,
+      "text": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 29,
+      "text": "Each test gets its own scratch directory.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "std::env::temp_dir().join(name)"
+    },
+    {
+      "decision": 30,
+      "text": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "cli() registers all twenty-two subcommands from the COMMANDS table unconditionally."
+    },
+    {
+      "decision": 30,
+      "text": "Each test gets its own scratch directory.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "std::env::temp_dir().join(name)"
+    },
+    {
+      "decision": 31,
+      "text": "smysl's `fine` profile admits one assertion per unit",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 31,
+      "text": "A verification quote containing a blank line overflows into the unit's body",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist."
+    },
+    {
+      "decision": 32,
+      "text": "smysl's `fine` profile admits one assertion per unit",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right"
+    },
+    {
+      "decision": 32,
+      "text": "A verification quote containing a blank line overflows into the unit's body",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist."
+    },
+    {
+      "decision": 33,
+      "text": "The commit was extracted in 38 calls over half an hour and then refused while being recorded",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 33,
+      "text": "The error message named a `b3:` uid and nothing else",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing."
+    },
+    {
+      "decision": 34,
+      "text": "The commit was extracted in 38 calls over half an hour",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 34,
+      "text": "The error named a `b3:` uid and nothing else",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing."
+    },
+    {
+      "decision": 34,
+      "text": "The model's answers were already cached",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here."
+    },
+    {
+      "decision": 35,
+      "text": "The commit was extracted in 38 calls over half an hour",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 35,
+      "text": "The error named a `b3:` uid and nothing else",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing."
+    },
+    {
+      "decision": 35,
+      "text": "The model's answers were already cached",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here."
+    },
+    {
+      "decision": 35,
+      "text": "The commit that hit it is recorded from cache",
+      "kind": "prior-change",
+      "normative": false,
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 36,
+      "text": "A commit was extracted in 38 calls over half an hour and then refused while being recorded",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A commit was extracted in 38 calls over half an hour and then refused while being recorded: SMY-E040, a body with more than one paragraph."
+    },
+    {
+      "decision": 36,
+      "text": "The body of the verification quote contained a markdown heading, a blank line, and a paragraph",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The body was a verification quote — a markdown heading, a blank line, a paragraph — overflowing from a text too long to be a gist."
+    },
+    {
+      "decision": 36,
+      "text": "smysl's `fine` profile admits one assertion per unit",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "smysl's `fine` profile admits one assertion per unit, and quite right, but refusing the whole commit for a blank line throws away work that has already been paid for."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Refuse the whole commit for a blank line.",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 2,
+      "alternative": "Describing what the tool does.",
+      "reason": "",
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet."
+    },
+    {
+      "decision": 3,
+      "alternative": "The model assigns labels, sources and statuses.",
+      "reason": "",
+      "quote": "Most tooling in this area stores what the model said as though it were established."
+    },
+    {
+      "decision": 3,
+      "alternative": "The tool does not check quotes against commits.",
+      "reason": "",
+      "quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`."
+    },
+    {
+      "decision": 4,
+      "alternative": "Detect staleness by line ranges.",
+      "reason": "",
+      "quote": "Tried and rejected: Detect staleness by line ranges."
+    },
+    {
+      "decision": 5,
+      "alternative": "Do not record reviews and decisions.",
+      "reason": "",
+      "quote": "Rejected: Do not record reviews and decisions."
+    },
+    {
+      "decision": 5,
+      "alternative": "Record only confirmations without reasons or notes.",
+      "reason": "",
+      "quote": "Rejected: Record only confirmations without reasons or notes."
+    },
+    {
+      "decision": 5,
+      "alternative": "Record only withdrawals without reasons or notes.",
+      "reason": "",
+      "quote": "Rejected: Record only withdrawals without reasons or notes."
+    },
+    {
+      "decision": 5,
+      "alternative": "Record only closures without notes.",
+      "reason": "",
+      "quote": "Rejected: Record only closures without notes."
+    },
+    {
+      "decision": 6,
+      "alternative": "Use an external benchmarking tool.",
+      "reason": "",
+      "quote": "Rejected: Use an external benchmarking tool."
+    },
+    {
+      "decision": 6,
+      "alternative": "Do not include any benchmarking functionality.",
+      "reason": "",
+      "quote": "Rejected: Do not include any benchmarking functionality."
+    },
+    {
+      "decision": 7,
+      "alternative": "Refusing the whole commit for a blank line.",
+      "reason": "",
+      "quote": "refusing the whole commit for a blank line throws away work that has already been paid for."
+    },
+    {
+      "decision": 7,
+      "alternative": "Keeping the body as separate paragraphs.",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph"
+    },
+    {
+      "decision": 8,
+      "alternative": "Not publishing figures naming the model each came from.",
+      "reason": "",
+      "quote": "Rejected: Not publishing figures naming the model each came from"
+    },
+    {
+      "decision": 8,
+      "alternative": "Publishing figures without naming the model.",
+      "reason": "",
+      "quote": "Rejected: Publishing figures without naming the model"
+    },
+    {
+      "decision": 9,
+      "alternative": "Refusing the whole commit for a blank line.",
+      "reason": "",
+      "quote": "refusing the whole commit for a blank line throws away work that has already been paid for."
+    },
+    {
+      "decision": 9,
+      "alternative": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary.",
+      "reason": "",
+      "quote": "Splitting the change across calls triples the cost and should wait until the two cheap ones are measured, because they may make it unnecessary."
+    },
+    {
+      "decision": 10,
+      "alternative": "Start extraction runs without pricing them first.",
+      "reason": "",
+      "quote": "Rejected: Start extraction runs without pricing them first."
+    },
+    {
+      "decision": 12,
+      "alternative": "Not researching the truncated-change problem before building for it",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 13,
+      "alternative": "Describing what the tool does.",
+      "reason": "",
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet."
+    },
+    {
+      "decision": 14,
+      "alternative": "Describing what the tool does.",
+      "reason": "",
+      "quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet."
+    },
+    {
+      "decision": 14,
+      "alternative": "Describing what the tool does.",
+      "reason": "",
+      "quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture. Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved."
+    },
+    {
+      "decision": 15,
+      "alternative": "The tool selects a model based on some criteria.",
+      "reason": "",
+      "quote": "Rejected: The tool selects a model based on some criteria."
+    },
+    {
+      "decision": 16,
+      "alternative": "Refusing the whole commit for a blank line.",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 17,
+      "alternative": "continue to refuse the whole commit for a blank line",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 18,
+      "alternative": "Keep the error message as it is.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 18,
+      "alternative": "Show less information in the error message.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 19,
+      "alternative": "Refuse the whole commit for a blank line.",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 20,
+      "alternative": "not recording the commit if it was already cached",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 21,
+      "alternative": "Refusing the whole commit for a blank line.",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 22,
+      "alternative": "Refuse the whole commit for a blank line",
+      "reason": "",
+      "quote": "A verification quote containing a blank line — a table, a heading and a paragraph — overflows into the unit's body and used to refuse the batch, after every model call that produced it had already been paid for."
+    },
+    {
+      "decision": 23,
+      "alternative": "Derive the list from the binary",
+      "reason": "",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": 24,
+      "alternative": "Derive the list from the binary",
+      "reason": "",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": 25,
+      "alternative": "Derive the list from the binary",
+      "reason": "",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": 26,
+      "alternative": "Derive the list from the binary",
+      "reason": "",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": 27,
+      "alternative": "Derive the list from the binary",
+      "reason": "",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": 28,
+      "alternative": "Derive the list from the binary",
+      "reason": "",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": 29,
+      "alternative": "Derive the list from the binary",
+      "reason": "",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": 30,
+      "alternative": "Derive the list from the binary",
+      "reason": "",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": 31,
+      "alternative": "Refuse the batch and discard all model calls",
+      "reason": "",
+      "quote": "refusing the whole commit for a blank line throws away work that has already been paid for"
+    },
+    {
+      "decision": 31,
+      "alternative": "Split the verification quote into multiple units",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 32,
+      "alternative": "Refuse the batch and throw away work that has already been paid for",
+      "reason": "",
+      "quote": "refusing the whole commit for a blank line throws away work that has already been paid for"
+    },
+    {
+      "decision": 32,
+      "alternative": "Derive the list from the binary",
+      "reason": "",
+      "quote": "A list derived from the binary shrinks silently when the binary does"
+    },
+    {
+      "decision": 33,
+      "alternative": "Keep the existing error message",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 34,
+      "alternative": "Keep the error message as is",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 34,
+      "alternative": "Do not mention caching in the error message",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 35,
+      "alternative": "Discard the commit's extraction",
+      "reason": "",
+      "quote": "refusing the whole commit for a blank line throws away work that has already been paid for."
+    },
+    {
+      "decision": 35,
+      "alternative": "Record only the part of the commit before the blank line",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 36,
+      "alternative": "Refuse the entire commit",
+      "reason": "",
+      "quote": "refusing the whole commit for a blank line throws away work that has already been paid for."
+    },
+    {
+      "decision": 36,
+      "alternative": "Keep the body as is, without joining paragraphs",
+      "reason": "",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "The commit that hit it is recorded from cache.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache"
+    },
+    {
+      "decision": 1,
+      "text": "A test holds the case.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache, and a test holds the case"
+    },
+    {
+      "decision": 2,
+      "text": "The documentation now begins with examples that are more relatable and understandable for Rust developers.",
+      "quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 2,
+      "text": "The tool's focus shifts from unmet claims to its actual capabilities.",
+      "quote": "To focus on the tool's actual capabilities rather than unmet claims.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Maintains control over the integrity of recorded information.",
+      "quote": "To maintain control over the integrity of recorded information.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "A function that merely moved will not be flagged as stale.",
+      "quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "The tool maintains a comprehensive log of all reviews and decisions made, ensuring transparency and accountability.",
+      "quote": "To keep a comprehensive log of all reviews and decisions made.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "Users can measure and verify the performance of their chosen models.",
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from.",
+      "verified": true,
+      "verification_quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them."
+    },
+    {
+      "decision": 7,
+      "text": "Every word the model wrote is kept.",
+      "quote": "Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "Every word the model wrote is kept."
+    },
+    {
+      "decision": 7,
+      "text": "The commit that hit it is recorded, from cache.",
+      "quote": "The commit that hit it is recorded, from cache",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache"
+    },
+    {
+      "decision": 7,
+      "text": "A test holds the case.",
+      "quote": "A test holds the case.",
+      "verified": true,
+      "verification_quote": "A test holds the case."
+    },
+    {
+      "decision": 8,
+      "text": "The tool now provides transparency about which models were tested and their results, including any failures.",
+      "quote": "To provide transparency about which models were tested and their results, including any failures.",
+      "verified": true,
+      "verification_quote": "The figures are published, naming the model each came from, including the experiments that failed."
+    },
+    {
+      "decision": 9,
+      "text": "Every word the model wrote is kept.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined.",
+      "verified": true,
+      "verification_quote": "Every word the model wrote is kept."
+    },
+    {
+      "decision": 9,
+      "text": "The error message now shows the unit's gist and the first lines of its body.",
+      "quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The failure message now indicates that the model's answers were already cached.",
+      "quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here. The failure now says so, with the path.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "The commit that hit it is recorded from cache.",
+      "quote": "The commit that hit it is recorded, from cache, and a test holds the case.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Users are informed about the cost of extraction runs before they start, allowing them to make informed decisions.",
+      "quote": "To inform users about the cost of extraction runs before they start, allowing them to make informed decisions.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 12,
+      "text": "The project has a better understanding of the truncated-change problem, which affects 59% of held-out changes.",
+      "quote": "Research the truncated-change problem before building for it",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "The operator has full control over the model selection process.",
+      "quote": "The model is the operator's choice, never the tool's",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 15,
+      "text": "README.md is updated to lead with the seven deterministic commands.",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction.",
+      "verified": true,
+      "verification_quote": "## The commands\n\nA full walk-through, on this repository, is in [`docs/smysl-workflow.md`](docs/smysl-workflow.md)."
+    },
+    {
+      "decision": 16,
+      "text": "Every word the model wrote is kept.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "Every word the model wrote is kept."
+    },
+    {
+      "decision": 16,
+      "text": "The commit that hit it is recorded, from cache.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache, and a test holds the case."
+    },
+    {
+      "decision": 17,
+      "text": "the paragraphs are joined — the words are the model's and all of them are kept",
+      "quote": "A body as smysl's `fine` profile will take it: one paragraph",
+      "verified": true,
+      "verification_quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 17,
+      "text": "the run says how many bodies were joined into one paragraph",
+      "quote": "A body as smysl's `fine` profile will take it: one paragraph",
+      "verified": true,
+      "verification_quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 18,
+      "text": "The error now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "it now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing."
+    },
+    {
+      "decision": 19,
+      "text": "The commit that hit it is recorded, from cache.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache, and a test holds the case."
+    },
+    {
+      "decision": 19,
+      "text": "`cargo smysl extract <rev>` after a fix costs no model calls.",
+      "quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here.",
+      "verified": true,
+      "verification_quote": "it took about a second here"
+    },
+    {
+      "decision": 20,
+      "text": "the commit that hit it is recorded, from cache",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache, and a test holds the case."
+    },
+    {
+      "decision": 21,
+      "text": "The commit that hit it is recorded, from cache.",
+      "quote": "The commit that hit it is recorded, from cache, and a test holds the case.",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache, and a test holds the case."
+    },
+    {
+      "decision": 21,
+      "text": "A test holds the case to verify that the fix works as expected.",
+      "quote": "DECISION 21: A test holds the case\nRATIONALE: to verify that the fix works as expected",
+      "verified": true,
+      "verification_quote": "to verify that the fix works as expected"
+    },
+    {
+      "decision": 22,
+      "text": "No unit carries two paragraphs",
+      "quote": "for unit in &batch.units { if let Some(body) = &unit.body { assert!( !body.trim().contains(\"\\n\\n\"), \"no unit carries two paragraphs: {body:?}\" ); } }",
+      "verified": true,
+      "verification_quote": "no unit carries two paragraphs: {body:?}"
+    },
+    {
+      "decision": 22,
+      "text": "The batch stages without errors",
+      "quote": "let staged = stage(&Store::from_records(Vec::new()), batch, 0); assert!( !staged.has_errors(), \"and the batch stages: {:?}\", staged.report );",
+      "verified": true,
+      "verification_quote": "and the batch stages: {:?}"
+    },
+    {
+      "decision": 22,
+      "text": "The run says how many were joined",
+      "quote": "assert!(batch.reflowed >= 1, \"and the run says how many were joined\");",
+      "verified": true,
+      "verification_quote": "and the run says how many were joined"
+    },
+    {
+      "decision": 23,
+      "text": "Every word the model wrote is kept.",
+      "quote": "Every word the model wrote is kept.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 23,
+      "text": "The error message now shows the unit's gist and the first lines of its body, which helps identify the bug quickly.",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined.",
+      "verified": true,
+      "verification_quote": "it now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing."
+    },
+    {
+      "decision": 23,
+      "text": "The failure message now indicates that the model's answers are already cached, reducing unnecessary model calls.",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here. The failure now says so, with the path."
+    },
+    {
+      "decision": 23,
+      "text": "The commit that hit it is recorded from cache, and a test holds the case.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "Every word the model wrote is kept.",
+      "quote": "Every word the model wrote is kept.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "The error now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.",
+      "quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "The failure now says that the model's answers were already cached.",
+      "quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here. The failure now says so, with the path.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "The commit that hit it is recorded, from cache.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 24,
+      "text": "A test holds the case.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 31,
+      "text": "Every word the model wrote is kept",
+      "quote": "Every word the model wrote is kept.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 31,
+      "text": "The run says how many were joined",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined.",
+      "verified": true,
+      "verification_quote": "assert!(batch.reflowed >= 1, \"and the run says how many were joined\");"
+    },
+    {
+      "decision": 31,
+      "text": "No unit carries two paragraphs",
+      "quote": "for unit in &batch.units { if let Some(body) = &unit.body { assert!( !body.trim().contains(\"\\n\\n\"), \"no unit carries two paragraphs: {body:?}\" ); } }",
+      "verified": true,
+      "verification_quote": "assert!(!body.trim().contains(\"\\n\\n\"), \"no unit carries two paragraphs: {body:?}\");"
+    },
+    {
+      "decision": 31,
+      "text": "The batch stages without errors",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "assert!(!staged.has_errors(), \"and the batch stages: {:?}\", staged.report);"
+    },
+    {
+      "decision": 32,
+      "text": "Every word the model wrote is kept",
+      "quote": "Every word the model wrote is kept.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 32,
+      "text": "The commit that hit it is recorded, from cache",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache, and a test holds the case."
+    },
+    {
+      "decision": 33,
+      "text": "The error message now includes the unit's gist and the first lines of its body",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing."
+    },
+    {
+      "decision": 34,
+      "text": "The failure message now indicates that the model's answers were already cached",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "it did not say that the model's answers were already cached. They were, so `cargo smysl extract <rev>` after a fix costs no model calls — it took about a second here."
+    },
+    {
+      "decision": 34,
+      "text": "The error message now shows the unit's gist and the first lines of its body",
+      "quote": "",
+      "verified": true,
+      "verification_quote": "the error named a `b3:` uid and nothing else. It now shows the unit's gist and the first lines of its body, which is what identified this bug in a minute after half an hour of not knowing."
+    },
+    {
+      "decision": 35,
+      "text": "The commit that hit it is recorded from cache",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept."
+    },
+    {
+      "decision": 35,
+      "text": "A test holds the case",
+      "quote": "The commit that hit it is recorded, from cache, and a test holds the case.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 36,
+      "text": "The commit that hit it is recorded from cache",
+      "quote": "The commit that hit it is recorded, from cache, and a test holds the case.",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache, and a test holds the case."
+    },
+    {
+      "decision": 36,
+      "text": "A test holds the case of the failure",
+      "quote": "Whatever becomes a body is now joined into one paragraph, in the one place a body is chosen rather than at each call site, and the run says how many were joined. Every word the model wrote is kept.",
+      "verified": true,
+      "verification_quote": "The commit that hit it is recorded, from cache, and a test holds the case."
+    }
+  ]
+}

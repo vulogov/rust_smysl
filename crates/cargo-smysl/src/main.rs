@@ -10,6 +10,7 @@ mod commands;
 use std::process::ExitCode;
 
 use clap::Parser;
+use human_panic::{setup_panic, Metadata};
 
 /// Exit codes. `2` is clap's usage error; the rest are ours.
 pub mod exit {
@@ -19,6 +20,12 @@ pub mod exit {
 }
 
 fn main() -> ExitCode {
+    // A panic here is a bug in this tool, not something the person running it did. They get a sentence
+    // saying so, where to report it and where the details were written, instead of a backtrace — and
+    // the report file means the details are not lost either.
+    setup_panic!(Metadata::new(env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"))
+        .homepage("https://github.com/vulogov/rust_smysl")
+        .support("Open an issue at https://github.com/vulogov/rust_smysl/issues with the report below."));
     let cli::Cargo::Smysl(args) = cli::Cargo::parse_from(normalise_args(std::env::args_os()));
     ExitCode::from(commands::run(args))
 }

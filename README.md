@@ -1,22 +1,84 @@
 # cargo-smysl
 
-A cargo subcommand that records **why** Rust code changed — the decisions a change makes, what had to be
-true for them, what was rejected, what follows — as a [smysl](https://crates.io/crates/smysl) corpus, and
-keeps that record honest: deterministic facts about the code, test results as evidence, and a report when
-the code a decision rests on moves.
+Keeps the reasoning behind your code, next to your code, and tells you when it has gone out of date.
 
-**What it promises:** that each command does what its design says, with the measured figures printed where
-a model is involved. Acting on what it reports belongs to whoever reads it — a person, a CI step, a hook.
+## The problem
+
+Six months on, the code is still there and the reasoning is gone. A dependency pinned to an exact
+version. A lock held across an `await`. A test that builds its own fixture instead of using the shared
+one. Each was a decision that rested on something being true at the time — the registry keeps that
+version, the other caller is single-threaded, two test binaries raced over a temp file — and none of it
+is in the code, because code says *what*, not *what this assumed*.
+
+Some of it is in the commit message. But a message is prose in a log: you cannot ask it "what else rests
+on this being single-threaded?", and it never tells you when the ground under an assumption moved.
+
+## What you get
+
+**Read a commit's reasoning back, with the option that was rejected:**
+
+```
+$ cargo smysl why --commit 4b6a6cf
+
+d/g4b6a6cfe6057-1 [cited]
+  `cargo smysl hooks install` writes a post-commit hook that appends the sha to `.smysl/queue`
+  and nothing else.
+  because: To ensure extraction is done at a moment chosen by a person, without failing a commit
+  needs: extraction is 7 to 30 minutes [cited]
+  needs: post-commit hook should not fail a commit [cited]
+  not: Rejected: The post-commit hook could perform extraction immediately. [cited]
+```
+
+`[cited]` means the tool found those words in the commit. Anything it could not find is marked
+`speculative`, so you always know which lines the record earned.
+
+**Find out what your refactor left unexamined:**
+
+```
+$ cargo smysl stale
+
+8 of 12 recorded commit(s) rest on code that has moved
+  Retrieval::default changed in crates/cargo-smysl-verdict/src/matching.rs
+  not_yet is no longer in crates/cargo-smysl/src/commands.rs
+```
+
+Not "your code is wrong" — nobody has *checked* whether those decisions still hold. Comparison is by
+item and by a hash of its body, so a function that merely moved is not flagged.
+
+## Pick it up if
+
+- you maintain something whose decisions outlive the people who made them, and your commit messages
+  already carry reasons;
+- you have enough history that `git log | grep` has stopped working;
+- you want to know which recorded assumptions a refactor just invalidated;
+- you want to measure an LLM on *your* code before trusting one — `cargo smysl bench` does only that,
+  and needs nothing else.
+
+## Skip it if
+
+- your commit messages are one-liners — there is nothing to extract;
+- you want automated review: `check` was right about **one flag in ten** on a free local model, and it
+  ships advisory for that reason;
+- you will not spend minutes per commit on extraction. It is the one expensive step, it runs when you
+  choose, and everything downstream of it is free.
+
+Seven of the ten commands never call a model. The three that do are listed below with what they were
+measured at, naming the model every time — including the four experiments that failed.
 
 **What it is not:** a transcript store, a static analyzer, or an oracle that marks a claim true because a
-model said so. A model proposes content; the tool assigns every label, source and status, and checks every
-quote against the commit it came from.
+model said so. A model proposes wording; the tool assigns every label, source and status, checks every
+quote against the commit, and leaves anything a model proposed waiting for a person before it counts as
+evidence.
 
-**Version 0.1.0.** What changed, and what was measured: [`CHANGELOG.md`](CHANGELOG.md).
+[`docs/what-this-is-for.md`](docs/what-this-is-for.md) is the longer answer, including the measurement
+where `git log` beat this tool 10–0 on single-commit questions, and what survives it.
+
+**Version 0.2.0.** What changed, and what was measured: [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Install
 
 ```sh
+cargo install cargo-smysl                                     # from crates.io
 cargo install --path crates/cargo-smysl                       # from a checkout
 cargo install --git https://github.com/vulogov/rust_smysl cargo-smysl
 ```
@@ -34,17 +96,25 @@ cargo install --path crates/cargo-smysl --features hosted     # to use a hosted 
 A full walk-through, on this repository, is in
 [`docs/smysl-workflow.md`](docs/smysl-workflow.md).
 
-| Command | What it does | Needs a model |
+**Deterministic — no model, no cost:**
+
+| Command | What it does |
+|---|---|
+| `stale` | Reasoning whose code has moved since it was recorded, by item and body hash |
+| `why <label>` / `why --commit <sha>` | What rests on a claim; a whole commit read back, as prose or Markdown |
+| `facts [rev]` | Deterministic facts about the code into a regenerable cache; `--scope` builds model context |
+| `review` | Work through what waits for a person: confirm, reject, close — always as records |
+| `bench` | Measure extraction against your own labels, with your own model |
+| `hooks` | A post-commit hook that only queues, and a merge driver for corpus documents |
+| `doctor` | Versions, workspace, corpus, backlog, and whether the code parses |
+
+**A model, and measured:**
+
+| Command | What it does | Measured at |
 |---|---|---|
-| `doctor` | Versions, workspace, corpus, and whether the code parses | no |
-| `facts [rev]` | Deterministic facts about the code into a regenerable cache | no |
-| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |
-| `why <label>` | What rests on a recorded claim, and what it rests on | no |
-| `check [rev]` | What a change contradicts in the corpus — **advisory** | **yes** |
-| `evidence <label>` | Retrieve facts for one claim, shortlist and run the tests that bear on it | **yes** |
-| `review` | Work through what waits for a person, and record the answer | no |
-| `stale` | Reasoning whose code has moved since it was recorded | no |
-| `bench` | Measure extraction against your own labels, with your own model | no |
+| `extract [rev]` | Decisions, prerequisites, alternatives and consequences, recorded | decisions 82–100% precision; prerequisites 41–88% |
+| `check [rev]` | What a change contradicts — **advisory** | 0.10 precision local, ~0.89 hosted |
+| `evidence <label>` | A claim against the facts, and the tests that bear on it | 3 wrong links in 17 (S1) |
 
 Exit codes: `0` success, `1` failure, `2` usage error, `5` findings under `check --strict`.
 
@@ -155,6 +225,13 @@ every one.
   reason, closing a resolution with a note. Nothing is deleted.
 - **Nothing is hidden.** A prompt that had to be cut, an answer that had to be salvaged, a set of units
   split across calls, a provider that truncated — each is reported where it happened.
+
+## What it trusts
+
+A commit, a model's answer and a cloned `.smysl/` are all treated as things someone else wrote. What that
+means in practice, and what a security scan of this code found and changed, is in
+[`docs/security.md`](docs/security.md). Two properties worth stating here: the default build cannot make
+an HTTPS request at all, and it will not send a commit over plain HTTP to anywhere but this machine.
 
 ## Where things are kept
 

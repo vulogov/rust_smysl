@@ -1,0 +1,400 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/gceaa000d8f9e-1 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "code:kind": act, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture." }
+~ Open with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across …
+
+It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture. Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved.
+
+@decision d/gceaa000d8f9e-2 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "code:kind": act, "ingest:quote": "Then what the tool does, shown rather than described, with real output from this repository:" }
+~ Show what the tool does rather than describe it.
+
+Then what the tool does, shown rather than described, with real output from this repository: one commit read back with its rejected alternative beside it, and `stale` naming the functions that have changed under recorded reasoning.
+
+@decision d/gceaa000d8f9e-3 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": decline, "ingest:quote": "Answering \"why is this like this?\" was dropped as a product claim." }
+~ Drop the claim of answering 'why is this like this?' as a product feature.
+
+Answering "why is this like this?" was dropped as a product claim.
+
+@decision d/gceaa000d8f9e-4 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": act, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ Assign labels, sources and statuses; the model proposes wording only.
+
+The tool assigns labels, sources and statuses; the model proposes wording only. Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.
+
+@decision d/gceaa000d8f9e-5 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": act, "ingest:quote": Staleness by item body hash. }
+~ Detect staleness by item body hash rather than line ranges.
+
+Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.
+
+@decision d/gceaa000d8f9e-6 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": act, "ingest:quote": Review as records. }
+~ Record review as confirmations, withdrawals with reasons, and closures with notes.
+
+Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution. The log keeps everything.
+
+@decision d/gceaa000d8f9e-7 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": act, "ingest:quote": It ships its own instrument. }
+~ Ship its own instrument for benchmarking the model.
+
+It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.
+
+@decision d/gceaa000d8f9e-8 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": act, "ingest:quote": Two thirds of the commands never call a model. }
+~ Focus on deterministic commands over model-dependent ones.
+
+Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run.
+
+@decision d/gceaa000d8f9e-9 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": act, "ingest:quote": "The figures are published, naming the model each came from, including the experiments that failed." }
+~ Publish figures naming the model each came from, including failed experiments.
+
+The figures are published, naming the model each came from, including the experiments that failed. The rest of this document is that account — written for someone deciding whether to spend an afternoon on this, and reviewing the tool as it was built rather than as it was designed.
+
+@decision d/gceaa000d8f9e-10 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": act, "ingest:quote": Over-production is the failure mode that matters. }
+~ Highlight over-production as the failure mode that matters.
+
+Over-production is the failure mode that matters. A corpus of 54 decisions for a four-decision commit is worse than no corpus, and prompt wording was measured twice as not being the lever.
+
+@decision d/gceaa000d8f9e-11 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": act, "ingest:quote": The hook only queues and `--estimate` prices a run before it starts. }
+~ Meaningfully price extraction runs before starting them.
+
+The hook only queues and `--estimate` prices a run before it starts.
+
+@decision d/gceaa000d8f9e-12 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": act, "ingest:quote": A cloned corpus is someone else's claim. }
+~ Label cloned corpora as someone else's claims.
+
+A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says.
+
+@constraint p/gceaa000d8f9e-1-1 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "code:kind": existing-behaviour, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture." }
+~ A Rust developer recognizes common patterns in code such as dependencies pinned to exact versions, locks held …
+
+A Rust developer recognizes common patterns in code such as dependencies pinned to exact versions, locks held across awaits, and tests building their own fixtures.
+
+@constraint p/gceaa000d8f9e-1-2 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "code:kind": existing-behaviour, "ingest:quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ These patterns represent decisions made at some point in time based on certain assumptions or conditions.
+
+@constraint p/gceaa000d8f9e-2-1 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "code:kind": existing-behaviour, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet." }
+~ The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was.
+
+@constraint p/gceaa000d8f9e-2-2 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "code:kind": existing-behaviour, "ingest:quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ Each was a decision resting on something true at the time.
+
+@constraint p/gceaa000d8f9e-3-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "The tool cannot extract what was never written: on terse conventional-commit histories there is nothing to extract, which S0 found directly." }
+~ The tool cannot extract what was never written
+
+@constraint p/gceaa000d8f9e-3-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "Essay-style commit messages already hold the reasons, and the corpus is a shorter summary of the same text — it keeps the reason and drops the detail that made the git answer more useful." }
+~ Essay-style commit messages already hold the reasons
+
+@constraint p/gceaa000d8f9e-10-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; the model proposes wording only.
+
+@constraint p/gceaa000d8f9e-4-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit.
+
+@constraint p/gceaa000d8f9e-5-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": assumption, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Staleness detection should be based on code identity rather than line ranges.
+
+@constraint p/gceaa000d8f9e-10-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; the model proposes wording only.
+
+@constraint p/gceaa000d8f9e-10-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.
+
+@constraint p/gceaa000d8f9e-7-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ The tool needs to measure the performance of different models.
+
+@constraint p/gceaa000d8f9e-8-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": Two thirds of the commands never call a model. }
+~ Two thirds of the commands never call a model.
+
+@constraint p/gceaa000d8f9e-9-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "The figures are published, naming the model each came from, including the experiments that failed." }
+~ The figures are published
+
+@constraint p/gceaa000d8f9e-9-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": assumption, "ingest:quote": "The rest of this document is that account — written for someone deciding whether to spend an afternoon on this, and reviewing the tool as it was built rather than as it was designed." }
+~ The tool is built rather than as it was designed
+
+@constraint p/gceaa000d8f9e-10-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; the model proposes wording only.
+
+@constraint p/gceaa000d8f9e-10-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.
+
+@constraint p/gceaa000d8f9e-10-3 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": existing-behaviour, "ingest:quote": Most tooling in this area stores what the model said as though it were established. }
+~ Most tooling in this area stores what the model said as though it were established.
+
+@constraint p/gceaa000d8f9e-11-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": tool-setting, "ingest:quote": The hook only queues and `--estimate` prices a run before it starts. }
+~ The hook only queues and `--estimate` prices a run before it starts.
+
+@constraint p/gceaa000d8f9e-12-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": assumption, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says. }
+~ A cloned corpus is someone else's claim.
+
+@claim r/gceaa000d8f9e-1-1 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "code:kind": rejected-alternative, "ingest:quote": "The introduction assumed its reader already knew what a corpus, a unit or a prerequisite was, and led with which commands call a model — an answer to a question nobody had asked yet." }
+~ Rejected: Starting with an explanation of what a corpus, unit, or prerequisite is.
+
+@claim r/gceaa000d8f9e-2-1 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "code:kind": rejected-alternative, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture. Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ Rejected: Describing what the tool does.
+
+@claim r/gceaa000d8f9e-3-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep 'why is this like this?' as a product feature
+
+@claim r/gceaa000d8f9e-4-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": rejected-alternative, "ingest:quote": Most tooling in this area stores what the model said as though it were established. }
+~ Rejected: The model assigns labels, sources and statuses.
+
+@claim r/gceaa000d8f9e-4-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": rejected-alternative, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Rejected: The tool does not check quotes against commits.
+
+@claim r/gceaa000d8f9e-5-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Detect staleness by line ranges.
+
+@claim r/gceaa000d8f9e-6-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": rejected-alternative, "ingest:quote": Most tooling in this area stores what the model said as though it were established. }
+~ Rejected: Storing what the model said as though it were established.
+
+@claim r/gceaa000d8f9e-7-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use an external benchmarking tool.
+
+@claim r/gceaa000d8f9e-7-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not include any benchmarking functionality.
+
+@claim r/gceaa000d8f9e-9-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not publishing figures naming the model each came from
+
+@claim r/gceaa000d8f9e-9-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Publishing figures without naming the model
+
+@claim r/gceaa000d8f9e-10-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": rejected-alternative, "ingest:quote": Tried and rejected: a stricter `check` prompt (recall 0.65 → 0.30) }
+~ Rejected: A stricter `check` prompt (recall 0.65 → 0.30)
+
+@claim r/gceaa000d8f9e-10-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": rejected-alternative, "ingest:quote": Tried and rejected: a tightened extraction prompt (no fewer false positives) }
+~ Rejected: A tightened extraction prompt (no fewer false positives)
+
+@claim r/gceaa000d8f9e-10-3 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": rejected-alternative, "ingest:quote": Tried and rejected: ranking decisions by whether their quote is in the commit }
+~ Rejected: Ranking decisions by whether their quote is in the commit
+
+@claim r/gceaa000d8f9e-10-4 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "code:kind": rejected-alternative, "ingest:quote": Tried and rejected: retrieval term filtering }
+~ Rejected: Retrieval term filtering
+
+@claim r/gceaa000d8f9e-11-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Start extraction runs without pricing them first.
+
+@claim q/gceaa000d8f9e-1-1 { status: inferred, grounds: [d/gceaa000d8f9e-1], "code:kind": anticipated, "ingest:quote": "It now opens with the thing a Rust developer recognises: a dependency pinned to an exact version, a lock held across an await, a test that builds its own fixture." }
+~ The documentation now begins with examples that are more relatable and understandable for Rust developers.
+
+@claim q/gceaa000d8f9e-1-2 { status: inferred, grounds: [d/gceaa000d8f9e-1], "code:kind": anticipated, "ingest:quote": "Each was a decision resting on something true at the time, none of it in the code, and some of it in a commit message that cannot be queried and never says when the ground under it moved." }
+~ The decision highlights the importance of recognizing and documenting assumptions made during development.
+
+@evidence e/gceaa000d8f9e-2-1 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "ingest:quote": "Then what the tool does, shown rather than described, with real output from this repository: one commit read back with its rejected alternative beside it, and `stale` naming the functions that have changed under recorded reasoning." }
+~ Check: Then what the tool does, shown rather than described, with real output from this repository: one commit …
+
+Check: Then what the tool does, shown rather than described, with real output from this repository: one commit read back with its rejected alternative beside it, and `stale` naming the functions that have changed under recorded reasoning.
+
+@finding q/gceaa000d8f9e-2-1 { status: cited, source: { kind: doc, ref: git:ceaa000d8f9e569975f761aa3e072b48487c43d7 }, "ingest:quote": "Then what the tool does, shown rather than described, with real output from this repository: one commit read back with its rejected alternative beside it, and `stale` naming the functions that have changed under recorded reasoning." }
+~ The tool shows its functionality through real output from the repository.
+
+@claim q/gceaa000d8f9e-3-1 { status: inferred, grounds: [d/gceaa000d8f9e-3], "code:kind": anticipated, "ingest:quote": "So the tension is real, and it cuts both ways:" }
+~ The tension between commit messages and the tool's capabilities is acknowledged
+
+@evidence e/gceaa000d8f9e-3-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": Answering 'why is this like this?' was dropped as a product claim. }
+~ Check: Answering 'why is this like this?' was dropped as a product claim.
+
+@finding q/gceaa000d8f9e-3-2 { status: speculative }
+~ The product claim of answering 'why is this like this?' was dropped
+
+@evidence e/gceaa000d8f9e-4-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Check: Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.
+
+@finding q/gceaa000d8f9e-4-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Units with missing quotes are marked as `speculative`.
+
+@claim q/gceaa000d8f9e-4-2 { status: inferred, grounds: [d/gceaa000d8f9e-4], "code:kind": anticipated }
+~ The tool maintains control over the integrity of recorded information.
+
+@claim q/gceaa000d8f9e-5-1 { status: inferred, grounds: [d/gceaa000d8f9e-5], "code:kind": anticipated, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ A function that merely moved will not be flagged as stale.
+
+@claim q/gceaa000d8f9e-5-2 { status: inferred, grounds: [d/gceaa000d8f9e-5], "code:kind": anticipated, "ingest:quote": "Staleness is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ A function that changed will be flagged as stale.
+
+@claim q/gceaa000d8f9e-6-1 { status: inferred, grounds: [d/gceaa000d8f9e-6], "code:kind": anticipated, "ingest:quote": "Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a …
+
+Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution.
+
+@claim q/gceaa000d8f9e-6-2 { status: inferred, grounds: [d/gceaa000d8f9e-6], "code:kind": anticipated, "ingest:quote": The log keeps everything. }
+~ The log keeps everything.
+
+@evidence e/gceaa000d8f9e-7-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": "`bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them." }
+~ Check: `bench` measures the model *you* chose on *your* commits, and every published figure names the model it …
+
+Check: `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.
+
+@finding q/gceaa000d8f9e-7-1 { status: speculative }
+~ Users can measure the performance of their chosen model on their own commits.
+
+@evidence e/gceaa000d8f9e-7-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them. }
+~ Check: every published figure names the model it came from — including four experiments that failed and are …
+
+Check: every published figure names the model it came from — including four experiments that failed and are listed so nobody repeats them.
+
+@finding q/gceaa000d8f9e-7-2 { status: speculative }
+~ The tool provides transparency about which models were tested and their results.
+
+@evidence e/gceaa000d8f9e-8-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": "Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Check: Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run.
+
+@finding q/gceaa000d8f9e-8-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Deterministic commands are worth your time today.
+
+@evidence e/gceaa000d8f9e-9-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": "| `check`, held-out, local 14B | recall 0.38, precision 0.10 (10 of 96 flags), 13% of ordinary commits flagged |\n| `check`, hosted `deepseek-v4-pro` | recall 0.75, precision ~0.89 on the development set, about $2 a pass |\n| `extract`, three models, six blind-labelled commits | decisions 82–100% precision; prerequisites 41–88%; alternatives 31–79% |\n| `extract` on a local 14B | over-produces: 54 decisions on a commit labelled with 4 |\n| Cost of `extract` locally | 7 minutes for a small commit, ~29 for a 700 KB one |\n| Two-pass agreement | 170 and 192 flags became 96, removing every false flag on a real commit in development |" }
+~ Check: | `check`, held-out, local 14B | recall 0.38, precision 0.10 (10 of 96 flags), 13% of ordinary commits …
+
+Check: | `check`, held-out, local 14B | recall 0.38, precision 0.10 (10 of 96 flags), 13% of ordinary commits flagged |
+| `check`, hosted `deepseek-v4-pro` | recall 0.75, precision ~0.89 on the development set, about $2 a pass |
+| `extract`, three models, six blind-labelled commits | decisions 82–100% precision; prerequisites 41–88%; alternatives 31–79% |
+| `extract` on a local 14B | over-produces: 54 decisions on a commit labelled with 4 |
+| Cost of `extract` locally | 7 minutes for a small commit, ~29 for a 700 KB one |
+| Two-pass agreement | 170 and 192 flags became 96, removing every false flag on a real commit in development |
+
+@finding q/gceaa000d8f9e-9-1 { status: speculative }
+~ The tool's performance and reliability can be evaluated based on the published figures
+
+@evidence e/gceaa000d8f9e-9-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": including four experiments that failed and are listed so nobody repeats them. }
+~ Check: including four experiments that failed and are listed so nobody repeats them.
+
+@finding q/gceaa000d8f9e-9-2 { status: speculative }
+~ Failed experiments are documented, preventing others from repeating them
+
+@evidence e/gceaa000d8f9e-10-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": | `extract` on a local 14B | over-produces: 54 decisions on a commit labelled with 4 }
+~ Check: | `extract` on a local 14B | over-produces: 54 decisions on a commit labelled with 4
+
+@finding q/gceaa000d8f9e-10-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@ceaa000d8f9e }, "ingest:quote": "Over-production is the failure mode that matters. A corpus of 54 decisions for a four-decision commit is worse than no corpus, and prompt wording was measured twice as not being the lever." }
+~ A corpus of 54 decisions for a four-decision commit is worse than no corpus.
+
+@claim q/gceaa000d8f9e-11-1 { status: inferred, grounds: [d/gceaa000d8f9e-11], "code:kind": anticipated, "ingest:quote": The hook only queues and `--estimate` prices a run before it starts. }
+~ Users are informed about the cost of extraction runs before they start, allowing them to make informed …
+
+Users are informed about the cost of extraction runs before they start, allowing them to make informed decisions.
+
+@claim q/gceaa000d8f9e-12-1 { status: inferred, grounds: [d/gceaa000d8f9e-12], "code:kind": anticipated, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says. }
+~ Units in a cloned corpus are marked as `speculative`.
+
+@rel p/gceaa000d8f9e-1-1 --conditions--> d/gceaa000d8f9e-1
+
+@rel p/gceaa000d8f9e-1-2 --conditions--> d/gceaa000d8f9e-1
+
+@rel p/gceaa000d8f9e-2-1 --conditions--> d/gceaa000d8f9e-2
+
+@rel p/gceaa000d8f9e-2-2 --conditions--> d/gceaa000d8f9e-2
+
+@rel p/gceaa000d8f9e-3-1 --conditions--> d/gceaa000d8f9e-3
+
+@rel p/gceaa000d8f9e-3-2 --conditions--> d/gceaa000d8f9e-3
+
+@rel p/gceaa000d8f9e-10-1 --conditions--> d/gceaa000d8f9e-4
+
+@rel p/gceaa000d8f9e-4-2 --conditions--> d/gceaa000d8f9e-4
+
+@rel p/gceaa000d8f9e-5-1 --conditions--> d/gceaa000d8f9e-5
+
+@rel p/gceaa000d8f9e-10-1 --conditions--> d/gceaa000d8f9e-6
+
+@rel p/gceaa000d8f9e-10-2 --conditions--> d/gceaa000d8f9e-6
+
+@rel p/gceaa000d8f9e-7-1 --conditions--> d/gceaa000d8f9e-7
+
+@rel p/gceaa000d8f9e-8-1 --conditions--> d/gceaa000d8f9e-8
+
+@rel p/gceaa000d8f9e-9-1 --conditions--> d/gceaa000d8f9e-9
+
+@rel p/gceaa000d8f9e-9-2 --conditions--> d/gceaa000d8f9e-9
+
+@rel p/gceaa000d8f9e-10-1 --conditions--> d/gceaa000d8f9e-10
+
+@rel p/gceaa000d8f9e-10-2 --conditions--> d/gceaa000d8f9e-10
+
+@rel p/gceaa000d8f9e-10-3 --conditions--> d/gceaa000d8f9e-10
+
+@rel p/gceaa000d8f9e-11-1 --conditions--> d/gceaa000d8f9e-11
+
+@rel p/gceaa000d8f9e-12-1 --conditions--> d/gceaa000d8f9e-12
+
+@rel r/gceaa000d8f9e-1-1 --contrasts--> d/gceaa000d8f9e-1
+
+@rel r/gceaa000d8f9e-2-1 --contrasts--> d/gceaa000d8f9e-2
+
+@rel r/gceaa000d8f9e-3-1 --contrasts--> d/gceaa000d8f9e-3
+
+@rel r/gceaa000d8f9e-4-1 --contrasts--> d/gceaa000d8f9e-4
+
+@rel r/gceaa000d8f9e-4-2 --contrasts--> d/gceaa000d8f9e-4
+
+@rel r/gceaa000d8f9e-5-1 --contrasts--> d/gceaa000d8f9e-5
+
+@rel r/gceaa000d8f9e-6-1 --contrasts--> d/gceaa000d8f9e-6
+
+@rel r/gceaa000d8f9e-7-1 --contrasts--> d/gceaa000d8f9e-7
+
+@rel r/gceaa000d8f9e-7-2 --contrasts--> d/gceaa000d8f9e-7
+
+@rel r/gceaa000d8f9e-9-1 --contrasts--> d/gceaa000d8f9e-9
+
+@rel r/gceaa000d8f9e-9-2 --contrasts--> d/gceaa000d8f9e-9
+
+@rel r/gceaa000d8f9e-10-1 --contrasts--> d/gceaa000d8f9e-10
+
+@rel r/gceaa000d8f9e-10-2 --contrasts--> d/gceaa000d8f9e-10
+
+@rel r/gceaa000d8f9e-10-3 --contrasts--> d/gceaa000d8f9e-10
+
+@rel r/gceaa000d8f9e-10-4 --contrasts--> d/gceaa000d8f9e-10
+
+@rel r/gceaa000d8f9e-11-1 --contrasts--> d/gceaa000d8f9e-11
+
+@rel d/gceaa000d8f9e-1 --causes--> q/gceaa000d8f9e-1-1
+
+@rel d/gceaa000d8f9e-1 --causes--> q/gceaa000d8f9e-1-2
+
+@rel e/gceaa000d8f9e-2-1 --backs--> q/gceaa000d8f9e-2-1
+
+@rel d/gceaa000d8f9e-2 --causes--> q/gceaa000d8f9e-2-1
+
+@rel d/gceaa000d8f9e-3 --causes--> q/gceaa000d8f9e-3-1
+
+@rel e/gceaa000d8f9e-3-2 --backs--> q/gceaa000d8f9e-3-2
+
+@rel d/gceaa000d8f9e-3 --causes--> q/gceaa000d8f9e-3-2
+
+@rel e/gceaa000d8f9e-4-1 --backs--> q/gceaa000d8f9e-4-1
+
+@rel d/gceaa000d8f9e-4 --causes--> q/gceaa000d8f9e-4-1
+
+@rel d/gceaa000d8f9e-4 --causes--> q/gceaa000d8f9e-4-2
+
+@rel d/gceaa000d8f9e-5 --causes--> q/gceaa000d8f9e-5-1
+
+@rel d/gceaa000d8f9e-5 --causes--> q/gceaa000d8f9e-5-2
+
+@rel d/gceaa000d8f9e-6 --causes--> q/gceaa000d8f9e-6-1
+
+@rel d/gceaa000d8f9e-6 --causes--> q/gceaa000d8f9e-6-2
+
+@rel e/gceaa000d8f9e-7-1 --backs--> q/gceaa000d8f9e-7-1
+
+@rel d/gceaa000d8f9e-7 --causes--> q/gceaa000d8f9e-7-1
+
+@rel e/gceaa000d8f9e-7-2 --backs--> q/gceaa000d8f9e-7-2
+
+@rel d/gceaa000d8f9e-7 --causes--> q/gceaa000d8f9e-7-2
+
+@rel e/gceaa000d8f9e-8-1 --backs--> q/gceaa000d8f9e-8-1
+
+@rel d/gceaa000d8f9e-8 --causes--> q/gceaa000d8f9e-8-1
+
+@rel e/gceaa000d8f9e-9-1 --backs--> q/gceaa000d8f9e-9-1
+
+@rel d/gceaa000d8f9e-9 --causes--> q/gceaa000d8f9e-9-1
+
+@rel e/gceaa000d8f9e-9-2 --backs--> q/gceaa000d8f9e-9-2
+
+@rel d/gceaa000d8f9e-9 --causes--> q/gceaa000d8f9e-9-2
+
+@rel e/gceaa000d8f9e-10-1 --backs--> q/gceaa000d8f9e-10-1
+
+@rel d/gceaa000d8f9e-10 --causes--> q/gceaa000d8f9e-10-1
+
+@rel d/gceaa000d8f9e-11 --causes--> q/gceaa000d8f9e-11-1
+
+@rel d/gceaa000d8f9e-12 --causes--> q/gceaa000d8f9e-12-1

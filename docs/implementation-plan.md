@@ -657,6 +657,77 @@ judgement, not a number.
 **Explicitly not in Phase 4:** blocking gates on model output; hooks that push the corpus into an agent's
 prompt (S3); anything that spends a model call without being asked.
 
+### 0.2.0, first feature: a large change is truncated, and `check` does not say what it missed
+
+**The measurement (2026-09-22, free, from results already on disk).** Over the 93 held-out cases:
+
+| | |
+|---|---|
+| Changes whose diff was truncated | **55 (59%)** |
+| Lines shown when truncated | 151–400 of the change |
+| Contradicting cases truncated | **9 of 16** |
+
+`extract` was taught to read a large commit in parts; `check` still cuts at the first 400 lines, or at
+half the window, whichever comes first. So on most real changes the model judges what it was shown and
+says nothing about the rest, and "nothing recorded is contradicted" can mean "nothing in the first 400
+lines". The warning says the change was truncated; it does not say which files went unseen.
+
+**Four ways out, in order of what they cost:**
+
+| | Idea | Calls | Measurable without a model? |
+|---|---|---|---|
+| A | **Choose what fits, instead of taking the head.** Rank the change's files by how much of the corpus attaches to them, and show those whole | same | **yes** — does the file carrying the contradiction survive the cut? |
+| B | **Say what was left out.** List the unseen files in the warning and in `--json` | same | yes |
+| C | **Split the change into parts** as `extract` does, judging each part with the units retrieved for it | parts × chunks — about 3× | no |
+| D | Two stages: a cheap pass to pick files, then judge | more | no |
+
+**Recommended order: B, then A, then C behind a setting.** B is honest reporting and costs nothing — a
+reader who is told which files were not examined can act on it, and a reader who is not cannot. A changes
+which 400 lines are shown, costs no extra call, and can be measured on the held-out set deterministically
+by asking whether the file that carries each known contradiction survives the cut. C multiplies cost and
+should not ship until A and B are measured, because they may make it unnecessary.
+
+**B and A, done 2026-09-22.** `check` now names the files it was shown nothing of — in the warning, in
+`--json`, and in the line that used to read "nothing recorded is contradicted" and now reads "nothing
+recorded is contradicted in what was examined; N file(s) were not". When a change does not fit, it is
+shown in the order of what the corpus has reasoning about rather than the order paths happen to sort.
+
+**A, measured over the 55 truncated held-out cases** (`--no-corpus-order` against the default, no model
+involved):
+
+| | diff order | corpus order |
+|---|---|---|
+| Files never examined, in total | 318 | **307** |
+| Cases where a corpus-known file came into view | — | **18** |
+| Cases where more files fell out than came in | — | **4** |
+| Units judged | — | **no change** |
+
+So ordering is worth having and is not a fix. It rescues a file in 18 cases of 55 and costs a file in 4;
+it changes nothing about *which* units are judged, because retrieval selects those from the file list
+rather than from the lines shown. What it improves is the evidence the model reads for those units.
+
+**307 files across 55 cases are still never examined**, which is the case for C, now on evidence rather
+than on intuition: no ordering can show more than the cap allows.
+
+**C, done 2026-09-22, behind `--parts`.** A change too large for one view is read in parts of whole
+files, each judged against the units retrieved for *its own* files. Measured over the same 55 truncated
+cases, previewed with no model:
+
+| | one view | up to four parts |
+|---|---|---|
+| Files never examined | 307 | **0** |
+| Units judged, summed | 1 290 | **1 881** (+46%) |
+| Parts read | 55 | 168 (3.1 per case) |
+
+It does what B and A could not: nothing goes unexamined. It costs about three times the calls, which on a
+local 14B at a minute a call is the difference between a slow tool and an unusable one — so it is off by
+default (`--parts 1`) and the figures are here for whoever turns it on.
+
+**What this exposes next: `check` is sequential.** Its calls are independent — chunks of units against a
+part — and run one after another. Measured medians per whole check: 80 s local, 78–144 s hosted. Parts
+multiply that. Running the calls concurrently is the difference between 3× the calls and 3× the wait, and
+it is the next thing worth building.
+
 ---
 
 ## 9. Risks and known limits

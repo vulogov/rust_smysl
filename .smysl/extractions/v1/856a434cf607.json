@@ -1,0 +1,406 @@
+{
+  "decisions": [
+    {
+      "decision": "The README now leads with the seven deterministic commands rather than with extraction.",
+      "kind": "act",
+      "rationale": "It focuses on the part that needs no model and is worth someone's time today.",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction."
+    },
+    {
+      "decision": "It also no longer implies `stale` works on a fresh clone.",
+      "kind": "act",
+      "rationale": "Clarifies that `stale` reads a corpus, which is written by extraction.",
+      "quote": "It also no longer implies `stale` works on a fresh clone."
+    },
+    {
+      "decision": "The model-dependent third is listed with what it was measured at, model named, in the same table.",
+      "kind": "act",
+      "rationale": "Provides transparency about the performance of model-dependent commands.",
+      "quote": "The model-dependent third is listed with what it was measured at, model named, in the same table."
+    },
+    {
+      "decision": "`check` ships advisory: it prints findings and exits 0 unless `--strict`.",
+      "kind": "act",
+      "rationale": "Acknowledges the limitations of the model's precision and advises caution.",
+      "quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": "`extract` is honest about being weak.",
+      "kind": "act",
+      "rationale": "Discloses the limitations of the extraction process based on measured performance.",
+      "quote": "The model-dependent third is honest about being weak."
+    },
+    {
+      "decision": "Two-pass agreement is used by default for `check` to remove false flags.",
+      "kind": "act",
+      "rationale": "Improves the precision of findings by ensuring two independent runs agree.",
+      "quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default."
+    },
+    {
+      "decision": "The tool assigns labels, sources, and statuses; the model proposes wording only.",
+      "kind": "act",
+      "rationale": "Ensures that the tool maintains control over the integrity of the corpus.",
+      "quote": "The tool assigns labels, sources and statuses; a model proposes content only."
+    },
+    {
+      "decision": "Staleness is detected by item body hash rather than line ranges.",
+      "kind": "act",
+      "rationale": "Prevents false positives for functions that have merely moved.",
+      "quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": "Review is recorded as confirmations, withdrawals with reasons, or closures with notes.",
+      "kind": "act",
+      "rationale": "Maintains a transparent and immutable record of review actions.",
+      "quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution."
+    },
+    {
+      "decision": "`bench` measures the model you chose on your own commits.",
+      "kind": "act",
+      "rationale": "Allows users to measure and verify the performance of their chosen models.",
+      "quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from."
+    },
+    {
+      "decision": "The tool does not trust a cloned corpus as an established fact.",
+      "kind": "act",
+      "rationale": "Encourages users to verify claims in the corpus independently.",
+      "quote": "A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says."
+    },
+    {
+      "decision": "The project focuses on providing a queryable, code-anchored record of decisions with staleness detection and an honest account of model performance.",
+      "kind": "act",
+      "rationale": "Defines the core purpose and value proposition of the tool.",
+      "quote": "If you want one sentence for why this exists: **a queryable, code-anchored record of decisions, with staleness detection, and an honest account of what the model half is worth.**"
+    }
+  ],
+  "prerequisites": [
+    {
+      "decision": 1,
+      "text": "Two thirds of this tool never calls a model.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run."
+    },
+    {
+      "decision": 1,
+      "text": "The part that needs no model is worth someone's time today.",
+      "kind": "assumption",
+      "normative": false,
+      "quote": "It focuses on the part that needs no model and is worth someone's time today."
+    },
+    {
+      "decision": 2,
+      "text": "`stale` command reads a corpus",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "`stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 2,
+      "text": "Extraction involves asking a model",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "A corpus is written by extraction, which asks a model once per commit."
+    },
+    {
+      "decision": 3,
+      "text": "The README now leads with the seven deterministic commands rather than with extraction.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction."
+    },
+    {
+      "decision": 3,
+      "text": "Two thirds of this tool never calls a model, and that is the part worth someone's time today.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Two thirds of this tool never calls a model, and that is the part worth someone's time today."
+    },
+    {
+      "decision": 4,
+      "text": "`check` was right about one flag in ten on a free local model and about nine in ten on a hosted one.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "On a free local model about one flag in ten was correct."
+    },
+    {
+      "decision": 4,
+      "text": "`check` is meant to be advisory, not a gate.",
+      "kind": "assumption",
+      "normative": true,
+      "quote": "`check` ships advisory: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": 5,
+      "text": "The project has measured the performance of the 'extract' command.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "Six commits labelled blind by the repository owner (73 decisions, 68 prerequisites, 29 alternatives), three systems adjudicated item by item. Precision / recall:"
+    },
+    {
+      "decision": 5,
+      "text": "The 'extract' command relies on a model to propose content.",
+      "kind": "existing-behaviour",
+      "normative": false,
+      "quote": "| Command | What it does | Needs a model |\n|---|---|---|\n| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |"
+    },
+    {
+      "decision": 6,
+      "text": "The tool assigns labels, sources and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool assigns labels, sources and statuses; a model proposes content only."
+    },
+    {
+      "decision": 6,
+      "text": "A single run never raises a status.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "A single run never raises a status."
+    },
+    {
+      "decision": 7,
+      "text": "The tool needs to maintain control over the integrity of the corpus.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Ensures that the tool maintains control over the integrity of the corpus."
+    },
+    {
+      "decision": 8,
+      "text": "Commit messages already carry reasons.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Essay-style commit messages already hold the reasons."
+    },
+    {
+      "decision": 8,
+      "text": "Staleness detection is needed for reasoning that becomes unexamined because the code under it changed.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "which recorded reasoning is now *unexamined* because the code under it changed"
+    },
+    {
+      "decision": 9,
+      "text": "Maintains a transparent and immutable record of review actions.",
+      "kind": "invariant",
+      "normative": true,
+      "quote": "Review is recorded as confirmations, withdrawals with reasons, or closures with notes."
+    },
+    {
+      "decision": 10,
+      "text": "The tool assigns labels, sources and statuses; a model proposes wording only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool assigns labels, sources and statuses; the model proposes wording only."
+    },
+    {
+      "decision": 10,
+      "text": "Every quote is checked against the commit.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`."
+    },
+    {
+      "decision": 11,
+      "text": "The tool assigns labels, sources and statuses; a model proposes content only.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "The tool assigns labels, sources and statuses; a model proposes content only."
+    },
+    {
+      "decision": 11,
+      "text": "Every quote is checked against the commit.",
+      "kind": "existing-behaviour",
+      "normative": true,
+      "quote": "Every quote is checked against the commit."
+    }
+  ],
+  "alternatives": [
+    {
+      "decision": 1,
+      "alternative": "Leading with extraction, which asks a model once per commit.",
+      "reason": "",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction."
+    },
+    {
+      "decision": 2,
+      "alternative": "`stale` could imply it works on a fresh clone without a corpus",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 3,
+      "alternative": "Not listing the model-dependent commands with their performance metrics.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 4,
+      "alternative": "`check` could exit with an error code if any flags are found.",
+      "reason": "",
+      "quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": 4,
+      "alternative": "`check` could be more strict by default, requiring manual confirmation of findings.",
+      "reason": "",
+      "quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": 5,
+      "alternative": "The project could downplay the limitations of the 'extract' command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 5,
+      "alternative": "The project could not disclose the measured performance of the 'extract' command.",
+      "reason": "",
+      "quote": ""
+    },
+    {
+      "decision": 6,
+      "alternative": "One-pass agreement for `check`.",
+      "reason": "",
+      "quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default."
+    },
+    {
+      "decision": 8,
+      "alternative": "Detect staleness by line ranges.",
+      "reason": "",
+      "quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is."
+    },
+    {
+      "decision": 10,
+      "alternative": "A stricter `check` prompt.",
+      "reason": "",
+      "quote": "A stricter `check` prompt (recall 0.65 → 0.30)"
+    },
+    {
+      "decision": 10,
+      "alternative": "A tightened extraction prompt naming what is not a decision.",
+      "reason": "",
+      "quote": "A tightened extraction prompt naming what is not a decision"
+    },
+    {
+      "decision": 11,
+      "alternative": "The tool trusts a cloned corpus as an established fact.",
+      "reason": "",
+      "quote": "A cloned corpus is someone else's claim. Units carry the status the tool gave them; read speculative as what it says."
+    }
+  ],
+  "consequences": [
+    {
+      "decision": 1,
+      "text": "README.md is updated to lead with the seven deterministic commands.",
+      "quote": "The README now leads with the seven deterministic commands rather than with extraction.",
+      "verified": true,
+      "verification_quote": "## The commands\n\nA full walk-through, on this repository, is in [`docs/smysl-workflow.md`](docs/smysl-workflow.md)."
+    },
+    {
+      "decision": 2,
+      "text": "Clarifies that `stale` requires a pre-existing corpus",
+      "quote": "It also no longer implies `stale` works on a fresh clone. It reads a corpus, and a corpus is written by extraction, which asks a model once per commit.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 3,
+      "text": "Provides transparency about the performance of model-dependent commands.",
+      "quote": "The model-dependent third is listed with what it was measured at, model named, in the same table.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "Users are advised to manually review the findings printed by `check`.",
+      "quote": "`check` ships advisory: it prints findings and exits 0 unless `--strict`.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 4,
+      "text": "The tool does not enforce any action based on the findings of `check`.",
+      "quote": "`check` ships advisory: it prints findings and exits 0 unless `--strict`.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 5,
+      "text": "Users are informed about the limitations of the 'extract' command, which helps them understand its reliability and decide whether to use it.",
+      "quote": "Decisions are the reliable kind; the systems differ in recall, not correctness. **Prerequisites are the weak kind** — the system that finds most of them is right 41% of the time, and the one that is right 88% of the time finds a fifth. Alternatives have the worst precision of the three.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 6,
+      "text": "`check` prints findings and exits 0 unless `--strict`.",
+      "quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`.",
+      "verified": true,
+      "verification_quote": "So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`."
+    },
+    {
+      "decision": 6,
+      "text": "The precision of findings is improved by ensuring two independent runs agree.",
+      "quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default.",
+      "verified": true,
+      "verification_quote": "170 and 192 flags became 96, and it removed every false flag on a real commit in development"
+    },
+    {
+      "decision": 7,
+      "text": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.",
+      "quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 7,
+      "text": "Most tooling in this area stores what the model said as though it were established.",
+      "quote": "Most tooling in this area stores what the model said as though it were established.",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 8,
+      "text": "Functions that have merely moved are not flagged as stale.",
+      "quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is.",
+      "verified": true,
+      "verification_quote": "a function that merely moved is not flagged"
+    },
+    {
+      "decision": 9,
+      "text": "Confirming writes an attestation.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Rejecting writes a withdrawal whose reason unit says why.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 9,
+      "text": "Closing writes a resolution.",
+      "quote": "",
+      "verified": false,
+      "verification_quote": ""
+    },
+    {
+      "decision": 10,
+      "text": "Users can measure and verify the performance of their chosen models.",
+      "quote": "Allows users to measure and verify the performance of their chosen models.",
+      "verified": true,
+      "verification_quote": "The only figure about *your* model on *your* commits is the one you measure:"
+    },
+    {
+      "decision": 11,
+      "text": "Users are encouraged to verify claims in the corpus independently.",
+      "quote": "Encourages users to verify claims in the corpus independently.",
+      "verified": false,
+      "verification_quote": ""
+    }
+  ]
+}

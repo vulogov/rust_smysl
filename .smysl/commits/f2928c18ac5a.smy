@@ -1,0 +1,58 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@artifact-ref a/gf2928c18ac5a-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@f2928c18ac5a }, "code:body_hash": a0fcdedc690f4e70 }
+~ crates/cargo-smysl-verdict/src/check.rs::Settings::default
+
+@artifact-ref a/gf2928c18ac5a-2 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@f2928c18ac5a }, "code:body_hash": 382d676756303814 }
+~ crates/cargo-smysl-verdict/src/check.rs::ask_all
+
+@artifact-ref a/gf2928c18ac5a-3 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/src/check.rs@f2928c18ac5a }, "code:body_hash": 4098566581d1cd44 }
+~ crates/cargo-smysl-verdict/src/check.rs::check_one
+
+@artifact-ref a/gf2928c18ac5a-4 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@f2928c18ac5a }, "code:body_hash": af2e5e83cfeab7f7 }
+~ crates/cargo-smysl-verdict/tests/check.rs::Scripted::ask_text
+
+@artifact-ref a/gf2928c18ac5a-5 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@f2928c18ac5a }, "code:body_hash": 41e9ba6087b3ae98 }
+~ crates/cargo-smysl-verdict/tests/check.rs::Scripted::new
+
+@artifact-ref a/gf2928c18ac5a-6 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@f2928c18ac5a }, "code:body_hash": 39244d20391d9f18 }
+~ crates/cargo-smysl-verdict/tests/check.rs::a_finding_only_one_pass_reports_is_not_kept
+
+@artifact-ref a/gf2928c18ac5a-7 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@f2928c18ac5a }, "code:body_hash": e3d8e89b0c02d590 }
+~  …
+
+crates/cargo-smysl-verdict/tests/check.rs::a_verdict_is_refused_when_the_label_was_not_judged_or_the_quote_is_invented
+
+@artifact-ref a/gf2928c18ac5a-8 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@f2928c18ac5a }, "code:body_hash": ed53dc796d0d066c }
+~  …
+
+crates/cargo-smysl-verdict/tests/check.rs::a_verdict_stands_when_its_label_was_judged_and_its_line_is_in_the_change
+
+@artifact-ref a/gf2928c18ac5a-9 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@f2928c18ac5a }, "code:body_hash": 6ebd659f05cd34e4 }
+~ crates/cargo-smysl-verdict/tests/check.rs::asking_concurrently_gives_the_same_answers_in_the_same_order
+
+@artifact-ref a/gf2928c18ac5a-10 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@f2928c18ac5a }, "code:body_hash": d400bbdbcaed3905 }
+~ crates/cargo-smysl-verdict/tests/check.rs::findings_are_advisory_unless_strict
+
+@artifact-ref a/gf2928c18ac5a-11 { status: cited, source: { kind: file, ref: crates/cargo-smysl-verdict/tests/check.rs@f2928c18ac5a }, "code:body_hash": f7172e01dc8b0465 }
+~  …
+
+crates/cargo-smysl-verdict/tests/check.rs::it_asks_about_recorded_units_and_shows_the_change_with_numbered_lines
+
+@artifact-ref a/gf2928c18ac5a-12 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f2928c18ac5a }, "code:body_hash": ecd3ad7c7d14d9a1 }
+~ crates/cargo-smysl/src/commands.rs::Narrating < '_ >::ask_text
+
+@artifact-ref a/gf2928c18ac5a-13 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f2928c18ac5a }, "code:body_hash": 77ef82025cfc6f5a }
+~ crates/cargo-smysl/src/commands.rs::Narrating < '_ >::describe
+
+@artifact-ref a/gf2928c18ac5a-14 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f2928c18ac5a }, "code:body_hash": c0355eef3b9f723a }
+~ crates/cargo-smysl/src/commands.rs::Narrating < '_ >::input_chars
+
+@artifact-ref a/gf2928c18ac5a-15 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f2928c18ac5a }, "code:body_hash": 373aa73ed0fc7cc9 }
+~ crates/cargo-smysl/src/commands.rs::Narrating < 'a >::around
+
+@artifact-ref a/gf2928c18ac5a-16 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f2928c18ac5a }, "code:body_hash": 577d2415bf15a3eb }
+~ crates/cargo-smysl/src/commands.rs::check
+
+@artifact-ref a/gf2928c18ac5a-17 { status: cited, source: { kind: file, ref: crates/cargo-smysl/src/commands.rs@f2928c18ac5a }, "code:body_hash": aa3ad0f266ce74b0 }
+~ crates/cargo-smysl/src/commands.rs::run

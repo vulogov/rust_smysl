@@ -1,0 +1,4 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@artifact-ref a/ge313f67347be-1 { status: cited, source: { kind: file, ref: crates/cargo-smysl-extract/src/pass.rs@e313f67347be }, "code:body_hash": 76e808f403b46562 }
+~ crates/cargo-smysl-extract/src/pass.rs::extract

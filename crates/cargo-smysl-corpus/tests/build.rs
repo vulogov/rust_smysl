@@ -253,3 +253,41 @@ fn a_decision_is_anchored_to_the_code_its_quote_came_from() {
     let staged = stage(&Store::from_records(Vec::new()), batch, 0);
     assert!(!staged.has_errors(), "{:?}", staged.report);
 }
+
+/// A quoted markdown block does not cost a commit its whole extraction.
+///
+/// smysl's `fine` profile admits one assertion per unit (SMY-E040). A verification quote containing a
+/// blank line — a table, a heading and a paragraph — overflows into the unit's body and used to refuse
+/// the batch, after every model call that produced it had already been paid for.
+#[test]
+fn a_body_with_a_blank_line_in_it_is_joined_rather_than_refused() {
+    let ex: Extraction = serde_json::from_value(serde_json::json!({
+        "decisions": [{"decision": "Document the commands", "kind": "act",
+                       "rationale": "Readers need it.\n\nAnd it was missing.", "quote": ""}],
+        "prerequisites": [], "alternatives": [],
+        "consequences": [{
+            "decision": 1, "text": "The commands are documented.", "quote": "",
+            "verified": true,
+            // A real one from this repository: a heading, a blank line, then a paragraph.
+            "verification_quote": "## The commands\n\nA full walk-through, on this repository, is in \
+                                   docs/smysl-workflow.md, and it lists every command with what it does."
+        }]
+    }))
+    .unwrap();
+    let batch = build(&ex, &commit(), 0).unwrap();
+    assert!(batch.reflowed >= 1, "and the run says how many were joined");
+    for unit in &batch.units {
+        if let Some(body) = &unit.body {
+            assert!(
+                !body.trim().contains("\n\n"),
+                "no unit carries two paragraphs: {body:?}"
+            );
+        }
+    }
+    let staged = stage(&Store::from_records(Vec::new()), batch, 0);
+    assert!(
+        !staged.has_errors(),
+        "and the batch stages: {:?}",
+        staged.report
+    );
+}

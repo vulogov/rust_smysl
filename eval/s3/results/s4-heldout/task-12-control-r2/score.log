@@ -152,7 +152,7 @@ ii...............................................................
 test result: ok. 63 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 9.80s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/12-replacement.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/s4-heldout/task-12-control-r2/tree' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/s4-heldout/task-12-control-r2/target/debug/ucal'
+$ '<repo>/eval/s3/oracles/12-replacement.sh' '<repo>/eval/.s3work/runs/s4-heldout/task-12-control-r2/tree' '<repo>/eval/.s3work/runs/s4-heldout/task-12-control-r2/target/debug/ucal'
 [exit 1, 0s]
 oracle 12: clock_measured.session_drift_ticks has a magnitude with no direction: 11929837382705399787000000000000000000000
 

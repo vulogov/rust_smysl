@@ -152,7 +152,7 @@ running 66 tests
 test result: ok. 64 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 9.81s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/10.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run1/task-10-corpus/tree'
+$ '<repo>/eval/s3/oracles/10.sh' '<repo>/eval/.s3work/runs/run1/task-10-corpus/tree'
 [exit 1, 1s]
 thread 'citations::s3_oracle_10::a_version_without_notes_is_refused_even_when_other_notes_would_pass' (5195977) panicked at xtask/src/citations.rs:1419:19:
 9.9.9 has no notes; another version's must not stand in: 1

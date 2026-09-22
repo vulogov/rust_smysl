@@ -1,0 +1,1065 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g2b514c5b163a-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran. The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout." }
+~ Take the home directory out of the published results and the docs
+
+The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout.
+
+@decision d/g2b514c5b163a-2 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "rust-version = \"1.86\"" }
+~ Set MSRV to Rust 1.86
+
+To ensure compatibility with dependencies that require newer versions of Rust.
+
+@decision d/g2b514c5b163a-3 { status: speculative, "code:kind": act, "ingest:quote": "homepage     = \"https://github.com/vulogov/rust_smysl\"\nkeywords     = [\"cargo-subcommand\", \"rationale\", \"provenance\", \"smysl\", \"decisions\"]\ncategories   = [\"development-tools::cargo-plugins\", \"development-tools\"]" }
+~ Add homepage, keywords, categories, and README to each crate
+
+To provide necessary metadata for crates.io listing and discovery.
+
+@decision d/g2b514c5b163a-4 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand." }
+~ Publish eight crates in a specific order
+
+To ensure path dependencies are resolved correctly by crates.io.
+
+@decision d/g2b514c5b163a-5 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand." }
+~ Keep `cargo-smysl` keywords separate from the workspace
+
+`cargo-smysl` is the crate people install, and they find it by searching for a cargo subcommand.
+
+@decision d/g2b514c5b163a-6 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "It also records what to be sure of before publishing, since a version can be yanked but never removed, and a crate name is claimed on first publish." }
+~ Document the release process in `docs/releasing.md`
+
+To provide clear instructions for maintaining and publishing the project.
+
+@decision d/g2b514c5b163a-7 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "Eight crates publish; the evaluation tooling does not, and says so." }
+~ Exclude `cargo-smysl-eval` from publication
+
+`cargo-smysl-eval` is evaluation tooling that reads files outside its own package.
+
+@decision d/g2b514c5b163a-8 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "# Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`." }
+~ Use `gix` for reading git objects instead of running `git`
+
+To ensure self-contained operation without relying on external binaries.
+
+@decision d/g2b514c5b163a-9 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON." }
+~ Pin dependencies to specific versions in the workspace
+
+To maintain consistency across all crates in the workspace.
+
+@decision d/g2b514c5b163a-10 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "# Hosted providers need TLS; the default build has no network stack at all (D18)." }
+~ Add `hosted` feature to some crates for optional TLS support
+
+To provide flexibility in network requirements.
+
+@decision d/g2b514c5b163a-11 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "# Label and adjudication files are TOML: a person edits them by hand, so they are not JSON." }
+~ Use `serde_json` and `toml` for configuration files
+
+To support human-editable configuration files.
+
+@decision d/g2b514c5b163a-12 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": act, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ Include `README.md` in each crate for crates.io listing
+
+To provide brief descriptions for each crate on crates.io.
+
+@decision d/g2b514c5b163a-13 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout." }
+~ Remove home directory paths from published results and documentation.
+
+A public repository should not carry either the username or the layout, and the results themselves are worth keeping.
+
+@decision d/g2b514c5b163a-14 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Rewrite paths to `<repo>` and `~` in published results.
+
+Paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@decision d/g2b514c5b163a-15 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "The harness now redacts as it writes, so a later run does not put them back." }
+~ Redact home directory paths as the harness writes.
+
+The harness now redacts as it writes, so a later run does not put them back.
+
+@decision d/g2b514c5b163a-16 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": They say `<your repository>` and `~/.rustup/...` now. }
+~ Update documentation to use `<your repository>` instead of `/Users/you/...`.
+
+Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now.
+
+@decision d/g2b514c5b163a-17 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": and quote 0.2.0 rather than a version that has moved on. }
+~ Update documentation to quote version 0.2.0 instead of a version that has moved on.
+
+Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on.
+
+@decision d/g2b514c5b163a-18 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ Do not include the username in the published results.
+
+A public repository should not carry either the username or the layout.
+
+@decision d/g2b514c5b163a-19 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path." }
+~ Keep the remaining `/home/...` in the S3 patches as placeholders.
+
+The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.
+
+@decision d/g2b514c5b163a-20 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "Deterministic commands are safe to gate on today, because they involve no model at all." }
+~ Ensure deterministic commands do not involve a model.
+
+Deterministic commands are safe to gate on today, because they involve no model at all.
+
+@decision d/g2b514c5b163a-21 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "The default, and the one to use. Every figure in the README comes from it." }
+~ Use a local provider by default for `extract`, `check`, and `evidence` commands.
+
+A local provider is free and the corpus shows it.
+
+@decision d/g2b514c5b163a-22 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "Twice the recall of the 14B and far less noise, about $2 per pass over 93 changes. Worth it when a judgement matters." }
+~ Use a hosted provider for `check` when precision matters.
+
+A hosted provider like DeepSeek is twice the recall of the 14B and far less noise, about $2 per pass over 93 changes. Worth it when a judgement matters.
+
+@decision d/g2b514c5b163a-23 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "When the corpus must stay clean, use a hosted pro-class model." }
+~ Use a hosted provider for `evidence` when the corpus must stay clean.
+
+A hosted pro-class model is recommended for `evidence` when the corpus must stay clean.
+
+@decision d/g2b514c5b163a-24 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B." }
+~ Do not use 7B and below models for `check`, as they over-produce decisions.
+
+A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B.
+
+@decision d/g2b514c5b163a-25 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran. The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout." }
+~ Remove the home directory from published results and documentation.
+
+The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping. The harness now redacts as it writes, so a later run does not put them back.
+
+@decision d/g2b514c5b163a-26 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now." }
+~ Update sample output in documentation to use `<your repository>` instead of `/Users/you/...`.
+
+The commit message states that two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now.
+
+@decision d/g2b514c5b163a-27 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on." }
+~ Update version references in documentation from 0.2.0 to a more current version.
+
+The commit message states that the remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.
+
+@decision d/g2b514c5b163a-28 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "The harness now redacts as it writes, so a later run does not put them back." }
+~ Rewrite paths in S3 score logs to `<repo>` and `~` byte for byte.
+
+The commit message states that the harness now redacts as it writes, so a later run does not put them back.
+
+@decision d/g2b514c5b163a-29 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": act, "ingest:quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path." }
+~ Remove `/home/...` placeholders from S3 patches in test code.
+
+The commit message states that the remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.
+
+@decision d/g2b514c5b163a-30 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "```\ncargo-smysl: 0.1.0\nsmysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)\ncode schema: x.code/v1\ninvoked by cargo: /Users/you/.rustup/toolchains/1.94.1-aarch64-apple-darwin/bin/cargo\nworkspace: /Users/you/Src/rust_smysl\nmembers: 9\ncorpus: /Users/you/Src/rust_smysl/.smysl (present)\nfacts: 50 Rust file(s), 485 function(s), 0 parse failure(s)\n```" }
+~ Update `doctor` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@decision d/g2b514c5b163a-31 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "```\ncargo smysl facts                       # the working tree\ncargo smysl facts HEAD --json           # one commit, machine-readable\ncargo smysl facts --file crates/cargo-smysl-verdict/src/matching.rs\n```" }
+~ Update `facts` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@decision d/g2b514c5b163a-32 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "```\ncargo smysl extract HEAD\ncargo smysl extract b2dbe48 --dry-run      # see what it would record, record nothing\ncargo smysl extract b2dbe48 --force        # redo a commit already recorded\n```" }
+~ Update `extract` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@decision d/g2b514c5b163a-33 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "```\ncargo smysl why p/gb2dbe4820872-2-1\n```" }
+~ Update `why` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@decision d/g2b514c5b163a-34 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "```\ncargo smysl check                       # HEAD against the corpus\ncargo smysl check --patch changes.diff  # a patch, or `-` for stdin\ncargo smysl check --json\ncargo smysl check --strict              # exit 5 on findings, for a hook or CI\ncargo smysl check --passes 1            # faster, noisier\n```" }
+~ Update `check` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@decision d/g2b514c5b163a-35 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "```\ncargo smysl evidence p/gb2dbe4820872-2-1                   # retrieve facts, judge, say what follows\ncargo smysl evidence p/gb2dbe4820872-2-1 --tests           # also shortlist tests that might bear on it\ncargo smysl evidence p/gb2dbe4820872-2-1 --tests --link    # run them, record readings, propose edges\ncargo smysl evidence p/gb2dbe4820872-2-1 --tests --link --mutate 3   # and check the tests notice\n```" }
+~ Update `evidence` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@decision d/g2b514c5b163a-36 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "code:kind": act, "ingest:quote": "```\ncargo smysl review\n```" }
+~ Update `review` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@constraint p/g2b514c5b163a-1-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout." }
+~ The command is the result; where the machine kept its files is not.
+
+@constraint p/g2b514c5b163a-1-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout." }
+~ A public repository should not carry either the username or the layout.
+
+@constraint p/g2b514c5b163a-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "# cargo_metadata 0.23 requires 1.86; smysl 1.3 requires 1.79; syn 3 requires 1.71." }
+~ Dependencies require at least Rust version 1.86.
+
+@constraint p/g2b514c5b163a-2-2 { status: speculative, "code:kind": assumption }
+~ The project aims to maintain compatibility with the latest dependencies.
+
+@constraint p/g2b514c5b163a-3-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": To provide necessary metadata for crates.io listing and discovery. }
+~ crates.io requires metadata for listing and discovery
+
+@constraint p/g2b514c5b163a-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "crates.io resolves path dependencies by version, so git, facts and corpus go first, then bench and extract, then verdict and evidence, then the subcommand." }
+~ crates.io resolves path dependencies by version
+
+@constraint p/g2b514c5b163a-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": assumption, "ingest:quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand." }
+~ `cargo-smysl` is the crate people install via search for a cargo subcommand.
+
+@constraint p/g2b514c5b163a-2-2 { status: speculative, "code:kind": assumption }
+~ The project aims to maintain compatibility with the latest dependencies.
+
+@constraint p/g2b514c5b163a-6-2 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": To provide necessary metadata for crates.io listing and discovery. }
+~ crates.io requires metadata for listing and discovery.
+
+@constraint p/g2b514c5b163a-7-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": `cargo-smysl-eval` is evaluation tooling that reads files outside its own package. }
+~ `cargo-smysl-eval` is evaluation tooling that reads files outside its own package.
+
+@constraint p/g2b514c5b163a-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": invariant, "ingest:quote": "Model-free and self-contained (plan §1): git objects are read with gix, never by running `git`." }
+~ The tool must never run the `git` binary.
+
+@constraint p/g2b514c5b163a-9-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "Eight crates publish; the evaluation tooling does not, and says so." }
+~ The project has a modular structure with multiple crates.
+
+@constraint p/g2b514c5b163a-2-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "# cargo_metadata 0.23 requires 1.86; smysl 1.3 requires 1.79; syn 3 requires 1.71." }
+~ Dependencies require at least Rust version 1.86.
+
+@constraint p/g2b514c5b163a-10-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": Hosted providers need TLS; the default build has no network stack at all (D18). }
+~ Some crates require TLS support for hosted providers.
+
+@constraint p/g2b514c5b163a-11-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": assumption, "ingest:quote": To support human-editable configuration files. }
+~ The project needs to support human-editable configuration files.
+
+@constraint p/g2b514c5b163a-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "A published package cannot reach outside itself, so the crate-level README is short and the full documentation stays in the repository." }
+~ A published package cannot reach outside itself
+
+@constraint p/g2b514c5b163a-13-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The harness now redacts as it writes, so a later run does not put them back." }
+~ The harness now redacts as it writes
+
+@constraint p/g2b514c5b163a-13-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran." }
+~ S3 score logs record the command each oracle ran
+
+@constraint p/g2b514c5b163a-13-3 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": invariant, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ A public repository should not carry either the username or the layout
+
+@constraint p/g2b514c5b163a-14-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ The home directory should not be included in the published results.
+
+@constraint p/g2b514c5b163a-14-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": invariant, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth …
+
+Paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@constraint p/g2b514c5b163a-15-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran." }
+~ The command each oracle ran is recorded in S3 score logs.
+
+@constraint p/g2b514c5b163a-15-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": invariant, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ A public repository should not carry either the username or the layout.
+
+@constraint p/g2b514c5b163a-15-3 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format." }
+~ Two documents showed sample output with `/Users/you/...` in it.
+
+@constraint p/g2b514c5b163a-16-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format;" }
+~ Two documents showed sample output with `/Users/you/...` in it.
+
+@constraint p/g2b514c5b163a-17-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format;" }
+~ Two documents showed sample output with `/Users/you/...` in it
+
+@constraint p/g2b514c5b163a-17-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on." }
+~ The project's version has moved on from 0.2.0
+
+@constraint p/g2b514c5b163a-18-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": invariant, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ A public repository should not carry either the username or the layout.
+
+@constraint p/g2b514c5b163a-19-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path." }
+~ The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code …
+
+The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.
+
+@constraint p/g2b514c5b163a-20-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "Cargo treats any executable named `cargo-<name>` on your `PATH` as the subcommand `cargo <name>`. So with\n`cargo-smysl` installed:" }
+~ Deterministic commands must behave identically whether cargo invoked them or you did.
+
+@constraint p/g2b514c5b163a-20-2 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": assumption, "ingest:quote": "Deterministic commands are safe to gate on today, because they involve no model at all:" }
+~ Deterministic commands are safe to gate on today, because they involve no model at all.
+
+@constraint p/g2b514c5b163a-21-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": assumption, "ingest:quote": "A local provider, start to finish:" }
+~ A local provider is free
+
+@constraint p/g2b514c5b163a-21-2 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": Every model below was actually run against `rust_smysl`'s evaluation set by this project. }
+~ The corpus shows it
+
+@constraint p/g2b514c5b163a-22-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "hosted | **`deepseek-v4-pro`** | — | 35 | **1.0** | Twice the recall of the 14B and far less noise, about $2 per pass over 93 changes. Worth it when a judgement matters" }
+~ A hosted provider like DeepSeek offers higher recall and lower noise compared to local models.
+
+@constraint p/g2b514c5b163a-22-2 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "The same `check` on a hosted `deepseek-v4-pro` cost about $2 per pass over 93 changes, and found twice as many contradictions." }
+~ The cost of using a hosted provider is acceptable for higher precision.
+
+@constraint p/g2b514c5b163a-23-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "When the corpus must stay clean, Gemini flash-class: 100% / 88% precision on decisions and prerequisites, at a fifth to a third of the recall." }
+~ A hosted provider is needed for `evidence` when the corpus must stay clean.
+
+@constraint p/g2b514c5b163a-23-2 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "When the corpus must stay clean, Gemini flash-class: 100% / 88% precision on decisions and prerequisites, at a fifth to a third of the recall." }
+~ The hosted provider should be pro-class for `evidence`.
+
+@constraint p/g2b514c5b163a-24-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B." }
+~ A 7B model on this task produces about ten findings per change.
+
+@constraint p/g2b514c5b163a-24-2 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B." }
+~ `check` is already advisory at one-in-ten precision on the 14B.
+
+@constraint p/g2b514c5b163a-25-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout. The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because …
+
+The commit message states that the paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@constraint p/g2b514c5b163a-25-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The harness now redacts as it writes, so a later run does not put them back." }
+~ The harness now redacts as it writes, so a later run does not put them back.
+
+@constraint p/g2b514c5b163a-26-1 { status: speculative, "code:kind": existing-behaviour, "ingest:quote": "The commit message states that two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format;" }
+~ Two documents showed sample output with `/Users/you/...` in it.
+
+@constraint p/g2b514c5b163a-27-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path." }
+~ The commit message states that the remaining `/home/...` in the S3 patches are placeholders an agent wrote in …
+
+The commit message states that the remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.
+
+@constraint p/g2b514c5b163a-13-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The harness now redacts as it writes, so a later run does not put them back." }
+~ The harness now redacts as it writes
+
+@constraint p/g2b514c5b163a-13-3 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": invariant, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ A public repository should not carry either the username or the layout
+
+@constraint p/g2b514c5b163a-19-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path." }
+~ The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code …
+
+The remaining `/home/...` in the S3 patches are placeholders an agent wrote in test code (`/home/a-smysl-user`), not anybody's path.
+
+@constraint p/g2b514c5b163a-30-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ The paths in the published results and docs should not carry either the username or the layout.
+
+@constraint p/g2b514c5b163a-30-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth …
+
+Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@constraint p/g2b514c5b163a-31-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": "Installation and model setup: [`cargo-smysl-install.md`](cargo-smysl-install.md).\nWhat has been measured, and on which model: the [README](../README.md)." }
+~ The paths in the output of the `facts` command were previously using `/Users/you/Src/rust_smysl`.
+
+@constraint p/g2b514c5b163a-31-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the\ncommand each oracle ran. The command is the result; where the machine kept its\nfiles is not, and a public repository should not carry either the username or\nthe layout." }
+~ The commit message states that paths should be rewritten to `<repo>` and `~` byte for byte otherwise.
+
+@constraint p/g2b514c5b163a-30-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ The paths in the published results and docs should not carry either the username or the layout.
+
+@constraint p/g2b514c5b163a-30-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth …
+
+Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@constraint p/g2b514c5b163a-30-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ The paths in the published results and docs should not carry either the username or the layout.
+
+@constraint p/g2b514c5b163a-30-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth …
+
+Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@constraint p/g2b514c5b163a-30-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ The paths in the published results and docs should not carry either the username or the layout.
+
+@constraint p/g2b514c5b163a-30-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth …
+
+Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@constraint p/g2b514c5b163a-30-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ The paths in the published results and docs should not carry either the username or the layout.
+
+@constraint p/g2b514c5b163a-30-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": existing-behaviour, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth …
+
+Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@constraint p/g2b514c5b163a-36-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "code:kind": existing-behaviour, "ingest:quote": The tool reads git itself. }
+~ The tool reads git itself.
+
+@constraint p/g2b514c5b163a-36-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": invariant, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth …
+
+Paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@claim r/g2b514c5b163a-1-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the home directory in the published results and the docs.
+
+@claim r/g2b514c5b163a-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Set MSRV to a lower version that is compatible with all dependencies.
+
+@claim r/g2b514c5b163a-2-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not set an explicit MSRV and let users manage their Rust versions independently.
+
+@claim r/g2b514c5b163a-3-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": To provide necessary metadata for crates.io listing and discovery. }
+~ Rejected: Do not add homepage, keywords, categories, and README to each crate
+
+@claim r/g2b514c5b163a-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Rejected: Publish all crates simultaneously
+
+@claim r/g2b514c5b163a-4-2 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": "Order matters. crates.io resolves path dependencies by version, so a crate cannot be published before everything it depends on." }
+~ Rejected: Publish crates in any order
+
+@claim r/g2b514c5b163a-5-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": "`cargo-smysl` keeps its own keywords rather than the workspace's: it is the crate people install, and they find it by searching for a cargo subcommand." }
+~ Rejected: Use the same keywords as the workspace.
+
+@claim r/g2b514c5b163a-6-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not document the release process.
+
+@claim r/g2b514c5b163a-7-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include `cargo-smysl-eval` in publication
+
+@claim r/g2b514c5b163a-8-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Running the `git` binary to read commit messages and changed files. }
+~ Rejected: Running the `git` binary to read commit messages and changed files.
+
+@claim r/g2b514c5b163a-9-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not pin dependencies to specific versions in the workspace.
+
+@claim r/g2b514c5b163a-9-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Pin dependencies to different versions across crates.
+
+@claim r/g2b514c5b163a-10-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not add a `hosted` feature and require TLS support in all builds.
+
+@claim r/g2b514c5b163a-10-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Add a different feature name for optional TLS support.
+
+@claim r/g2b514c5b163a-11-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use a different serialization format for configuration files.
+
+@claim r/g2b514c5b163a-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Keep all documentation in a single place }
+~ Rejected: Keep all documentation in a single place
+
+@claim r/g2b514c5b163a-12-2 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": Rejected: Use external links for additional documentation }
+~ Rejected: Use external links for additional documentation
+
+@claim r/g2b514c5b163a-13-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": rejected-alternative, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Rejected: Keep home directory paths in published results and documentation
+
+@claim r/g2b514c5b163a-14-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": rejected-alternative, "ingest:quote": A public repository should not carry either the username or the layout. }
+~ Rejected: Keep the home directory in the published results.
+
+@claim r/g2b514c5b163a-14-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": rejected-alternative, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Rejected: Rewrite paths to a different placeholder.
+
+@claim r/g2b514c5b163a-15-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Do not redact home directory paths as the harness writes.
+
+@claim r/g2b514c5b163a-15-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Redact home directory paths after the harness has written them.
+
+@claim r/g2b514c5b163a-16-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep using `/Users/you/...` in the documentation.
+
+@claim r/g2b514c5b163a-16-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use a different placeholder that could still be misleading.
+
+@claim r/g2b514c5b163a-17-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Continue using the outdated version number
+
+@claim r/g2b514c5b163a-17-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use a placeholder version number instead of a specific one
+
+@claim r/g2b514c5b163a-19-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Remove or replace the `/home/...` placeholders.
+
+@claim r/g2b514c5b163a-20-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Include model involvement in deterministic commands.
+
+@claim r/g2b514c5b163a-21-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": "A hosted provider, with the `hosted` feature installed:" }
+~ Rejected: Use a hosted provider by default
+
+@claim r/g2b514c5b163a-22-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": "ollama | **`qwen2.5-coder:14b`** | 9.0 GB | 35 | **3.9** | **The default, and the one to use.** Every figure in the README comes from it." }
+~ Rejected: Use a local model for `check`.
+
+@claim r/g2b514c5b163a-23-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "code:kind": rejected-alternative, "ingest:quote": "When the corpus must stay clean, Gemini flash-class: 100% / 88% precision on decisions and prerequisites, at a fifth to a third of the recall." }
+~ Rejected: Use a local provider for `evidence`.
+
+@claim r/g2b514c5b163a-24-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use 7B and below models for `check`.
+
+@claim r/g2b514c5b163a-25-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the home directory in published results and documentation.
+
+@claim r/g2b514c5b163a-16-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep using `/Users/you/...` in the documentation.
+
+@claim r/g2b514c5b163a-26-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Use a different placeholder than `<your repository>` and `~/.rustup/...`.
+
+@claim r/g2b514c5b163a-27-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep version references as 0.2.0
+
+@claim r/g2b514c5b163a-27-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Update version references to a specific version other than the current one
+
+@claim r/g2b514c5b163a-28-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": "The commit message states that the harness now redacts as it writes, so a later run does not put them back." }
+~ Rejected: Keep the original paths in S3 score logs
+
+@claim r/g2b514c5b163a-29-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep the `/home/...` placeholders in S3 patches.
+
+@claim r/g2b514c5b163a-30-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": rejected-alternative, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now." }
+~ Rejected: Keep the original paths with usernames and layouts.
+
+@claim r/g2b514c5b163a-31-1 { status: speculative, "code:kind": rejected-alternative, "ingest:quote": "The commit message states that paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping." }
+~ Rejected: Keep using `/Users/you/Src/rust_smysl` in the output of the `facts` command.
+
+@claim r/g2b514c5b163a-32-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": rejected-alternative, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now." }
+~ Rejected: Keep the original paths with usernames.
+
+@claim r/g2b514c5b163a-32-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": rejected-alternative, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now." }
+~ Rejected: Keep the original paths with usernames.
+
+@claim r/g2b514c5b163a-32-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": rejected-alternative, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now." }
+~ Rejected: Keep the original paths with usernames.
+
+@claim r/g2b514c5b163a-32-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "code:kind": rejected-alternative, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now." }
+~ Rejected: Keep the original paths with usernames.
+
+@claim r/g2b514c5b163a-36-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Keep using `/Users/you/Src/rust_smysl` in the output.
+
+@claim q/g2b514c5b163a-1-1 { status: inferred, grounds: [d/g2b514c5b163a-1], "code:kind": anticipated, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth …
+
+The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@claim q/g2b514c5b163a-1-2 { status: inferred, grounds: [d/g2b514c5b163a-1], "code:kind": anticipated, "ingest:quote": "The harness now redacts as it writes, so a later run does not put them back." }
+~ The harness now redacts as it writes, so a later run does not put them back.
+
+@claim q/g2b514c5b163a-1-3 { status: inferred, grounds: [d/g2b514c5b163a-1], "code:kind": anticipated, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on." }
+~ Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone …
+
+Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on.
+
+@claim q/g2b514c5b163a-2-1 { status: inferred, grounds: [d/g2b514c5b163a-2], "code:kind": anticipated }
+~ Developers must use at least Rust version 1.86 to work on the project.
+
+@claim q/g2b514c5b163a-2-2 { status: inferred, grounds: [d/g2b514c5b163a-2], "code:kind": anticipated, "ingest:quote": "# The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag." }
+~ The CI checks will enforce the MSRV requirement.
+
+@claim q/g2b514c5b163a-3-1 { status: speculative, grounds: [d/g2b514c5b163a-3], "code:kind": anticipated, "ingest:quote": Each crate now carries its own README.md }
+~ Each crate now carries its own README.md
+
+@claim q/g2b514c5b163a-3-2 { status: speculative, grounds: [d/g2b514c5b163a-3], "code:kind": anticipated, "ingest:quote": Each crate now has keywords and categories from the workspace }
+~ Each crate now has keywords and categories from the workspace
+
+@evidence e/g2b514c5b163a-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "ingest:quote": Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ Check: Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling …
+
+Check: Eight crates publish; `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package).
+
+@finding q/g2b514c5b163a-4-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "ingest:quote": "Eight crates publish; the evaluation tooling does not, and says so." }
+~ Eight crates publish; the evaluation tooling does not
+
+@claim q/g2b514c5b163a-6-1 { status: inferred, grounds: [d/g2b514c5b163a-6], "code:kind": anticipated, "ingest:quote": To provide clear instructions for maintaining and publishing the project. }
+~ Clear instructions for maintaining and publishing the project are provided.
+
+@claim q/g2b514c5b163a-7-1 { status: inferred, grounds: [d/g2b514c5b163a-7], "code:kind": anticipated, "ingest:quote": `cargo-smysl-eval` does not (`publish = false` — it is the evaluation tooling and reads files outside its own package). }
+~ `cargo-smysl-eval` will not be published to crates.io.
+
+@claim q/g2b514c5b163a-8-1 { status: inferred, grounds: [d/g2b514c5b163a-8], "code:kind": anticipated, "ingest:quote": To ensure self-contained operation without relying on external binaries. }
+~ The tool can operate without relying on external binaries, ensuring self-contained operation.
+
+@claim q/g2b514c5b163a-9-1 { status: inferred, grounds: [d/g2b514c5b163a-9], "code:kind": anticipated, "ingest:quote": To maintain consistency across all crates in the workspace. }
+~ Maintains consistency across all crates in the workspace.
+
+@claim q/g2b514c5b163a-9-2 { status: inferred, grounds: [d/g2b514c5b163a-9], "code:kind": anticipated }
+~ Ensures that all crates use compatible versions of their dependencies.
+
+@claim q/g2b514c5b163a-10-1 { status: inferred, grounds: [d/g2b514c5b163a-10], "code:kind": anticipated, "ingest:quote": Hosted providers need TLS; the default build has no network stack at all (D18). }
+~ Crates that need TLS support can enable it via the `hosted` feature.
+
+@claim q/g2b514c5b163a-10-2 { status: inferred, grounds: [d/g2b514c5b163a-10], "code:kind": anticipated }
+~ Crates that do not require TLS support can use the default build without it.
+
+@claim q/g2b514c5b163a-11-1 { status: inferred, grounds: [d/g2b514c5b163a-11], "code:kind": anticipated, "ingest:quote": Use `serde_json` and `toml` for configuration files }
+~ The project will use `serde_json` and `toml` for configuration files, making them human-editable.
+
+@evidence e/g2b514c5b163a-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "ingest:quote": Each crate now carries its own README.md }
+~ Check: Each crate now carries its own README.md
+
+@finding q/g2b514c5b163a-12-1 { status: cited, source: { kind: file, ref: .smysl/commits/1693fc23e399.smy@2b514c5b163a }, "ingest:quote": To provide brief descriptions for each crate on crates.io. }
+~ Each crate has a short README.md for crates.io listing
+
+@evidence e/g2b514c5b163a-13-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Check: The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves …
+
+Check: The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@finding q/g2b514c5b163a-13-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths are rewritten to `<repo>` and `~` in published results and documentation
+
+@evidence e/g2b514c5b163a-13-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Check: The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves …
+
+Check: The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@finding q/g2b514c5b163a-14-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Paths in published results will be rewritten to `<repo>` and `~`.
+
+@evidence e/g2b514c5b163a-15-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": "76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran." }
+~ Check: 76 tracked files carried `/Users/<name>/...`: S3 score logs, which record the command each oracle ran.
+
+@finding q/g2b514c5b163a-15-1 { status: speculative }
+~ The S3 score logs will no longer contain `/Users/<name>/...` paths.
+
+@evidence e/g2b514c5b163a-15-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format." }
+~ Check: Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to …
+
+Check: Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format.
+
+@finding q/g2b514c5b163a-15-2 { status: speculative }
+~ The sample output in the documents will no longer contain `/Users/you/...` paths.
+
+@claim q/g2b514c5b163a-16-1 { status: inferred, grounds: [d/g2b514c5b163a-16], "code:kind": anticipated, "ingest:quote": they say `<your repository>` and `~/.rustup/...` now }
+~ The updated documentation uses `<your repository>` and `~/.rustup/...` instead of `/Users/you/...`.
+
+@claim q/g2b514c5b163a-17-1 { status: inferred, grounds: [d/g2b514c5b163a-17], "code:kind": anticipated, "ingest:quote": "they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on." }
+~ Documentation now uses `<your repository>` and `~/.rustup/...` instead of `/Users/you/...`
+
+@claim q/g2b514c5b163a-17-2 { status: inferred, grounds: [d/g2b514c5b163a-17], "code:kind": anticipated, "ingest:quote": "they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on." }
+~ Documentation quotes version 0.2.0 instead of a version that has moved on
+
+@claim q/g2b514c5b163a-18-1 { status: inferred, grounds: [d/g2b514c5b163a-18], "code:kind": anticipated, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth …
+
+The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@claim q/g2b514c5b163a-18-2 { status: inferred, grounds: [d/g2b514c5b163a-18], "code:kind": anticipated, "ingest:quote": "The harness now redacts as it writes, so a later run does not put them back." }
+~ The harness now redacts as it writes, so a later run does not put them back.
+
+@claim q/g2b514c5b163a-20-1 { status: inferred, grounds: [d/g2b514c5b163a-20], "code:kind": anticipated, "ingest:quote": "Deterministic commands are safe to gate on today, because they involve no model at all:" }
+~ Deterministic commands can be safely used in CI pipelines without worrying about model accuracy or …
+
+Deterministic commands can be safely used in CI pipelines without worrying about model accuracy or availability.
+
+@claim q/g2b514c5b163a-21-1 { status: inferred, grounds: [d/g2b514c5b163a-21], "code:kind": anticipated, "ingest:quote": "Use a local provider by default for `extract`, `check`, and `evidence` commands." }
+~ The tool will use a local provider for `extract`, `check`, and `evidence` commands by default
+
+@claim q/g2b514c5b163a-22-1 { status: inferred, grounds: [d/g2b514c5b163a-22], "code:kind": anticipated, "ingest:quote": "Twice the recall of the 14B and far less noise, about $2 per pass over 93 changes. Worth it when a judgement matters." }
+~ Higher precision in `check` results.
+
+@claim q/g2b514c5b163a-22-2 { status: inferred, grounds: [d/g2b514c5b163a-22], "code:kind": anticipated, "ingest:quote": "The same `check` on a hosted `deepseek-v4-pro` cost about $2 per pass over 93 changes, and found twice as many contradictions." }
+~ Increased cost for using a hosted provider.
+
+@claim q/g2b514c5b163a-23-1 { status: inferred, grounds: [d/g2b514c5b163a-23], "code:kind": anticipated, "ingest:quote": "When the corpus must stay clean, Gemini flash-class: 100% / 88% precision on decisions and prerequisites, at a fifth to a third of the recall." }
+~ The hosted provider will be used for `evidence` when the corpus must stay clean.
+
+@claim q/g2b514c5b163a-24-1 { status: inferred, grounds: [d/g2b514c5b163a-24], "code:kind": anticipated, "ingest:quote": "A 7B model on this task produces about ten findings per change, and `check` is already advisory at one-in-ten precision on the 14B." }
+~ The use of 7B and below models for `check` is discouraged due to their tendency to over-produce decisions.
+
+@evidence e/g2b514c5b163a-25-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": "The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout. The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Check: The command is the result; where the machine kept its files is not, and a public repository should not …
+
+Check: The command is the result; where the machine kept its files is not, and a public repository should not carry either the username or the layout. The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@finding q/g2b514c5b163a-25-1 { status: speculative }
+~ The paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth …
+
+The paths are rewritten to `<repo>` and `~` byte for byte otherwise, because the results themselves are worth keeping.
+
+@evidence e/g2b514c5b163a-25-2 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": "The harness now redacts as it writes, so a later run does not put them back." }
+~ Check: The harness now redacts as it writes, so a later run does not put them back.
+
+@finding q/g2b514c5b163a-25-2 { status: speculative }
+~ The harness now redacts as it writes, so a later run does not put them back.
+
+@evidence e/g2b514c5b163a-26-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": they say `<your repository>` and `~/.rustup/...` now }
+~ Check: they say `<your repository>` and `~/.rustup/...` now
+
+@finding q/g2b514c5b163a-26-1 { status: speculative }
+~ The sample output in the documentation now uses `<your repository>` instead of `/Users/you/...`.
+
+@claim q/g2b514c5b163a-27-1 { status: inferred, grounds: [d/g2b514c5b163a-27], "code:kind": anticipated, "ingest:quote": "Two documents showed sample output with `/Users/you/...` in it, which taught the same bad habit to anyone copying the format; they say `<your repository>` and `~/.rustup/...` now, and quote 0.2.0 rather than a version that has moved on." }
+~ Version references in documentation are updated from 0.2.0 to a more current version.
+
+@evidence e/g2b514c5b163a-13-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": "The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping." }
+~ Check: The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves …
+
+Check: The paths are rewritten to `<repo>` and `~`, byte for byte otherwise, because the results themselves are worth keeping.
+
+@finding q/g2b514c5b163a-28-1 { status: cited, source: { kind: doc, ref: git:2b514c5b163a1d9044f8a0ec08e97f41d8158711 }, "ingest:quote": Take the home directory out of the published results and the docs }
+~ Paths are rewritten to `<repo>` and `~` byte for byte in S3 score logs
+
+@claim q/g2b514c5b163a-29-1 { status: inferred, grounds: [d/g2b514c5b163a-29], "code:kind": anticipated, "ingest:quote": "The harness now redacts as it writes, so a later run does not put them back." }
+~ The harness now redacts as it writes, so a later run does not put them back.
+
+@evidence e/g2b514c5b163a-30-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "ingest:quote": "cargo-smysl: 0.2.0\nsmysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)\ncode schema: x.code/v1\ninvoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo\nworkspace: <your repository>\nmembers: 9\ncorpus: <your repository>/.smysl (present)" }
+~ Check: cargo-smysl: 0.2.0 smysl library: 1.6.0 (formats smysl/0.1, smysl/1.0) code schema: x.code/v1 invoked …
+
+Check: cargo-smysl: 0.2.0 smysl library: 1.6.0 (formats smysl/0.1, smysl/1.0) code schema: x.code/v1 invoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo workspace: <your repository> members: 9 corpus: <your repository>/.smysl (present)
+
+@finding q/g2b514c5b163a-30-1 { status: speculative, "ingest:quote": DECISION 30: Update `doctor` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`. }
+~ The `doctor` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+@evidence e/g2b514c5b163a-30-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "ingest:quote": "cargo-smysl: 0.2.0\nsmysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)\ncode schema: x.code/v1\ninvoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo\nworkspace: <your repository>\nmembers: 9\ncorpus: <your repository>/.smysl (present)" }
+~ Check: cargo-smysl: 0.2.0 smysl library: 1.6.0 (formats smysl/0.1, smysl/1.0) code schema: x.code/v1 invoked …
+
+Check: cargo-smysl: 0.2.0 smysl library: 1.6.0 (formats smysl/0.1, smysl/1.0) code schema: x.code/v1 invoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo workspace: <your repository> members: 9 corpus: <your repository>/.smysl (present)
+
+@finding q/g2b514c5b163a-31-1 { status: speculative, "ingest:quote": DECISION 31: Update `facts` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`. }
+~ The output of the `facts` command now uses `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+@evidence e/g2b514c5b163a-32-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "ingest:quote": "Installation and model setup: [`cargo-smysl-install.md`](cargo-smysl-install.md). What has been measured, and on which model: the [README](../README.md)." }
+~ Check: Installation and model setup: [`cargo-smysl-install.md`](cargo-smysl-install.md). What has been …
+
+Check: Installation and model setup: [`cargo-smysl-install.md`](cargo-smysl-install.md). What has been measured, and on which model: the [README](../README.md).
+
+@finding q/g2b514c5b163a-32-1 { status: speculative, "ingest:quote": DECISION 32: Update `extract` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`. }
+~ The `extract` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+@claim q/g2b514c5b163a-33-1 { status: inferred, grounds: [d/g2b514c5b163a-33], "code:kind": anticipated, "ingest:quote": DECISION 33: Update `why` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`. }
+~ The `why` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+@evidence e/g2b514c5b163a-30-1 { status: cited, source: { kind: file, ref: docs/cargo-smysl-install.md@2b514c5b163a }, "ingest:quote": "cargo-smysl: 0.2.0\nsmysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)\ncode schema: x.code/v1\ninvoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo\nworkspace: <your repository>\nmembers: 9\ncorpus: <your repository>/.smysl (present)" }
+~ Check: cargo-smysl: 0.2.0 smysl library: 1.6.0 (formats smysl/0.1, smysl/1.0) code schema: x.code/v1 invoked …
+
+Check: cargo-smysl: 0.2.0 smysl library: 1.6.0 (formats smysl/0.1, smysl/1.0) code schema: x.code/v1 invoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo workspace: <your repository> members: 9 corpus: <your repository>/.smysl (present)
+
+@finding q/g2b514c5b163a-34-1 { status: speculative, "ingest:quote": DECISION 34: Update `check` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`. }
+~ The `check` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+@claim q/g2b514c5b163a-35-1 { status: inferred, grounds: [d/g2b514c5b163a-35], "code:kind": anticipated, "ingest:quote": DECISION 35: Update `evidence` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`. }
+~ The `evidence` command output will use `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+@evidence e/g2b514c5b163a-36-1 { status: cited, source: { kind: file, ref: docs/smysl-workflow.md@2b514c5b163a }, "ingest:quote": cargo smysl review --as-person you     # answer what is waiting }
+~ Check: cargo smysl review --as-person you # answer what is waiting …
+
+Check: cargo smysl review --as-person you     # answer what is waiting
+
+@finding q/g2b514c5b163a-36-1 { status: speculative, "ingest:quote": Update `review` command output to use `<your repository>` instead of `/Users/you/Src/rust_smysl`. }
+~ The `review` command output now uses `<your repository>` instead of `/Users/you/Src/rust_smysl`.
+
+@rel p/g2b514c5b163a-1-1 --conditions--> d/g2b514c5b163a-1
+
+@rel p/g2b514c5b163a-1-2 --conditions--> d/g2b514c5b163a-1
+
+@rel p/g2b514c5b163a-2-1 --conditions--> d/g2b514c5b163a-2
+
+@rel p/g2b514c5b163a-2-2 --conditions--> d/g2b514c5b163a-2
+
+@rel p/g2b514c5b163a-3-1 --conditions--> d/g2b514c5b163a-3
+
+@rel p/g2b514c5b163a-4-1 --conditions--> d/g2b514c5b163a-4
+
+@rel p/g2b514c5b163a-5-1 --conditions--> d/g2b514c5b163a-5
+
+@rel p/g2b514c5b163a-2-2 --conditions--> d/g2b514c5b163a-6
+
+@rel p/g2b514c5b163a-6-2 --conditions--> d/g2b514c5b163a-6
+
+@rel p/g2b514c5b163a-7-1 --conditions--> d/g2b514c5b163a-7
+
+@rel p/g2b514c5b163a-8-1 --conditions--> d/g2b514c5b163a-8
+
+@rel p/g2b514c5b163a-9-1 --conditions--> d/g2b514c5b163a-9
+
+@rel p/g2b514c5b163a-2-1 --conditions--> d/g2b514c5b163a-9
+
+@rel p/g2b514c5b163a-10-1 --conditions--> d/g2b514c5b163a-10
+
+@rel p/g2b514c5b163a-11-1 --conditions--> d/g2b514c5b163a-11
+
+@rel p/g2b514c5b163a-12-1 --conditions--> d/g2b514c5b163a-12
+
+@rel p/g2b514c5b163a-13-1 --conditions--> d/g2b514c5b163a-13
+
+@rel p/g2b514c5b163a-13-2 --conditions--> d/g2b514c5b163a-13
+
+@rel p/g2b514c5b163a-13-3 --conditions--> d/g2b514c5b163a-13
+
+@rel p/g2b514c5b163a-14-1 --conditions--> d/g2b514c5b163a-14
+
+@rel p/g2b514c5b163a-14-2 --conditions--> d/g2b514c5b163a-14
+
+@rel p/g2b514c5b163a-15-1 --conditions--> d/g2b514c5b163a-15
+
+@rel p/g2b514c5b163a-15-2 --conditions--> d/g2b514c5b163a-15
+
+@rel p/g2b514c5b163a-15-3 --conditions--> d/g2b514c5b163a-15
+
+@rel p/g2b514c5b163a-16-1 --conditions--> d/g2b514c5b163a-16
+
+@rel p/g2b514c5b163a-17-1 --conditions--> d/g2b514c5b163a-17
+
+@rel p/g2b514c5b163a-17-2 --conditions--> d/g2b514c5b163a-17
+
+@rel p/g2b514c5b163a-18-1 --conditions--> d/g2b514c5b163a-18
+
+@rel p/g2b514c5b163a-19-1 --conditions--> d/g2b514c5b163a-19
+
+@rel p/g2b514c5b163a-20-1 --conditions--> d/g2b514c5b163a-20
+
+@rel p/g2b514c5b163a-20-2 --conditions--> d/g2b514c5b163a-20
+
+@rel p/g2b514c5b163a-21-1 --conditions--> d/g2b514c5b163a-21
+
+@rel p/g2b514c5b163a-21-2 --conditions--> d/g2b514c5b163a-21
+
+@rel p/g2b514c5b163a-22-1 --conditions--> d/g2b514c5b163a-22
+
+@rel p/g2b514c5b163a-22-2 --conditions--> d/g2b514c5b163a-22
+
+@rel p/g2b514c5b163a-23-1 --conditions--> d/g2b514c5b163a-23
+
+@rel p/g2b514c5b163a-23-2 --conditions--> d/g2b514c5b163a-23
+
+@rel p/g2b514c5b163a-24-1 --conditions--> d/g2b514c5b163a-24
+
+@rel p/g2b514c5b163a-24-2 --conditions--> d/g2b514c5b163a-24
+
+@rel p/g2b514c5b163a-25-1 --conditions--> d/g2b514c5b163a-25
+
+@rel p/g2b514c5b163a-25-2 --conditions--> d/g2b514c5b163a-25
+
+@rel p/g2b514c5b163a-26-1 --conditions--> d/g2b514c5b163a-26
+
+@rel p/g2b514c5b163a-27-1 --conditions--> d/g2b514c5b163a-27
+
+@rel p/g2b514c5b163a-13-1 --conditions--> d/g2b514c5b163a-28
+
+@rel p/g2b514c5b163a-13-3 --conditions--> d/g2b514c5b163a-28
+
+@rel p/g2b514c5b163a-19-1 --conditions--> d/g2b514c5b163a-29
+
+@rel p/g2b514c5b163a-30-1 --conditions--> d/g2b514c5b163a-30
+
+@rel p/g2b514c5b163a-30-2 --conditions--> d/g2b514c5b163a-30
+
+@rel p/g2b514c5b163a-31-1 --conditions--> d/g2b514c5b163a-31
+
+@rel p/g2b514c5b163a-31-2 --conditions--> d/g2b514c5b163a-31
+
+@rel p/g2b514c5b163a-30-1 --conditions--> d/g2b514c5b163a-32
+
+@rel p/g2b514c5b163a-30-2 --conditions--> d/g2b514c5b163a-32
+
+@rel p/g2b514c5b163a-30-1 --conditions--> d/g2b514c5b163a-33
+
+@rel p/g2b514c5b163a-30-2 --conditions--> d/g2b514c5b163a-33
+
+@rel p/g2b514c5b163a-30-1 --conditions--> d/g2b514c5b163a-34
+
+@rel p/g2b514c5b163a-30-2 --conditions--> d/g2b514c5b163a-34
+
+@rel p/g2b514c5b163a-30-1 --conditions--> d/g2b514c5b163a-35
+
+@rel p/g2b514c5b163a-30-2 --conditions--> d/g2b514c5b163a-35
+
+@rel p/g2b514c5b163a-36-1 --conditions--> d/g2b514c5b163a-36
+
+@rel p/g2b514c5b163a-36-2 --conditions--> d/g2b514c5b163a-36
+
+@rel r/g2b514c5b163a-1-1 --contrasts--> d/g2b514c5b163a-1
+
+@rel r/g2b514c5b163a-2-1 --contrasts--> d/g2b514c5b163a-2
+
+@rel r/g2b514c5b163a-2-2 --contrasts--> d/g2b514c5b163a-2
+
+@rel r/g2b514c5b163a-3-1 --contrasts--> d/g2b514c5b163a-3
+
+@rel r/g2b514c5b163a-4-1 --contrasts--> d/g2b514c5b163a-4
+
+@rel r/g2b514c5b163a-4-2 --contrasts--> d/g2b514c5b163a-4
+
+@rel r/g2b514c5b163a-5-1 --contrasts--> d/g2b514c5b163a-5
+
+@rel r/g2b514c5b163a-6-1 --contrasts--> d/g2b514c5b163a-6
+
+@rel r/g2b514c5b163a-7-1 --contrasts--> d/g2b514c5b163a-7
+
+@rel r/g2b514c5b163a-8-1 --contrasts--> d/g2b514c5b163a-8
+
+@rel r/g2b514c5b163a-9-1 --contrasts--> d/g2b514c5b163a-9
+
+@rel r/g2b514c5b163a-9-2 --contrasts--> d/g2b514c5b163a-9
+
+@rel r/g2b514c5b163a-10-1 --contrasts--> d/g2b514c5b163a-10
+
+@rel r/g2b514c5b163a-10-2 --contrasts--> d/g2b514c5b163a-10
+
+@rel r/g2b514c5b163a-11-1 --contrasts--> d/g2b514c5b163a-11
+
+@rel r/g2b514c5b163a-12-1 --contrasts--> d/g2b514c5b163a-12
+
+@rel r/g2b514c5b163a-12-2 --contrasts--> d/g2b514c5b163a-12
+
+@rel r/g2b514c5b163a-13-1 --contrasts--> d/g2b514c5b163a-13
+
+@rel r/g2b514c5b163a-14-1 --contrasts--> d/g2b514c5b163a-14
+
+@rel r/g2b514c5b163a-14-2 --contrasts--> d/g2b514c5b163a-14
+
+@rel r/g2b514c5b163a-15-1 --contrasts--> d/g2b514c5b163a-15
+
+@rel r/g2b514c5b163a-15-2 --contrasts--> d/g2b514c5b163a-15
+
+@rel r/g2b514c5b163a-16-1 --contrasts--> d/g2b514c5b163a-16
+
+@rel r/g2b514c5b163a-16-2 --contrasts--> d/g2b514c5b163a-16
+
+@rel r/g2b514c5b163a-17-1 --contrasts--> d/g2b514c5b163a-17
+
+@rel r/g2b514c5b163a-17-2 --contrasts--> d/g2b514c5b163a-17
+
+@rel r/g2b514c5b163a-19-1 --contrasts--> d/g2b514c5b163a-19
+
+@rel r/g2b514c5b163a-20-1 --contrasts--> d/g2b514c5b163a-20
+
+@rel r/g2b514c5b163a-21-1 --contrasts--> d/g2b514c5b163a-21
+
+@rel r/g2b514c5b163a-22-1 --contrasts--> d/g2b514c5b163a-22
+
+@rel r/g2b514c5b163a-23-1 --contrasts--> d/g2b514c5b163a-23
+
+@rel r/g2b514c5b163a-24-1 --contrasts--> d/g2b514c5b163a-24
+
+@rel r/g2b514c5b163a-25-1 --contrasts--> d/g2b514c5b163a-25
+
+@rel r/g2b514c5b163a-16-1 --contrasts--> d/g2b514c5b163a-26
+
+@rel r/g2b514c5b163a-26-2 --contrasts--> d/g2b514c5b163a-26
+
+@rel r/g2b514c5b163a-27-1 --contrasts--> d/g2b514c5b163a-27
+
+@rel r/g2b514c5b163a-27-2 --contrasts--> d/g2b514c5b163a-27
+
+@rel r/g2b514c5b163a-28-1 --contrasts--> d/g2b514c5b163a-28
+
+@rel r/g2b514c5b163a-29-1 --contrasts--> d/g2b514c5b163a-29
+
+@rel r/g2b514c5b163a-30-1 --contrasts--> d/g2b514c5b163a-30
+
+@rel r/g2b514c5b163a-31-1 --contrasts--> d/g2b514c5b163a-31
+
+@rel r/g2b514c5b163a-32-1 --contrasts--> d/g2b514c5b163a-32
+
+@rel r/g2b514c5b163a-32-1 --contrasts--> d/g2b514c5b163a-33
+
+@rel r/g2b514c5b163a-32-1 --contrasts--> d/g2b514c5b163a-34
+
+@rel r/g2b514c5b163a-32-1 --contrasts--> d/g2b514c5b163a-35
+
+@rel r/g2b514c5b163a-36-1 --contrasts--> d/g2b514c5b163a-36
+
+@rel d/g2b514c5b163a-1 --causes--> q/g2b514c5b163a-1-1
+
+@rel d/g2b514c5b163a-1 --causes--> q/g2b514c5b163a-1-2
+
+@rel d/g2b514c5b163a-1 --causes--> q/g2b514c5b163a-1-3
+
+@rel d/g2b514c5b163a-2 --causes--> q/g2b514c5b163a-2-1
+
+@rel d/g2b514c5b163a-2 --causes--> q/g2b514c5b163a-2-2
+
+@rel d/g2b514c5b163a-3 --causes--> q/g2b514c5b163a-3-1
+
+@rel d/g2b514c5b163a-3 --causes--> q/g2b514c5b163a-3-2
+
+@rel e/g2b514c5b163a-4-1 --backs--> q/g2b514c5b163a-4-1
+
+@rel d/g2b514c5b163a-4 --causes--> q/g2b514c5b163a-4-1
+
+@rel d/g2b514c5b163a-6 --causes--> q/g2b514c5b163a-6-1
+
+@rel d/g2b514c5b163a-7 --causes--> q/g2b514c5b163a-7-1
+
+@rel d/g2b514c5b163a-8 --causes--> q/g2b514c5b163a-8-1
+
+@rel d/g2b514c5b163a-9 --causes--> q/g2b514c5b163a-9-1
+
+@rel d/g2b514c5b163a-9 --causes--> q/g2b514c5b163a-9-2
+
+@rel d/g2b514c5b163a-10 --causes--> q/g2b514c5b163a-10-1
+
+@rel d/g2b514c5b163a-10 --causes--> q/g2b514c5b163a-10-2
+
+@rel d/g2b514c5b163a-11 --causes--> q/g2b514c5b163a-11-1
+
+@rel e/g2b514c5b163a-12-1 --backs--> q/g2b514c5b163a-12-1
+
+@rel d/g2b514c5b163a-12 --causes--> q/g2b514c5b163a-12-1
+
+@rel e/g2b514c5b163a-13-1 --backs--> q/g2b514c5b163a-13-1
+
+@rel d/g2b514c5b163a-13 --causes--> q/g2b514c5b163a-13-1
+
+@rel e/g2b514c5b163a-13-1 --backs--> q/g2b514c5b163a-14-1
+
+@rel d/g2b514c5b163a-14 --causes--> q/g2b514c5b163a-14-1
+
+@rel e/g2b514c5b163a-15-1 --backs--> q/g2b514c5b163a-15-1
+
+@rel d/g2b514c5b163a-15 --causes--> q/g2b514c5b163a-15-1
+
+@rel e/g2b514c5b163a-15-2 --backs--> q/g2b514c5b163a-15-2
+
+@rel d/g2b514c5b163a-15 --causes--> q/g2b514c5b163a-15-2
+
+@rel d/g2b514c5b163a-16 --causes--> q/g2b514c5b163a-16-1
+
+@rel d/g2b514c5b163a-17 --causes--> q/g2b514c5b163a-17-1
+
+@rel d/g2b514c5b163a-17 --causes--> q/g2b514c5b163a-17-2
+
+@rel d/g2b514c5b163a-18 --causes--> q/g2b514c5b163a-18-1
+
+@rel d/g2b514c5b163a-18 --causes--> q/g2b514c5b163a-18-2
+
+@rel d/g2b514c5b163a-20 --causes--> q/g2b514c5b163a-20-1
+
+@rel d/g2b514c5b163a-21 --causes--> q/g2b514c5b163a-21-1
+
+@rel d/g2b514c5b163a-22 --causes--> q/g2b514c5b163a-22-1
+
+@rel d/g2b514c5b163a-22 --causes--> q/g2b514c5b163a-22-2
+
+@rel d/g2b514c5b163a-23 --causes--> q/g2b514c5b163a-23-1
+
+@rel d/g2b514c5b163a-24 --causes--> q/g2b514c5b163a-24-1
+
+@rel e/g2b514c5b163a-25-1 --backs--> q/g2b514c5b163a-25-1
+
+@rel d/g2b514c5b163a-25 --causes--> q/g2b514c5b163a-25-1
+
+@rel e/g2b514c5b163a-25-2 --backs--> q/g2b514c5b163a-25-2
+
+@rel d/g2b514c5b163a-25 --causes--> q/g2b514c5b163a-25-2
+
+@rel e/g2b514c5b163a-26-1 --backs--> q/g2b514c5b163a-26-1
+
+@rel d/g2b514c5b163a-26 --causes--> q/g2b514c5b163a-26-1
+
+@rel d/g2b514c5b163a-27 --causes--> q/g2b514c5b163a-27-1
+
+@rel e/g2b514c5b163a-13-1 --backs--> q/g2b514c5b163a-28-1
+
+@rel d/g2b514c5b163a-28 --causes--> q/g2b514c5b163a-28-1
+
+@rel d/g2b514c5b163a-29 --causes--> q/g2b514c5b163a-29-1
+
+@rel e/g2b514c5b163a-30-1 --backs--> q/g2b514c5b163a-30-1
+
+@rel d/g2b514c5b163a-30 --causes--> q/g2b514c5b163a-30-1
+
+@rel e/g2b514c5b163a-30-1 --backs--> q/g2b514c5b163a-31-1
+
+@rel d/g2b514c5b163a-31 --causes--> q/g2b514c5b163a-31-1
+
+@rel e/g2b514c5b163a-32-1 --backs--> q/g2b514c5b163a-32-1
+
+@rel d/g2b514c5b163a-32 --causes--> q/g2b514c5b163a-32-1
+
+@rel d/g2b514c5b163a-33 --causes--> q/g2b514c5b163a-33-1
+
+@rel e/g2b514c5b163a-30-1 --backs--> q/g2b514c5b163a-34-1
+
+@rel d/g2b514c5b163a-34 --causes--> q/g2b514c5b163a-34-1
+
+@rel d/g2b514c5b163a-35 --causes--> q/g2b514c5b163a-35-1
+
+@rel e/g2b514c5b163a-36-1 --backs--> q/g2b514c5b163a-36-1
+
+@rel d/g2b514c5b163a-36 --causes--> q/g2b514c5b163a-36-1

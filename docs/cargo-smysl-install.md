@@ -17,6 +17,12 @@ constraint — see D18 in the plan — and it is checked in CI.
 
 ## 2. Install
 
+From crates.io:
+
+```sh
+cargo install cargo-smysl
+```
+
 From a checkout:
 
 ```sh
@@ -68,7 +74,7 @@ under cargo, the tool inherits `$CARGO` and uses *that* cargo for anything it ru
 evidence). Run directly, it falls back to `cargo` from your `PATH`.
 
 ```
-invoked by cargo: /Users/you/.rustup/toolchains/1.94.1-aarch64-apple-darwin/bin/cargo
+invoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo
 invoked by cargo: no ($CARGO unset; run as `cargo smysl`)
 ```
 
@@ -82,13 +88,13 @@ cargo smysl doctor
 On this repository that prints roughly:
 
 ```
-cargo-smysl: 0.1.0
+cargo-smysl: 0.2.0
 smysl library: 1.6.0 (formats smysl/0.1, smysl/1.0)
 code schema: x.code/v1
-invoked by cargo: /Users/you/.rustup/toolchains/1.94.1-aarch64-apple-darwin/bin/cargo
-workspace: /Users/you/Src/rust_smysl
+invoked by cargo: ~/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo
+workspace: <your repository>
 members: 9
-corpus: /Users/you/Src/rust_smysl/.smysl (present)
+corpus: <your repository>/.smysl (present)
 facts: 50 Rust file(s), 485 function(s), 0 parse failure(s)
 ```
 
@@ -236,11 +242,31 @@ On a local `qwen2.5-coder:14b`, 32k window, Apple silicon:
 | `doctor`, `facts`, `why`, `stale`, `review`, `bench` | 0 | seconds | none |
 | `extract` of a small commit (100 KB) | 3–13 | 7–11 min | none |
 | `extract` of a large commit (700 KB, read in 6 parts) | ~42 | ~29 min | none |
-| `check` of one commit, two passes | 8 | ~4 min | none |
+| `check` of one commit, two passes | 8 | ~4 min sequential, less with `--jobs` | none |
 | `evidence` for one claim | 1–6 | 1–5 min | none |
 
 The same `check` on a hosted `deepseek-v4-pro` cost about $2 per pass over 93 changes, and found twice as
 many contradictions. Which trade you want is yours; the figures are in the README.
+
+### Making `check` quicker
+
+Measured medians for a whole `check`, sequential: **80 s** on a local 14B, **78–144 s** hosted. A hosted
+model is not meaningfully faster per call — it is better and cheaper to run at scale, not quicker.
+
+What actually shortens the wait:
+
+| | | Costs |
+|---|---|---|
+| `--jobs 4` | the calls are independent, so stop waiting for them one at a time | nothing, if your provider serves more than one at once |
+| `--passes 1` | one pass instead of two | the agreement filter, which halves false flags |
+| `--parts 1` (the default) | do not read the whole change | the files it does not read, which it names |
+
+**`--jobs` helps a hosted provider most.** Ollama serves one request at a time unless `OLLAMA_NUM_PARALLEL`
+says otherwise, and raising it costs memory per context — on a 24 GB machine running a 14B at a 32k
+window, that is the limit worth watching.
+
+`check` now says what it is doing while it does it: one line per call as it goes out, one as it comes
+back with how long it took. A minute of silence reads as a hang; it was one.
 
 ## 7. Using it in CI
 

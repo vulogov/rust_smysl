@@ -37,6 +37,8 @@ pub fn run(args: SmyslArgs) -> u8 {
         ),
         Command::Hooks { what } => hooks(&args, what),
         Command::MergeDriver { base, ours, theirs } => merge_driver(base, ours, theirs),
+        // Hidden, and the only place this tool panics on purpose: it is how the handler is tested.
+        Command::SelfTestPanic => panic!("a deliberate panic, to test the report"),
         Command::Extract {
             rev,
             queued,
@@ -93,6 +95,9 @@ pub fn run(args: SmyslArgs) -> u8 {
             prompt_file,
             passes,
             dry_run,
+            no_corpus_order,
+            parts,
+            jobs,
         } => check(
             &args,
             CheckArgs {
@@ -109,6 +114,9 @@ pub fn run(args: SmyslArgs) -> u8 {
                 prompt_file: prompt_file.as_deref(),
                 passes: *passes,
                 dry_run: *dry_run,
+                no_corpus_order: *no_corpus_order,
+                parts: *parts,
+                jobs: *jobs,
             },
         ),
         Command::Evidence {
@@ -196,8 +204,8 @@ fn why_commit(args: &SmyslArgs, sha: &str, markdown: bool) -> u8 {
     if record.is_empty() {
         println!(
             "{}: nothing recorded for this commit — cargo smysl extract {}",
-            &resolved[..12.min(resolved.len())],
-            &resolved[..12.min(resolved.len())]
+            short(&resolved),
+            short(&resolved)
         );
         return exit::OK;
     }
@@ -1037,16 +1045,25 @@ fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u
         .iter()
         .filter_map(|p| p.file_stem().map(|s| s.to_string_lossy().into_owned()))
         .collect();
+    let mut corpus_only = 0;
     let todo: Vec<String> = shas
         .iter()
-        .filter(|sha| r.force || !recorded.contains(&sha[..12.min(sha.len())]))
+        .filter(|sha| r.force || !recorded.contains(&short(sha)))
+        .filter(|sha| {
+            let skip = cargo_smysl_git::read_commit(&root, sha)
+                .map(|c| records_only_the_corpus(&c))
+                .unwrap_or(false);
+            corpus_only += usize::from(skip);
+            !skip
+        })
         .cloned()
         .collect();
 
     println!(
-        "{} commit(s) since {since}, {} already recorded, {} to do",
+        "{} commit(s) since {since}, {} already recorded, {} that only write the corpus, {} to do",
         shas.len(),
-        shas.len() - todo.len(),
+        shas.len() - todo.len() - corpus_only,
+        corpus_only,
         todo.len()
     );
     let mut minutes = 0.0;
@@ -1058,7 +1075,7 @@ fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u
         if r.estimate {
             println!(
                 "  {}  {:>7} KB  about {:.0} min",
-                &sha[..12.min(sha.len())],
+                short(sha),
                 size / 1024,
                 estimate_minutes(size)
             );
@@ -1075,11 +1092,11 @@ fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u
 
     let mut done = 0;
     for (n, sha) in todo.iter().enumerate() {
-        println!("\n[{}/{}] {}", n + 1, todo.len(), &sha[..12.min(sha.len())]);
+        println!("\n[{}/{}] {}", n + 1, todo.len(), short(sha));
         let code = extract(args, Some(sha), r.force, r.dry_run, how);
         if code != exit::OK {
             // One commit failing is not the run failing: the rest are still worth recording.
-            eprintln!("cargo smysl extract: {} failed; carrying on", &sha[..12]);
+            eprintln!("cargo smysl extract: {} failed; carrying on", short(sha));
             continue;
         }
         done += 1;
@@ -1101,13 +1118,13 @@ fn extract_queued(args: &SmyslArgs, r: &Recording<'_>, how: ExtractHow<'_>) -> u
         }
     };
     let path = queue_path(&root);
-    let queued: Vec<String> = std::fs::read_to_string(&path)
-        .unwrap_or_default()
-        .lines()
-        .map(str::trim)
-        .filter(|l| !l.is_empty())
-        .map(str::to_string)
-        .collect();
+    let (queued, refused) = read_queue(&path);
+    for line in &refused {
+        eprintln!(
+            "cargo smysl extract: {} is not a revision; dropped from the queue",
+            line.chars().take(50).collect::<String>()
+        );
+    }
     // The same commit twice in the queue is one commit to record.
     let mut seen = BTreeSet::new();
     let queued: Vec<String> = queued
@@ -1116,6 +1133,23 @@ fn extract_queued(args: &SmyslArgs, r: &Recording<'_>, how: ExtractHow<'_>) -> u
         .collect();
     if queued.is_empty() {
         println!("nothing queued (the post-commit hook queues; cargo smysl hooks install)");
+        return exit::OK;
+    }
+    // The tool's own commits are not work. Dropping them here is what makes the queue reach empty.
+    let (queued, corpus_only): (Vec<String>, Vec<String>) = queued.into_iter().partition(|sha| {
+        !cargo_smysl_git::read_commit(&root, sha)
+            .map(|c| records_only_the_corpus(&c))
+            .unwrap_or(false)
+    });
+    if !corpus_only.is_empty() {
+        println!(
+            "{} queued commit(s) only write the corpus and were dropped from the queue",
+            corpus_only.len()
+        );
+        write_queue(&path, &queued);
+    }
+    if queued.is_empty() {
+        println!("nothing left to record");
         return exit::OK;
     }
     let take = if r.max_commits == 0 {
@@ -1131,16 +1165,13 @@ fn extract_queued(args: &SmyslArgs, r: &Recording<'_>, how: ExtractHow<'_>) -> u
 
     let mut left: Vec<String> = queued.clone();
     for sha in queued.iter().take(take) {
-        println!("\n{}", &sha[..12.min(sha.len())]);
+        println!("\n{}", short(sha));
         if extract(args, Some(sha), r.force, r.dry_run, how) == exit::OK {
             left.retain(|s| s != sha);
             // Written after each one, so an interrupted run does not redo what it finished.
-            let _ = std::fs::write(&path, left.join("\n"));
+            write_queue(&path, &left);
         } else {
-            eprintln!(
-                "cargo smysl extract: {} stays queued",
-                &sha[..12.min(sha.len())]
-            );
+            eprintln!("cargo smysl extract: {} stays queued", short(sha));
         }
     }
     println!("\n{} left in the queue", left.len());
@@ -1189,7 +1220,11 @@ fn extract(
     };
     let extraction = match kept {
         Some(extraction) => {
-            println!("{}: already extracted ({})", &commit.sha[..12], recipe.name);
+            println!(
+                "{}: already extracted ({})",
+                short(&commit.sha),
+                recipe.name
+            );
             extraction
         }
         None => {
@@ -1216,6 +1251,7 @@ fn extract(
                     ..Provider::local(how.model)
                 },
             };
+            say_what_is_sent(&judge.provider, "extract", args.quiet);
             match cargo_smysl_extract::extract(&source, &judge, &recipe) {
                 Ok((extraction, report)) => {
                     for w in &report.warnings {
@@ -1292,6 +1328,7 @@ fn extract(
             return exit::FAILURE;
         }
     };
+    let batch_reflowed = batch.reflowed;
     let staged = cargo_smysl_corpus::stage(&store, batch, 0);
     let errors: Vec<String> = staged
         .report
@@ -1300,10 +1337,51 @@ fn extract(
         .map(|d| d.to_string())
         .collect();
     if !errors.is_empty() {
+        // A diagnostic names a uid, which tells a person nothing. Show the unit it is about.
+        let units: std::collections::BTreeMap<String, (String, String)> = staged
+            .records()
+            .iter()
+            .filter_map(|r| match r {
+                smysl::Record::Unit(u) => Some((
+                    smysl::canonical_uid(u).to_string(),
+                    (u.gist.clone(), u.body.clone().unwrap_or_default()),
+                )),
+                _ => None,
+            })
+            .collect();
         for e in errors.iter().take(5) {
             eprintln!("cargo smysl extract: {e}");
+            if let Some((uid, (gist, body))) = units
+                .iter()
+                .find(|(uid, _)| e.contains(uid.as_str()))
+                .map(|(uid, v)| (uid.clone(), v.clone()))
+            {
+                let _ = uid;
+                eprintln!("      gist: {}", gist.lines().next().unwrap_or(&gist));
+                for line in body.lines().take(4) {
+                    eprintln!("      body: {line}");
+                }
+            }
         }
+        if errors.len() > 5 {
+            eprintln!("cargo smysl extract: and {} more", errors.len() - 5);
+        }
+        // The model's answers are already cached (D7), so this failure costs minutes of reading, not
+        // minutes of a model. Saying so is the difference between "try again" and "that was wasted".
+        eprintln!(
+            "cargo smysl extract: the model's answers are kept in {}; \n\
+             this failed while recording them, so `cargo smysl extract {}` after a fix \
+             costs no model calls.",
+            cache.path(&commit.sha, &recipe).display(),
+            short(&commit.sha)
+        );
         return exit::FAILURE;
+    }
+    if batch_reflowed > 0 {
+        println!(
+            "{batch_reflowed} body/bodies were joined into one paragraph, which is what this \
+             granularity admits"
+        );
     }
     match corpus.record(&commit.sha, &staged) {
         Ok(r) => {
@@ -1362,6 +1440,93 @@ fn touched_items(commit: &cargo_smysl_git::CommitData) -> Vec<cargo_smysl_corpus
     out
 }
 
+/// A judge that says what it is doing, because a minute of silence reads as a hang.
+///
+/// It wraps the real one and prints to stderr: a line when a call goes out, a line when it comes back
+/// with how long it took. Nothing is printed when the output is machine-readable or quiet was asked for
+/// — a progress line in a pipe is noise.
+struct Narrating<'a> {
+    inner: &'a (dyn cargo_smysl_extract::Judge + Sync),
+    state: std::sync::Mutex<(usize, usize)>,
+    quiet: bool,
+}
+
+impl<'a> Narrating<'a> {
+    fn around(inner: &'a (dyn cargo_smysl_extract::Judge + Sync), quiet: bool) -> Narrating<'a> {
+        Narrating {
+            inner,
+            state: std::sync::Mutex::new((0, 0)),
+            quiet,
+        }
+    }
+}
+
+impl cargo_smysl_extract::Judge for Narrating<'_> {
+    fn describe(&self) -> String {
+        self.inner.describe()
+    }
+
+    fn input_chars(&self) -> Option<usize> {
+        self.inner.input_chars()
+    }
+
+    fn ask_text(
+        &self,
+        system: &str,
+        user: &str,
+    ) -> Result<(String, cargo_smysl_extract::Charged), cargo_smysl_extract::JudgeError> {
+        let started = std::time::Instant::now();
+        let n = {
+            let mut state = self.state.lock().unwrap();
+            state.0 += 1;
+            state.1 += 1;
+            if !self.quiet {
+                eprintln!(
+                    "  asking {} — call {} ({} in flight, {} KB)",
+                    self.inner.describe(),
+                    state.0,
+                    state.1,
+                    user.len() / 1024
+                );
+            }
+            state.0
+        };
+        let answer = self.inner.ask_text(system, user);
+        let mut state = self.state.lock().unwrap();
+        state.1 -= 1;
+        if !self.quiet {
+            eprintln!(
+                "  call {n} {} after {:.0}s",
+                if answer.is_ok() { "answered" } else { "failed" },
+                started.elapsed().as_secs_f32()
+            );
+        }
+        answer
+    }
+}
+
+/// Say what is about to leave the machine, when it is leaving it.
+///
+/// Extraction and checking send the commit — its message and the text of its files — to whichever model
+/// the operator named. On this machine that is a local matter; to a hosted provider it is the code
+/// leaving, and a person is entitled to know before it does rather than from a bill afterwards.
+fn say_what_is_sent(provider: &Provider, kind: &str, quiet: bool) {
+    if quiet {
+        return;
+    }
+    let local = provider.endpoint.contains("://localhost")
+        || provider.endpoint.contains("://127.")
+        || provider.endpoint.contains("://[::1]");
+    if local {
+        return;
+    }
+    eprintln!(
+        "cargo smysl {kind}: sending this repository's code to {} ({}). \
+         A local provider keeps it on this machine.",
+        provider.endpoint, provider.model
+    );
+}
+
 struct CheckArgs<'a> {
     rev: Option<&'a str>,
     patch: Option<&'a str>,
@@ -1376,6 +1541,9 @@ struct CheckArgs<'a> {
     prompt_file: Option<&'a Path>,
     passes: usize,
     dry_run: bool,
+    no_corpus_order: bool,
+    parts: usize,
+    jobs: usize,
 }
 
 /// `check`: what this change contradicts in the corpus.
@@ -1411,6 +1579,9 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
     let mut settings = Settings {
         window: c.window,
         chars_per_token: c.chars_per_token,
+        order_by_corpus: !c.no_corpus_order,
+        max_parts: c.parts.max(1),
+        jobs: c.jobs.max(1),
         ..Settings::default()
     };
     if let Some(path) = c.prompt_file {
@@ -1435,13 +1606,43 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
     };
     let change = Change::from_diff(&diff, &settings);
     if c.dry_run {
-        let (text, judged) =
-            cargo_smysl_verdict::check::preview(&store, &change, &settings).unwrap_or_default();
+        // The preview reorders exactly as a real run would, so a person sees what will be examined.
+        let change = if change.truncated && settings.order_by_corpus {
+            let weight = |path: &str| store.units_with_source_prefix(&format!("{path}@")).len();
+            change.ordered_by(&weight, &settings)
+        } else {
+            change
+        };
+        // A preview of a run that would read the change in parts previews every part, or it is a
+        // preview of something else.
+        let parts = change.parts(&settings);
+        let mut judged: Vec<String> = Vec::new();
+        let mut text = String::new();
+        let mut unexamined: BTreeSet<String> = BTreeSet::new();
+        let mut examined: BTreeSet<String> = BTreeSet::new();
+        for part in &parts {
+            if let Some((t, j)) = cargo_smysl_verdict::check::preview(&store, part, &settings) {
+                text.push_str(&t);
+                judged.extend(j);
+            }
+            let unseen = part.unexamined();
+            for file in &part.files {
+                if unseen.contains(file) {
+                    unexamined.insert(file.clone());
+                } else {
+                    examined.insert(file.clone());
+                }
+            }
+        }
+        judged.sort();
+        judged.dedup();
         let shown = serde_json::json!({
+            "parts": parts.len(),
+            "unexamined": unexamined.difference(&examined).cloned().collect::<Vec<_>>(),
             "judged": judged,
             "units_judged": judged.len(),
             "pack_text": text,
-            "diff_lines_shown": change.shown().lines().count(),
+            "diff_lines_shown": parts.iter().map(|p| p.shown().lines().count()).sum::<usize>(),
             "diff_truncated": change.truncated,
         });
         println!(
@@ -1457,10 +1658,22 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         .cycle()
         .take(c.passes.max(1))
         .collect();
+    say_what_is_sent(&judge.provider, "check", c.json || args.quiet);
+    // Say what is happening while it happens: these calls take about a minute each.
+    let narrating = Narrating::around(&judge, c.json || args.quiet);
+    if !(c.json || args.quiet) {
+        eprintln!(
+            "checking {} file(s) against {} recorded commit(s), {} pass(es), {} call(s) at a time",
+            change.files.len(),
+            store.units().count().min(9999),
+            seeds.len().max(1),
+            settings.jobs.max(1)
+        );
+    }
     let outcome = if seeds.len() > 1 {
-        cargo_smysl_verdict::check::check_agreed(&store, &change, &judge, &settings, &seeds)
+        cargo_smysl_verdict::check::check_agreed(&store, &change, &narrating, &settings, &seeds)
     } else {
-        cargo_smysl_verdict::check(&store, &change, &judge, &settings)
+        cargo_smysl_verdict::check(&store, &change, &narrating, &settings)
     };
 
     if c.json {
@@ -1474,8 +1687,17 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         }
         if outcome.findings.is_empty() {
             println!(
-                "nothing recorded is contradicted ({} unit(s) judged, {})",
-                outcome.units_judged, outcome.judge
+                "nothing recorded is contradicted{} ({} unit(s) judged, {})",
+                if outcome.unexamined.is_empty() {
+                    String::new()
+                } else {
+                    format!(
+                        " in what was examined; {} file(s) were not",
+                        outcome.unexamined.len()
+                    )
+                },
+                outcome.units_judged,
+                outcome.judge
             );
         } else {
             println!(
@@ -1557,6 +1779,30 @@ fn default_features(args: &SmyslArgs) -> std::collections::BTreeSet<String> {
 }
 
 /// The workspace root, the way cargo sees it.
+/// Whether a commit only writes the corpus: the tool's own output, and not a change to reason about.
+///
+/// Recording a commit produces a commit — the documents and the extraction cache — and extracting *that*
+/// produces another, which is a march with no end. A commit that touches nothing but `.smysl/` has no
+/// decisions in it that were not already recorded, so it is skipped and the backlog reaches zero.
+///
+/// A commit that touches `.smysl/` *and* source is a real change, and is not skipped.
+fn records_only_the_corpus(commit: &cargo_smysl_git::CommitData) -> bool {
+    !commit.files.is_empty()
+        && commit.files.iter().all(|f| {
+            f.path
+                .starts_with(&format!("{}/", cargo_smysl_corpus::CORPUS_DIR))
+                || f.path == cargo_smysl_corpus::CORPUS_DIR
+        })
+}
+
+/// The first twelve characters of a revision, however short or strange it is.
+///
+/// Slicing a string by byte count panics on a short one or on a character boundary, and shas reach this
+/// tool from a queue file as well as from git.
+fn short(sha: &str) -> String {
+    sha.chars().take(12).collect()
+}
+
 fn workspace_root(args: &SmyslArgs) -> Result<std::path::PathBuf, String> {
     let mut cmd = cargo_metadata::MetadataCommand::new();
     if let Some(path) = &args.manifest_path {
@@ -1614,9 +1860,16 @@ fn doctor(args: &SmyslArgs) -> u8 {
     if !recorded.is_empty() {
         match cargo_smysl_git::commits_between(root, None, "HEAD", 200) {
             Ok(history) => {
+                // A commit that only writes the corpus is not a backlog item: recording it would
+                // produce another like it, and the count would never reach zero.
                 let behind = history
                     .iter()
-                    .take_while(|sha| !recorded.contains(&sha[..12.min(sha.len())]))
+                    .take_while(|sha| !recorded.contains(&short(sha)))
+                    .filter(|sha| {
+                        !cargo_smysl_git::read_commit(root, sha)
+                            .map(|c| records_only_the_corpus(&c))
+                            .unwrap_or(false)
+                    })
                     .count();
                 println!(
                     "recorded: {} commit(s); {behind} newer commit(s) not recorded{}",
@@ -2045,7 +2298,13 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
             .count()
     };
 
+    // The working tree is the same for every commit, so parse each file once rather than once per
+    // commit that touched it: with a hundred commits over the same files that is the difference between
+    // a hundred parses and one.
+    let mut now_cache: std::collections::BTreeMap<String, Vec<cargo_smysl_facts::Fact>> =
+        std::collections::BTreeMap::new();
     let mut reports = Vec::new();
+    let mut behind: Vec<Vec<(String, Vec<String>)>> = Vec::new();
     for sha in &shas {
         let commit = match cargo_smysl_git::read_commit(&root, sha) {
             Ok(c) => c,
@@ -2069,9 +2328,14 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
                 }
             }
             // The file as it is now. A file that is gone leaves its items gone, which is the answer.
-            if let Ok(text) = std::fs::read_to_string(root.join(&file.path)) {
+            if let Some(cached) = now_cache.get(&file.path) {
+                now.extend(cached.iter().cloned());
+            } else if let Ok(text) = std::fs::read_to_string(root.join(&file.path)) {
                 match cargo_smysl_facts::facts(&file.path, &text) {
-                    Ok(facts) => now.extend(facts),
+                    Ok(facts) => {
+                        now_cache.insert(file.path.clone(), facts.clone());
+                        now.extend(facts);
+                    }
                     Err(e) => unreadable.push(format!("{}: {e}", file.path)),
                 }
             }
@@ -2080,6 +2344,8 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
         // Which decisions rest on each moved item, when the corpus knows: a decision quoted from a file
         // carries an `x.code/touches` edge to that file's items (D4). A decision quoted from the message
         // has the commit as its scope and is named at the commit level, as before.
+        // Collected, not printed: `--json` must put nothing on stdout but JSON, and this used to
+        // print here, which made the output unparseable for anything downstream.
         let anchored = anchored_decisions(&store, &corpus.labels(&store), &changes);
         reports.push(cargo_smysl_verdict::stale::Report {
             commit: sha.clone(),
@@ -2087,15 +2353,14 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
             changes,
             unreadable,
         });
-        for (item, labels) in anchored {
-            println!("  {item} is behind: {}", labels.join(", "));
-        }
+        behind.push(anchored);
     }
 
     if json {
         let value: Vec<serde_json::Value> = reports
             .iter()
-            .map(|r| {
+            .zip(&behind)
+            .map(|(r, anchored)| {
                 serde_json::json!({
                     "commit": r.commit,
                     "units": r.units,
@@ -2103,6 +2368,10 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
                     "gone": r.counts().1,
                     "items": r.changes.iter().map(|c| serde_json::json!({
                         "item": c.label, "file": c.file, "because": c.because(),
+                    })).collect::<Vec<_>>(),
+                    // Which recorded decisions each moved item is behind, when the corpus knows.
+                    "behind": anchored.iter().map(|(item, labels)| serde_json::json!({
+                        "item": item, "decisions": labels,
                     })).collect::<Vec<_>>(),
                     "unreadable": r.unreadable,
                 })
@@ -2115,6 +2384,11 @@ fn stale(args: &SmyslArgs, since: Option<&str>, json: bool) -> u8 {
         return exit::OK;
     }
 
+    for anchored in &behind {
+        for (item, labels) in anchored {
+            println!("  {item} is behind: {}", labels.join(", "));
+        }
+    }
     let stale: Vec<_> = reports.iter().filter(|r| r.is_stale()).collect();
     for r in &stale {
         let (changed, gone) = r.counts();
@@ -2204,6 +2478,42 @@ exit 0\n";
 
 fn queue_path(root: &Path) -> std::path::PathBuf {
     root.join(cargo_smysl_corpus::CORPUS_DIR).join("queue")
+}
+
+/// Write the queue back, always ending with a newline.
+///
+/// The hook appends with `>>`. A file that does not end in a newline therefore has the next sha welded
+/// onto its last line, and the result is a revision no repository has ever heard of. That happened.
+fn write_queue(path: &Path, shas: &[String]) {
+    let mut text = shas.join("\n");
+    if !text.is_empty() {
+        text.push('\n');
+    }
+    let _ = std::fs::write(path, text);
+}
+
+/// The shas in the queue, repairing lines that were welded together.
+///
+/// A line of several shas run end to end is exactly what a missing newline produces, and the shas in it
+/// are still the shas someone wanted recorded — so they are split out rather than thrown away. Anything
+/// that is not a plausible revision is reported and dropped, because guessing is worse.
+fn read_queue(path: &Path) -> (Vec<String>, Vec<String>) {
+    let text = std::fs::read_to_string(path).unwrap_or_default();
+    let (mut shas, mut refused) = (Vec::new(), Vec::new());
+    for line in text.lines().map(str::trim).filter(|l| !l.is_empty()) {
+        let hex = line.chars().all(|c| c.is_ascii_hexdigit());
+        match (hex, line.len()) {
+            (true, n) if (7..=40).contains(&n) => shas.push(line.to_string()),
+            // Several full-length revisions with the newline missing between them.
+            (true, n) if n % 40 == 0 => {
+                for chunk in line.as_bytes().chunks(40) {
+                    shas.push(String::from_utf8_lossy(chunk).into_owned());
+                }
+            }
+            _ => refused.push(line.to_string()),
+        }
+    }
+    (shas, refused)
 }
 
 fn hooks(args: &SmyslArgs, what: &cli::HooksStep) -> u8 {
@@ -2359,5 +2669,87 @@ fn merge_driver(base: &Path, ours: &Path, theirs: &Path) -> u8 {
             eprintln!("cargo smysl merge-driver: {}: {e}", ours.display());
             exit::FAILURE
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::records_only_the_corpus;
+    use cargo_smysl_git::{ChangedFile, CommitData};
+
+    fn commit(paths: &[&str]) -> CommitData {
+        CommitData {
+            sha: "0".repeat(40),
+            message: String::new(),
+            files: paths
+                .iter()
+                .map(|p| ChangedFile {
+                    path: (*p).to_string(),
+                    before: None,
+                    after: Some(String::new()),
+                })
+                .collect(),
+            parent_missing: false,
+        }
+    }
+
+    /// The queue is appended to by a shell hook and rewritten by this tool. Both must agree about the
+    /// newline, and they did not: a rewrite that left the file without one had the next sha welded onto
+    /// its last line, and `cargo smysl extract --queued` then asked git for a 120-character revision.
+    #[test]
+    fn a_queue_written_without_a_newline_does_not_weld_the_next_sha_on() {
+        use super::{read_queue, write_queue};
+        let path = std::env::temp_dir().join(format!("smysl-queue-{}.txt", std::process::id()));
+        let a = "856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d";
+        let b = "0d79d4a840b4a08d9bd4e60085346a05d82a5daf";
+
+        write_queue(&path, &[a.to_string()]);
+        // What the hook does: append a line.
+        let mut text = std::fs::read_to_string(&path).unwrap();
+        text.push_str(&format!("{b}\n"));
+        std::fs::write(&path, &text).unwrap();
+        assert_eq!(read_queue(&path).0, vec![a.to_string(), b.to_string()]);
+
+        // And the damage already done is repaired rather than thrown away.
+        std::fs::write(&path, format!("{a}{b}\n")).unwrap();
+        let (shas, refused) = read_queue(&path);
+        assert_eq!(
+            shas,
+            vec![a.to_string(), b.to_string()],
+            "welded shas are split"
+        );
+        assert!(refused.is_empty());
+
+        // Something that is not a revision is reported, not guessed at.
+        std::fs::write(&path, "not-a-sha\n").unwrap();
+        let (shas, refused) = read_queue(&path);
+        assert!(shas.is_empty());
+        assert_eq!(refused, vec!["not-a-sha".to_string()]);
+
+        std::fs::remove_file(&path).ok();
+    }
+
+    /// Recording a commit produces a commit. If that one is recorded too, the backlog never empties —
+    /// which is what happened: every extraction left exactly one more commit to extract.
+    #[test]
+    fn a_commit_that_only_writes_the_corpus_is_not_work() {
+        assert!(records_only_the_corpus(&commit(&[
+            ".smysl/commits/abc.smy",
+            ".smysl/extractions/v1/abc.json",
+        ])));
+
+        // A change that touches source is a change, whatever else it carries.
+        assert!(!records_only_the_corpus(&commit(&[
+            ".smysl/commits/abc.smy",
+            "crates/cargo-smysl/src/main.rs",
+        ])));
+        assert!(!records_only_the_corpus(&commit(&["src/lib.rs"])));
+
+        // A commit that changes nothing is not skipped on these grounds: it has its own oddity, and
+        // pretending to know why it is empty is not this function's business.
+        assert!(!records_only_the_corpus(&commit(&[])));
+
+        // A path that merely starts with the same letters is not inside the corpus.
+        assert!(!records_only_the_corpus(&commit(&[".smysl-notes/x.md"])));
     }
 }

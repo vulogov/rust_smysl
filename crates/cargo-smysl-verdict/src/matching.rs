@@ -124,18 +124,24 @@ impl Shown<'_> {
 /// then whatever else shares its words.
 pub fn retrieve<'a>(claim: &str, facts: &'a [Fact], r: &Retrieval) -> Shown<'a> {
     let claim_terms = terms(claim);
-    let mut scored: Vec<(f32, &Fact)> = facts
+    // Render each fact once. A fact's rendering lists everything it does, so it is the expensive thing
+    // here, and the tie-break used to build two of them per comparison — thousands of strings to order a
+    // few hundred facts.
+    let mut scored: Vec<(f32, String, &Fact)> = facts
         .iter()
-        .map(|fact| (overlap(&claim_terms, &render(fact)), fact))
-        .filter(|(score, _)| *score > 0.0)
+        .filter_map(|fact| {
+            let text = render(fact);
+            let score = overlap(&claim_terms, &text);
+            (score > 0.0).then_some((score, text, fact))
+        })
         .collect();
     scored.sort_by(|a, b| {
         b.0.partial_cmp(&a.0)
             .unwrap_or(std::cmp::Ordering::Equal)
-            .then_with(|| render(a.1).cmp(&render(b.1)))
+            .then_with(|| a.1.cmp(&b.1))
     });
     let (mut structural, mut prose) = (Vec::new(), Vec::new());
-    for (_, fact) in scored {
+    for (_, _, fact) in scored {
         if is_prose(fact) {
             if prose.len() < r.prose {
                 prose.push(fact);

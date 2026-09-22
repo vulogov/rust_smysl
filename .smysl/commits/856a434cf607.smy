@@ -1,0 +1,332 @@
+@schema x.code/v1 { version: 1, relations: [x.code/touches, x.code/exercises] }
+
+@decision d/g856a434cf607-1 { status: cited, source: { kind: doc, ref: git:856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d }, "code:kind": act, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ The README now leads with the seven deterministic commands rather than with extraction.
+
+It focuses on the part that needs no model and is worth someone's time today.
+
+@decision d/g856a434cf607-2 { status: cited, source: { kind: doc, ref: git:856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d }, "code:kind": act, "ingest:quote": It also no longer implies `stale` works on a fresh clone. }
+~ It also no longer implies `stale` works on a fresh clone.
+
+Clarifies that `stale` reads a corpus, which is written by extraction.
+
+@decision d/g856a434cf607-3 { status: cited, source: { kind: doc, ref: git:856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d }, "code:kind": act, "ingest:quote": "The model-dependent third is listed with what it was measured at, model named, in the same table." }
+~ The model-dependent third is listed with what it was measured at, model named, in the same table.
+
+Provides transparency about the performance of model-dependent commands.
+
+@decision d/g856a434cf607-4 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": act, "ingest:quote": So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. }
+~ `check` ships advisory: it prints findings and exits 0 unless `--strict`.
+
+Acknowledges the limitations of the model's precision and advises caution.
+
+@decision d/g856a434cf607-5 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": act, "ingest:quote": The model-dependent third is honest about being weak. }
+~ `extract` is honest about being weak.
+
+Discloses the limitations of the extraction process based on measured performance.
+
+@decision d/g856a434cf607-6 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": act, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ Two-pass agreement is used by default for `check` to remove false flags.
+
+Improves the precision of findings by ensuring two independent runs agree.
+
+@decision d/g856a434cf607-7 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": act, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes content only." }
+~ The tool assigns labels, sources, and statuses; the model proposes wording only.
+
+Ensures that the tool maintains control over the integrity of the corpus.
+
+@decision d/g856a434cf607-8 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": act, "ingest:quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Staleness is detected by item body hash rather than line ranges.
+
+Prevents false positives for functions that have merely moved.
+
+@decision d/g856a434cf607-9 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": act, "ingest:quote": "Review as records. Confirming writes an attestation, rejecting writes a withdrawal whose reason unit says why, closing writes a resolution." }
+~ Review is recorded as confirmations, withdrawals with reasons, or closures with notes.
+
+Maintains a transparent and immutable record of review actions.
+
+@decision d/g856a434cf607-10 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": act, "ingest:quote": "It ships its own instrument. `bench` measures the model *you* chose on *your* commits, and every published figure names the model it came from." }
+~ `bench` measures the model you chose on your own commits.
+
+Allows users to measure and verify the performance of their chosen models.
+
+@decision d/g856a434cf607-11 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": act, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read `speculative` as what it says. }
+~ The tool does not trust a cloned corpus as an established fact.
+
+Encourages users to verify claims in the corpus independently.
+
+@decision d/g856a434cf607-12 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": act, "ingest:quote": "If you want one sentence for why this exists: **a queryable, code-anchored record of decisions, with staleness detection, and an honest account of what the model half is worth.**" }
+~ The project focuses on providing a queryable, code-anchored record of decisions with staleness detection and …
+
+Defines the core purpose and value proposition of the tool.
+
+@constraint p/g856a434cf607-1-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": "Two thirds of the commands never call a model. Those are the ones worth your time today: they are deterministic, tested, and cost nothing to run." }
+~ Two thirds of this tool never calls a model.
+
+@constraint p/g856a434cf607-1-2 { status: speculative, "code:kind": assumption, "ingest:quote": It focuses on the part that needs no model and is worth someone's time today. }
+~ The part that needs no model is worth someone's time today.
+
+@constraint p/g856a434cf607-2-1 { status: cited, source: { kind: doc, ref: git:856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d }, "code:kind": existing-behaviour, "ingest:quote": "`stale` reads a corpus, and a corpus is written by extraction, which asks a model once per commit." }
+~ `stale` command reads a corpus
+
+@constraint p/g856a434cf607-2-2 { status: cited, source: { kind: doc, ref: git:856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d }, "code:kind": existing-behaviour, "ingest:quote": "A corpus is written by extraction, which asks a model once per commit." }
+~ Extraction involves asking a model
+
+@constraint p/g856a434cf607-3-1 { status: cited, source: { kind: doc, ref: git:856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d }, "code:kind": existing-behaviour, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ The README now leads with the seven deterministic commands rather than with extraction.
+
+@constraint p/g856a434cf607-3-2 { status: cited, source: { kind: doc, ref: git:856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d }, "code:kind": existing-behaviour, "ingest:quote": "Two thirds of this tool never calls a model, and that is the part worth someone's time today." }
+~ Two thirds of this tool never calls a model, and that is the part worth someone's time today.
+
+@constraint p/g856a434cf607-4-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": On a free local model about one flag in ten was correct. }
+~ `check` was right about one flag in ten on a free local model and about nine in ten on a …
+
+`check` was right about one flag in ten on a free local model and about nine in ten on a hosted one.
+
+@constraint p/g856a434cf607-4-2 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": assumption, "ingest:quote": `check` ships advisory: it prints findings and exits 0 unless `--strict`. }
+~ `check` is meant to be advisory, not a gate.
+
+@constraint p/g856a434cf607-5-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": "Six commits labelled blind by the repository owner (73 decisions, 68 prerequisites, 29 alternatives), three systems adjudicated item by item. Precision / recall:" }
+~ The project has measured the performance of the 'extract' command.
+
+@constraint p/g856a434cf607-5-2 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": "| Command | What it does | Needs a model |\n|---|---|---|\n| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |" }
+~ The 'extract' command relies on a model to propose content.
+
+@constraint p/g856a434cf607-11-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes content only." }
+~ The tool assigns labels, sources and statuses; a model proposes content only.
+
+@constraint p/g856a434cf607-6-2 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": A single run never raises a status. }
+~ A single run never raises a status.
+
+@constraint p/g856a434cf607-7-1 { status: speculative, "code:kind": invariant, "ingest:quote": Ensures that the tool maintains control over the integrity of the corpus. }
+~ The tool needs to maintain control over the integrity of the corpus.
+
+@constraint p/g856a434cf607-8-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": Essay-style commit messages already hold the reasons. }
+~ Commit messages already carry reasons.
+
+@constraint p/g856a434cf607-8-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": invariant, "ingest:quote": which recorded reasoning is now *unexamined* because the code under it changed }
+~ Staleness detection is needed for reasoning that becomes unexamined because the code under it changed.
+
+@constraint p/g856a434cf607-9-1 { status: speculative, "code:kind": invariant, "ingest:quote": "Review is recorded as confirmations, withdrawals with reasons, or closures with notes." }
+~ Maintains a transparent and immutable record of review actions.
+
+@constraint p/g856a434cf607-10-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; the model proposes wording only." }
+~ The tool assigns labels, sources and statuses; a model proposes wording only.
+
+@constraint p/g856a434cf607-10-2 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit.
+
+@constraint p/g856a434cf607-11-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": "The tool assigns labels, sources and statuses; a model proposes content only." }
+~ The tool assigns labels, sources and statuses; a model proposes content only.
+
+@constraint p/g856a434cf607-11-2 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": existing-behaviour, "ingest:quote": Every quote is checked against the commit. }
+~ Every quote is checked against the commit.
+
+@claim r/g856a434cf607-1-1 { status: cited, source: { kind: doc, ref: git:856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d }, "code:kind": rejected-alternative, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ Rejected: Leading with extraction, which asks a model once per commit.
+
+@claim r/g856a434cf607-2-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: `stale` could imply it works on a fresh clone without a corpus
+
+@claim r/g856a434cf607-3-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: Not listing the model-dependent commands with their performance metrics.
+
+@claim r/g856a434cf607-4-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": rejected-alternative, "ingest:quote": So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. }
+~ Rejected: `check` could exit with an error code if any flags are found.
+
+@claim r/g856a434cf607-4-2 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": rejected-alternative, "ingest:quote": So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. }
+~ Rejected: `check` could be more strict by default, requiring manual confirmation of findings.
+
+@claim r/g856a434cf607-5-1 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The project could downplay the limitations of the 'extract' command.
+
+@claim r/g856a434cf607-5-2 { status: speculative, "code:kind": rejected-alternative }
+~ Rejected: The project could not disclose the measured performance of the 'extract' command.
+
+@claim r/g856a434cf607-6-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": rejected-alternative, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ Rejected: One-pass agreement for `check`.
+
+@claim r/g856a434cf607-8-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": rejected-alternative, "ingest:quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Rejected: Detect staleness by line ranges.
+
+@claim r/g856a434cf607-10-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": rejected-alternative, "ingest:quote": A stricter `check` prompt (recall 0.65 → 0.30) }
+~ Rejected: A stricter `check` prompt.
+
+@claim r/g856a434cf607-10-2 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "code:kind": rejected-alternative, "ingest:quote": A tightened extraction prompt naming what is not a decision }
+~ Rejected: A tightened extraction prompt naming what is not a decision.
+
+@claim r/g856a434cf607-11-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "code:kind": rejected-alternative, "ingest:quote": A cloned corpus is someone else's claim. Units carry the status the tool gave them; read speculative as what it says. }
+~ Rejected: The tool trusts a cloned corpus as an established fact.
+
+@evidence e/g856a434cf607-1-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "ingest:quote": "## The commands\n\nA full walk-through, on this repository, is in [`docs/smysl-workflow.md`](docs/smysl-workflow.md)." }
+~ Check: ## The commands A full walk-through, on this repository, is in …
+
+Check: ## The commands A full walk-through, on this repository, is in [`docs/smysl-workflow.md`](docs/smysl-workflow.md).
+
+@finding q/g856a434cf607-1-1 { status: cited, source: { kind: doc, ref: git:856a434cf607ac9d8cc73d7ba9f77ca7aef27e3d }, "ingest:quote": The README now leads with the seven deterministic commands rather than with extraction. }
+~ README.md is updated to lead with the seven deterministic commands.
+
+@claim q/g856a434cf607-2-1 { status: inferred, grounds: [d/g856a434cf607-2], "code:kind": anticipated, "ingest:quote": "It also no longer implies `stale` works on a fresh clone. It reads a corpus, and a corpus is written by extraction, which asks a model once per commit." }
+~ Clarifies that `stale` requires a pre-existing corpus
+
+@claim q/g856a434cf607-3-1 { status: inferred, grounds: [d/g856a434cf607-3], "code:kind": anticipated, "ingest:quote": "The model-dependent third is listed with what it was measured at, model named, in the same table." }
+~ Provides transparency about the performance of model-dependent commands.
+
+@claim q/g856a434cf607-4-1 { status: inferred, grounds: [d/g856a434cf607-4], "code:kind": anticipated, "ingest:quote": `check` ships advisory: it prints findings and exits 0 unless `--strict`. }
+~ Users are advised to manually review the findings printed by `check`.
+
+@claim q/g856a434cf607-4-2 { status: inferred, grounds: [d/g856a434cf607-4], "code:kind": anticipated, "ingest:quote": `check` ships advisory: it prints findings and exits 0 unless `--strict`. }
+~ The tool does not enforce any action based on the findings of `check`.
+
+@claim q/g856a434cf607-5-1 { status: inferred, grounds: [d/g856a434cf607-5], "code:kind": anticipated, "ingest:quote": "Decisions are the reliable kind; the systems differ in recall, not correctness. **Prerequisites are the weak kind** — the system that finds most of them is right 41% of the time, and the one that is right 88% of the time finds a fifth. Alternatives have the worst precision of the three." }
+~ Users are informed about the limitations of the 'extract' command, which helps them understand its reliability …
+
+Users are informed about the limitations of the 'extract' command, which helps them understand its reliability and decide whether to use it.
+
+@evidence e/g856a434cf607-6-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "ingest:quote": So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. }
+~ Check: So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`.
+
+@finding q/g856a434cf607-6-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "ingest:quote": So `check` **ships advisory**: it prints findings and exits 0 unless `--strict`. }
+~ `check` prints findings and exits 0 unless `--strict`.
+
+@evidence e/g856a434cf607-6-2 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "ingest:quote": "170 and 192 flags became 96, and it removed every false flag on a real commit in development" }
+~ Check: 170 and 192 flags became 96, and it removed every false flag on a real commit in development
+
+@finding q/g856a434cf607-6-2 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "ingest:quote": "What did work: **two-pass agreement** (170 and 192 flags became 96, and it removed every false flag on a real commit in development), which is why `check` runs two passes by default." }
+~ The precision of findings is improved by ensuring two independent runs agree.
+
+@claim q/g856a434cf607-7-1 { status: inferred, grounds: [d/g856a434cf607-7], "code:kind": anticipated, "ingest:quote": "Every quote is checked against the commit, and an absent quote caps its unit at `speculative`." }
+~ Every quote is checked against the commit, and an absent quote caps its unit at `speculative`.
+
+@claim q/g856a434cf607-7-2 { status: inferred, grounds: [d/g856a434cf607-7], "code:kind": anticipated, "ingest:quote": Most tooling in this area stores what the model said as though it were established. }
+~ Most tooling in this area stores what the model said as though it were established.
+
+@evidence e/g856a434cf607-8-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "ingest:quote": a function that merely moved is not flagged }
+~ Check: a function that merely moved is not flagged
+
+@finding q/g856a434cf607-8-1 { status: cited, source: { kind: file, ref: docs/what-this-is-for.md@856a434cf607 }, "ingest:quote": "Staleness by item body hash. Reasoning is attached to code identity rather than to line ranges, so a function that moved is not stale and one that changed is." }
+~ Functions that have merely moved are not flagged as stale.
+
+@claim q/g856a434cf607-9-1 { status: inferred, grounds: [d/g856a434cf607-9], "code:kind": anticipated }
+~ Confirming writes an attestation.
+
+@claim q/g856a434cf607-9-2 { status: inferred, grounds: [d/g856a434cf607-9], "code:kind": anticipated }
+~ Rejecting writes a withdrawal whose reason unit says why.
+
+@claim q/g856a434cf607-9-3 { status: inferred, grounds: [d/g856a434cf607-9], "code:kind": anticipated }
+~ Closing writes a resolution.
+
+@evidence e/g856a434cf607-10-1 { status: cited, source: { kind: file, ref: README.md@856a434cf607 }, "ingest:quote": The only figure about *your* model on *your* commits is the one you measure: }
+~ Check: The only figure about *your* model on *your* commits is the one you measure:
+
+@finding q/g856a434cf607-10-1 { status: speculative, "ingest:quote": Allows users to measure and verify the performance of their chosen models. }
+~ Users can measure and verify the performance of their chosen models.
+
+@claim q/g856a434cf607-11-1 { status: inferred, grounds: [d/g856a434cf607-11], "code:kind": anticipated, "ingest:quote": Encourages users to verify claims in the corpus independently. }
+~ Users are encouraged to verify claims in the corpus independently.
+
+@rel p/g856a434cf607-1-1 --conditions--> d/g856a434cf607-1
+
+@rel p/g856a434cf607-1-2 --conditions--> d/g856a434cf607-1
+
+@rel p/g856a434cf607-2-1 --conditions--> d/g856a434cf607-2
+
+@rel p/g856a434cf607-2-2 --conditions--> d/g856a434cf607-2
+
+@rel p/g856a434cf607-3-1 --conditions--> d/g856a434cf607-3
+
+@rel p/g856a434cf607-3-2 --conditions--> d/g856a434cf607-3
+
+@rel p/g856a434cf607-4-1 --conditions--> d/g856a434cf607-4
+
+@rel p/g856a434cf607-4-2 --conditions--> d/g856a434cf607-4
+
+@rel p/g856a434cf607-5-1 --conditions--> d/g856a434cf607-5
+
+@rel p/g856a434cf607-5-2 --conditions--> d/g856a434cf607-5
+
+@rel p/g856a434cf607-11-1 --conditions--> d/g856a434cf607-6
+
+@rel p/g856a434cf607-6-2 --conditions--> d/g856a434cf607-6
+
+@rel p/g856a434cf607-7-1 --conditions--> d/g856a434cf607-7
+
+@rel p/g856a434cf607-8-1 --conditions--> d/g856a434cf607-8
+
+@rel p/g856a434cf607-8-2 --conditions--> d/g856a434cf607-8
+
+@rel p/g856a434cf607-9-1 --conditions--> d/g856a434cf607-9
+
+@rel p/g856a434cf607-10-1 --conditions--> d/g856a434cf607-10
+
+@rel p/g856a434cf607-10-2 --conditions--> d/g856a434cf607-10
+
+@rel p/g856a434cf607-11-1 --conditions--> d/g856a434cf607-11
+
+@rel p/g856a434cf607-11-2 --conditions--> d/g856a434cf607-11
+
+@rel r/g856a434cf607-1-1 --contrasts--> d/g856a434cf607-1
+
+@rel r/g856a434cf607-2-1 --contrasts--> d/g856a434cf607-2
+
+@rel r/g856a434cf607-3-1 --contrasts--> d/g856a434cf607-3
+
+@rel r/g856a434cf607-4-1 --contrasts--> d/g856a434cf607-4
+
+@rel r/g856a434cf607-4-2 --contrasts--> d/g856a434cf607-4
+
+@rel r/g856a434cf607-5-1 --contrasts--> d/g856a434cf607-5
+
+@rel r/g856a434cf607-5-2 --contrasts--> d/g856a434cf607-5
+
+@rel r/g856a434cf607-6-1 --contrasts--> d/g856a434cf607-6
+
+@rel r/g856a434cf607-8-1 --contrasts--> d/g856a434cf607-8
+
+@rel r/g856a434cf607-10-1 --contrasts--> d/g856a434cf607-10
+
+@rel r/g856a434cf607-10-2 --contrasts--> d/g856a434cf607-10
+
+@rel r/g856a434cf607-11-1 --contrasts--> d/g856a434cf607-11
+
+@rel e/g856a434cf607-1-1 --backs--> q/g856a434cf607-1-1
+
+@rel d/g856a434cf607-1 --causes--> q/g856a434cf607-1-1
+
+@rel d/g856a434cf607-2 --causes--> q/g856a434cf607-2-1
+
+@rel d/g856a434cf607-3 --causes--> q/g856a434cf607-3-1
+
+@rel d/g856a434cf607-4 --causes--> q/g856a434cf607-4-1
+
+@rel d/g856a434cf607-4 --causes--> q/g856a434cf607-4-2
+
+@rel d/g856a434cf607-5 --causes--> q/g856a434cf607-5-1
+
+@rel e/g856a434cf607-6-1 --backs--> q/g856a434cf607-6-1
+
+@rel d/g856a434cf607-6 --causes--> q/g856a434cf607-6-1
+
+@rel e/g856a434cf607-6-2 --backs--> q/g856a434cf607-6-2
+
+@rel d/g856a434cf607-6 --causes--> q/g856a434cf607-6-2
+
+@rel d/g856a434cf607-7 --causes--> q/g856a434cf607-7-1
+
+@rel d/g856a434cf607-7 --causes--> q/g856a434cf607-7-2
+
+@rel e/g856a434cf607-8-1 --backs--> q/g856a434cf607-8-1
+
+@rel d/g856a434cf607-8 --causes--> q/g856a434cf607-8-1
+
+@rel d/g856a434cf607-9 --causes--> q/g856a434cf607-9-1
+
+@rel d/g856a434cf607-9 --causes--> q/g856a434cf607-9-2
+
+@rel d/g856a434cf607-9 --causes--> q/g856a434cf607-9-3
+
+@rel e/g856a434cf607-10-1 --backs--> q/g856a434cf607-10-1
+
+@rel d/g856a434cf607-10 --causes--> q/g856a434cf607-10-1
+
+@rel d/g856a434cf607-11 --causes--> q/g856a434cf607-11-1

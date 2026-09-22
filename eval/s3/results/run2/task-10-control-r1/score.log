@@ -152,6 +152,6 @@ ii...............................................................
 test result: ok. 63 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 10.30s
 
 
-$ '/Users/gandalf/Src/rust_smysl/eval/s3/oracles/10.sh' '/Users/gandalf/Src/rust_smysl/eval/.s3work/runs/run2/task-10-control-r1/tree'
+$ '<repo>/eval/s3/oracles/10.sh' '<repo>/eval/.s3work/runs/run2/task-10-control-r1/tree'
 [exit 0, 1s]
 
