@@ -321,6 +321,20 @@ pending, because recall over half an adjudication flatters whatever was easy to 
 
 ---
 
+## The corpus commits are not work
+
+Recording a commit writes files, and those files are a commit. If the tool recorded *that*, you would
+extract, commit, and find one commit left to extract — for ever.
+
+A commit that touches nothing but `.smysl/` is the tool's own output and is skipped: by
+`extract --since`, by `extract --queued`, and by the backlog `doctor` reports. A commit that touches
+`.smysl/` *and* source is a real change and is recorded like any other.
+
+```
+$ cargo smysl extract --since HEAD~4 --estimate
+4 commit(s) since HEAD~4, 3 already recorded, 1 that only write the corpus, 0 to do
+```
+
 ## A week of using it
 
 There is no ceremony here. What it looks like in practice:

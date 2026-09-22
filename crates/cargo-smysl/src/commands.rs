@@ -1045,16 +1045,25 @@ fn extract_command(args: &SmyslArgs, r: Recording<'_>, how: ExtractHow<'_>) -> u
         .iter()
         .filter_map(|p| p.file_stem().map(|s| s.to_string_lossy().into_owned()))
         .collect();
+    let mut corpus_only = 0;
     let todo: Vec<String> = shas
         .iter()
         .filter(|sha| r.force || !recorded.contains(&short(sha)))
+        .filter(|sha| {
+            let skip = cargo_smysl_git::read_commit(&root, sha)
+                .map(|c| records_only_the_corpus(&c))
+                .unwrap_or(false);
+            corpus_only += usize::from(skip);
+            !skip
+        })
         .cloned()
         .collect();
 
     println!(
-        "{} commit(s) since {since}, {} already recorded, {} to do",
+        "{} commit(s) since {since}, {} already recorded, {} that only write the corpus, {} to do",
         shas.len(),
-        shas.len() - todo.len(),
+        shas.len() - todo.len() - corpus_only,
+        corpus_only,
         todo.len()
     );
     let mut minutes = 0.0;
@@ -1124,6 +1133,23 @@ fn extract_queued(args: &SmyslArgs, r: &Recording<'_>, how: ExtractHow<'_>) -> u
         .collect();
     if queued.is_empty() {
         println!("nothing queued (the post-commit hook queues; cargo smysl hooks install)");
+        return exit::OK;
+    }
+    // The tool's own commits are not work. Dropping them here is what makes the queue reach empty.
+    let (queued, corpus_only): (Vec<String>, Vec<String>) = queued.into_iter().partition(|sha| {
+        !cargo_smysl_git::read_commit(&root, sha)
+            .map(|c| records_only_the_corpus(&c))
+            .unwrap_or(false)
+    });
+    if !corpus_only.is_empty() {
+        println!(
+            "{} queued commit(s) only write the corpus and were dropped from the queue",
+            corpus_only.len()
+        );
+        let _ = std::fs::write(&path, queued.join("\n"));
+    }
+    if queued.is_empty() {
+        println!("nothing left to record");
         return exit::OK;
     }
     let take = if r.max_commits == 0 {
@@ -1753,6 +1779,22 @@ fn default_features(args: &SmyslArgs) -> std::collections::BTreeSet<String> {
 }
 
 /// The workspace root, the way cargo sees it.
+/// Whether a commit only writes the corpus: the tool's own output, and not a change to reason about.
+///
+/// Recording a commit produces a commit — the documents and the extraction cache — and extracting *that*
+/// produces another, which is a march with no end. A commit that touches nothing but `.smysl/` has no
+/// decisions in it that were not already recorded, so it is skipped and the backlog reaches zero.
+///
+/// A commit that touches `.smysl/` *and* source is a real change, and is not skipped.
+fn records_only_the_corpus(commit: &cargo_smysl_git::CommitData) -> bool {
+    !commit.files.is_empty()
+        && commit.files.iter().all(|f| {
+            f.path
+                .starts_with(&format!("{}/", cargo_smysl_corpus::CORPUS_DIR))
+                || f.path == cargo_smysl_corpus::CORPUS_DIR
+        })
+}
+
 /// The first twelve characters of a revision, however short or strange it is.
 ///
 /// Slicing a string by byte count panics on a short one or on a character boundary, and shas reach this
@@ -1818,9 +1860,16 @@ fn doctor(args: &SmyslArgs) -> u8 {
     if !recorded.is_empty() {
         match cargo_smysl_git::commits_between(root, None, "HEAD", 200) {
             Ok(history) => {
+                // A commit that only writes the corpus is not a backlog item: recording it would
+                // produce another like it, and the count would never reach zero.
                 let behind = history
                     .iter()
                     .take_while(|sha| !recorded.contains(&short(sha)))
+                    .filter(|sha| {
+                        !cargo_smysl_git::read_commit(root, sha)
+                            .map(|c| records_only_the_corpus(&c))
+                            .unwrap_or(false)
+                    })
                     .count();
                 println!(
                     "recorded: {} commit(s); {behind} newer commit(s) not recorded{}",
@@ -2573,5 +2622,51 @@ fn merge_driver(base: &Path, ours: &Path, theirs: &Path) -> u8 {
             eprintln!("cargo smysl merge-driver: {}: {e}", ours.display());
             exit::FAILURE
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::records_only_the_corpus;
+    use cargo_smysl_git::{ChangedFile, CommitData};
+
+    fn commit(paths: &[&str]) -> CommitData {
+        CommitData {
+            sha: "0".repeat(40),
+            message: String::new(),
+            files: paths
+                .iter()
+                .map(|p| ChangedFile {
+                    path: (*p).to_string(),
+                    before: None,
+                    after: Some(String::new()),
+                })
+                .collect(),
+            parent_missing: false,
+        }
+    }
+
+    /// Recording a commit produces a commit. If that one is recorded too, the backlog never empties —
+    /// which is what happened: every extraction left exactly one more commit to extract.
+    #[test]
+    fn a_commit_that_only_writes_the_corpus_is_not_work() {
+        assert!(records_only_the_corpus(&commit(&[
+            ".smysl/commits/abc.smy",
+            ".smysl/extractions/v1/abc.json",
+        ])));
+
+        // A change that touches source is a change, whatever else it carries.
+        assert!(!records_only_the_corpus(&commit(&[
+            ".smysl/commits/abc.smy",
+            "crates/cargo-smysl/src/main.rs",
+        ])));
+        assert!(!records_only_the_corpus(&commit(&["src/lib.rs"])));
+
+        // A commit that changes nothing is not skipped on these grounds: it has its own oddity, and
+        // pretending to know why it is empty is not this function's business.
+        assert!(!records_only_the_corpus(&commit(&[])));
+
+        // A path that merely starts with the same letters is not inside the corpus.
+        assert!(!records_only_the_corpus(&commit(&[".smysl-notes/x.md"])));
     }
 }
