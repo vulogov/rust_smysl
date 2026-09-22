@@ -1,9 +1,28 @@
 # cargo-smysl
 
-A cargo subcommand that records **why** Rust code changed — the decisions a change makes, what had to be
-true for them, what was rejected, what follows — as a [smysl](https://crates.io/crates/smysl) corpus, and
-keeps that record honest: deterministic facts about the code, test results as evidence, and a report when
-the code a decision rests on moves.
+A queryable, code-anchored record of the decisions behind a Rust codebase — with staleness detection, and
+an honest account of what the model-dependent part is worth.
+
+**Most of it needs no model.** Seven of the ten commands are deterministic: they read your code and your
+git history, and cost nothing to run.
+
+```sh
+cargo smysl stale        # which recorded reasoning rests on code that has since changed
+cargo smysl why <label>  # what rests on a claim, across commits
+cargo smysl facts --scope --name retrieve   # what a model should be shown about a change
+cargo smysl bench        # measure a model on your own commits, before trusting it
+```
+
+`facts` and `bench` work on any repository today. `why` and `stale` read a corpus, and a corpus is written
+by `extract`, which does ask a model — once per commit, and you choose when. After that, reading it back
+and watching it go stale costs nothing.
+
+`stale` is the reason to bother: it compares by item and body hash, so a function that merely moved is not
+flagged and one whose body changed is.
+
+**The other three — `extract`, `check`, `evidence` — ask a model**, and this README publishes what they
+were measured at, naming the model every time. `check` ships advisory: on a free local model about one
+flag in ten was correct.
 
 **What it promises:** that each command does what its design says, with the measured figures printed where
 a model is involved. Acting on what it reports belongs to whoever reads it — a person, a CI step, a hook.
@@ -11,6 +30,9 @@ a model is involved. Acting on what it reports belongs to whoever reads it — a
 **What it is not:** a transcript store, a static analyzer, or an oracle that marks a claim true because a
 model said so. A model proposes content; the tool assigns every label, source and status, and checks every
 quote against the commit it came from.
+
+**Is it for you?** [`docs/what-this-is-for.md`](docs/what-this-is-for.md) answers that, including the
+measurement where `git log` beat this tool 10–0 on single-commit questions, and what survives it.
 
 **Version 0.2.0.** What changed, and what was measured: [`CHANGELOG.md`](CHANGELOG.md).
 
@@ -35,17 +57,25 @@ cargo install --path crates/cargo-smysl --features hosted     # to use a hosted 
 A full walk-through, on this repository, is in
 [`docs/smysl-workflow.md`](docs/smysl-workflow.md).
 
-| Command | What it does | Needs a model |
+**Deterministic — no model, no cost:**
+
+| Command | What it does |
+|---|---|
+| `stale` | Reasoning whose code has moved since it was recorded, by item and body hash |
+| `why <label>` / `why --commit <sha>` | What rests on a claim; a whole commit read back, as prose or Markdown |
+| `facts [rev]` | Deterministic facts about the code into a regenerable cache; `--scope` builds model context |
+| `review` | Work through what waits for a person: confirm, reject, close — always as records |
+| `bench` | Measure extraction against your own labels, with your own model |
+| `hooks` | A post-commit hook that only queues, and a merge driver for corpus documents |
+| `doctor` | Versions, workspace, corpus, backlog, and whether the code parses |
+
+**A model, and measured:**
+
+| Command | What it does | Measured at |
 |---|---|---|
-| `doctor` | Versions, workspace, corpus, and whether the code parses | no |
-| `facts [rev]` | Deterministic facts about the code into a regenerable cache | no |
-| `extract [rev]` | Decisions, prerequisites, alternatives and consequences for a commit, recorded | **yes** |
-| `why <label>` | What rests on a recorded claim, and what it rests on | no |
-| `check [rev]` | What a change contradicts in the corpus — **advisory** | **yes** |
-| `evidence <label>` | Retrieve facts for one claim, shortlist and run the tests that bear on it | **yes** |
-| `review` | Work through what waits for a person, and record the answer | no |
-| `stale` | Reasoning whose code has moved since it was recorded | no |
-| `bench` | Measure extraction against your own labels, with your own model | no |
+| `extract [rev]` | Decisions, prerequisites, alternatives and consequences, recorded | decisions 82–100% precision; prerequisites 41–88% |
+| `check [rev]` | What a change contradicts — **advisory** | 0.10 precision local, ~0.89 hosted |
+| `evidence <label>` | A claim against the facts, and the tests that bear on it | 3 wrong links in 17 (S1) |
 
 Exit codes: `0` success, `1` failure, `2` usage error, `5` findings under `check --strict`.
 
