@@ -12,6 +12,8 @@ a model is involved. Acting on what it reports belongs to whoever reads it — a
 model said so. A model proposes content; the tool assigns every label, source and status, and checks every
 quote against the commit it came from.
 
+**Version 0.1.0.** What changed, and what was measured: [`CHANGELOG.md`](CHANGELOG.md).
+
 ## Install
 
 ```sh
