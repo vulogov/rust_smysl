@@ -11,9 +11,9 @@ cargo fmt --all --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
 cargo test --workspace --locked
 # then: changelog, tag, merge, push
-git tag -a v0.1.0 -F tag-message.txt
-git checkout main && git merge --ff-only development/<branch>
-git push origin main v0.1.0
+git tag -a v<version> -F tag-message.txt
+git checkout main && git merge development/<branch>
+git push origin main v<version>
 ```
 
 ## Publishing
@@ -41,8 +41,20 @@ for c in cargo-smysl-git cargo-smysl-facts cargo-smysl-corpus \
 done
 ```
 
+**Test the publish, not the pipe.** `cargo publish … | tail -3` in a retry loop tests `tail`, which always
+succeeds; that reported two crates published when both had been refused. Check cargo's own exit status,
+and confirm against the registry rather than against the script:
+
+```sh
+curl -s -A release-check https://crates.io/api/v1/crates/cargo-smysl \
+  | python3 -c "import sys,json;print(json.load(sys.stdin)['crate']['max_version'])"
+```
+
 **crates.io rate-limits new crates, and this workspace is eight of them.** The allowance is a burst of
-five, then one new crate per ten minutes. Publishing 0.2.0 stopped after the fifth with:
+five, then roughly one new crate per ten minutes — and each publish consumes the refill, so the wait
+restarts from the last one that succeeded rather than from the first refusal. Publishing 0.2.0 took about
+forty minutes for the last three crates, the final one succeeding on its seventh attempt. It stopped
+after the fifth with:
 
 ```
 429 Too Many Requests: You have published too many new crates in a short period of time.
@@ -77,10 +89,14 @@ wave 1 can be packaged or verified locally; the rest can be checked only as the 
 
 ## The version in the manifest is the version that publishes
 
-The workspace version is `0.2.0-dev` on the development branch and `0.1.0` at the tag. Publishing 0.1.0
-means publishing from `main` at that tag, where the manifests say `0.1.0`. A pre-release version such as
-`0.2.0-dev` can be published, but `cargo install cargo-smysl` will not pick it up without
-`--version 0.2.0-dev`, so it is rarely what anyone wants.
+Publish from the branch whose manifests carry the version you mean, and tag that same commit. A
+pre-release such as `0.2.0-dev` can be published, but `cargo install cargo-smysl` will not pick it up
+without `--version 0.2.0-dev`, so it is rarely what anyone wants — 0.2.0 was published only after the
+manifests said `0.2.0` rather than `0.2.0-dev`.
+
+**Tag and merge before or immediately after publishing, not later.** For a few hours 0.2.0 was on
+crates.io while the repository's only tag was `v0.1.0`, so `cargo install` and a browser gave different
+answers about what this project was.
 
 ## Before publishing anything
 
