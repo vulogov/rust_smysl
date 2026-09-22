@@ -147,6 +147,11 @@ pub enum Command {
         /// A file holding the judgement prompt, replacing the built-in one.
         #[arg(long, env = "SMYSL_CHECK_PROMPT_FILE")]
         prompt_file: Option<PathBuf>,
+        /// Read a change too large to show in this many parts, judging each against the reasoning
+        /// recorded for its own files. One shows what fits and names the rest. Every part costs another
+        /// set of calls.
+        #[arg(long, env = "SMYSL_CHECK_PARTS", default_value_t = 1)]
+        parts: usize,
         /// Show the change in its own order when it does not fit, rather than showing the files the
         /// corpus has reasoning about first. For comparing the two.
         #[arg(long)]

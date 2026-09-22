@@ -62,6 +62,11 @@ pub struct Settings {
     /// When a change does not fit, show the files the corpus has reasoning about rather than whichever
     /// sort first. Costs nothing: the same number of lines is shown either way.
     pub order_by_corpus: bool,
+    /// Parts a change too large for one view may be read in. `1` shows what fits and names the rest;
+    /// more reads the rest too, at one set of calls per part. Measured on held-out data: 59% of changes
+    /// are truncated and 307 files across 55 cases are never examined, which is what more parts buys —
+    /// and what they cost is a multiple of every call.
+    pub max_parts: usize,
     /// Rotates the judged units before they are grouped. Two passes with different seeds see the same
     /// units in different company, and a finding only one pass makes is an artefact of that company.
     pub order_seed: usize,
@@ -82,6 +87,9 @@ impl Default for Settings {
             answer_tokens: 2048,
             system: None,
             order_by_corpus: true,
+            // One part: the same work as before. Reading a change in parts is opt-in because it
+            // multiplies what a check costs, and `check` is advisory whatever it reads.
+            max_parts: 1,
             order_seed: 0,
         }
     }
@@ -119,6 +127,7 @@ Return one JSON object: {\"verdicts\": [{\"label\": string, \"verdict\": \"contr
 \"diff_line\": string, \"reason\": string}]}";
 
 /// A unified diff, as `check` reads it.
+#[derive(Clone)]
 pub struct Change {
     pub files: Vec<String>,
     changed: Vec<String>,
@@ -163,6 +172,42 @@ impl Change {
                 .join(""),
             s,
         )
+    }
+
+    /// The change as parts that each fit, whole files at a time, at most `max_parts` of them.
+    ///
+    /// A file too large for a part of its own is shown cut, as before — that is the one place this still
+    /// truncates, and the part reports it like any other.
+    pub fn parts(&self, s: &Settings) -> Vec<Change> {
+        if !self.truncated || s.max_parts <= 1 {
+            return vec![self.clone()];
+        }
+        let mut sections: Vec<String> = Vec::new();
+        for part in self.raw.split("diff --git ") {
+            if !part.trim().is_empty() {
+                sections.push(format!("diff --git {part}"));
+            }
+        }
+        let mut parts = Vec::new();
+        let mut current = String::new();
+        for section in sections {
+            // A part is full when adding this file would truncate it, so each part is whole files.
+            let would = format!("{current}{section}");
+            if !current.is_empty() && Change::from_diff(&would, s).truncated {
+                parts.push(Change::from_diff(&current, s));
+                current = section;
+                if parts.len() + 1 >= s.max_parts {
+                    break;
+                }
+            } else {
+                current = would;
+            }
+        }
+        if !current.is_empty() {
+            parts.push(Change::from_diff(&current, s));
+        }
+        parts.truncate(s.max_parts);
+        parts
     }
 
     /// Files the model was shown nothing of.
@@ -533,7 +578,62 @@ pub fn check_agreed(
 }
 
 /// Run `check` over one change against one corpus.
+/// Check a change against the corpus, reading it in parts when it does not fit and the settings allow.
+///
+/// Each part is judged against the units retrieved for *it*, so a file that never reached the model
+/// before is now judged against the reasoning recorded about that file. Findings are unioned and a unit
+/// reported by two parts is reported once.
 pub fn check(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) -> Outcome {
+    let parts = change.parts(s);
+    if parts.len() <= 1 {
+        return check_one(store, change, judge, s);
+    }
+    let mut out = Outcome {
+        judge: judge.describe(),
+        ..Outcome::default()
+    };
+    out.warnings.push(format!(
+        "the change did not fit and was read in {} parts, one set of calls each",
+        parts.len()
+    ));
+    let mut seen: BTreeSet<(String, Option<u32>)> = BTreeSet::new();
+    let mut unexamined: Vec<String> = Vec::new();
+    for part in &parts {
+        let mut result = check_one(store, part, judge, s);
+        out.calls += result.calls;
+        out.predicted_tokens += result.predicted_tokens;
+        out.charged_tokens += result.charged_tokens;
+        out.units_judged += result.units_judged;
+        out.dropped.append(&mut result.dropped);
+        for w in result.warnings {
+            // The per-part truncation notice is the whole change's story, told once.
+            if !out.warnings.contains(&w) {
+                out.warnings.push(w);
+            }
+        }
+        for finding in result.findings {
+            if seen.insert((finding.label.clone(), finding.line)) {
+                out.findings.push(finding);
+            }
+        }
+        unexamined.extend(result.unexamined);
+    }
+    // A file is unexamined only if no part examined it.
+    let examined: BTreeSet<String> = parts
+        .iter()
+        .flat_map(|p| p.files.iter().cloned())
+        .filter(|f| !parts.iter().all(|p| p.unexamined().contains(f)))
+        .collect();
+    out.unexamined = unexamined
+        .into_iter()
+        .filter(|f| !examined.contains(f))
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect();
+    out
+}
+
+fn check_one(store: &Store, change: &Change, judge: &dyn Judge, s: &Settings) -> Outcome {
     let mut out = Outcome {
         judge: judge.describe(),
         ..Outcome::default()

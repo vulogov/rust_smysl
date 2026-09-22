@@ -478,3 +478,100 @@ fn a_cut_change_shows_what_the_corpus_knows_about() {
         outcome.unexamined
     );
 }
+
+/// A change too large to show is read in parts, and a file unseen in one part may be seen in another.
+#[test]
+fn a_change_read_in_parts_examines_what_one_view_could_not() {
+    let store = corpus();
+    let mut diff = String::new();
+    for n in 1..=4 {
+        diff.push_str(&format!(
+            "diff --git a/src/f{n}.rs b/src/f{n}.rs\n--- a/src/f{n}.rs\n+++ b/src/f{n}.rs\n"
+        ));
+        for line in 0..40 {
+            diff.push_str(&format!("+    let v{n}_{line} = {line};\n"));
+        }
+    }
+    let one = Settings {
+        diff_lines: 50,
+        ..Settings::default()
+    };
+    let change = Change::from_diff(&diff, &one);
+    assert!(change.truncated);
+    let unseen_with_one = change.unexamined().len();
+    assert!(unseen_with_one >= 2, "one view cannot reach them all");
+
+    let many = Settings {
+        max_parts: 4,
+        ..one.clone()
+    };
+    let parts = change.parts(&many);
+    assert!(parts.len() > 1, "it is read in parts: {}", parts.len());
+    for part in &parts {
+        assert!(
+            !part.files.is_empty(),
+            "each part carries whole files of the change"
+        );
+    }
+    let examined_by_parts: std::collections::BTreeSet<String> = parts
+        .iter()
+        .flat_map(|p| {
+            p.files
+                .iter()
+                .filter(|f| !p.unexamined().contains(*f))
+                .cloned()
+        })
+        .collect();
+    assert!(
+        examined_by_parts.len() > change.files.len() - unseen_with_one,
+        "more files are examined across parts than in one view: {examined_by_parts:?}"
+    );
+
+    // And `check` reports the reading, and counts each part's calls.
+    let judge = Scripted::new(vec![]);
+    let outcome = check(&store, &change, &judge, &many);
+    assert!(
+        outcome.warnings.iter().any(|w| w.contains("read in")),
+        "the parts are reported: {:?}",
+        outcome.warnings
+    );
+    // Nothing here is anchored to these files, so no part had anything to judge — and that is the
+    // honest outcome, not a failure. What parts change is coverage: every file was examined by some
+    // part, so nothing is left named as unexamined.
+    assert!(
+        outcome.unexamined.is_empty(),
+        "read in parts, no file is left unexamined: {:?}",
+        outcome.unexamined
+    );
+    assert!(outcome
+        .warnings
+        .iter()
+        .any(|w| w.contains("nothing recorded bears on")));
+}
+
+/// One part is the old behaviour exactly: what fits, and the rest named.
+#[test]
+fn one_part_is_what_fits_and_the_rest_named() {
+    let store = corpus();
+    let settings = Settings {
+        diff_lines: 50,
+        ..Settings::default()
+    };
+    let mut diff = String::new();
+    for n in 1..=3 {
+        diff.push_str(&format!(
+            "diff --git a/src/f{n}.rs b/src/f{n}.rs\n--- a/src/f{n}.rs\n+++ b/src/f{n}.rs\n"
+        ));
+        for line in 0..40 {
+            diff.push_str(&format!("+    let v{n}_{line} = {line};\n"));
+        }
+    }
+    let change = Change::from_diff(&diff, &settings);
+    assert_eq!(change.parts(&settings).len(), 1);
+    let outcome = check(&store, &change, &Scripted::new(vec![]), &settings);
+    assert!(
+        !outcome.unexamined.is_empty(),
+        "and it says what it skipped"
+    );
+    assert!(!outcome.warnings.iter().any(|w| w.contains("read in")));
+}

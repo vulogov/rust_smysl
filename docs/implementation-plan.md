@@ -709,6 +709,25 @@ rather than from the lines shown. What it improves is the evidence the model rea
 **307 files across 55 cases are still never examined**, which is the case for C, now on evidence rather
 than on intuition: no ordering can show more than the cap allows.
 
+**C, done 2026-09-22, behind `--parts`.** A change too large for one view is read in parts of whole
+files, each judged against the units retrieved for *its own* files. Measured over the same 55 truncated
+cases, previewed with no model:
+
+| | one view | up to four parts |
+|---|---|---|
+| Files never examined | 307 | **0** |
+| Units judged, summed | 1 290 | **1 881** (+46%) |
+| Parts read | 55 | 168 (3.1 per case) |
+
+It does what B and A could not: nothing goes unexamined. It costs about three times the calls, which on a
+local 14B at a minute a call is the difference between a slow tool and an unusable one — so it is off by
+default (`--parts 1`) and the figures are here for whoever turns it on.
+
+**What this exposes next: `check` is sequential.** Its calls are independent — chunks of units against a
+part — and run one after another. Measured medians per whole check: 80 s local, 78–144 s hosted. Parts
+multiply that. Running the calls concurrently is the difference between 3× the calls and 3× the wait, and
+it is the next thing worth building.
+
 ---
 
 ## 9. Risks and known limits

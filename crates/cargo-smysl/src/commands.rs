@@ -94,6 +94,7 @@ pub fn run(args: SmyslArgs) -> u8 {
             passes,
             dry_run,
             no_corpus_order,
+            parts,
         } => check(
             &args,
             CheckArgs {
@@ -111,6 +112,7 @@ pub fn run(args: SmyslArgs) -> u8 {
                 passes: *passes,
                 dry_run: *dry_run,
                 no_corpus_order: *no_corpus_order,
+                parts: *parts,
             },
         ),
         Command::Evidence {
@@ -1379,6 +1381,7 @@ struct CheckArgs<'a> {
     passes: usize,
     dry_run: bool,
     no_corpus_order: bool,
+    parts: usize,
 }
 
 /// `check`: what this change contradicts in the corpus.
@@ -1415,6 +1418,7 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         window: c.window,
         chars_per_token: c.chars_per_token,
         order_by_corpus: !c.no_corpus_order,
+        max_parts: c.parts.max(1),
         ..Settings::default()
     };
     if let Some(path) = c.prompt_file {
@@ -1446,14 +1450,36 @@ fn check(args: &SmyslArgs, c: CheckArgs<'_>) -> u8 {
         } else {
             change
         };
-        let (text, judged) =
-            cargo_smysl_verdict::check::preview(&store, &change, &settings).unwrap_or_default();
+        // A preview of a run that would read the change in parts previews every part, or it is a
+        // preview of something else.
+        let parts = change.parts(&settings);
+        let mut judged: Vec<String> = Vec::new();
+        let mut text = String::new();
+        let mut unexamined: BTreeSet<String> = BTreeSet::new();
+        let mut examined: BTreeSet<String> = BTreeSet::new();
+        for part in &parts {
+            if let Some((t, j)) = cargo_smysl_verdict::check::preview(&store, part, &settings) {
+                text.push_str(&t);
+                judged.extend(j);
+            }
+            let unseen = part.unexamined();
+            for file in &part.files {
+                if unseen.contains(file) {
+                    unexamined.insert(file.clone());
+                } else {
+                    examined.insert(file.clone());
+                }
+            }
+        }
+        judged.sort();
+        judged.dedup();
         let shown = serde_json::json!({
-            "unexamined": change.unexamined(),
+            "parts": parts.len(),
+            "unexamined": unexamined.difference(&examined).cloned().collect::<Vec<_>>(),
             "judged": judged,
             "units_judged": judged.len(),
             "pack_text": text,
-            "diff_lines_shown": change.shown().lines().count(),
+            "diff_lines_shown": parts.iter().map(|p| p.shown().lines().count()).sum::<usize>(),
             "diff_truncated": change.truncated,
         });
         println!(
